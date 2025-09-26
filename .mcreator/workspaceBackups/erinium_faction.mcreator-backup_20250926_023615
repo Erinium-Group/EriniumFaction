@@ -11,18 +11,6 @@
           "src/main/java/fr/eriniumgroup/eriniumfaction/mixin/PoubelleMixin.java"
         ]
       }
-    },
-    {
-      "name": "EriFont",
-      "type": "code",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "eri_font",
-      "metadata": {
-        "files": [
-          "src/main/java/fr/eriniumgroup/eriniumfaction/EriFont.java"
-        ]
-      }
     }
   ],
   "variable_elements": [],
