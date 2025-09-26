@@ -1,5 +1,42 @@
 {
-  "mod_elements": [],
+  "mod_elements": [
+    {
+      "name": "Poubelle",
+      "type": "mixin",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "poubelle",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/mixin/PoubelleMixin.java"
+        ]
+      }
+    },
+    {
+      "name": "EriFont",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "eri_font",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/EriFont.java"
+        ]
+      }
+    },
+    {
+      "name": "BlockHpRegistry",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "block_hp_registry",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/BlockHpRegistry.java"
+        ]
+      }
+    }
+  ],
   "variable_elements": [],
   "sound_elements": [],
   "tag_elements": {},
@@ -17,7 +54,12 @@
   },
   "foldersRoot": {
     "name": "~",
-    "children": []
+    "children": [
+      {
+        "name": "Block health",
+        "children": []
+      }
+    ]
   },
   "workspaceSettings": {
     "modid": "erinium_faction",
@@ -25,7 +67,6 @@
     "version": "1.0.0",
     "author": "MCreator",
     "websiteURL": "https://mcreator.net",
-    "license": "license\u003d\"SkyzerAdventure Mod License v1.0 (see LICENSE on root)\" ",
     "serverSideOnly": false,
     "requiredMods": [],
     "dependencies": [],
