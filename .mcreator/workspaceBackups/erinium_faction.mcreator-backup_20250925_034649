@@ -25,6 +25,7 @@
     "version": "1.0.0",
     "author": "MCreator",
     "websiteURL": "https://mcreator.net",
+    "license": "license\u003d\"SkyzerAdventure Mod License v1.0 (see LICENSE on root)\" ",
     "serverSideOnly": false,
     "requiredMods": [],
     "dependencies": [],

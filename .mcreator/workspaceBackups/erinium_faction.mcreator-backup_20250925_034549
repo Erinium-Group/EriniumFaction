@@ -25,13 +25,13 @@
     "version": "1.0.0",
     "author": "MCreator",
     "websiteURL": "https://mcreator.net",
+    "license": "Not specified",
     "serverSideOnly": false,
     "requiredMods": [],
     "dependencies": [],
     "dependants": [],
     "mcreatorDependencies": [],
     "currentGenerator": "forge-1.18.2",
-    "credits": "Created using mod maker MCreator - https://mcreator.net/about",
     "modElementsPackage": "fr.eriniumgroup.eriniumfaction"
   },
   "mcreatorVersion": 202500228610

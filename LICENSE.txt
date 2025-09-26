@@ -1,0 +1,69 @@
+Version Française
+
+Licence Erinium Faction Mod – Version 1.0
+
+Copyright © 2025 JLSkyzer. Tous droits réservés.
+
+Utilisation
+
+Ce code et ce contenu sont destinés uniquement au projet officiel Erinium Faction et à ses serveurs associés.
+
+Aucune utilisation extérieure, redistribution, modification ou intégration dans d’autres projets n’est autorisée sans accord écrit de l’auteur.
+
+Accès et exécution
+
+L’exécution du mod est permise uniquement dans les conditions prévues par le créateur (serveur officiel ou usage approuvé).
+
+Toute tentative de contournement, piratage, rétro-ingénierie ou modification visant à exécuter le mod de manière non autorisée est strictement interdite.
+
+Propriété intellectuelle
+
+Le nom Erinium Faction, ses ressources, codes, assets et mécaniques de jeu sont la propriété exclusive de l’auteur.
+
+Il est interdit de copier, cloner, réutiliser, ou s’approprier tout ou partie du code, du contenu ou du nom du projet.
+
+Commercialisation
+
+Toute utilisation commerciale (vente, monétisation, publicité, serveurs privés non autorisés, etc.) est strictement interdite sans accord écrit de l’auteur.
+
+Sanctions
+
+Toute violation de cette licence pourra entraîner la suppression du droit d’accès, des poursuites judiciaires et la demande de dommages-intérêts.
+
+Ce logiciel est fourni “tel quel”, sans garantie d’aucune sorte.
+
+--------------------------------------------------------------------------------
+
+English Version
+
+Erinium Faction Mod License – Version 1.0
+
+Copyright © 2025 JLSkyzer. All rights reserved.
+
+Usage
+
+This code and content are intended solely for the official Erinium Faction project and its associated servers.
+
+No external use, redistribution, modification, or integration into other projects is allowed without the author’s written consent.
+
+Access and execution
+
+Running this mod is only permitted under the conditions set by the creator (official server or explicitly approved use).
+
+Any attempt to bypass, hack, reverse engineer, or modify the mod to run in an unauthorized way is strictly forbidden.
+
+Intellectual property
+
+The name Erinium Faction, its resources, code, assets, and gameplay mechanics are the exclusive property of the author.
+
+Copying, cloning, reusing, or appropriating any part of the code, content, or name of the project is strictly prohibited.
+
+Commercialization
+
+Any commercial use (sale, monetization, advertising, unauthorized private servers, etc.) is strictly prohibited without the author’s written consent.
+
+Enforcement
+
+Any violation of this license may result in revocation of rights, legal action, and claims for damages.
+
+This software is provided “as is”, without warranty of any kind.

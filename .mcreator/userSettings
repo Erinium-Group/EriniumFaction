@@ -2,10 +2,11 @@
   "workspacePanelIconSize": "TILES",
   "workspacePanelSortType": "CREATED",
   "workspacePanelSortAscending": true,
-  "projectBrowserSplitPos": 0,
+  "projectBrowserSplitPos": 283,
   "projectBrowserState": {
     "expandedPaths": [
-      "[, Erinium Faction]"
+      "[, Erinium Faction]",
+      "[, Erinium Faction, Resources (Gradle)]"
     ]
   }
 }
