@@ -15,8 +15,8 @@
 package fr.eriniumgroup.eriniumfaction;
 
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -30,15 +30,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 
 public final class BlockHpData extends SavedData {
 	private final Long2IntOpenHashMap hp = new Long2IntOpenHashMap();
+	private final Long2ObjectOpenHashMap<ResourceLocation> ids = new Long2ObjectOpenHashMap<>();
 
 	public static BlockHpData get(ServerLevel level){
 		DimensionDataStorage store = level.getDataStorage();
@@ -48,21 +44,38 @@ public final class BlockHpData extends SavedData {
 	public static BlockHpData load(CompoundTag tag){
 		BlockHpData d = new BlockHpData();
 		long[] pos = tag.getLongArray("p");
-		int[] vs = tag.getIntArray("v");
-		for (int i=0;i<Math.min(pos.length, vs.length);i++) d.hp.put(pos[i], vs[i]);
+		int[]  vs  = tag.getIntArray("v");
+		var idList = tag.getList("id", 8); // 8 = String
+		for (int i=0;i<Math.min(pos.length, vs.length);i++){
+			d.hp.put(pos[i], vs[i]);
+			if (i < idList.size()) d.ids.put(pos[i], new ResourceLocation(idList.getString(i)));
+		}
 		return d;
 	}
 
-	@Override
-	public CompoundTag save(CompoundTag tag){
-		tag.putLongArray("p", hp.keySet().toLongArray());
-		tag.putIntArray("v", hp.values().toIntArray());
+	@Override public CompoundTag save(CompoundTag tag){
+		var positions = hp.keySet().toLongArray();
+		var values    = hp.values().toIntArray();
+		tag.putLongArray("p", positions);
+		tag.putIntArray("v", values);
+		var idList = new net.minecraft.nbt.ListTag();
+		for (long p : positions){
+			var rl = ids.get(p);
+			idList.add(net.minecraft.nbt.StringTag.valueOf(rl == null ? "minecraft:air" : rl.toString()));
+		}
+		tag.put("id", idList);
 		return tag;
 	}
 
 	public int get(BlockPos p){ return hp.getOrDefault(p.asLong(), Integer.MIN_VALUE); }
-	public void set(BlockPos p, int v){ if (v<=0) hp.remove(p.asLong()); else hp.put(p.asLong(), v); setDirty(); }
-	public void clear(BlockPos p){ hp.remove(p.asLong()); setDirty(); }
+	public void set(BlockPos p, int v, ResourceLocation id){
+		if (v<=0) { hp.remove(p.asLong()); ids.remove(p.asLong()); }
+		else { hp.put(p.asLong(), v); ids.put(p.asLong(), id); }
+		setDirty();
+	}
+	public void clear(BlockPos p){
+		hp.remove(p.asLong()); ids.remove(p.asLong()); setDirty();
+	}
 
 	// helper optionnel
 	private static ResourceLocation keyOf(BlockState s){
@@ -72,13 +85,15 @@ public final class BlockHpData extends SavedData {
 
 	public static int current(ServerLevel lvl, BlockPos pos, BlockState state){
 		BlockHpData d = get(lvl);
-		int cur = d.get(pos);
-		if (cur == Integer.MIN_VALUE){
+		long key = pos.asLong();
+		int cur = d.hp.getOrDefault(key, Integer.MIN_VALUE);
+		ResourceLocation idNow = keyOf(state);
+		ResourceLocation idSaved = d.ids.get(key);
 
-			// usages
-			int base = BlockHpRegistry.baseHp(keyOf(state));
-			cur = base;
-			d.set(pos, cur);
+		if (cur == Integer.MIN_VALUE || idSaved == null || !idSaved.equals(idNow)) {
+			int base = BlockHpRegistry.baseHp(idNow);
+			d.set(pos, base, idNow);
+			return base;
 		}
 		return cur;
 	}
@@ -90,15 +105,15 @@ public final class BlockHpData extends SavedData {
 	public static void damage(ServerLevel lvl, BlockPos pos, int dmg){
 		if (lvl.isEmptyBlock(pos)) return;
 		BlockState state = lvl.getBlockState(pos);
+		int cur  = current(lvl, pos, state);     // lit/initialise selon l'ID courant
 		int base = base(state);
 		BlockHpData d = get(lvl);
 
-		int cur = d.get(pos);
 		if (cur == Integer.MIN_VALUE) cur = base;
 
 		int next = cur - Math.max(1, dmg);
 		if (next > 0){
-			d.set(pos, next);
+			d.set(pos, next, keyOf(state));
 			int prog = 9 - Mth.clamp((int)Math.floor((next*10.0)/Math.max(1, base)), 0, 9);
 			int id = (int)(pos.asLong() ^ 0x45AF13);
 			ClientboundBlockDestructionPacket pkt = new ClientboundBlockDestructionPacket(id, pos, prog);
@@ -129,15 +144,15 @@ public final class BlockHpData extends SavedData {
 		dmg = Math.max(1, dmg);
 		if (lvl.isEmptyBlock(pos)) return 0;
 		BlockState state = lvl.getBlockState(pos);
+		int cur  = current(lvl, pos, state);     // lit/initialise selon l'ID courant
 		int base = base(state);
 		BlockHpData d = get(lvl);
 
-		int cur = d.get(pos);
 		if (cur == Integer.MIN_VALUE) cur = base;
 
 		int next = cur - dmg;
 		if (next > 0) {
-			d.set(pos, next);
+			d.set(pos, next, keyOf(state));
 			int prog = 9 - Mth.clamp((int)Math.floor((next*10.0)/Math.max(1, base)), 0, 9);
 			int id = (int)(pos.asLong() ^ 0x45AF13);
 			ClientboundBlockDestructionPacket pkt = new ClientboundBlockDestructionPacket(id, pos, prog);
@@ -166,13 +181,13 @@ public final class BlockHpData extends SavedData {
 		amount = Math.max(1, amount);
 		if (lvl.isEmptyBlock(pos)) return 0;
 		BlockState state = lvl.getBlockState(pos);
+		int cur  = current(lvl, pos, state);     // lit/initialise selon l'ID courant
 		int base = base(state);
 		BlockHpData d = get(lvl);
 
-		int cur = d.get(pos);
 		if (cur == Integer.MIN_VALUE) cur = base; // s’il n’avait jamais pris de dégâts
 		int next = Math.min(base, cur + amount);
-		d.set(pos, next);
+		d.set(pos, next, keyOf(state));
 
 		int prog = 9 - Mth.clamp((int)Math.floor((next*10.0)/Math.max(1, base)), 0, 9);
 		int id = (int)(pos.asLong() ^ 0x45AF13);

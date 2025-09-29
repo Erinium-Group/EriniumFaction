@@ -34,7 +34,8 @@
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/BlockHpRegistry.java"
         ]
-      }
+      },
+      "path": "~/Block health"
     },
     {
       "name": "BlockHpData",
@@ -46,7 +47,8 @@
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/BlockHpData.java"
         ]
-      }
+      },
+      "path": "~/Block health"
     },
     {
       "name": "DefenseEvents",
@@ -58,7 +60,8 @@
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/DefenseEvents.java"
         ]
-      }
+      },
+      "path": "~/Block health"
     }
   ],
   "variable_elements": [],

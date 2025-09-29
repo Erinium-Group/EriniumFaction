@@ -47,7 +47,7 @@ public final class BlockHpRegistry extends SimpleJsonResourceReloadListener {
 	}
 
 	public static int baseHp(ResourceLocation key) {
-		return MAP.getOrDefault(key, 1);
+		return MAP.getOrDefault(key, 4);
 	}
 
 	@Override

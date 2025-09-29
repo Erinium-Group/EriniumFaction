@@ -34,7 +34,34 @@
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/BlockHpRegistry.java"
         ]
-      }
+      },
+      "path": "~/Block health"
+    },
+    {
+      "name": "BlockHpData",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "block_hp_data",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/BlockHpData.java"
+        ]
+      },
+      "path": "~/Block health"
+    },
+    {
+      "name": "DefenseEvents",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "defense_events",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/DefenseEvents.java"
+        ]
+      },
+      "path": "~/Block health"
     }
   ],
   "variable_elements": [],
