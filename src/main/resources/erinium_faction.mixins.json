@@ -2,6 +2,7 @@
   "required": true,
   "package": "fr.eriniumgroup.eriniumfaction.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "erinium_faction.refmap.json",
   "mixins": [
     "PoubelleMixin"
   ],

@@ -53,6 +53,16 @@ public final class BlockHpData extends SavedData {
 		return d;
 	}
 
+	// imports: Level, BlockState
+	public static int[] hpClient(net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos){
+		// serveur → vrai calcul
+		if (level instanceof net.minecraft.server.level.ServerLevel sl) return hp(sl, pos);
+		// client → base connue, courant inconnu: on approx cur=base si jamais touché
+		BlockState s = level.getBlockState(pos);
+		int base = base(s);
+		return new int[]{base, base};
+	}
+
 	@Override public CompoundTag save(CompoundTag tag){
 		var positions = hp.keySet().toLongArray();
 		var values    = hp.values().toIntArray();

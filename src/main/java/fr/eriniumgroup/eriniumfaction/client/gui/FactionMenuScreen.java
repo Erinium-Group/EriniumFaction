@@ -1,0 +1,194 @@
+package fr.eriniumgroup.eriniumfaction.client.gui;
+
+import fr.eriniumgroup.eriniumfaction.ARGBToInt;
+import fr.eriniumgroup.eriniumfaction.EriFont;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+
+import fr.eriniumgroup.eriniumfaction.world.inventory.FactionMenuMenu;
+import fr.eriniumgroup.eriniumfaction.init.EriniumFactionModScreens;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> implements EriniumFactionModScreens.ScreenAccessor {
+	private final Level world;
+	private final int x, y, z;
+	private final Player entity;
+	private boolean menuStateUpdateActive = false;
+
+	private final int guiWidthVirtual = 1920;
+	private final int guiHeightVirtual = 1080;
+
+	private float uiScale;
+	private float uiOriginX, uiOriginY;
+
+	// calcule à partir de width/height
+	private void computeUiMetrics() {
+		float sx = ((float) this.width)  / guiWidthVirtual;
+		float sy = ((float) this.height) / guiHeightVirtual;
+		this.uiScale   = Math.min(sx, sy);
+		this.uiOriginX = (this.width  / this.uiScale - guiWidthVirtual)  / 2f;
+		this.uiOriginY = (this.height / this.uiScale - guiHeightVirtual) / 2f;
+	}
+
+
+	public FactionMenuScreen(FactionMenuMenu container, Inventory inventory, Component text) {
+		super(container, inventory, text);
+		this.world = container.world;
+		this.x = container.x;
+		this.y = container.y;
+		this.z = container.z;
+		this.entity = container.entity;
+		this.imageWidth = 1920;
+		this.imageHeight = 1080;
+
+		float sx = ((float) this.width)  / guiWidthVirtual;
+		float sy = ((float) this.height) / guiHeightVirtual;
+		this.uiScale   = Math.min(sx, sy);
+		this.uiOriginX = (this.width  / this.uiScale - guiWidthVirtual)  / 2f;
+		this.uiOriginY = (this.height / this.uiScale - guiHeightVirtual) / 2f;
+	}
+
+	@Override
+	public void updateMenuState(int elementType, String name, Object elementState) {
+		menuStateUpdateActive = true;
+		menuStateUpdateActive = false;
+	}
+
+	private static final ResourceLocation texture = new ResourceLocation("erinium_faction:textures/screens/faction_menu_bg.png");
+
+	@Override
+	public void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(ms);
+		super.render(ms, mouseX, mouseY, partialTicks);
+		this.renderTooltip(ms, mouseX, mouseY);
+	}
+
+	@Override
+	protected void renderBg(PoseStack ms, float partialTicks, int mouseX, int mouseY) {
+		RenderSystem.setShaderColor(1, 1, 1, 1);
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+
+		int screenW = this.width;
+		int screenH = this.height;
+		float scaleX = (float) screenW / guiWidthVirtual;
+		float scaleY = (float) screenH / guiHeightVirtual;
+		float scale = Math.min(scaleX, scaleY); // pour garder les proportions
+
+		ms.pushPose();
+		ms.scale(Math.min(1.0f, scaleX), Math.min(1.0f, scaleY), 1.0f);
+		// Position centrée en virtuel
+		int offsetX = (int) ((screenW / scale - guiWidthVirtual) / 2f);
+		int offsetY = (int) ((screenH / scale - guiHeightVirtual) / 2f);
+
+		RenderSystem.setShaderTexture(0, texture);
+		this.blit(ms, 0, 0, 0, 0, guiWidthVirtual, guiHeightVirtual, guiWidthVirtual, guiHeightVirtual);
+
+		// --- TEXTE 48 px virtuels ---
+		drawText(ms, scale, "Faction Menu", EriFont::orbitronBold,48f, -1f, 20f, false, true, 0xFFFFD700);
+
+		// --- TEXTE 38 px virtuels ---
+		drawText(ms, scale, "Faction NAME", EriFont::orbitronBold,38f, -1f, 120f, false, true, 0xFFFFD700);
+
+		// --- TEXTE 28 px virtuels ---
+		drawText(ms, scale, "Résumé", EriFont::exo2,28f, -1f, 186f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(ms, scale, "Liste des membres", EriFont::exo2,28f, (float) ((1320 + 1889) / 2), 186f, true, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(ms, scale, "Petites quêtes", EriFont::exo2,28f, (float) ((30 + 599) / 2), 186f, true, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+
+		ms.popPose();
+		RenderSystem.disableBlend();
+	}
+
+	private void drawText(PoseStack ms, float scale, String text, EriFont.EriFontAccess fontAccess, float virtualSize, float virtualX, float virtualY, boolean isXCentered, boolean hasShadow, int color) {
+		float textScale = virtualSize / 8f;
+		Component comp;
+
+		// Déterminer la police (comme dans votre code original)
+		comp = fontAccess.get(text);
+
+		int tw = this.minecraft.font.width(comp);
+		float totalTextWidthVirt = tw * textScale;
+
+		// Calcul de la position X virtuelle
+		float xVirt;
+
+		if (isXCentered) {
+			// Le texte est centré sur la position virtuelle fournie (ex: 960 pour le centre de l'écran)
+			xVirt = virtualX - (totalTextWidthVirt / 2f);
+		} else if (virtualX == -1f) {
+			// Cas spécial : si virtualX est -1 (par convention), on centre sur l'écran (1920px)
+			xVirt = (guiWidthVirtual - totalTextWidthVirt) / 2f;
+		} else {
+			// Le texte commence à la position virtuelle fournie (alignement à gauche)
+			xVirt = virtualX;
+		}
+
+		// Pour ne pas oublier l'origine Y de l'écran
+		float originY = (height / scale - guiHeightVirtual) / 2f;
+		float yVirt = originY + virtualY;
+
+		// APPLICATION DE LA POSE MATRICIELLE
+		ms.pushPose();
+		ms.scale(textScale, textScale, 1f);
+
+		float xDraw = (xVirt / textScale);
+		float yDraw = (yVirt / textScale);
+
+		if (hasShadow) {
+			this.font.drawShadow(ms, comp, xDraw, yDraw, color);
+		} else {
+			this.font.draw(ms, comp, xDraw, yDraw, color);
+		}
+		ms.popPose();
+	}
+
+
+
+	@Override
+	public boolean keyPressed(int key, int b, int c) {
+		if (key == 256) {
+			this.minecraft.player.closeContainer();
+			return true;
+		}
+		return super.keyPressed(key, b, c);
+	}
+
+	@Override
+	protected void renderLabels(PoseStack ms, int mouseX, int mouseY) {
+
+	}
+
+	private int toRealX(float virt) { return net.minecraft.util.Mth.floor((uiOriginX + virt) * uiScale); }
+	private int toRealY(float virt) { return net.minecraft.util.Mth.floor((uiOriginY + virt) * uiScale); }
+	private int toRealS(float virt) { return net.minecraft.util.Mth.floor(virt * uiScale); }
+
+
+	@Override
+	public void init() {
+		super.init();
+
+		/*
+		computeUiMetrics();
+
+		int bx = toRealX(200);   // 200 px virtuels → réel
+		int by = toRealY(150);
+		int bw = toRealS(320);
+		int bh = toRealS(64);
+		 */
+	}
+
+	@Override
+	public void resize(net.minecraft.client.Minecraft mc, int w, int h) {
+		super.resize(mc, w, h);
+		computeUiMetrics();
+	}
+
+}

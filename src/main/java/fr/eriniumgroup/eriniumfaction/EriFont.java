@@ -15,24 +15,35 @@
 package fr.eriniumgroup.eriniumfaction;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 
-public final class EriFont {
-	public static final String MODID = "erinium_faction";
-	private EriFont() {}
-
-	public static Component audiowide(String text){
-		return (Component) Component.nullToEmpty(text).getStyle().withFont(new ResourceLocation(MODID, "audiowide"));
+public class EriFont {
+	private static Component make(String text, String fontId) {
+		Style style = Style.EMPTY.withFont(new ResourceLocation("erinium_faction", fontId));
+		return new TextComponent(text).setStyle(style);
 	}
 
-	public static Component exo2(String text){
-		return (Component) Component.nullToEmpty(text).getStyle().withFont(new ResourceLocation(MODID, "exo2"));
+	public static Component orbitron(String text) {
+		return make(text, "orbitron");
 	}
 
-	public static Component orbitron(String text){
-		return (Component) Component.nullToEmpty(text).getStyle().withFont(new ResourceLocation(MODID, "orbitron"));
+	public static Component orbitronBold(String text) {
+		return make(text, "orbitron_bold");
 	}
 
+	public static Component exo2(String text) {
+		return make(text, "exo2");
+	}
 
+	public static Component audiowide(String text) {
+		return make(text, "audiowide");
+	}
+
+	// À ajouter dans EriFont.java
+	public static interface EriFontAccess {
+		Component get(String text);
+	}
 }

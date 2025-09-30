@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.AbstractMap;
 
+import fr.eriniumgroup.eriniumfaction.init.EriniumFactionModMenus;
+
 @Mod("erinium_faction")
 public class EriniumFactionMod {
 	public static final Logger LOGGER = LogManager.getLogger(EriniumFactionMod.class);
@@ -37,6 +39,8 @@ public class EriniumFactionMod {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
+		EriniumFactionModMenus.REGISTRY.register(bus);
 
 		// Start of user code block mod init
 		// End of user code block mod init

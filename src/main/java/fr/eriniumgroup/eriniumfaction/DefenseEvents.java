@@ -16,6 +16,8 @@ package fr.eriniumgroup.eriniumfaction;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -73,11 +75,39 @@ public final class DefenseEvents {
 		BlockHpData.damage(lvl, pos, dmg);
 	}
 
+	@SubscribeEvent
+	public static void onPlayerTick(net.minecraftforge.event.TickEvent.PlayerTickEvent e) {
+		if (e.phase != net.minecraftforge.event.TickEvent.Phase.END) return;
+		if (!(e.player instanceof ServerPlayer sp)) return;
+		if (!sp.getMainHandItem().is(Items.STICK)) return;
+
+		// Vérifier ce que le joueur regarde
+		net.minecraft.world.phys.HitResult hit = sp.pick(5.0D, 0.0F, false);
+		if (hit.getType() != net.minecraft.world.phys.HitResult.Type.BLOCK) return;
+
+		net.minecraft.world.phys.BlockHitResult blockHit = (net.minecraft.world.phys.BlockHitResult) hit;
+		BlockPos pos = blockHit.getBlockPos();
+		ServerLevel lvl = sp.getLevel();
+
+		if (lvl.isEmptyBlock(pos)) return;
+
+		BlockState state = lvl.getBlockState(pos);
+		int base = BlockHpData.base(state);
+		int cur = BlockHpData.current(lvl, pos, state);
+
+		// Envoyer le packet au client pour synchroniser l'affichage
+		EriniumFactionMod.PACKET_HANDLER.send(
+				net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> sp),
+				new BlockHpSyncMessage(pos, cur, base)
+		);
+	}
+
 	// Inspection PV par clic droit avec un stick
 	@SubscribeEvent
 	public static void onInspect(PlayerInteractEvent.RightClickBlock e){
 		if (e.getWorld().isClientSide()) return;
 		if (!e.getItemStack().is(Items.STICK)) return;
+		if (!e.getEntity().isCrouching()) return; // Seulement en shift
 
 		ServerPlayer sp = (ServerPlayer) e.getEntity();
 		ServerLevel lvl = (ServerLevel) e.getWorld();
@@ -87,6 +117,12 @@ public final class DefenseEvents {
 		int base = BlockHpData.base(state);
 		int cur  = BlockHpData.current(lvl, pos, state);
 		float pct = base > 0 ? (cur * 100f / base) : 0f;
+
+		// Après avoir calculé cur et base
+		EriniumFactionMod.PACKET_HANDLER.send(
+				net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> sp),
+				new BlockHpSyncMessage(pos, cur, base)
+		);
 
 		ChatFormatting col =
 				pct >= 75f ? ChatFormatting.GREEN :
@@ -106,7 +142,6 @@ public final class DefenseEvents {
 				.append(new TextComponent(") "))
 				.append(new TextComponent(idStr).withStyle(ChatFormatting.GRAY));
 
-		// action bar (au-dessus des slots)
 		sp.displayClientMessage(msg, true);
 		e.setCanceled(true);
 	}
