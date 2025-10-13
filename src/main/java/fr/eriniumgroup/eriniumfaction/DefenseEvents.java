@@ -107,7 +107,7 @@ public final class DefenseEvents {
 	public static void onInspect(PlayerInteractEvent.RightClickBlock e){
 		if (e.getWorld().isClientSide()) return;
 		if (!e.getItemStack().is(Items.STICK)) return;
-		if (!e.getEntity().isCrouching()) return; // Seulement en shift
+		//if (!e.getEntity().isCrouching()) return; // Seulement en shift
 
 		ServerPlayer sp = (ServerPlayer) e.getEntity();
 		ServerLevel lvl = (ServerLevel) e.getWorld();

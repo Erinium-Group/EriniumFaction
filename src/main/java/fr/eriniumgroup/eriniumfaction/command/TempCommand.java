@@ -31,7 +31,7 @@ public class TempCommand {
 					if (entity != null)
 						direction = entity.getDirection();
 
-					TempCommandProcedure.execute(world, x, y, z, entity);
+					TempCommandProcedure.execute();
 					return 0;
 				}));
 	}

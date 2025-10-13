@@ -222,12 +222,7 @@
       "locked_code": false,
       "registry_name": "mod_server_side_loaded",
       "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ],
+        "dependencies": [],
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/ModServerSideLoadedProcedure.java"
         ]
@@ -428,11 +423,7 @@
     }
   ],
   "sound_elements": [],
-  "tag_elements": {
-    "BLOCKS:c:chests": [
-      "TAG:c:chests"
-    ]
-  },
+  "tag_elements": {},
   "tab_element_order": {},
   "language_map": {
     "en_us": {

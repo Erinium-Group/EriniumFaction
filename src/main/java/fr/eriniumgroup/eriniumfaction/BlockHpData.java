@@ -14,6 +14,7 @@
 */
 package fr.eriniumgroup.eriniumfaction;
 
+import fr.eriniumgroup.eriniumfaction.procedures.AdminProtectionBlockPosProcedure;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -151,39 +152,42 @@ public final class BlockHpData extends SavedData {
 
 	/** Applique des dégâts (>=1). Retourne les PV restants après application. */
 	public static int applyDamage(ServerLevel lvl, BlockPos pos, int dmg) {
-		dmg = Math.max(1, dmg);
-		if (lvl.isEmptyBlock(pos)) return 0;
-		BlockState state = lvl.getBlockState(pos);
-		int cur  = current(lvl, pos, state);     // lit/initialise selon l'ID courant
-		int base = base(state);
-		BlockHpData d = get(lvl);
+        if (AdminProtectionBlockPosProcedure.execute(lvl, pos.getX(), pos.getZ())){
+            dmg = Math.max(1, dmg);
+            if (lvl.isEmptyBlock(pos)) return 0;
+            BlockState state = lvl.getBlockState(pos);
+            int cur  = current(lvl, pos, state);     // lit/initialise selon l'ID courant
+            int base = base(state);
+            BlockHpData d = get(lvl);
 
-		if (cur == Integer.MIN_VALUE) cur = base;
+            if (cur == Integer.MIN_VALUE) cur = base;
 
-		int next = cur - dmg;
-		if (next > 0) {
-			d.set(pos, next, keyOf(state));
-			int prog = 9 - Mth.clamp((int)Math.floor((next*10.0)/Math.max(1, base)), 0, 9);
-			int id = (int)(pos.asLong() ^ 0x45AF13);
-			ClientboundBlockDestructionPacket pkt = new ClientboundBlockDestructionPacket(id, pos, prog);
-			double cx = pos.getX() + 0.5, cy = pos.getY() + 0.5, cz = pos.getZ() + 0.5;
-			double r2 = 32 * 32; // même portée que l'ancien broadcast
+            int next = cur - dmg;
+            if (next > 0) {
+                d.set(pos, next, keyOf(state));
+                int prog = 9 - Mth.clamp((int)Math.floor((next*10.0)/Math.max(1, base)), 0, 9);
+                int id = (int)(pos.asLong() ^ 0x45AF13);
+                ClientboundBlockDestructionPacket pkt = new ClientboundBlockDestructionPacket(id, pos, prog);
+                double cx = pos.getX() + 0.5, cy = pos.getY() + 0.5, cz = pos.getZ() + 0.5;
+                double r2 = 32 * 32; // même portée que l'ancien broadcast
 
-			for (ServerPlayer sp : lvl.players()) {
-				if (sp.distanceToSqr(cx, cy, cz) <= r2) {
-					sp.connection.send(pkt);
-				}
-			}
-			return next;
-		}
-		// casse + drop
-		var be = lvl.getBlockEntity(pos);
-		var drops = Block.getDrops(state, lvl, pos, be, null, ItemStack.EMPTY);
-		drops.forEach(s -> Containers.dropItemStack(lvl, pos.getX(), pos.getY(), pos.getZ(), s.copy()));
-		lvl.levelEvent(2001, pos, Block.getId(state));
-		lvl.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-		d.clear(pos);
-		return 0;
+                for (ServerPlayer sp : lvl.players()) {
+                    if (sp.distanceToSqr(cx, cy, cz) <= r2) {
+                        sp.connection.send(pkt);
+                    }
+                }
+                return next;
+            }
+            // casse + drop
+            var be = lvl.getBlockEntity(pos);
+            var drops = Block.getDrops(state, lvl, pos, be, null, ItemStack.EMPTY);
+            drops.forEach(s -> Containers.dropItemStack(lvl, pos.getX(), pos.getY(), pos.getZ(), s.copy()));
+            lvl.levelEvent(2001, pos, Block.getId(state));
+            lvl.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+            d.clear(pos);
+            return 0;
+        }
+        return 0;
 	}
 
 	/** Soigne un bloc (>=1), sans dépasser ses PV de base. Retourne PV courants après soin. */

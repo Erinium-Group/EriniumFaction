@@ -3,6 +3,8 @@ package fr.eriniumgroup.eriniumfaction.client.gui;
 import fr.eriniumgroup.eriniumfaction.ARGBToInt;
 import fr.eriniumgroup.eriniumfaction.EriFont;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
@@ -103,6 +105,12 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		drawText(ms, scale, "Liste des membres", EriFont::exo2,28f, (float) ((1320 + 1889) / 2), 186f, true, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
 		drawText(ms, scale, "Petites quêtes", EriFont::exo2,28f, (float) ((30 + 599) / 2), 186f, true, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
 
+		// --- TEXTE 20 px virtuels ---
+		drawText(ms, scale, "Claim", EriFont::exo2,20f, 685f, 442f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(ms, scale, "Power", EriFont::exo2,20f, 685f, 492f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(ms, scale, "Membres", EriFont::exo2,20f, 685f, 542f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(ms, scale, "Niveau", EriFont::exo2,20f, 685f, 592f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+
 		ms.popPose();
 		RenderSystem.disableBlend();
 	}
@@ -150,7 +158,53 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		ms.popPose();
 	}
 
+	private void drawImage(PoseStack ms, float scale, ResourceLocation texture, float virtualWidth, float virtualHeight, float virtualX, float virtualY, boolean isXCentered, boolean isYCentered) {
+		// Dimensions virtuelles de référence
+		float guiWidthVirtual = 1920f;
+		float guiHeightVirtual = 1080f;
 
+		// Calcul de la position X virtuelle
+		float xVirt;
+		if (isXCentered) {
+			xVirt = virtualX - (virtualWidth / 2f);
+		} else if (virtualX == -1f) {
+			xVirt = (guiWidthVirtual - virtualWidth) / 2f;
+		} else {
+			xVirt = virtualX;
+		}
+
+		// Calcul de la position Y virtuelle
+		float yVirt;
+		if (isYCentered) {
+			yVirt = virtualY - (virtualHeight / 2f);
+		} else {
+			yVirt = virtualY;
+		}
+
+		// Origine Y de l'écran
+		int screenHeight = minecraft.getWindow().getGuiScaledHeight();
+		float originY = (screenHeight / scale - guiHeightVirtual) / 2f;
+		yVirt = originY + yVirt;
+
+		// APPLICATION DE LA POSE MATRICIELLE
+		ms.pushPose();
+		ms.scale(scale, scale, 1f);
+
+		float xDraw = xVirt / scale;
+		float yDraw = yVirt / scale;
+		float wDraw = virtualWidth / scale;
+		float hDraw = virtualHeight / scale;
+
+		// Bind la texture
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, texture);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+		// Dessiner l'image
+		GuiComponent.blit(ms, (int)xDraw, (int)yDraw, 0, 0, (int)wDraw, (int)hDraw, (int)wDraw, (int)hDraw);
+
+		ms.popPose();
+	}
 
 	@Override
 	public boolean keyPressed(int key, int b, int c) {

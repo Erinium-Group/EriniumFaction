@@ -2,7 +2,7 @@
   "workspacePanelIconSize": "TILES",
   "workspacePanelSortType": "CREATED",
   "workspacePanelSortAscending": true,
-  "projectBrowserSplitPos": 240,
+  "projectBrowserSplitPos": 0,
   "projectBrowserState": {
     "expandedPaths": [
       "[, Erinium Faction]",

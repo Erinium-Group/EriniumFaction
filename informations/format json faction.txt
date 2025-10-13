@@ -1,0 +1,33 @@
+Boolean :
+
+isAdminFaction = Boolean
+openFaction = Boolean
+isWarzone = Boolean
+isSafezone = Boolean
+
+String :
+
+displayname = String
+memberList = String (uuid:rank, uuid:rank)
+owner = uuid
+invitedPlayers = string (uuid)
+bannedPlayers = uuid
+allies = uuid
+homeLocation = String(int, int, int)
+description = String
+upgrades = String
+claimlist = String (region/chunk, etc.)
+officer = perm
+member = perm
+recruit = perm
+
+int / Double :
+
+power = int
+claim = int
+maxClaims = int
+bonusMaxClaims = int
+dateOfCreation = int
+factionLevel = int
+factionXp = Double
+bankBalance = Double

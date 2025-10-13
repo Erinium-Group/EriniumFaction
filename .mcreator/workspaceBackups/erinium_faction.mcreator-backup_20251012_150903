@@ -428,11 +428,7 @@
     }
   ],
   "sound_elements": [],
-  "tag_elements": {
-    "BLOCKS:c:chests": [
-      "TAG:c:chests"
-    ]
-  },
+  "tag_elements": {},
   "tab_element_order": {},
   "language_map": {
     "en_us": {

@@ -429,9 +429,7 @@
   ],
   "sound_elements": [],
   "tag_elements": {
-    "BLOCKS:c:chests": [
-      "TAG:c:chests"
-    ]
+    "BLOCKS:c:chests": []
   },
   "tab_element_order": {},
   "language_map": {
