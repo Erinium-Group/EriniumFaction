@@ -222,7 +222,12 @@
       "locked_code": false,
       "registry_name": "mod_server_side_loaded",
       "metadata": {
-        "dependencies": [],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/ModServerSideLoadedProcedure.java"
         ]
@@ -348,6 +353,46 @@
         ]
       },
       "path": "~/Function"
+    },
+    {
+      "name": "BlockBreak",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "block_break",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/BlockBreakProcedure.java"
+        ]
+      }
+    },
+    {
+      "name": "AdminProtectionBlockPos",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "admin_protection_block_pos",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/AdminProtectionBlockPosProcedure.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -383,7 +428,11 @@
     }
   ],
   "sound_elements": [],
-  "tag_elements": {},
+  "tag_elements": {
+    "BLOCKS:c:chests": [
+      "TAG:c:chests"
+    ]
+  },
   "tab_element_order": {},
   "language_map": {
     "en_us": {
