@@ -3,9 +3,8 @@ package fr.eriniumgroup.eriniumfaction.client.gui;
 import fr.eriniumgroup.eriniumfaction.ARGBToInt;
 import fr.eriniumgroup.eriniumfaction.EriFont;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,7 +15,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import fr.eriniumgroup.eriniumfaction.world.inventory.FactionMenuMenu;
 import fr.eriniumgroup.eriniumfaction.init.EriniumFactionModScreens;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> implements EriniumFactionModScreens.ScreenAccessor {
@@ -64,17 +62,17 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		menuStateUpdateActive = false;
 	}
 
-	private static final ResourceLocation texture = new ResourceLocation("erinium_faction:textures/screens/faction_menu_bg.png");
+	private static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/screens/faction_menu_bg.png");
 
 	@Override
-	public void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(ms);
-		super.render(ms, mouseX, mouseY, partialTicks);
-		this.renderTooltip(ms, mouseX, mouseY);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderBg(PoseStack ms, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -85,37 +83,36 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		float scaleY = (float) screenH / guiHeightVirtual;
 		float scale = Math.min(scaleX, scaleY); // pour garder les proportions
 
-		ms.pushPose();
-		ms.scale(Math.min(1.0f, scaleX), Math.min(1.0f, scaleY), 1.0f);
+		guiGraphics.pose().pushPose();
+		guiGraphics.pose().scale(Math.min(1.0f, scaleX), Math.min(1.0f, scaleY), 1.0f);
 		// Position centrée en virtuel
 		int offsetX = (int) ((screenW / scale - guiWidthVirtual) / 2f);
 		int offsetY = (int) ((screenH / scale - guiHeightVirtual) / 2f);
 
-		RenderSystem.setShaderTexture(0, texture);
-		this.blit(ms, 0, 0, 0, 0, guiWidthVirtual, guiHeightVirtual, guiWidthVirtual, guiHeightVirtual);
+		guiGraphics.blit(texture, 0, 0, 0, 0, guiWidthVirtual, guiHeightVirtual, guiWidthVirtual, guiHeightVirtual);
 
 		// --- TEXTE 48 px virtuels ---
-		drawText(ms, scale, "Faction Menu", EriFont::orbitronBold,48f, -1f, 20f, false, true, 0xFFFFD700);
+		drawText(guiGraphics, scale, "Faction Menu", EriFont::orbitronBold,48f, -1f, 20f, false, true, 0xFFFFD700);
 
 		// --- TEXTE 38 px virtuels ---
-		drawText(ms, scale, "Faction NAME", EriFont::orbitronBold,38f, -1f, 120f, false, true, 0xFFFFD700);
+		drawText(guiGraphics, scale, "Faction NAME", EriFont::orbitronBold,38f, -1f, 120f, false, true, 0xFFFFD700);
 
 		// --- TEXTE 28 px virtuels ---
-		drawText(ms, scale, "Résumé", EriFont::exo2,28f, -1f, 186f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
-		drawText(ms, scale, "Liste des membres", EriFont::exo2,28f, (float) ((1320 + 1889) / 2), 186f, true, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
-		drawText(ms, scale, "Petites quêtes", EriFont::exo2,28f, (float) ((30 + 599) / 2), 186f, true, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(guiGraphics, scale, "Résumé", EriFont::exo2,28f, -1f, 186f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(guiGraphics, scale, "Liste des membres", EriFont::exo2,28f, (float) ((1320 + 1889) / 2), 186f, true, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(guiGraphics, scale, "Petites quêtes", EriFont::exo2,28f, (float) ((30 + 599) / 2), 186f, true, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
 
 		// --- TEXTE 20 px virtuels ---
-		drawText(ms, scale, "Claim", EriFont::exo2,20f, 685f, 442f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
-		drawText(ms, scale, "Power", EriFont::exo2,20f, 685f, 492f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
-		drawText(ms, scale, "Membres", EriFont::exo2,20f, 685f, 542f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
-		drawText(ms, scale, "Niveau", EriFont::exo2,20f, 685f, 592f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(guiGraphics, scale, "Claim", EriFont::exo2,20f, 685f, 442f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(guiGraphics, scale, "Power", EriFont::exo2,20f, 685f, 492f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(guiGraphics, scale, "Membres", EriFont::exo2,20f, 685f, 542f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+		drawText(guiGraphics, scale, "Niveau", EriFont::exo2,20f, 685f, 592f, false, true, ARGBToInt.ARGBToInt(255, 255, 255, 255));
 
-		ms.popPose();
+		guiGraphics.pose().popPose();
 		RenderSystem.disableBlend();
 	}
 
-	private void drawText(PoseStack ms, float scale, String text, EriFont.EriFontAccess fontAccess, float virtualSize, float virtualX, float virtualY, boolean isXCentered, boolean hasShadow, int color) {
+	private void drawText(GuiGraphics guiGraphics, float scale, String text, EriFont.EriFontAccess fontAccess, float virtualSize, float virtualX, float virtualY, boolean isXCentered, boolean hasShadow, int color) {
 		float textScale = virtualSize / 8f;
 		Component comp;
 
@@ -144,21 +141,18 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		float yVirt = originY + virtualY;
 
 		// APPLICATION DE LA POSE MATRICIELLE
-		ms.pushPose();
-		ms.scale(textScale, textScale, 1f);
+		guiGraphics.pose().pushPose();
+		guiGraphics.pose().scale(textScale, textScale, 1f);
 
 		float xDraw = (xVirt / textScale);
 		float yDraw = (yVirt / textScale);
 
-		if (hasShadow) {
-			this.font.drawShadow(ms, comp, xDraw, yDraw, color);
-		} else {
-			this.font.draw(ms, comp, xDraw, yDraw, color);
-		}
-		ms.popPose();
+		guiGraphics.drawString(this.font, comp, (int)xDraw, (int)yDraw, color, hasShadow);
+
+		guiGraphics.pose().popPose();
 	}
 
-	private void drawImage(PoseStack ms, float scale, ResourceLocation texture, float virtualWidth, float virtualHeight, float virtualX, float virtualY, boolean isXCentered, boolean isYCentered) {
+	private void drawImage(GuiGraphics guiGraphics, float scale, ResourceLocation texture, float virtualWidth, float virtualHeight, float virtualX, float virtualY, boolean isXCentered, boolean isYCentered) {
 		// Dimensions virtuelles de référence
 		float guiWidthVirtual = 1920f;
 		float guiHeightVirtual = 1080f;
@@ -187,23 +181,20 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		yVirt = originY + yVirt;
 
 		// APPLICATION DE LA POSE MATRICIELLE
-		ms.pushPose();
-		ms.scale(scale, scale, 1f);
+		guiGraphics.pose().pushPose();
+		guiGraphics.pose().scale(scale, scale, 1f);
 
 		float xDraw = xVirt / scale;
 		float yDraw = yVirt / scale;
 		float wDraw = virtualWidth / scale;
 		float hDraw = virtualHeight / scale;
 
-		// Bind la texture
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, texture);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
 		// Dessiner l'image
-		GuiComponent.blit(ms, (int)xDraw, (int)yDraw, 0, 0, (int)wDraw, (int)hDraw, (int)wDraw, (int)hDraw);
+		guiGraphics.blit(texture, (int)xDraw, (int)yDraw, 0, 0, (int)wDraw, (int)hDraw, (int)wDraw, (int)hDraw);
 
-		ms.popPose();
+		guiGraphics.pose().popPose();
 	}
 
 	@Override
@@ -216,7 +207,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 	}
 
 	@Override
-	protected void renderLabels(PoseStack ms, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 
 	}
 

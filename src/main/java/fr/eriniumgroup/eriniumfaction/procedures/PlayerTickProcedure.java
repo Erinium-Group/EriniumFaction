@@ -1,9 +1,9 @@
 package fr.eriniumgroup.eriniumfaction.procedures;
 
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.bus.api.Event;
 
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.Vec2;
@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.CommandSource;
@@ -27,15 +27,11 @@ import java.io.BufferedReader;
 
 import fr.eriniumgroup.eriniumfaction.network.EriniumFactionModVariables;
 
-import com.google.gson.Gson;
-
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class PlayerTickProcedure {
 	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if (event.phase == TickEvent.Phase.END) {
-			execute(event, event.player.level, event.player.getX(), event.player.getZ(), event.player);
-		}
+	public static void onPlayerTick(PlayerTickEvent.Post event) {
+		execute(event, event.getEntity().level(), event.getEntity().getX(), event.getEntity().getZ(), event.getEntity());
 	}
 
 	public static void execute(LevelAccessor world, double x, double z, Entity entity) {
@@ -48,105 +44,90 @@ public class PlayerTickProcedure {
 		File file = new File("");
 		com.google.gson.JsonObject json = new com.google.gson.JsonObject();
 		boolean customfac = false;
-		if (!((entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new EriniumFactionModVariables.PlayerVariables())).lastChunk).equals(new Object() {
+		if (!(entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).lastChunk).equals(new Object() {
 			private String getChunk(int chunkX, int chunkZ) {
 				ChunkPos chunkpos = new ChunkPos(new BlockPos(chunkX, 0, chunkZ));
 				return new String(chunkpos.getRegionLocalX() + "-" + chunkpos.getRegionLocalZ());
 			}
-		}.getChunk((int) x, (int) z)) || !((entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new EriniumFactionModVariables.PlayerVariables())).lastRegion).equals(new Object() {
+		}.getChunk((int) x, (int) z)) || !(entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).lastRegion).equals(new Object() {
 			private String getRegion(int chunkX, int chunkZ) {
 				ChunkPos chunkpos = new ChunkPos(new BlockPos(chunkX, 0, chunkZ));
 				return new String("r." + chunkpos.getRegionX() + "." + chunkpos.getRegionZ());
 			}
 		}.getRegion((int) x, (int) z))) {
 			{
-				String _setval = new Object() {
+				EriniumFactionModVariables.PlayerVariables _vars = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES);
+				_vars.lastChunk = new Object() {
 					private String getChunk(int chunkX, int chunkZ) {
 						ChunkPos chunkpos = new ChunkPos(new BlockPos(chunkX, 0, chunkZ));
 						return new String(chunkpos.getRegionLocalX() + "-" + chunkpos.getRegionLocalZ());
 					}
 				}.getChunk((int) x, (int) z);
-				entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-					capability.lastChunk = _setval;
-					capability.syncPlayerVariables(entity);
-				});
+				_vars.syncPlayerVariables(entity);
 			}
 			{
-				String _setval = new Object() {
+				EriniumFactionModVariables.PlayerVariables _vars = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES);
+				_vars.lastRegion = new Object() {
 					private String getRegion(int chunkX, int chunkZ) {
 						ChunkPos chunkpos = new ChunkPos(new BlockPos(chunkX, 0, chunkZ));
 						return new String("r." + chunkpos.getRegionX() + "." + chunkpos.getRegionZ());
 					}
 				}.getRegion((int) x, (int) z);
-				entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-					capability.lastRegion = _setval;
-					capability.syncPlayerVariables(entity);
-				});
+				_vars.syncPlayerVariables(entity);
 			}
-			if (!(CurrentChunkFactionIdProcedure.execute(world, x, z)).equals((entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new EriniumFactionModVariables.PlayerVariables())).factioninchunk)) {
+			if (!(CurrentChunkFactionIdProcedure.execute(world, x, z)).equals(entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).factioninchunk)) {
 				{
-					String _setval = CurrentChunkFactionIdProcedure.execute(world, x, z);
-					entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-						capability.factioninchunk = _setval;
-						capability.syncPlayerVariables(entity);
-					});
+					EriniumFactionModVariables.PlayerVariables _vars = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES);
+					_vars.factioninchunk = CurrentChunkFactionIdProcedure.execute(world, x, z);
+					_vars.syncPlayerVariables(entity);
 				}
-				if (((entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new EriniumFactionModVariables.PlayerVariables())).factioninchunk).equals("wilderness")) {
+				if ((entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).factioninchunk).equals("wilderness")) {
 					if (entity instanceof Player || entity instanceof ServerPlayer) {
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
-									("title " + entity.getDisplayName().getString() + " subtitle \"" + (new TranslatableComponent("wilderness.desc").getString()) + "\""));
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
+									("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("wilderness.desc").getString()) + "\""));
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 									("title " + entity.getDisplayName().getString() + " times " + 1 + 1 + 1));
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 									("title " + entity.getDisplayName().getString() + " title \"" + "\u00A7aWilderness" + "\""));
 					}
-				} else if (((entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new EriniumFactionModVariables.PlayerVariables())).factioninchunk).equals("safezone")) {
+				} else if ((entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).factioninchunk).equals("safezone")) {
 					if (entity instanceof Player || entity instanceof ServerPlayer) {
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
-									("title " + entity.getDisplayName().getString() + " subtitle \"" + (new TranslatableComponent("safezone.desc").getString()) + "\""));
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
+									("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("safezone.desc").getString()) + "\""));
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 									("title " + entity.getDisplayName().getString() + " times " + 1 + 1 + 1));
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 									("title " + entity.getDisplayName().getString() + " title \"" + "\u00A72Safezone" + "\""));
 					}
-				} else if (((entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new EriniumFactionModVariables.PlayerVariables())).factioninchunk).equals("warzone")) {
+				} else if ((entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).factioninchunk).equals("warzone")) {
 					if (entity instanceof Player || entity instanceof ServerPlayer) {
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
-									("title " + entity.getDisplayName().getString() + " subtitle \"" + (new TranslatableComponent("warzone.desc").getString()) + "\""));
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
+									("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("warzone.desc").getString()) + "\""));
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 									("title " + entity.getDisplayName().getString() + " times " + 1 + 1 + 1));
 						if (world instanceof ServerLevel _level)
-							_level.getServer().getCommands().performCommand(
-									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-											.withSuppressedOutput(),
+							_level.getServer().getCommands().performPrefixedCommand(
+									new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 									("title " + entity.getDisplayName().getString() + " title \"" + "\u00A74Warzone" + "\""));
 					}
 				} else {
-					file = FactionFileByIdProcedure.execute((entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new EriniumFactionModVariables.PlayerVariables())).factioninchunk);
+					file = FactionFileByIdProcedure.execute(entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).factioninchunk);
 					{
 						try {
 							BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -156,22 +137,19 @@ public class PlayerTickProcedure {
 								jsonstringbuilder.append(line);
 							}
 							bufferedReader.close();
-							json = new Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
+							json = new com.google.gson.Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
 							if (entity instanceof Player || entity instanceof ServerPlayer) {
 								if (world instanceof ServerLevel _level)
-									_level.getServer().getCommands().performCommand(
-											new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-													.withSuppressedOutput(),
+									_level.getServer().getCommands().performPrefixedCommand(
+											new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 											("title " + entity.getDisplayName().getString() + " subtitle \"" + json.get("description").getAsString() + "\""));
 								if (world instanceof ServerLevel _level)
-									_level.getServer().getCommands().performCommand(
-											new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-													.withSuppressedOutput(),
+									_level.getServer().getCommands().performPrefixedCommand(
+											new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 											("title " + entity.getDisplayName().getString() + " times " + 1 + 1 + 1));
 								if (world instanceof ServerLevel _level)
-									_level.getServer().getCommands().performCommand(
-											new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", net.minecraft.network.chat.TextComponent.EMPTY, _level.getServer(), null)
-													.withSuppressedOutput(),
+									_level.getServer().getCommands().performPrefixedCommand(
+											new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 											("title " + entity.getDisplayName().getString() + " title \"" + ("\u00A7a" + json.get("displayname").getAsString()) + "\""));
 							}
 						} catch (IOException e) {

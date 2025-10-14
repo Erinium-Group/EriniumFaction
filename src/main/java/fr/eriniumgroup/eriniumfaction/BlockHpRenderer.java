@@ -1,22 +1,19 @@
 package fr.eriniumgroup.eriniumfaction;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraft.client.gui.GuiComponent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 
-@Mod.EventBusSubscriber(modid = "erinium_faction", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = "erinium_faction", bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class BlockHpRenderer {
 
 	private static BlockPos lastPos = null;
@@ -31,9 +28,7 @@ public class BlockHpRenderer {
 	}
 
 	@SubscribeEvent
-	public static void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-		if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
-
+	public static void onRenderOverlay(RenderGuiLayerEvent.Post event) {
 		Minecraft mc = Minecraft.getInstance();
 		Player player = mc.player;
 		if (player == null || !player.getMainHandItem().is(Items.STICK)) return;
@@ -52,7 +47,7 @@ public class BlockHpRenderer {
 
 		float pct = (cur * 100f) / base;
 
-		PoseStack stack = event.getMatrixStack();
+		GuiGraphics guiGraphics = event.getGuiGraphics();
 		int screenWidth = mc.getWindow().getGuiScaledWidth();
 		int screenHeight = mc.getWindow().getGuiScaledHeight();
 
@@ -63,10 +58,10 @@ public class BlockHpRenderer {
 		int y = screenHeight - 84;
 
 		// Bordure subtile
-		GuiComponent.fill(stack, x - 1, y - 1, x + barWidth + 1, y + barHeight + 1, 0xAA000000);
+		guiGraphics.fill(x - 1, y - 1, x + barWidth + 1, y + barHeight + 1, 0xAA000000);
 
 		// Fond de la barre
-		GuiComponent.fill(stack, x, y, x + barWidth, y + barHeight, 0xCC1A1A1A);
+		guiGraphics.fill(x, y, x + barWidth, y + barHeight, 0xCC1A1A1A);
 
 		// Barre de vie colorée
 		int filledWidth = (int) (barWidth * (pct / 100f));
@@ -76,46 +71,28 @@ public class BlockHpRenderer {
 								0xFFDD0000;
 
 		if (filledWidth > 0) {
-			GuiComponent.fill(stack, x, y, x + filledWidth, y + barHeight, color);
+			guiGraphics.fill(x, y, x + filledWidth, y + barHeight, color);
 		}
 
 		// Texte centré dans la barre
-		stack.pushPose();
-		float scaleFactor = 0.7f; // Pour rendre le code plus clair
-		stack.scale(scaleFactor, scaleFactor, 1.0f);
+		guiGraphics.pose().pushPose();
+		float scaleFactor = 0.7f;
+		guiGraphics.pose().scale(scaleFactor, scaleFactor, 1.0f);
 
 		String text = cur + " / " + base;
 		int textWidth = mc.font.width(text);
-		int lineHeight = mc.font.lineHeight; // Hauteur du texte NON-SCALÉ (environ 9 ou 10 pixels)
+		int lineHeight = mc.font.lineHeight;
 
-		// 1. Calcul de la position X (scaled) - fonctionne déjà
 		float scaledX = (x + barWidth / 2.0f) / scaleFactor - textWidth / 2.0f;
-
-		// 2. Calcul de la position Y (scaled) - L'erreur est là
-		// Centre vertical de la barre (non-scalé): y + barHeight / 2.0f
-		// Début Y du texte (non-scalé) pour centrage: (y + barHeight / 2.0f) - (lineHeight * scaleFactor / 2.0f)
-
-		// Cependant, le draw() du FontRenderer prend des coordonnées qui doivent être divisées par le scale!
-
-		// Position Y non-scalée où le texte DOIT COMMENCER
 		float textYStart = y + (barHeight / 2.0f) - (lineHeight * scaleFactor / 2.0f);
-
-		// Position Y à donner au draw() après la mise à l'échelle
 		float scaledY = textYStart / scaleFactor;
-
-		// Calcul de Y (issu de la correction précédente)
 		float centerY_NonScaled = y + barHeight / 2.0f;
 		float centerY_Scaled = centerY_NonScaled / scaleFactor;
+		float offset = 1.0f;
+		float finalScaledY = centerY_Scaled - (lineHeight / 2.0f) + offset;
 
-		// Si le texte est trop haut, la valeur finale est trop petite.
-		// On ajoute un décalage positif (par exemple, 1.0f ou 2.0f)
-		float offset = 1.0f; // <--- COMMENCEZ AVEC 1.0f et augmentez si besoin
+		guiGraphics.drawString(mc.font, text, (int)scaledX, (int)finalScaledY, 0xFFFFFFFF, true);
 
-		float finalScaledY = centerY_Scaled - (lineHeight / 2.0f) + offset; // <--- AUGMENTEZ L'OFFSET
-
-		// Texte blanc
-		mc.font.drawShadow(stack, text, scaledX, finalScaledY, 0xFFFFFFFF);
-
-		stack.popPose();
+		guiGraphics.pose().popPose();
 	}
 }

@@ -16,14 +16,13 @@ package fr.eriniumgroup.eriniumfaction;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 
 public class EriFont {
 	private static Component make(String text, String fontId) {
-		Style style = Style.EMPTY.withFont(new ResourceLocation("erinium_faction", fontId));
-		return new TextComponent(text).setStyle(style);
+		Style style = Style.EMPTY.withFont(ResourceLocation.fromNamespaceAndPath("erinium_faction", fontId));
+		return Component.literal(text).setStyle(style);
 	}
 
 	public static Component orbitron(String text) {

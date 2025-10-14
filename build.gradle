@@ -1,27 +1,19 @@
 plugins {
     id 'eclipse'
-    id 'net.neoforged.moddev.legacyforge' version '2.0.107'
+    id 'net.neoforged.moddev' version '2.0.95'
 }
 
 version = '1.0'
 base.archivesName = "modid"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-legacyForge {
-    version = "1.18.2-40.3.11"
+neoForge {
+    version = "21.1.65"
 
     runs {
         client {
             client()
-
-            // Arguments "jeu" (équivalent de --username, etc.)
-            programArguments.addAll([
-                '--username','Dev',
-                '--uuid','11111111-1111-1111-1111-111111111111',
-                '--accessToken','0',
-                '--userType','mojang'
-            ])
 
             def mcreatorJvmOptions = System.getenv('MCREATOR_JVM_OPTIONS')
             if (mcreatorJvmOptions) {
@@ -29,7 +21,6 @@ legacyForge {
                     jvmArgument(arg)
                 }
             }
-
         }
         server {
             server()
@@ -50,26 +41,6 @@ legacyForge {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
-
-mixin {
-    if (file("src/main/resources/erinium_faction.mixins.json").exists()) {
-        add sourceSets.main, "erinium_faction.refmap.json"
-        config "erinium_faction.mixins.json"
-    }
-}
-
-dependencies {
-    implementation(jarJar("io.github.llamalad7:mixinextras-neoforge:0.5.0"))
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-}
-
-jar {
-    if (file("src/main/resources/erinium_faction.mixins.json").exists()) {
-        manifest.attributes([
-                "MixinConfigs": "erinium_faction.mixins.json"
-        ])
-    }
 }
 
 apply from: 'mcreator.gradle'

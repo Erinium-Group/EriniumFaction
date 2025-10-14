@@ -20,7 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,18 +36,19 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDestroyBlockEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 import net.minecraft.util.Mth;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 
-@Mod.EventBusSubscriber(modid = "erinium_faction", bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = "erinium_faction", bus = EventBusSubscriber.Bus.GAME)
 public final class DefenseEvents {
 
 	private static float strengthOf(Explosion ex) {
@@ -64,7 +64,7 @@ public final class DefenseEvents {
 	// Wither + EnderDragon : dégâts custom
 	@SubscribeEvent
 	public static void onMobBreak(LivingDestroyBlockEvent e){
-		if (!(e.getEntity().level instanceof ServerLevel lvl)) return;
+		if (!(e.getEntity().level() instanceof ServerLevel lvl)) return;
 		if (!(e.getEntity() instanceof WitherBoss || e.getEntity() instanceof EnderDragon)) return;
 
 		BlockPos pos = e.getPos();
@@ -76,9 +76,8 @@ public final class DefenseEvents {
 	}
 
 	@SubscribeEvent
-	public static void onPlayerTick(net.minecraftforge.event.TickEvent.PlayerTickEvent e) {
-		if (e.phase != net.minecraftforge.event.TickEvent.Phase.END) return;
-		if (!(e.player instanceof ServerPlayer sp)) return;
+	public static void onPlayerTick(PlayerTickEvent.Post e) {
+		if (!(e.getEntity() instanceof ServerPlayer sp)) return;
 		if (!sp.getMainHandItem().is(Items.STICK)) return;
 
 		// Vérifier ce que le joueur regarde
@@ -87,7 +86,7 @@ public final class DefenseEvents {
 
 		net.minecraft.world.phys.BlockHitResult blockHit = (net.minecraft.world.phys.BlockHitResult) hit;
 		BlockPos pos = blockHit.getBlockPos();
-		ServerLevel lvl = sp.getLevel();
+		ServerLevel lvl = sp.serverLevel();
 
 		if (lvl.isEmptyBlock(pos)) return;
 
@@ -96,21 +95,18 @@ public final class DefenseEvents {
 		int cur = BlockHpData.current(lvl, pos, state);
 
 		// Envoyer le packet au client pour synchroniser l'affichage
-		EriniumFactionMod.PACKET_HANDLER.send(
-				net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> sp),
-				new BlockHpSyncMessage(pos, cur, base)
-		);
+		net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new BlockHpSyncMessage(pos, cur, base));
 	}
 
 	// Inspection PV par clic droit avec un stick
 	@SubscribeEvent
 	public static void onInspect(PlayerInteractEvent.RightClickBlock e){
-		if (e.getWorld().isClientSide()) return;
+		if (e.getLevel().isClientSide()) return;
 		if (!e.getItemStack().is(Items.STICK)) return;
 		//if (!e.getEntity().isCrouching()) return; // Seulement en shift
 
 		ServerPlayer sp = (ServerPlayer) e.getEntity();
-		ServerLevel lvl = (ServerLevel) e.getWorld();
+		ServerLevel lvl = (ServerLevel) e.getLevel();
 		BlockPos pos = e.getPos();
 		BlockState state = lvl.getBlockState(pos);
 
@@ -119,10 +115,7 @@ public final class DefenseEvents {
 		float pct = base > 0 ? (cur * 100f / base) : 0f;
 
 		// Après avoir calculé cur et base
-		EriniumFactionMod.PACKET_HANDLER.send(
-				net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> sp),
-				new BlockHpSyncMessage(pos, cur, base)
-		);
+		net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new BlockHpSyncMessage(pos, cur, base));
 
 		ChatFormatting col =
 				pct >= 75f ? ChatFormatting.GREEN :
@@ -130,17 +123,17 @@ public final class DefenseEvents {
 								pct >= 25f ? ChatFormatting.GOLD  :
 										ChatFormatting.RED;
 
-		ResourceLocation id = ForgeRegistries.BLOCKS.getKey(state.getBlock());
+		ResourceLocation id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock());
 		String idStr = id != null ? id.toString() : "minecraft:air";
 
-		MutableComponent msg = new TextComponent("Block HP: ")
-				.append(new TextComponent(String.valueOf(cur)))
-				.append(new TextComponent(" / ").withStyle(ChatFormatting.DARK_GRAY))
-				.append(new TextComponent(String.valueOf(base)))
-				.append(new TextComponent(" ("))
-				.append(new TextComponent(String.format("%.0f%%", pct)).withStyle(col))
-				.append(new TextComponent(") "))
-				.append(new TextComponent(idStr).withStyle(ChatFormatting.GRAY));
+		MutableComponent msg = Component.literal("Block HP: ")
+				.append(Component.literal(String.valueOf(cur)))
+				.append(Component.literal(" / ").withStyle(ChatFormatting.DARK_GRAY))
+				.append(Component.literal(String.valueOf(base)))
+				.append(Component.literal(" ("))
+				.append(Component.literal(String.format("%.0f%%", pct)).withStyle(col))
+				.append(Component.literal(") "))
+				.append(Component.literal(idStr).withStyle(ChatFormatting.GRAY));
 
 		sp.displayClientMessage(msg, true);
 		e.setCanceled(true);
@@ -148,17 +141,17 @@ public final class DefenseEvents {
 
 	// Nettoyage quand le joueur place ou casse un bloc
 	@SubscribeEvent
-	public static void onPlace(net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent e){
-		if (e.getWorld() instanceof ServerLevel lvl) BlockHpData.get(lvl).clear(e.getPos());
+	public static void onPlace(BlockEvent.EntityPlaceEvent e){
+		if (e.getLevel() instanceof ServerLevel lvl) BlockHpData.get(lvl).clear(e.getPos());
 	}
 	@SubscribeEvent
-	public static void onBreak(net.minecraftforge.event.world.BlockEvent.BreakEvent e){
-		if (e.getWorld() instanceof ServerLevel lvl) BlockHpData.get(lvl).clear(e.getPos());
+	public static void onBreak(BlockEvent.BreakEvent e){
+		if (e.getLevel() instanceof ServerLevel lvl) BlockHpData.get(lvl).clear(e.getPos());
 	}
 
 	@SubscribeEvent
 	public static void onExplode(ExplosionEvent.Detonate e) {
-		if (!(e.getWorld() instanceof ServerLevel lvl)) return;
+		if (!(e.getLevel() instanceof ServerLevel lvl)) return;
 		e.getAffectedBlocks().clear();
 
 		// rayon & dégâts à partir du radius passé à level.explode(...)
@@ -167,14 +160,14 @@ public final class DefenseEvents {
 		int baseDmg = Mth.clamp((int)Math.round(s * 2.5), 1, 30);
 
 		// minimums par source (optionnel)
-		Entity src = e.getExplosion().getExploder();
+		Entity src = e.getExplosion().getIndirectSourceEntity();
 		if (src instanceof Creeper)           { R = Math.max(R, 4);  baseDmg = Math.max(baseDmg, 6);  }
 		if (src instanceof PrimedTnt
 				|| src instanceof MinecartTNT)       { R = Math.max(R, 6);  baseDmg = Math.max(baseDmg, 10); }
 
-		// source dans l’eau => aucun dégât
-		Vec3 c = e.getExplosion().getPosition();
-		BlockPos center = new BlockPos(Mth.floor(c.x), Mth.floor(c.y), Mth.floor(c.z));
+		// source dans l'eau => aucun dégât
+		Vec3 c = e.getExplosion().center();
+		BlockPos center = BlockPos.containing(c.x, c.y, c.z);
 		if (lvl.getFluidState(center).is(FluidTags.WATER)) return;
 
 		double r2 = R * R;

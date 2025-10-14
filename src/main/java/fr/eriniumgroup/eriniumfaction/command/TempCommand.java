@@ -1,9 +1,9 @@
 package fr.eriniumgroup.eriniumfaction.command;
 
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.common.util.FakePlayerFactory;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
@@ -13,7 +13,7 @@ import net.minecraft.commands.Commands;
 
 import fr.eriniumgroup.eriniumfaction.procedures.TempCommandProcedure;
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class TempCommand {
 	@SubscribeEvent
 	public static void registerCommand(RegisterCommandsEvent event) {

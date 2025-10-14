@@ -3,22 +3,18 @@
  */
 package fr.eriniumgroup.eriniumfaction.init;
 
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.api.distmarker.Dist;
-
-import net.minecraft.client.gui.screens.MenuScreens;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
 
 import fr.eriniumgroup.eriniumfaction.client.gui.FactionMenuScreen;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class EriniumFactionModScreens {
 	@SubscribeEvent
-	public static void clientLoad(FMLClientSetupEvent event) {
-		event.enqueueWork(() -> {
-			MenuScreens.register(EriniumFactionModMenus.FACTION_MENU.get(), FactionMenuScreen::new);
-		});
+	public static void clientLoad(RegisterMenuScreensEvent event) {
+		event.register(EriniumFactionModMenus.FACTION_MENU.get(), FactionMenuScreen::new);
 	}
 
 	public interface ScreenAccessor {

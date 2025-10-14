@@ -1,44 +1,29 @@
 package fr.eriniumgroup.eriniumfaction.network;
 
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.client.Minecraft;
-
-import java.util.function.Supplier;
 
 import fr.eriniumgroup.eriniumfaction.init.EriniumFactionModScreens;
 import fr.eriniumgroup.eriniumfaction.init.EriniumFactionModMenus;
 import fr.eriniumgroup.eriniumfaction.EriniumFactionMod;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class MenuStateUpdateMessage {
-	private final int elementType;
-	private final String name;
-	private final Object elementState;
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+public record MenuStateUpdateMessage(int elementType, String name, Object elementState) implements CustomPacketPayload {
 
-	public MenuStateUpdateMessage(int elementType, String name, Object elementState) {
-		this.elementType = elementType;
-		this.name = name;
-		this.elementState = elementState;
-	}
-
-	public MenuStateUpdateMessage(FriendlyByteBuf buffer) {
-		this.elementType = buffer.readInt();
-		this.name = buffer.readUtf();
-		Object elementState = null;
-		if (elementType == 0) {
-			elementState = buffer.readUtf();
-		} else if (elementType == 1) {
-			elementState = buffer.readBoolean();
-		}
-		this.elementState = elementState;
-	}
-
-	public static void buffer(MenuStateUpdateMessage message, FriendlyByteBuf buffer) {
+	public static final Type<MenuStateUpdateMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(EriniumFactionMod.MODID, "guistate_update"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, MenuStateUpdateMessage> STREAM_CODEC = StreamCodec.of(MenuStateUpdateMessage::write, MenuStateUpdateMessage::read);
+	public static void write(FriendlyByteBuf buffer, MenuStateUpdateMessage message) {
 		buffer.writeInt(message.elementType);
 		buffer.writeUtf(message.name);
 		if (message.elementType == 0) {
@@ -48,23 +33,41 @@ public class MenuStateUpdateMessage {
 		}
 	}
 
-	public static void handler(MenuStateUpdateMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
+	public static MenuStateUpdateMessage read(FriendlyByteBuf buffer) {
+		int elementType = buffer.readInt();
+		String name = buffer.readUtf();
+		Object elementState = null;
+		if (elementType == 0) {
+			elementState = buffer.readUtf();
+		} else if (elementType == 1) {
+			elementState = buffer.readBoolean();
+		}
+		return new MenuStateUpdateMessage(elementType, name, elementState);
+	}
+
+	@Override
+	public Type<MenuStateUpdateMessage> type() {
+		return TYPE;
+	}
+
+	public static void handleMenuState(final MenuStateUpdateMessage message, final IPayloadContext context) {
 		if (message.name.length() > 256 || message.elementState instanceof String string && string.length() > 8192)
 			return;
-		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
-			if (context.getSender().containerMenu instanceof EriniumFactionModMenus.MenuAccessor menu) {
+			if (context.player().containerMenu instanceof EriniumFactionModMenus.MenuAccessor menu) {
 				menu.getMenuState().put(message.elementType + ":" + message.name, message.elementState);
-				if (!context.getDirection().getReceptionSide().isServer() && Minecraft.getInstance().screen instanceof EriniumFactionModScreens.ScreenAccessor accessor) {
+				if (context.flow() == PacketFlow.CLIENTBOUND && Minecraft.getInstance().screen instanceof EriniumFactionModScreens.ScreenAccessor accessor) {
 					accessor.updateMenuState(message.elementType, message.name, message.elementState);
 				}
 			}
+		}).exceptionally(e -> {
+			context.connection().disconnect(Component.literal(e.getMessage()));
+			return null;
 		});
-		context.setPacketHandled(true);
 	}
 
 	@SubscribeEvent
 	public static void registerMessage(FMLCommonSetupEvent event) {
-		EriniumFactionMod.addNetworkMessage(MenuStateUpdateMessage.class, MenuStateUpdateMessage::buffer, MenuStateUpdateMessage::new, MenuStateUpdateMessage::handler);
+		EriniumFactionMod.addNetworkMessage(MenuStateUpdateMessage.TYPE, MenuStateUpdateMessage.STREAM_CODEC, MenuStateUpdateMessage::handleMenuState);
 	}
 }

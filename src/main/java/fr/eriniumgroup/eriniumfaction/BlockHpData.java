@@ -31,7 +31,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public final class BlockHpData extends SavedData {
 	private final Long2IntOpenHashMap hp = new Long2IntOpenHashMap();
@@ -39,17 +40,17 @@ public final class BlockHpData extends SavedData {
 
 	public static BlockHpData get(ServerLevel level){
 		DimensionDataStorage store = level.getDataStorage();
-		return store.computeIfAbsent(BlockHpData::load, BlockHpData::new, "er_block_hp");
+		return store.computeIfAbsent(new SavedData.Factory<>(BlockHpData::new, BlockHpData::load), "er_block_hp");
 	}
 
-	public static BlockHpData load(CompoundTag tag){
+	public static BlockHpData load(CompoundTag tag, HolderLookup.Provider provider){
 		BlockHpData d = new BlockHpData();
 		long[] pos = tag.getLongArray("p");
 		int[]  vs  = tag.getIntArray("v");
 		var idList = tag.getList("id", 8); // 8 = String
 		for (int i=0;i<Math.min(pos.length, vs.length);i++){
 			d.hp.put(pos[i], vs[i]);
-			if (i < idList.size()) d.ids.put(pos[i], new ResourceLocation(idList.getString(i)));
+			if (i < idList.size()) d.ids.put(pos[i], ResourceLocation.parse(idList.getString(i)));
 		}
 		return d;
 	}
@@ -64,7 +65,8 @@ public final class BlockHpData extends SavedData {
 		return new int[]{base, base};
 	}
 
-	@Override public CompoundTag save(CompoundTag tag){
+	@Override
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider){
 		var positions = hp.keySet().toLongArray();
 		var values    = hp.values().toIntArray();
 		tag.putLongArray("p", positions);
@@ -90,8 +92,8 @@ public final class BlockHpData extends SavedData {
 
 	// helper optionnel
 	private static ResourceLocation keyOf(BlockState s){
-		var k = ForgeRegistries.BLOCKS.getKey(s.getBlock());
-		return k != null ? k : new ResourceLocation("minecraft","air");
+		var k = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(s.getBlock());
+		return k != null ? k : ResourceLocation.fromNamespaceAndPath("minecraft","air");
 	}
 
 	public static int current(ServerLevel lvl, BlockPos pos, BlockState state){

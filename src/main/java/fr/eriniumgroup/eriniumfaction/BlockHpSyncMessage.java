@@ -2,51 +2,42 @@ package fr.eriniumgroup.eriniumfaction;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = "erinium_faction")
+public record BlockHpSyncMessage(BlockPos pos, int current, int base) implements CustomPacketPayload {
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = "erinium_faction")
-public class BlockHpSyncMessage {
-	private final BlockPos pos;
-	private final int current;
-	private final int base;
+	public static final CustomPacketPayload.Type<BlockHpSyncMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("erinium_faction", "block_hp_sync"));
 
-	public BlockHpSyncMessage(FriendlyByteBuf buffer) {
-		this.pos = buffer.readBlockPos();
-		this.current = buffer.readInt();
-		this.base = buffer.readInt();
+	public static final StreamCodec<FriendlyByteBuf, BlockHpSyncMessage> STREAM_CODEC = StreamCodec.composite(
+		BlockPos.STREAM_CODEC,
+		BlockHpSyncMessage::pos,
+		StreamCodec.of((buf, val) -> buf.writeInt(val), FriendlyByteBuf::readInt),
+		BlockHpSyncMessage::current,
+		StreamCodec.of((buf, val) -> buf.writeInt(val), FriendlyByteBuf::readInt),
+		BlockHpSyncMessage::base,
+		BlockHpSyncMessage::new
+	);
+
+	@Override
+	public CustomPacketPayload.Type<BlockHpSyncMessage> type() {
+		return TYPE;
 	}
 
-	public BlockHpSyncMessage(BlockPos pos, int current, int base) {
-		this.pos = pos;
-		this.current = current;
-		this.base = base;
-	}
-
-	public static void buffer(BlockHpSyncMessage message, FriendlyByteBuf buffer) {
-		buffer.writeBlockPos(message.pos);
-		buffer.writeInt(message.current);
-		buffer.writeInt(message.base);
-	}
-
-	public static void handler(BlockHpSyncMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
-		NetworkEvent.Context context = contextSupplier.get();
+	public static void handleData(final BlockHpSyncMessage message, final IPayloadContext context) {
 		context.enqueueWork(() -> {
 			BlockHpRenderer.updateBlockHp(message.pos, message.current, message.base);
 		});
-		context.setPacketHandled(true);
 	}
 
 	@SubscribeEvent
 	public static void registerMessage(FMLCommonSetupEvent event) {
-		EriniumFactionMod.addNetworkMessage(BlockHpSyncMessage.class,
-				BlockHpSyncMessage::buffer,
-				BlockHpSyncMessage::new,
-				BlockHpSyncMessage::handler);
+		EriniumFactionMod.addNetworkMessage(BlockHpSyncMessage.TYPE, BlockHpSyncMessage.STREAM_CODEC, BlockHpSyncMessage::handleData);
 	}
 }

@@ -1,6 +1,6 @@
 package fr.eriniumgroup.eriniumfaction.procedures;
 
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ChunkPos;
@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.io.FileReader;
 import java.io.File;
 import java.io.BufferedReader;
-
-import com.google.gson.Gson;
 
 public class CurrentChunkFactionIdProcedure {
 	public static String execute(LevelAccessor world, double x, double z) {
@@ -41,7 +39,7 @@ public class CurrentChunkFactionIdProcedure {
 						jsonstringbuilder.append(line);
 					}
 					bufferedReader.close();
-					json = new Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
+					json = new com.google.gson.Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
 					StringReturn = json.get("id").getAsString();
 				} catch (IOException e) {
 					e.printStackTrace();

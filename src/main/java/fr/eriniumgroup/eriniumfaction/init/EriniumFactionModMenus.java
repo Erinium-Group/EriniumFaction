@@ -3,16 +3,16 @@
  */
 package fr.eriniumgroup.eriniumfaction.init;
 
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.client.Minecraft;
 
 import java.util.Map;
@@ -22,8 +22,8 @@ import fr.eriniumgroup.eriniumfaction.network.MenuStateUpdateMessage;
 import fr.eriniumgroup.eriniumfaction.EriniumFactionMod;
 
 public class EriniumFactionModMenus {
-	public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, EriniumFactionMod.MODID);
-	public static final RegistryObject<MenuType<FactionMenuMenu>> FACTION_MENU = REGISTRY.register("faction_menu", () -> IForgeMenuType.create(FactionMenuMenu::new));
+	public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(Registries.MENU, EriniumFactionMod.MODID);
+	public static final DeferredHolder<MenuType<?>, MenuType<FactionMenuMenu>> FACTION_MENU = REGISTRY.register("faction_menu", () -> IMenuTypeExtension.create(FactionMenuMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();
@@ -33,11 +33,11 @@ public class EriniumFactionModMenus {
 		default void sendMenuStateUpdate(Player player, int elementType, String name, Object elementState, boolean needClientUpdate) {
 			getMenuState().put(elementType + ":" + name, elementState);
 			if (player instanceof ServerPlayer serverPlayer) {
-				EriniumFactionMod.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new MenuStateUpdateMessage(elementType, name, elementState));
-			} else if (player.level.isClientSide) {
+				PacketDistributor.sendToPlayer(serverPlayer, new MenuStateUpdateMessage(elementType, name, elementState));
+			} else if (player.level().isClientSide) {
 				if (Minecraft.getInstance().screen instanceof EriniumFactionModScreens.ScreenAccessor accessor && needClientUpdate)
 					accessor.updateMenuState(elementType, name, elementState);
-				EriniumFactionMod.PACKET_HANDLER.sendToServer(new MenuStateUpdateMessage(elementType, name, elementState));
+				PacketDistributor.sendToServer(new MenuStateUpdateMessage(elementType, name, elementState));
 			}
 		}
 

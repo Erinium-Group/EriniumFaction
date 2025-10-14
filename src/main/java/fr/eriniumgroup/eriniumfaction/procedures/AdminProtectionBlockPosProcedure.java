@@ -7,8 +7,6 @@ import java.io.FileReader;
 import java.io.File;
 import java.io.BufferedReader;
 
-import com.google.gson.Gson;
-
 public class AdminProtectionBlockPosProcedure {
 	public static boolean execute(LevelAccessor world, double x, double z) {
 		String tempId = "";
@@ -31,7 +29,7 @@ public class AdminProtectionBlockPosProcedure {
 						jsonstringbuilder.append(line);
 					}
 					bufferedReader.close();
-					jsonObject = new Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
+					jsonObject = new com.google.gson.Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
 					if (jsonObject.get("isAdminFaction").getAsBoolean() || jsonObject.get("isWarzone").getAsBoolean() || jsonObject.get("isSafezone").getAsBoolean()) {
 						impossibleToInterract = true;
 					}

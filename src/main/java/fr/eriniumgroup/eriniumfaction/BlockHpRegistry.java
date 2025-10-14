@@ -14,29 +14,20 @@
 */
 package fr.eriniumgroup.eriniumfaction;
 
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.api.distmarker.Dist;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = "erinium_faction")
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, modid = "erinium_faction")
 public final class BlockHpRegistry extends SimpleJsonResourceReloadListener {
 	private static final Gson GSON = new GsonBuilder().create();
 	private static final Map<ResourceLocation, Integer> MAP = new HashMap<>();
@@ -55,7 +46,7 @@ public final class BlockHpRegistry extends SimpleJsonResourceReloadListener {
 		MAP.clear();
 		files.forEach((rl, json) -> {
 			json.getAsJsonObject().entrySet().forEach(e -> {
-				MAP.put(new ResourceLocation(e.getKey()), Math.max(1, e.getValue().getAsInt()));
+				MAP.put(ResourceLocation.parse(e.getKey()), Math.max(1, e.getValue().getAsInt()));
 			});
 		});
 	}

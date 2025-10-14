@@ -1,13 +1,13 @@
 package fr.eriniumgroup.eriniumfaction.procedures;
 
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.bus.api.Event;
 
 import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nullable;
 
@@ -17,14 +17,11 @@ import java.io.File;
 
 import fr.eriniumgroup.eriniumfaction.network.EriniumFactionModVariables;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.Gson;
-
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class ModServerSideLoadedProcedure {
 	@SubscribeEvent
 	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		execute(event, event.getPlayer());
+		execute(event, event.getEntity());
 	}
 
 	public static void execute(Entity entity) {
@@ -44,13 +41,13 @@ public class ModServerSideLoadedProcedure {
 			} catch (IOException exception) {
 				exception.printStackTrace();
 			}
-			json.addProperty("faction.cost.item", (ForgeRegistries.ITEMS.getKey(Items.DIAMOND).toString()));
+			json.addProperty("faction.cost.item", (BuiltInRegistries.ITEM.getKey(Items.DIAMOND).toString()));
 			json.addProperty("faction.cost.number", 100);
 			json.addProperty("faction.faction.powerperplayer", 10);
 			json.addProperty("faction.faction.defaultmaxplayer", 10);
 			json.addProperty("faction.faction.defaultmaxwarp", 1);
 			{
-				Gson mainGSONBuilderVariable = new GsonBuilder().setPrettyPrinting().create();
+				com.google.gson.Gson mainGSONBuilderVariable = new com.google.gson.GsonBuilder().setPrettyPrinting().create();
 				try {
 					FileWriter fileWriter = new FileWriter(file);
 					fileWriter.write(mainGSONBuilderVariable.toJson(json));
@@ -60,13 +57,11 @@ public class ModServerSideLoadedProcedure {
 				}
 			}
 		}
-		if (((entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new EriniumFactionModVariables.PlayerVariables())).faction).isEmpty()) {
+		if ((entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).faction).isEmpty()) {
 			{
-				String _setval = "wilderness";
-				entity.getCapability(EriniumFactionModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-					capability.faction = _setval;
-					capability.syncPlayerVariables(entity);
-				});
+				EriniumFactionModVariables.PlayerVariables _vars = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES);
+				_vars.faction = "wilderness";
+				_vars.syncPlayerVariables(entity);
 			}
 		}
 	}
