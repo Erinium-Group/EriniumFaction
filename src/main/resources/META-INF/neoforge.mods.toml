@@ -13,10 +13,16 @@ authors="MCreator"
 # Start of user code block mod configuration
 # End of user code block mod configuration
 
+[[mixins]]
+    config = "erinium_faction.mixins.json"
+
+# Start of user code block custom mixins
+# End of user code block custom mixins
+
 [[dependencies.erinium_faction]]
     modId="neoforge"
     type="required"
-    versionRange="[21.1.65,)"
+    versionRange="[21.1.176,)"
     ordering="AFTER"
     side="BOTH"
 
@@ -28,6 +34,12 @@ authors="MCreator"
     side="BOTH"
 
 
+[[dependencies.erinium_faction]]
+    modId="nexus_compiler"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
 
 
 # Start of user code block dependencies configuration

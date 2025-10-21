@@ -1,0 +1,25 @@
+def nexusCompilerModsDir = 'nexuscompiler-mods-1.21.1'
+task addnewfoldersmods(type: DefaultTask){
+  ant.mkdir(dir: 'nexuscompiler-mods-1.21.1/')
+}
+
+repositories {
+  flatDir {
+    name "nexuscompiler-mods"
+    dir file(nexusCompilerModsDir)
+  }
+}
+
+dependencies {
+  for (nexusCompilerModJar in fileTree(dir: nexusCompilerModsDir, include: '*.jar')) {
+    def basename = nexusCompilerModJar.name[0..-5] // remove .jar
+    def splitIndex = basename.findLastIndexOf { it == '-' }
+    if (splitIndex > 0) {
+      def artifactId = basename[0..<splitIndex]
+      def version = basename[(splitIndex + 1)..<basename.length()]
+      implementation "nexuscompiler-mods:$artifactId:$version"
+    }
+  }
+}
+
+

@@ -14,10 +14,12 @@
 */
 package fr.eriniumgroup.eriniumfaction;
 
+import fr.eriniumgroup.eriniumfaction.procedures.PlayerProtectionOptimisedProcedure;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +37,8 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -45,6 +49,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 
@@ -81,10 +86,10 @@ public final class DefenseEvents {
 		if (!sp.getMainHandItem().is(Items.STICK)) return;
 
 		// Vérifier ce que le joueur regarde
-		net.minecraft.world.phys.HitResult hit = sp.pick(5.0D, 0.0F, false);
-		if (hit.getType() != net.minecraft.world.phys.HitResult.Type.BLOCK) return;
+		HitResult hit = sp.pick(5.0D, 0.0F, false);
+		if (hit.getType() != HitResult.Type.BLOCK) return;
 
-		net.minecraft.world.phys.BlockHitResult blockHit = (net.minecraft.world.phys.BlockHitResult) hit;
+		BlockHitResult blockHit = (BlockHitResult) hit;
 		BlockPos pos = blockHit.getBlockPos();
 		ServerLevel lvl = sp.serverLevel();
 
@@ -95,7 +100,11 @@ public final class DefenseEvents {
 		int cur = BlockHpData.current(lvl, pos, state);
 
 		// Envoyer le packet au client pour synchroniser l'affichage
-		net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new BlockHpSyncMessage(pos, cur, base));
+		PacketDistributor.sendToPlayer(sp, new BlockHpSyncMessage(pos, cur, base));
+
+        if (e.getEntity().getServer().getTickCount() % 200 == 0) { // Toutes les 10 secondes
+            PlayerProtectionOptimisedProcedure.cleanExpiredCache();
+        }
 	}
 
 	// Inspection PV par clic droit avec un stick
@@ -115,7 +124,7 @@ public final class DefenseEvents {
 		float pct = base > 0 ? (cur * 100f / base) : 0f;
 
 		// Après avoir calculé cur et base
-		net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new BlockHpSyncMessage(pos, cur, base));
+		PacketDistributor.sendToPlayer(sp, new BlockHpSyncMessage(pos, cur, base));
 
 		ChatFormatting col =
 				pct >= 75f ? ChatFormatting.GREEN :
@@ -123,7 +132,7 @@ public final class DefenseEvents {
 								pct >= 25f ? ChatFormatting.GOLD  :
 										ChatFormatting.RED;
 
-		ResourceLocation id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock());
+		ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
 		String idStr = id != null ? id.toString() : "minecraft:air";
 
 		MutableComponent msg = Component.literal("Block HP: ")
@@ -153,6 +162,13 @@ public final class DefenseEvents {
 	public static void onExplode(ExplosionEvent.Detonate e) {
 		if (!(e.getLevel() instanceof ServerLevel lvl)) return;
 		e.getAffectedBlocks().clear();
+
+        Entity entity = null;
+        if (e.getExplosion().getIndirectSourceEntity() != null){
+            entity = e.getExplosion().getIndirectSourceEntity();
+        }else {
+            e.getExplosion().getDirectSourceEntity();
+        }
 
 		// rayon & dégâts à partir du radius passé à level.explode(...)
 		float s = strengthOf(e.getExplosion()); // ex: 4f si _level.explode(..., 4, ...)
@@ -192,7 +208,7 @@ public final class DefenseEvents {
 			int dmg = Math.max(1, baseDmg - (int)Math.floor(dist));
 			if (waterAdj) dmg = Math.max(1, dmg / 2);
 
-			BlockHpData.applyDamage(lvl, p, dmg);
+			BlockHpData.applyDamage(lvl, p, dmg, entity);
 		}
 	}
 }

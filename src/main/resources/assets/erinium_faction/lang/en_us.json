@@ -1,5 +1,10 @@
 {
   "warzone.desc": "The war zone",
   "safezone.desc": "The safe place",
-  "wilderness.desc": "Be carefull its wild !"
+  "wilderness.desc": "Be carefull its wild !",
+  "faction.menu.resume": "Resume",
+  "f.create.alreadyexist": "This name already exist",
+  "f.create.needitem": "You need to have : §e",
+  "f.create.created": " created the faction §a",
+  "f.create.alreayinfaction": "§cYou are already in a faction"
 }

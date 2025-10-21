@@ -14,9 +14,6 @@
 */
 package fr.eriniumgroup.eriniumfaction;
 
-import net.neoforged.fml.common.EventBusSubscriber;
-
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class ARGBToInt {
 
 	public static int ARGBToInt(int a, int r, int g, int b){

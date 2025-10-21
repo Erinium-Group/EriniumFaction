@@ -17,12 +17,14 @@ import net.minecraft.client.Minecraft;
 
 import java.util.Map;
 
+import fr.eriniumgroup.eriniumfaction.world.inventory.GuiForConstructMenu;
 import fr.eriniumgroup.eriniumfaction.world.inventory.FactionMenuMenu;
 import fr.eriniumgroup.eriniumfaction.network.MenuStateUpdateMessage;
 import fr.eriniumgroup.eriniumfaction.EriniumFactionMod;
 
 public class EriniumFactionModMenus {
 	public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(Registries.MENU, EriniumFactionMod.MODID);
+	public static final DeferredHolder<MenuType<?>, MenuType<GuiForConstructMenu>> GUI_FOR_CONSTRUCT = REGISTRY.register("gui_for_construct", () -> IMenuTypeExtension.create(GuiForConstructMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<FactionMenuMenu>> FACTION_MENU = REGISTRY.register("faction_menu", () -> IMenuTypeExtension.create(FactionMenuMenu::new));
 
 	public interface MenuAccessor {

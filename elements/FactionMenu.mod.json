@@ -3,13 +3,24 @@
   "_type": "gui",
   "definition": {
     "type": 0,
-    "width": 176,
-    "height": 166,
+    "width": 420,
+    "height": 240,
     "inventoryOffsetX": 0,
     "inventoryOffsetY": 0,
     "renderBgLayer": true,
     "doesPauseGame": false,
-    "components": [],
+    "components": [
+      {
+        "type": "image",
+        "data": {
+          "image": "faction_menu_bg.png",
+          "use1Xscale": false,
+          "x": 4,
+          "y": 0,
+          "locked": false
+        }
+      }
+    ],
     "gridSettings": {
       "sx": 18,
       "sy": 18,

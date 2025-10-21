@@ -65,20 +65,6 @@
       "path": "~/Block health"
     },
     {
-      "name": "FactionMenu",
-      "type": "gui",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "faction_menu",
-      "metadata": {
-        "files": [
-          "src/main/java/fr/eriniumgroup/eriniumfaction/client/gui/FactionMenuScreen.java",
-          "src/main/java/fr/eriniumgroup/eriniumfaction/world/inventory/FactionMenuMenu.java"
-        ]
-      },
-      "path": "~/Faction System"
-    },
-    {
       "name": "Temp",
       "type": "command",
       "compiles": true,
@@ -97,7 +83,28 @@
       "locked_code": false,
       "registry_name": "temp_command",
       "metadata": {
-        "dependencies": [],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/TempCommandProcedure.java"
         ]
@@ -143,66 +150,6 @@
       "path": "~/Block health"
     },
     {
-      "name": "FilePathClientAndCommon",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "file_path_client_and_common",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "client",
-            "type": "logic"
-          },
-          {
-            "name": "extrapath",
-            "type": "string"
-          },
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "root",
-            "type": "string"
-          }
-        ],
-        "return_type": "file",
-        "files": [
-          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/FilePathClientAndCommonProcedure.java"
-        ]
-      },
-      "path": "~/Function"
-    },
-    {
-      "name": "FilePathServer",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "file_path_server",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "extrapath",
-            "type": "string"
-          },
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "root",
-            "type": "string"
-          }
-        ],
-        "return_type": "file",
-        "files": [
-          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/FilePathServerProcedure.java"
-        ]
-      },
-      "path": "~/Function"
-    },
-    {
       "name": "ModLoaded",
       "type": "procedure",
       "compiles": true,
@@ -212,19 +159,6 @@
         "dependencies": [],
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/ModLoadedProcedure.java"
-        ]
-      }
-    },
-    {
-      "name": "ModServerSideLoaded",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "mod_server_side_loaded",
-      "metadata": {
-        "dependencies": [],
-        "files": [
-          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/ModServerSideLoadedProcedure.java"
         ]
       }
     },
@@ -356,7 +290,24 @@
       "locked_code": false,
       "registry_name": "block_break",
       "metadata": {
-        "dependencies": [],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/BlockBreakProcedure.java"
         ]
@@ -387,7 +338,275 @@
         "files": [
           "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/AdminProtectionBlockPosProcedure.java"
         ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "GuiForConstruct",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "gui_for_construct",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/client/gui/GuiForConstructScreen.java",
+          "src/main/java/fr/eriniumgroup/eriniumfaction/network/GuiForConstructButtonMessage.java",
+          "src/main/java/fr/eriniumgroup/eriniumfaction/world/inventory/GuiForConstructMenu.java"
+        ]
       }
+    },
+    {
+      "name": "FactionGuiNetwork",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "faction_gui_network",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/FactionGuiNetwork.java"
+        ]
+      },
+      "path": "~/network"
+    },
+    {
+      "name": "FactionMenu",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "faction_menu",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/client/gui/FactionMenuScreen.java",
+          "src/main/java/fr/eriniumgroup/eriniumfaction/world/inventory/FactionMenuMenu.java"
+        ]
+      },
+      "path": "~/Faction System"
+    },
+    {
+      "name": "PlayerProtection",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "player_protection",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "perm",
+            "type": "string"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/PlayerProtectionProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "PlayerProtectionOptimised",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "player_protection_optimised",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "perm",
+            "type": "string"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/PlayerProtectionOptimisedProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "FactionConfigServer",
+      "type": "config",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "faction_config_server",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/configuration/FactionConfigServerConfiguration.java"
+        ]
+      },
+      "path": "~/Config"
+    },
+    {
+      "name": "UuidFile",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "uuid_file",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "uuid",
+            "type": "string"
+          }
+        ],
+        "return_type": "file",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/UuidFileProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "PlayerJoin",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "player_join",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/PlayerJoinProcedure.java"
+        ]
+      }
+    },
+    {
+      "name": "F",
+      "type": "command",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "f",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/command/FCommand.java"
+        ]
+      },
+      "path": "~/Faction System/Command"
+    },
+    {
+      "name": "FCreate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "f_create",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/FCreateProcedure.java"
+        ]
+      },
+      "path": "~/Faction System/Command"
+    },
+    {
+      "name": "GetAge",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "get_age",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "currentTime",
+            "type": "number"
+          },
+          {
+            "name": "dateOfCreation",
+            "type": "number"
+          }
+        ],
+        "return_type": "number",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/GetAgeProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "ChangePlayerFaction",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "change_player_faction",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "faction",
+            "type": "string"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
+          }
+        ],
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/ChangePlayerFactionProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "HaveAFaction",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "have_a_faction",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "target",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/HaveAFactionProcedure.java"
+        ]
+      },
+      "path": "~/Function"
     }
   ],
   "variable_elements": [
@@ -420,16 +639,37 @@
       "type": "string",
       "scope": "player_persistent",
       "value": ""
+    },
+    {
+      "name": "faction_bypass",
+      "type": "logic",
+      "scope": "player_persistent",
+      "value": "false"
+    },
+    {
+      "name": "power",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "10.0"
     }
   ],
   "sound_elements": [],
-  "tag_elements": {},
+  "tag_elements": {
+    "BLOCKS:c:chests": [
+      "TAG:c:chests"
+    ]
+  },
   "tab_element_order": {},
   "language_map": {
     "en_us": {
       "warzone.desc": "The war zone",
       "safezone.desc": "The safe place",
-      "wilderness.desc": "Be carefull its wild !"
+      "wilderness.desc": "Be carefull its wild !",
+      "faction.menu.resume": "Resume",
+      "f.create.alreadyexist": "This name already exist",
+      "f.create.needitem": "You need to have : §e",
+      "f.create.created": " created the faction §a",
+      "f.create.alreayinfaction": "§cYou are already in a faction"
     }
   },
   "metadata": {
@@ -438,7 +678,8 @@
       "src/main/resources/pack.mcmeta",
       "src/main/java/fr/eriniumgroup/eriniumfaction/network/EriniumFactionModVariables.java",
       "src/main/resources/erinium_faction.mixins.json",
-      "src/main/resources/META-INF/mods.toml",
+      "src/main/resources/META-INF/neoforge.mods.toml",
+      "src/main/java/fr/eriniumgroup/eriniumfaction/init/EriniumFactionModConfigs.java",
       "src/main/java/fr/eriniumgroup/eriniumfaction/network/MenuStateUpdateMessage.java",
       "src/main/java/fr/eriniumgroup/eriniumfaction/init/EriniumFactionModMenus.java",
       "src/main/java/fr/eriniumgroup/eriniumfaction/init/EriniumFactionModScreens.java"
@@ -453,7 +694,12 @@
       },
       {
         "name": "Faction System",
-        "children": []
+        "children": [
+          {
+            "name": "Command",
+            "children": []
+          }
+        ]
       },
       {
         "name": "Util",
@@ -461,6 +707,14 @@
       },
       {
         "name": "Function",
+        "children": []
+      },
+      {
+        "name": "network",
+        "children": []
+      },
+      {
+        "name": "Config",
         "children": []
       }
     ]
@@ -471,12 +725,15 @@
     "version": "1.0.0",
     "author": "MCreator",
     "websiteURL": "https://mcreator.net",
+    "license": "Not specified",
     "serverSideOnly": false,
     "requiredMods": [],
     "dependencies": [],
     "dependants": [],
-    "mcreatorDependencies": [],
-    "currentGenerator": "forge-1.18.2",
+    "mcreatorDependencies": [
+      "nexus_compiler"
+    ],
+    "currentGenerator": "neoforge-1.21.1",
     "credits": "Created using mod maker MCreator - https://mcreator.net/about",
     "modElementsPackage": "fr.eriniumgroup.eriniumfaction"
   },

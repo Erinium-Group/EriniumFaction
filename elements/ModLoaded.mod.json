@@ -2,7 +2,7 @@
   "_fv": 79,
   "_type": "procedure",
   "definition": {
-    "procedurexml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable type=\"File\" id=\"file\">file</variable><variable type=\"JsonObject\" id=\"json\">json</variable></variables><block type=\"event_trigger\" deletable=\"false\" x=\"40\" y=\"40\"><field name=\"trigger\">mod_load</field></block><block type=\"variables_set_file\" x=\"291\" y=\"257\"><mutation xmlns=\"http://www.w3.org/1999/xhtml\" is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\">local:file</field><value name=\"VAL\"><block type=\"procedure_retval_file\"><mutation xmlns=\"http://www.w3.org/1999/xhtml\" inputs=\"0\"></mutation><field name=\"procedure\">FilePathServer</field></block></value></block></xml>",
+    "procedurexml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable type=\"File\" id=\"file\">file</variable><variable type=\"JsonObject\" id=\"json\">json</variable></variables><block type=\"event_trigger\" deletable=\"false\" x=\"40\" y=\"40\"><field name=\"trigger\">mod_load</field></block></xml>",
     "skipDependencyNullCheck": false
   }
 }

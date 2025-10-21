@@ -9,10 +9,12 @@ import java.io.BufferedReader;
 
 public class AdminProtectionBlockPosProcedure {
 	public static boolean execute(LevelAccessor world, double x, double z) {
-		String tempId = "";
 		File file = new File("");
 		com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
+		String tempId = "";
+		String factionRank = "";
 		boolean impossibleToInterract = false;
+		boolean needcheckworldfile = false;
 		tempId = CurrentChunkFactionIdProcedure.execute(world, x, z);
 		if ((tempId).equals("safezone") || (tempId).equals("warzone")) {
 			return false;

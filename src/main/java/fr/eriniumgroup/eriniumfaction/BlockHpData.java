@@ -25,6 +25,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -153,7 +154,7 @@ public final class BlockHpData extends SavedData {
 	// --- API UTILITAIRE ---
 
 	/** Applique des dégâts (>=1). Retourne les PV restants après application. */
-	public static int applyDamage(ServerLevel lvl, BlockPos pos, int dmg) {
+	public static int applyDamage(ServerLevel lvl, BlockPos pos, int dmg, Entity entity) {
         if (AdminProtectionBlockPosProcedure.execute(lvl, pos.getX(), pos.getZ())){
             dmg = Math.max(1, dmg);
             if (lvl.isEmptyBlock(pos)) return 0;
@@ -227,11 +228,5 @@ public final class BlockHpData extends SavedData {
 		int cur = get(lvl).get(pos);
 		if (cur == Integer.MIN_VALUE) cur = base;
 		return new int[]{cur, base};
-	}
-
-	/** Variante tolérante côté appelant: route vers serveur si possible. */
-	public static boolean tryDamage(net.minecraft.world.level.Level level, BlockPos pos, int dmg) {
-		if (level instanceof ServerLevel sl) { applyDamage(sl, pos, dmg); return true; }
-		return false;
 	}
 }

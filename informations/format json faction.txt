@@ -11,9 +11,9 @@ displayname = String
 memberList = String (uuid:rank, uuid:rank)
 owner = uuid
 invitedPlayers = string (uuid)
-bannedPlayers = uuid
 allies = uuid
 homeLocation = String(int, int, int)
+warps = String(int, int, int/)
 description = String
 upgrades = String
 claimlist = String (region/chunk, etc.)
@@ -26,8 +26,23 @@ int / Double :
 power = int
 claim = int
 maxClaims = int
-bonusMaxClaims = int
+maxPlayer = int
 dateOfCreation = int
 factionLevel = int
 factionXp = Double
 bankBalance = Double
+maxWarps = int
+
+
+// Faction perm
+// Interraction / actions
+canBreak, canPlace, canInterract, openChest
+
+// Commandes
+canInvite, canKick, canPromote, canDemote, canHome, canWarp
+
+// gestion
+canManageRanks, canChangeDesc, canClaim, canUnclaim, canSetHome, canManageWarps, canAlly
+
+// Economie
+canWithdrawMoney, canDepositMoney

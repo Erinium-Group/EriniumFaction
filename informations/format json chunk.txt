@@ -1,7 +1,7 @@
 id = String (faction id)
-build = param
-break = param
-interact = param
-openchest = param
+canPlace = param
+canBreak = param
+canInterract = param
+openChest = param
 
-param possible : factionMember, factionAlly, everyone, none, officer, member, recruit
+param possible : none, officer, member, recruit

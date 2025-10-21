@@ -1,0 +1,3 @@
+displayname = nom joueur
+faction = faction id
+rank = server rank
