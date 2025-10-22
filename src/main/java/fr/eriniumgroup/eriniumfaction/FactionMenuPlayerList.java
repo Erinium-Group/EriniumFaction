@@ -137,15 +137,18 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
         @Override
         public void render(GuiGraphics guiGraphics, int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean isSelected, float partialTick) {
             // Dessine un fond pour chaque élément (facultatif)
-            guiGraphics.fill(x + 1, y + 1, x + itemWidth - 1, y + 18, ARGBToInt.ARGBToInt(255, 64, 64, 64));
-            guiGraphics.fill(x + 2, y + 2, x + 2 + 16 - 1, y + 2 + 16, ARGBToInt.ARGBToInt(255, 128, 128, 128));
-            guiGraphics.fill(x + 2 + 16 + 1, y + 2, x + 2 + 16 + 1 + 16 - 1, y + 2 + 16, ARGBToInt.ARGBToInt(255, 128, 128, 128));
+            guiGraphics.fill(x + 1, y + 1, x + itemWidth - 1, y + 18, ARGBToInt.ARGBToInt(128, 17, 17, 44));
+            /*guiGraphics.fill(x + 2, y + 2, x + 2 + 16 - 1, y + 2 + 16 - 1, ARGBToInt.ARGBToInt(255, 128, 128, 128));
+            guiGraphics.fill(x + 2 + 16 + 1, y + 2, x + 2 + 16 + 1 + 16 - 1, y + 2 + 16 - 1, ARGBToInt.ARGBToInt(255, 128, 128, 128));*/
 
             try {
-                UUID playerUUID = UUID.fromString(this.text);
+                UUID playerUUID = UUID.fromString(this.text.split(":")[0]);
+                String rank = this.text.split(":")[1];
+                ResourceLocation ranktexture = ResourceLocation.parse("erinium_faction:textures/screens/" + rank + ".png");
+                String Playername = GetFileStringValueProcedure.execute(UuidFileProcedure.execute(String.valueOf(playerUUID)), "displayname");
 
-                int headX = x + 2;
-                int headY = y + 2;
+                int headX = x + 1;
+                int headY = y + 1;
 
                 ItemStack head = headCache.get(playerUUID);
                 if (head == null) {
@@ -165,13 +168,35 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
                 }
 
                 guiGraphics.renderItem(head, headX, headY);
+
+                int rankx = x + 2 + 16 + 1;
+                int ranky = y + 2;
+
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(rankx, ranky, 0);
+                float scaler = 15f / 128f;
+                guiGraphics.pose().scale(scaler, scaler, 1f);
+                guiGraphics.blit(ranktexture, 0, 0, 0, 0, 128, 128, 128, 128);
+                guiGraphics.pose().popPose();
+
+                guiGraphics.pose().pushPose();
+                int textX = x + 2 + 16 + 1 + 16;
+                int textY = y + 9 - 3;
+                guiGraphics.pose().translate(textX, textY, 0);
+                if (Minecraft.getInstance().font.width(Playername) > 82){
+                    float scalertext = 82f / Minecraft.getInstance().font.width(Playername);
+                    guiGraphics.pose().scale(scalertext, scalertext, 1f);
+                }
+                guiGraphics.drawString(Minecraft.getInstance().font, Playername, 0, 0, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+                guiGraphics.pose().popPose();
+
             } catch (Exception e) {
                 // Si ce n'est pas un UUID, affiche une tête par défaut
                 guiGraphics.renderItem(new ItemStack(Items.PLAYER_HEAD), x + 2, y + 2);
             }
 
             // Dessine le texte, avec un léger décalage vers la droite
-            guiGraphics.drawString(Minecraft.getInstance().font, this.text, x + 10, y + 5, 0xFFFFFF);
+            //guiGraphics.drawString(Minecraft.getInstance().font, this.text, x + 10, y + 5, 0xFFFFFF);
         }
 
         @Override

@@ -966,7 +966,8 @@
       "faction.menu.claims": "Claims : ",
       "faction.menu.membercount": "Members : ",
       "faction.menu.power": "Power : ",
-      "faction.menu.level": "Level : "
+      "faction.menu.level": "Level : ",
+      "faction.menu.playerlist": "Player List"
     }
   },
   "metadata": {

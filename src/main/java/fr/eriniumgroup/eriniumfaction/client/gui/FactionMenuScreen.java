@@ -67,6 +67,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 
         drawText(guiGraphics, GetFileStringValueProcedure.execute(factionfile, "displayname"), EriFont::orbitronBold, 14f, -1, 10, false, true, ARGBToInt.ARGBToInt(255,255,215,0));
         drawText(guiGraphics, Component.translatable("faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, 45, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("faction.menu.playerlist").getString(), EriFont::orbitron, 10f, 349, 45, true, true, ARGBToInt.ARGBToInt(255,255,255,255));
 
         int claimCount = (GetFileStringValueProcedure.execute(factionfile, "claimlist") == null || GetFileStringValueProcedure.execute(factionfile, "claimlist").isEmpty()) ? 0 : GetFileStringValueProcedure.execute(factionfile, "claimlist").split(",").length;
         int playerCount = (GetFileStringValueProcedure.execute(factionfile, "memberList") == null || GetFileStringValueProcedure.execute(factionfile, "memberList").isEmpty()) ? 1 : GetFileStringValueProcedure.execute(factionfile, "claimlist").split(",").length + 1;
@@ -103,12 +104,12 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 
         String playerlist;
         if (GetFileStringValueProcedure.execute(factionfile, "memberList").isEmpty()){
-            playerlist = GetFileStringValueProcedure.execute(factionfile, "owner");
+            playerlist = GetFileStringValueProcedure.execute(factionfile, "owner") + ":owner";
         }else {
-            playerlist = GetFileStringValueProcedure.execute(factionfile, "owner") + "," + GetFileStringValueProcedure.execute(factionfile, "memberList");
+            playerlist = GetFileStringValueProcedure.execute(factionfile, "owner") + ":owner" + "," + GetFileStringValueProcedure.execute(factionfile, "memberList");
         }
 
-        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, "96e76f2a-d77d-4cb7-91a0-3eba67e74397,9cc97115-8d4a-4133-b2fb-5c849ff93b8c,9ef0692c-560d-4bf5-9e87-e53f73a7e446", world.getServer());
+        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist, world.getServer());
         this.addRenderableWidget(scrollableList);
 	}
 
