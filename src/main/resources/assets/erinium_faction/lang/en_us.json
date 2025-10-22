@@ -6,5 +6,9 @@
   "f.create.alreadyexist": "This name already exist",
   "f.create.needitem": "You need to have : §e",
   "f.create.created": " created the faction §a",
-  "f.create.alreayinfaction": "§cYou are already in a faction"
+  "f.create.alreayinfaction": "§cYou are already in a faction",
+  "faction.menu.claims": "Claims : ",
+  "faction.menu.membercount": "Members : ",
+  "faction.menu.power": "Power : ",
+  "faction.menu.level": "Level : "
 }

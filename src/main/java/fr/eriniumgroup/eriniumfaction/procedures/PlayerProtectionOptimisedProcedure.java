@@ -75,9 +75,9 @@ public class PlayerProtectionOptimisedProcedure {
                 return true;
             }
 
-            // 2. Vérification de faction
+            // 2. Vérification de faction (SAUF wilderness)
             String playerFaction = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).faction;
-            if (!tempId.equals(playerFaction)) {
+            if (!tempId.equals(playerFaction) && !tempId.equals("wilderness")) {
                 return false;
             }
         }

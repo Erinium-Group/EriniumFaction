@@ -11,7 +11,7 @@ displayname = String
 memberList = String (uuid:rank, uuid:rank)
 owner = uuid
 invitedPlayers = string (uuid)
-allies = uuid
+allies = factionid
 homeLocation = String(int, int, int)
 warps = String(int, int, int/)
 description = String
@@ -29,7 +29,7 @@ maxClaims = int
 maxPlayer = int
 dateOfCreation = int
 factionLevel = int
-factionXp = Double
+factionXp = int
 bankBalance = Double
 maxWarps = int
 

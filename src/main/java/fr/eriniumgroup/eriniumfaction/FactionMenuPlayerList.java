@@ -1,0 +1,131 @@
+/*
+ * The code of this mod element is always locked.
+ *
+ * You can register new events in this class too.
+ *
+ * If you want to make a plain independent class, create it using
+ * Project Browser -> New... and make sure to make the class
+ * outside fr.eriniumgroup.eriniumfaction as this package is managed by MCreator.
+ *
+ * If you change workspace package, modid or prefix, you will need
+ * to manually adapt this file to these changes or remake it.
+ *
+ * This class will be added in the mod root package.
+*/
+package fr.eriniumgroup.eriniumfaction;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+
+public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlayerList.Entry> {
+    private int selectedIndex = -1;
+    private int height;
+    private int width;
+    private int y;
+    private int x;
+    private Minecraft minecraft;
+
+    public FactionMenuPlayerList(Minecraft minecraft, int x, int y, int itemWidth, int itemHeight, String param) {
+        super(minecraft, itemWidth, itemHeight, y, 18);
+        this.setX(x); // Définit la position horizontale
+        this.height = itemHeight;
+        this.width = itemWidth;
+        this.x = x;
+        this.y = y;
+        this.minecraft = minecraft;
+
+        // Ajoute des entrées
+        for (int i = 0; i < param.split(",").length; i++) {
+            this.addEntry(new Entry(param.split(",")[i]));
+        }
+    }
+
+    // Supprime tout fond indésirable
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // Désactiver le rendu de la dirt en fond
+        this.renderListBackground(guiGraphics);
+
+        // Convertir les coordonnées pour le Scissor Test
+        int scissorX = this.getX();
+        int scissorY = this.getY();
+        int scissorWidth = this.width;
+        int scissorHeight = this.height;
+
+        // Activer le Scissor Test
+        guiGraphics.enableScissor(scissorX, scissorY, scissorX + scissorWidth, scissorY + scissorHeight);
+
+        // Appeler la méthode parente pour dessiner la liste
+        //this.renderListItems(guiGraphics, mouseX, mouseY, partialTick);
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+
+        // Désactiver le Scissor Test après le rendu
+        guiGraphics.disableScissor();
+    }
+
+    @Override
+    protected void renderListBackground(GuiGraphics guiGraphics) {
+        // Laisse vide pour ne pas dessiner de fond par défaut
+    }
+
+    @Override
+    protected void renderListSeparators(GuiGraphics guiGraphics) {
+        // Laisse vide pour ne pas dessiner de séparateurs
+    }
+
+    // Ajuste la largeur des éléments (pour les aligner avec la scrollbar)
+    @Override
+    public int getRowWidth() {
+        return this.getWidth() - 14; // Largeur de la liste moins un décalage pour la scrollbar
+    }
+
+    protected int getRowHeight() {
+        return 18; // Hauteur de chaque item
+    }
+
+    // Ajuste la position de la scrollbar (pour être alignée à droite)
+    @Override
+    protected int getScrollbarPosition() {
+        return this.getX() + this.width - 6; // Scrollbar 6 pixels à l'intérieur du bord droit
+    }
+
+    // Implémentation de la méthode obligatoire pour l'accessibilité
+    @Override
+    public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        // Implémentation vide pour l'instant
+        // Si nécessaire, ajoute une description comme : narrationElementOutput.add(NarratedElementType.TITLE, "Description ici");
+    }
+
+    // Gestionnaire pour dessiner chaque entrée
+    protected class Entry extends AbstractSelectionList.Entry<Entry> {
+        private final String text;
+
+        // Constructeur de l'entrée avec un texte à afficher
+        public Entry(String text) {
+            this.text = text;
+        }
+
+        @Override
+        public void render(GuiGraphics guiGraphics, int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean isSelected, float partialTick) {
+            // Dessine un fond pour chaque élément (facultatif)
+            guiGraphics.fill(x + 1, y + 1, x + itemWidth - 1, y + 18, ARGBToInt.ARGBToInt(255, 64, 64, 64));
+            guiGraphics.fill(x + 2, y + 2, x + 2 + 16 - 1, y + 2 + 16, ARGBToInt.ARGBToInt(255, 128, 128, 128));
+            guiGraphics.fill(x + 2 + 16 + 1, y + 2, x + 2 + 16 + 1 + 16 - 1, y + 2 + 16, ARGBToInt.ARGBToInt(255, 128, 128, 128));
+
+            ItemStack playerhead;
+
+            // Dessine le texte, avec un léger décalage vers la droite
+            guiGraphics.drawString(Minecraft.getInstance().font, this.text, x + 10, y + 5, 0xFFFFFF);
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            //System.out.println("Cliqué sur : " + this.text);
+            return true;
+        }
+    }
+}

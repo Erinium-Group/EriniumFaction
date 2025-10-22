@@ -607,6 +607,299 @@
         ]
       },
       "path": "~/Function"
+    },
+    {
+      "name": "GetFileNumberValue",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "get_file_number_value",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "fileobj",
+            "type": "file"
+          },
+          {
+            "name": "object",
+            "type": "string"
+          }
+        ],
+        "return_type": "number",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/GetFileNumberValueProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "GetFileBooleanValue",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "get_file_boolean_value",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "fileobj",
+            "type": "file"
+          },
+          {
+            "name": "object",
+            "type": "string"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/GetFileBooleanValueProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "GetFileStringValue",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "get_file_string_value",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "fileobj",
+            "type": "file"
+          },
+          {
+            "name": "object",
+            "type": "string"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/GetFileStringValueProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "FactionGetXPRequired",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "faction_get_xp_required",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "level",
+            "type": "number"
+          }
+        ],
+        "return_type": "number",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/FactionGetXPRequiredProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "GetPlayerFaction",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "get_player_faction",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/GetPlayerFactionProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "FactionExist",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "faction_exist",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "name",
+            "type": "string"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/FactionExistProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "ItemStackSerializer",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "item_stack_serializer",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/ItemStackSerializer.java"
+        ]
+      },
+      "path": "~/Util"
+    },
+    {
+      "name": "ItemStackToString",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_stack_to_string",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "itemstack",
+            "type": "itemstack"
+          },
+          {
+            "name": "base64",
+            "type": "logic"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/ItemStackToStringProcedure.java"
+        ]
+      },
+      "path": "~/Function/item serializer"
+    },
+    {
+      "name": "StringToItemStack",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "string_to_item_stack",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "item",
+            "type": "itemstack"
+          },
+          {
+            "name": "base64",
+            "type": "logic"
+          },
+          {
+            "name": "itemstring",
+            "type": "string"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "itemstack",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/StringToItemStackProcedure.java"
+        ]
+      },
+      "path": "~/Function/item serializer"
+    },
+    {
+      "name": "GetFactionPlayerNumber",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "get_faction_player_number",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "name",
+            "type": "string"
+          }
+        ],
+        "return_type": "number",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/GetFactionPlayerNumberProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "GetFactionMaxPower",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "get_faction_max_power",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "name",
+            "type": "string"
+          }
+        ],
+        "return_type": "number",
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/GetFactionMaxPowerProcedure.java"
+        ]
+      },
+      "path": "~/Function"
+    },
+    {
+      "name": "FF",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ff",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/FFProcedure.java"
+        ]
+      },
+      "path": "~/Faction System/Command"
+    },
+    {
+      "name": "FactionMenuPlayerList",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "faction_menu_player_list",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/FactionMenuPlayerList.java"
+        ]
+      },
+      "path": "~/Faction System"
     }
   ],
   "variable_elements": [
@@ -669,7 +962,11 @@
       "f.create.alreadyexist": "This name already exist",
       "f.create.needitem": "You need to have : §e",
       "f.create.created": " created the faction §a",
-      "f.create.alreayinfaction": "§cYou are already in a faction"
+      "f.create.alreayinfaction": "§cYou are already in a faction",
+      "faction.menu.claims": "Claims : ",
+      "faction.menu.membercount": "Members : ",
+      "faction.menu.power": "Power : ",
+      "faction.menu.level": "Level : "
     }
   },
   "metadata": {
@@ -707,7 +1004,12 @@
       },
       {
         "name": "Function",
-        "children": []
+        "children": [
+          {
+            "name": "item serializer",
+            "children": []
+          }
+        ]
       },
       {
         "name": "network",
@@ -730,7 +1032,9 @@
     "requiredMods": [],
     "dependencies": [],
     "dependants": [],
-    "mcreatorDependencies": [],
+    "mcreatorDependencies": [
+      "nexus_compiler"
+    ],
     "currentGenerator": "neoforge-1.21.1",
     "credits": "Created using mod maker MCreator - https://mcreator.net/about",
     "modElementsPackage": "fr.eriniumgroup.eriniumfaction"
