@@ -49,6 +49,8 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
     private int x;
     private Minecraft minecraft;
     private MinecraftServer server;
+    private final Map<UUID, ItemStack> headCache = new ConcurrentHashMap<>();
+    private final Map<UUID, CompletableFuture<ItemStack>> headFutures = new ConcurrentHashMap<>();
 
 
     public FactionMenuPlayerList(Minecraft minecraft, int x, int y, int itemWidth, int itemHeight, String param, MinecraftServer server) {
@@ -139,19 +141,37 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
             guiGraphics.fill(x + 2, y + 2, x + 2 + 16 - 1, y + 2 + 16, ARGBToInt.ARGBToInt(255, 128, 128, 128));
             guiGraphics.fill(x + 2 + 16 + 1, y + 2, x + 2 + 16 + 1 + 16 - 1, y + 2 + 16, ARGBToInt.ARGBToInt(255, 128, 128, 128));
 
-            //String playerUUID = /*GetFileStringValueProcedure.execute(UuidFileProcedure.execute(text), "displayname")*/ text;
             try {
-                UUID playerUUID = UUID.fromString(text);
-                ItemStack playerhead = EFUtil.Head.createHeadStackByName(server, "FuzeIII");
+                UUID playerUUID = UUID.fromString(this.text);
 
                 int headX = x + 2;
                 int headY = y + 2;
-                int size = 16;
 
-                guiGraphics.renderItem(playerhead, headX, headY);
+                ItemStack head = headCache.get(playerUUID);
+                if (head == null) {
+                    // Placeholder immédiat
+                    head = new ItemStack(Items.PLAYER_HEAD);
+                    headCache.put(playerUUID, head);
 
+                    // Déclenche une résolution asynchrone (offline OK) une seule fois
+                    headFutures.computeIfAbsent(playerUUID, id ->
+                        EFUtil.Head.resolveProfileByUUID(id)
+                            .thenApply(rp -> {
+                                ItemStack s = new ItemStack(Items.PLAYER_HEAD);
+                                s.set(DataComponents.PROFILE, rp);
+                                return s;
+                            })
+                            .whenComplete((s, err) -> {
+                                if (s != null) headCache.put(playerUUID, s);
+                                headFutures.remove(playerUUID);
+                            })
+                    );
+                }
+
+                guiGraphics.renderItem(head, headX, headY);
             } catch (Exception e) {
-                e.printStackTrace();
+                // Si ce n'est pas un UUID, affiche une tête par défaut
+                guiGraphics.renderItem(new ItemStack(Items.PLAYER_HEAD), x + 2, y + 2);
             }
 
             // Dessine le texte, avec un léger décalage vers la droite
