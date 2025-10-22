@@ -43,4 +43,70 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
+tasks.named('processResources', ProcessResources).configure {
+    def replaceProperties = [
+                             mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+                             mod_authors         : mod_authors, mod_description: mod_description]
+
+    inputs.properties replaceProperties
+
+    // Préparer une map immuable pour l'expansion — ne pas y placer l'objet `project` lui-même
+    def projectValues = [
+        name: project.name,
+        version: project.version?.toString(),
+        group: project.group?.toString(),
+        description: project.description?.toString()
+    ]
+    def expandMap = new LinkedHashMap(replaceProperties)
+    expandMap.put('project', projectValues)
+
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
+        expand expandMap
+    }
+}
+
+def generatedDir = "$buildDir/generated/sources/buildInfo/java"
+
+tasks.register('checkUpdateJson') {
+    group = 'verification'
+    description = 'Verifies that src/main/resources/update.json matches gradle.properties (mod_version, minecraft_version) and promos.'
+    doLast {
+        def modVer = project.findProperty('mod_version')
+        def mcVer = project.findProperty('minecraft_version')
+        if (!modVer || !mcVer) {
+            throw new GradleException("Missing mod_version or minecraft_version in gradle.properties")
+        }
+        def f = file('src/main/resources/update.json')
+        if (!f.exists()) throw new GradleException("update.json not found at src/main/resources/update.json")
+        def json = new groovy.json.JsonSlurper().parse(f)
+        def allow = (project.findProperty('allowMismatch') ?: 'false').toString().toBoolean()
+
+        // Check MC bucket exists
+        if (!json.containsKey(mcVer)) {
+            def msg = "update.json missing Minecraft bucket '${mcVer}'"
+            if (allow) { logger.warn(msg) } else { throw new GradleException(msg) }
+        } else {
+            // Check version entry exists in bucket
+            def bucket = json[mcVer] as Map
+            if (!bucket.containsKey(modVer)) {
+                def msg = "update.json missing version '${modVer}' under bucket '${mcVer}'"
+                if (allow) { logger.warn(msg) } else { throw new GradleException(msg) }
+            }
+        }
+        // Check promos
+        if (!json.containsKey('promos')) {
+            def msg = "update.json missing 'promos' section"
+            if (allow) { logger.warn(msg) } else { throw new GradleException(msg) }
+        } else {
+            def promos = json.promos as Map
+            def latestKey = "${mcVer}-latest"
+            if (promos[latestKey] != modVer) {
+                def msg = "promos['${latestKey}']='${promos[latestKey]}' does not match mod_version='${modVer}'"
+                if (allow) { logger.warn(msg) } else { throw new GradleException(msg) }
+            }
+        }
+        println "update.json OK for ${mcVer} / ${modVer}"
+    }
+}
+
 apply from: 'mcreator.gradle'

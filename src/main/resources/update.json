@@ -1,0 +1,10 @@
+{
+  "homepage": "https://github.com/JLSkyzer/EriniumFaction",
+  "1.20.1": {
+    "1.0.13-BETA": "Initial public beta with AntiCheat Suite, Modules API, Anti-Xray updates, Discord alerts, Lag monitor, and region selection particles/wand."
+  },
+  "promos": {
+    "1.20.1-latest": "1.0.13-BETA",
+    "1.20.1-recommended": "1.0.13-BETA"
+  }
+}

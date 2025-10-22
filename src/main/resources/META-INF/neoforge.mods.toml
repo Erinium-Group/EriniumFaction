@@ -1,15 +1,17 @@
 modLoader="javafml"
 loaderVersion="[4,)"
-license="Not specified"
+license="${mod_license}"
 
 [[mods]]
-modId="erinium_faction"
-version="1.0.0"
-displayName="Erinium Faction"
-displayURL="https://mcreator.net"
-credits="Created using mod maker MCreator - https://mcreator.net/about"
-authors="MCreator"
-
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+updateJSONURL="https://raw.githubusercontent.com/JLSkyzer/EriniumFaction/main/src/main/resources/update.json"
+displayURL="https://github.com/JLSkyzer/EriniumFaction"
+credits="Thanks to everyone who supported the development of this mod!"
+authors="${mod_authors}"
+side = "BOTH"
+description = '''${mod_description}'''
 # Start of user code block mod configuration
 # End of user code block mod configuration
 

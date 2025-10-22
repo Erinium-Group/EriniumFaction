@@ -11,7 +11,7 @@
  * to manually adapt this file to these changes or remake it.
  *
  * This class will be added in the mod root package.
-*/
+ */
 package fr.eriniumgroup.eriniumfaction;
 
 import com.mojang.authlib.GameProfile;
@@ -154,18 +154,14 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
                     headCache.put(playerUUID, head);
 
                     // Déclenche une résolution asynchrone (offline OK) une seule fois
-                    headFutures.computeIfAbsent(playerUUID, id ->
-                        EFUtil.Head.resolveProfileByUUID(id)
-                            .thenApply(rp -> {
-                                ItemStack s = new ItemStack(Items.PLAYER_HEAD);
-                                s.set(DataComponents.PROFILE, rp);
-                                return s;
-                            })
-                            .whenComplete((s, err) -> {
-                                if (s != null) headCache.put(playerUUID, s);
-                                headFutures.remove(playerUUID);
-                            })
-                    );
+                    headFutures.computeIfAbsent(playerUUID, id -> EFUtil.Head.resolveProfileByUUID(id).thenApply(rp -> {
+                        ItemStack s = new ItemStack(Items.PLAYER_HEAD);
+                        s.set(DataComponents.PROFILE, rp);
+                        return s;
+                    }).whenComplete((s, err) -> {
+                        if (s != null) headCache.put(playerUUID, s);
+                        headFutures.remove(playerUUID);
+                    }));
                 }
 
                 guiGraphics.renderItem(head, headX, headY);
