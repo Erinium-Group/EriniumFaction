@@ -900,6 +900,25 @@
         ]
       },
       "path": "~/Faction System"
+    },
+    {
+      "name": "Qqff",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "qqff",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "itemstack",
+            "type": "itemstack"
+          }
+        ],
+        "files": [
+          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/QqffProcedure.java"
+        ]
+      },
+      "path": "~/Block health"
     }
   ],
   "variable_elements": [

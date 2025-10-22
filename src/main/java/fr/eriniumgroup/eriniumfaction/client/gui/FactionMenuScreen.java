@@ -4,6 +4,7 @@ import fr.eriniumgroup.eriniumfaction.ARGBToInt;
 import fr.eriniumgroup.eriniumfaction.EriFont;
 import fr.eriniumgroup.eriniumfaction.FactionMenuPlayerList;
 import fr.eriniumgroup.eriniumfaction.procedures.*;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -107,7 +108,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
             playerlist = GetFileStringValueProcedure.execute(factionfile, "owner") + "," + GetFileStringValueProcedure.execute(factionfile, "memberList");
         }
 
-        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145);
+        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, "96e76f2a-d77d-4cb7-91a0-3eba67e74397,9cc97115-8d4a-4133-b2fb-5c849ff93b8c,9ef0692c-560d-4bf5-9e87-e53f73a7e446", world.getServer());
         this.addRenderableWidget(scrollableList);
 	}
 

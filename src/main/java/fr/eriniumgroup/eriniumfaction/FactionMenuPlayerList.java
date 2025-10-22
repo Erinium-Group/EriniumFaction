@@ -14,12 +14,32 @@
 */
 package fr.eriniumgroup.eriniumfaction;
 
+import com.mojang.authlib.GameProfile;
+import fr.eriniumgroup.eriniumfaction.procedures.GetFileStringValueProcedure;
+import fr.eriniumgroup.eriniumfaction.procedures.UuidFileProcedure;
+import fr.eriniumgroup.eriniumfaction.util.EFUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ResolvableProfile;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlayerList.Entry> {
     private int selectedIndex = -1;
@@ -28,8 +48,10 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
     private int y;
     private int x;
     private Minecraft minecraft;
+    private MinecraftServer server;
 
-    public FactionMenuPlayerList(Minecraft minecraft, int x, int y, int itemWidth, int itemHeight, String param) {
+
+    public FactionMenuPlayerList(Minecraft minecraft, int x, int y, int itemWidth, int itemHeight, String param, MinecraftServer server) {
         super(minecraft, itemWidth, itemHeight, y, 18);
         this.setX(x); // Définit la position horizontale
         this.height = itemHeight;
@@ -37,6 +59,7 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
         this.x = x;
         this.y = y;
         this.minecraft = minecraft;
+        this.server = server;
 
         // Ajoute des entrées
         for (int i = 0; i < param.split(",").length; i++) {
@@ -116,7 +139,20 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
             guiGraphics.fill(x + 2, y + 2, x + 2 + 16 - 1, y + 2 + 16, ARGBToInt.ARGBToInt(255, 128, 128, 128));
             guiGraphics.fill(x + 2 + 16 + 1, y + 2, x + 2 + 16 + 1 + 16 - 1, y + 2 + 16, ARGBToInt.ARGBToInt(255, 128, 128, 128));
 
-            ItemStack playerhead;
+            //String playerUUID = /*GetFileStringValueProcedure.execute(UuidFileProcedure.execute(text), "displayname")*/ text;
+            try {
+                UUID playerUUID = UUID.fromString(text);
+                ItemStack playerhead = EFUtil.Head.createHeadStackByName(server, "FuzeIII");
+
+                int headX = x + 2;
+                int headY = y + 2;
+                int size = 16;
+
+                guiGraphics.renderItem(playerhead, headX, headY);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             // Dessine le texte, avec un léger décalage vers la droite
             guiGraphics.drawString(Minecraft.getInstance().font, this.text, x + 10, y + 5, 0xFFFFFF);
@@ -124,8 +160,10 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            //System.out.println("Cliqué sur : " + this.text);
-            return true;
+            System.out.println("Cliqué sur : " + this.text);
+
+            this.setFocused(false);
+            return false;
         }
     }
 }
