@@ -14,42 +14,61 @@
 */
 package fr.eriniumgroup.eriniumfaction;
 
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.api.distmarker.Dist;
 
-import fr.eriniumgroup.eriniumfaction.rank.EFRManager;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+
+import fr.eriniumgroup.eriniumfaction.procedures.TempCommandProcedure;
+import fr.eriniumgroup.eriniumfaction.EriniumFactionMod;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public class FactionGuiNetwork {
-	public FactionGuiNetwork() {
-	}
+public record FactionGuiNetwork(int buttonID, int x, int y, int z) implements CustomPacketPayload{
+    
+    public static final Type<FactionGuiNetwork> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(EriniumFactionMod.MODID, "gui_for_construct_buttons"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, FactionGuiNetwork> STREAM_CODEC = StreamCodec.of((RegistryFriendlyByteBuf buffer, FactionGuiNetwork message) -> {
+        buffer.writeInt(message.buttonID);
+        buffer.writeInt(message.x);
+        buffer.writeInt(message.y);
+        buffer.writeInt(message.z);
+    }, (RegistryFriendlyByteBuf buffer) -> new FactionGuiNetwork(buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt()));
+    @Override
+    public Type<FactionGuiNetwork> type() {
+        return TYPE;
+    }
 
-	@SubscribeEvent
-	public static void init(FMLCommonSetupEvent event) {
-		new FactionGuiNetwork();
-	}
+    public static void handleData(final FactionGuiNetwork message, final IPayloadContext context) {
+        if (context.flow() == PacketFlow.SERVERBOUND) {
+            context.enqueueWork(() -> handleButtonAction(context.player(), message.buttonID, message.x, message.y, message.z)).exceptionally(e -> {
+                context.connection().disconnect(Component.literal(e.getMessage()));
+                return null;
+            });
+        }
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void clientLoad(FMLClientSetupEvent event) {
-	}
+    public static void handleButtonAction(Player entity, int buttonID, int x, int y, int z) {
+        Level world = entity.level();
+        // security measure to prevent arbitrary chunk generation
+        if (!world.hasChunkAt(new BlockPos(x, y, z)))
+            return;
+        if (buttonID == 0) {
 
-	@EventBusSubscriber
-	private static class FactionGuiNetworkForgeBusEvents {
-		@SubscribeEvent
-		public static void serverLoad(ServerStartingEvent event) {
-			EFRManager.get().load();
-		}
 
-		@SubscribeEvent
-		public static void serverStop(ServerStoppingEvent event) {
-			EFRManager.get().save();
-		}
-	}
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerMessage(FMLCommonSetupEvent event) {
+        EriniumFactionMod.addNetworkMessage(FactionGuiNetwork.TYPE, FactionGuiNetwork.STREAM_CODEC, FactionGuiNetwork::handleData);
+    }
 }
