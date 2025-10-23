@@ -29,10 +29,10 @@ displayName = "Erinium Faction" #mandatory
 # A text field displayed in the mod UI
 #credits="" #optional
 # A text field displayed in the mod UI
-authors = "" #optional
+authors = "Erinium Group & BCK" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
-description = ''''''
+description = '''A comprehensive PvP Faction mod with claim system, ranks, and faction warfare'''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
 [[mixins]]
