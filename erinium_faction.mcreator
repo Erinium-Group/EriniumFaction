@@ -358,7 +358,7 @@
     {
       "name": "FactionGuiNetwork",
       "type": "code",
-      "compiles": false,
+      "compiles": true,
       "locked_code": true,
       "registry_name": "faction_gui_network",
       "metadata": {
@@ -1067,6 +1067,23 @@
   "tab_element_order": {},
   "language_map": {
     "en_us": {
+      "warzone.desc": "The war zone",
+      "safezone.desc": "The safe place",
+      "wilderness.desc": "Be carefull its wild !",
+      "faction.menu.resume": "Resume",
+      "f.create.alreadyexist": "This name already exist",
+      "f.create.needitem": "You need to have : §e",
+      "f.create.created": " created the faction §a",
+      "f.create.alreayinfaction": "§cYou are already in a faction",
+      "faction.menu.claims": "Claims : ",
+      "faction.menu.membercount": "Members : ",
+      "faction.menu.power": "Power : ",
+      "faction.menu.level": "Level : ",
+      "faction.menu.playerlist": "Player List",
+      "faction.menu.settings": "§cFaction Settings",
+      "gui.erinium_faction.faction_menu_settings.button_t": "T"
+    },
+    "fr_fr": {
       "warzone.desc": "The war zone",
       "safezone.desc": "The safe place",
       "wilderness.desc": "Be carefull its wild !",

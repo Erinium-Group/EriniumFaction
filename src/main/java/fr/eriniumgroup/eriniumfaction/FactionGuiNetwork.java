@@ -14,6 +14,7 @@
 */
 package fr.eriniumgroup.eriniumfaction;
 
+import fr.eriniumgroup.eriniumfaction.procedures.OpenFactionSettingsProcedure;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -63,7 +64,7 @@ public record FactionGuiNetwork(int buttonID, int x, int y, int z) implements Cu
             return;
         if (buttonID == 0) {
 
-
+            OpenFactionSettingsProcedure.execute(world, x, y, z, entity);
         }
     }
 
