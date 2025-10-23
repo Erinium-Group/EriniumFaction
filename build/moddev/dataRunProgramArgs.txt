@@ -7,7 +7,7 @@ forgedatadev
 --assetIndex
 17
 --assetsDir
-C:\\Users\\DragC\\.gradle\\caches\\neoformruntime\\assets
+C:\\Users\\killi\\.gradle\\caches\\neoformruntime\\assets
 --gameDir
 .
 --fml.fmlVersion
@@ -24,6 +24,6 @@ C:\\Users\\DragC\\.gradle\\caches\\neoformruntime\\assets
 erinium_faction
 --all
 --output
-C:\\Users\\DragC\\Desktop\\Mods\\EriniumFaction\\src\\generated\\resources
+"D:\\Mods Minecraft\\EF\\Erinium Faction\\src\\generated\\resources"
 --existing
-C:\\Users\\DragC\\Desktop\\Mods\\EriniumFaction\\src\\main\\resources
+"D:\\Mods Minecraft\\EF\\Erinium Faction\\src\\main\\resources"
