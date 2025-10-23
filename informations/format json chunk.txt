@@ -1,7 +1,0 @@
-id = String (faction id)
-canPlace = param
-canBreak = param
-canInterract = param
-openChest = param
-
-param possible : none, officer, member, recruit

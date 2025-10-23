@@ -1,1 +1,0 @@
-Component strong = (Component) Component.nullToEmpty("ALERT").getStyle().withFont(new ResourceLocation("erinium_faction", "exo2"));
