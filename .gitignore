@@ -1,3 +1,91 @@
-*.lock
-.gradle/8.8/executionHistory/executionHistory.bin
-*.bin
+.gradle
+**/build/
+!src/**/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Avoid ignore Gradle wrappper properties
+!gradle-wrapper.properties
+
+# Cache of project
+.gradletasknamecache
+
+# Eclipse Gradle plugin generated files
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# =============================
+# Forge / Gradle
+# =============================
+.gradle/
+build/
+out/
+classes/
+
+# Run configs and Minecraft runtime
+run/
+logs/
+crash-reports/
+saves/
+config/
+options.txt
+
+# Forge dev workspace cache
+.idea/modules.xml
+.idea/modules/
+*.iml
+
+options.txt
+
+# =============================
+# IntelliJ IDEA
+# =============================
+.idea/
+*.iws
+*.ipr
+*.iml
+out/
+# JetBrains caches
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+# =============================
+# Eclipse
+# =============================
+.project
+.classpath
+.settings/
+bin/
+
+# =============================
+# VSCode
+# =============================
+.vscode/
+
+# =============================
+# OS / Editor
+# =============================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# =============================
+# Env files / Secrets
+# =============================
+*.env
+*.key
+*.token
+*.secret
+
