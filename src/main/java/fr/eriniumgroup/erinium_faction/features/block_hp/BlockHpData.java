@@ -1,6 +1,6 @@
 package fr.eriniumgroup.erinium_faction.features.block_hp;
 
-import fr.eriniumgroup.eriniumfaction.procedures.AdminProtectionBlockPosProcedure;
+import fr.eriniumgroup.erinium_faction.procedures.AdminProtectionBlockPosProcedure;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;

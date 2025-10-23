@@ -1,5 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.menus;
 
+import fr.eriniumgroup.erinium_faction.core.faction.Faction;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.init.EFMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,6 +33,7 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
     public final Level world;
     public final Player entity;
     public int x, y, z;
+    public Faction faction;
     private ContainerLevelAccess access = ContainerLevelAccess.NULL;
     private IItemHandler internal;
     private final Map<Integer, Slot> customSlots = new HashMap<>();
@@ -46,11 +49,23 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         this.internal = new ItemStackHandler(0);
         BlockPos pos = null;
         if (extraData != null) {
+            // Lire la position si fournie (compatibilité existante)
             pos = extraData.readBlockPos();
             this.x = pos.getX();
             this.y = pos.getY();
             this.z = pos.getZ();
             access = ContainerLevelAccess.create(world, pos);
+
+            // Si des données supplémentaires sont présentes, tenter de lire le nom de faction
+            if (extraData.readableBytes() > 0) {
+                String factionName = extraData.readUtf(32767);
+                Faction f = FactionManager.getFaction(factionName);
+                this.faction = (f != null) ? f : FactionManager.getPlayerFactionObject(this.entity.getUUID());
+            } else {
+                this.faction = FactionManager.getPlayerFactionObject(this.entity.getUUID());
+            }
+        } else {
+            this.faction = FactionManager.getPlayerFactionObject(this.entity.getUUID());
         }
     }
 

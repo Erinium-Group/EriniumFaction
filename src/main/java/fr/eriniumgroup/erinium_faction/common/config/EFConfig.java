@@ -1,12 +1,13 @@
 package fr.eriniumgroup.erinium_faction.common.config;
 
 import fr.eriniumgroup.erinium_faction.EriniumFaction;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@EventBusSubscriber(modid = EriniumFaction.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = EFC.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class EFConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 

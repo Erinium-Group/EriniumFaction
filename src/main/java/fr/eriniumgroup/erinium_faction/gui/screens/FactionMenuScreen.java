@@ -9,7 +9,6 @@ import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.widgets.FactionMenuPlayerList;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
-import fr.eriniumgroup.erinium_faction.procedures.*;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -21,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -46,15 +46,11 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         this.entity = container.entity;
         this.imageWidth = 420;
         this.imageHeight = 240;
-        this._vars = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES);
+        this._vars = entity.getData(EFVariables.PLAYER_VARIABLES);
 
-        if (_vars.seeOtherFaction) {
-            this.factionid = _vars.seeFaction;
-            this.factionfile = EFUtils.Faction.FactionFileById(_vars.seeFaction);
-        } else {
-            this.factionfile = EFUtils.Faction.FactionFileById(FactionManager.getPlayerFaction(entity.getUUID()));
-            this.faction = FactionManager.getPlayerFactionObject(entity.getUUID());
-        }
+        this.faction = container.faction != null ? container.faction : FactionManager.getPlayerFactionObject(entity.getUUID());
+        String factionId = this.faction != null ? this.faction.getName() : FactionManager.getPlayerFaction(entity.getUUID());
+        this.factionfile = EFUtils.Faction.FactionFileById(factionId);
     }
 
     @Override
@@ -113,9 +109,6 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     public boolean keyPressed(int key, int b, int c) {
         if (key == 256) {
             this.minecraft.player.closeContainer();
-            _vars.seeOtherFaction = false;
-            _vars.seeFaction = "";
-            _vars.syncPlayerVariables(entity);
             return true;
         }
         return super.keyPressed(key, b, c);
@@ -139,7 +132,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist, world.getServer());
         this.addRenderableWidget(scrollableList);
 
-        if (faction.getRank(entity.getUUID()).canManageSettings()) {
+        if (faction != null && faction.getRank(entity.getUUID()).canManageSettings()) {
             fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
                 int x = FactionMenuScreen.this.x;
                 int y = FactionMenuScreen.this.y;
@@ -204,3 +197,4 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         guiGraphics.pose().popPose();
     }
 }
+

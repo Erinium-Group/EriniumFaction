@@ -15,6 +15,7 @@
 package fr.eriniumgroup.erinium_faction.gui.widgets;
 
 import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.procedures.GetFileStringValueProcedure;
 import fr.eriniumgroup.erinium_faction.procedures.UuidFileProcedure;
 import net.minecraft.client.Minecraft;
@@ -136,7 +137,7 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
                 UUID playerUUID = UUID.fromString(this.text.split(":")[0]);
                 String rank = this.text.split(":")[1];
                 ResourceLocation ranktexture = ResourceLocation.parse("erinium_faction:textures/screens/" + rank + ".png");
-                String Playername = GetFileStringValueProcedure.execute(UuidFileProcedure.execute(String.valueOf(playerUUID)), "displayname");
+                String Playername = EFUtils.F.GetFileStringValue(UuidFileProcedure.execute(String.valueOf(playerUUID)), "displayname");
 
                 int headX = x + 1;
                 int headY = y + 1;
@@ -192,7 +193,7 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            System.out.println("Cliqué sur : " + this.text);
+            EFC.log.debug("Cliqué sur : " + this.text);
 
             this.setFocused(false);
             return false;

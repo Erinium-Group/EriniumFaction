@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenuSettingsMenu;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
 import net.minecraft.client.gui.GuiGraphics;

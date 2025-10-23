@@ -12,4 +12,3 @@ public class MapRenderer {
     // - Show borders between territories
     // - Mini-map integration
 }
-

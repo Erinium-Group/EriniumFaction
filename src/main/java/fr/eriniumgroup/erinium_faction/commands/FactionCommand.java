@@ -12,11 +12,19 @@ import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.Rank;
+import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
+import io.netty.buffer.Unpooled;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.util.Collection;
 
@@ -51,6 +59,11 @@ public class FactionCommand {
                 .then(Commands.literal("neutral").then(Commands.argument("faction", FactionArgumentType.faction()).executes(FactionCommand::neutral)))
 
                 .then(Commands.literal("info").executes(ctx -> info(ctx, null)).then(Commands.argument("faction", FactionArgumentType.faction()).executes(ctx -> info(ctx, FactionArgumentType.getFaction(ctx, "faction")))))
+
+                .then(Commands.literal("f")
+                        .executes(ctx -> openMenu(ctx, null))
+                        .then(Commands.argument("faction", FactionArgumentType.faction())
+                                .executes(ctx -> openMenu(ctx, FactionArgumentType.getFaction(ctx, "faction")))))
 
                 .then(Commands.literal("list").executes(FactionCommand::list)));
 
@@ -384,6 +397,43 @@ public class FactionCommand {
         Collection<Faction> factions = FactionManager.getAllFactions();
 
         ctx.getSource().sendSuccess(() -> Component.literal("§6====== Factions (" + factions.size() + ") ======\n" + factions.stream().map(f -> "§e- " + f.getName() + " §7(" + f.getMembers().size() + " membres)").reduce((a, b) -> a + "\n" + b).orElse("§7Aucune faction")), false);
+        return 1;
+    }
+
+    private static int openMenu(CommandContext<CommandSourceStack> ctx, String factionName) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        String targetFaction = factionName != null ? factionName : FactionManager.getPlayerFaction(player.getUUID());
+        if (targetFaction == null) {
+            ctx.getSource().sendFailure(Component.literal("§cAucune faction spécifiée et vous n'êtes pas dans une faction !"));
+            return 0;
+        }
+        if (!FactionManager.factionExists(targetFaction)) {
+            ctx.getSource().sendFailure(Component.literal("§cFaction introuvable !"));
+            return 0;
+        }
+
+        BlockPos pos = player.blockPosition();
+        player.openMenu(new MenuProvider() {
+            @Override
+            public Component getDisplayName() {
+                return Component.literal("FactionMenu");
+            }
+
+            @Override
+            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
+                return false;
+            }
+
+            @Override
+            public AbstractContainerMenu createMenu(int id, Inventory inventory, Player p) {
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                buf.writeBlockPos(pos);
+                buf.writeUtf(targetFaction);
+                return new FactionMenu(id, inventory, buf);
+            }
+        }, pos);
+
         return 1;
     }
 }

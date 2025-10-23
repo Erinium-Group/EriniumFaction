@@ -22,6 +22,7 @@ public record ClaimKey(String dimension, int chunkX, int chunkZ) {
         return chunkX == claimKey.chunkX && chunkZ == claimKey.chunkZ && Objects.equals(dimension, claimKey.dimension);
     }
 
+    // TODO: Voir pour changé le format de sauvegarde
     @Override
     public String toString() {
         return dimension + " [" + chunkX + ", " + chunkZ + "]";
