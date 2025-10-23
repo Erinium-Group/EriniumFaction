@@ -34,6 +34,7 @@ logs/
 crash-reports/
 saves/
 config/
+options.txt
 
 # Forge dev workspace cache
 .idea/modules.xml

@@ -66,15 +66,15 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos + 0, this.topPos + 0, 0, 0, 420, 240, 420, 240);
 
         drawText(guiGraphics, GetFileStringValueProcedure.execute(factionfile, "displayname"), EriFont::orbitronBold, 14f, -1, 10, false, true, ARGBToInt.ARGBToInt(255,255,215,0));
-        drawText(guiGraphics, Component.translatable("faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, 45, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, 45, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
 
         int claimCount = (GetFileStringValueProcedure.execute(factionfile, "claimlist") == null || GetFileStringValueProcedure.execute(factionfile, "claimlist").isEmpty()) ? 0 : GetFileStringValueProcedure.execute(factionfile, "claimlist").split(",").length;
         int playerCount = (GetFileStringValueProcedure.execute(factionfile, "memberList") == null || GetFileStringValueProcedure.execute(factionfile, "memberList").isEmpty()) ? 1 : GetFileStringValueProcedure.execute(factionfile, "claimlist").split(",").length + 1;
 
-        drawText(guiGraphics, Component.translatable("faction.menu.claims").getString() + claimCount + " / " + (int) GetFileNumberValueProcedure.execute(factionfile, "maxClaims"), EriFont::exo2, 8f, 149, 89, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
-        drawText(guiGraphics, Component.translatable("faction.menu.membercount").getString() + playerCount + " / " + (int) GetFileNumberValueProcedure.execute(factionfile, "maxPlayer"), EriFont::exo2, 8f, 149, 102, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
-        drawText(guiGraphics, Component.translatable("faction.menu.power").getString() + (int) GetFileNumberValueProcedure.execute(factionfile, "power") + " / " + (int) GetFactionMaxPowerProcedure.execute(factionid), EriFont::exo2, 8f, 149, 115, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
-        drawText(guiGraphics, Component.translatable("faction.menu.level").getString() + (int) GetFileNumberValueProcedure.execute(factionfile, "factionLevel"), EriFont::exo2, 8f, -1, 128, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.claims").getString() + claimCount + " / " + (int) GetFileNumberValueProcedure.execute(factionfile, "maxClaims"), EriFont::exo2, 8f, 149, 89, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.membercount").getString() + playerCount + " / " + (int) GetFileNumberValueProcedure.execute(factionfile, "maxPlayer"), EriFont::exo2, 8f, 149, 102, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + (int) GetFileNumberValueProcedure.execute(factionfile, "power") + " / " + (int) GetFactionMaxPowerProcedure.execute(factionid), EriFont::exo2, 8f, 149, 115, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.level").getString() + (int) GetFileNumberValueProcedure.execute(factionfile, "factionLevel"), EriFont::exo2, 8f, -1, 128, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
 
         guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), this.leftPos + 149, this.topPos + 141, 0, 0, 122, 10, 122, 10);
         guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), this.leftPos + 150, this.topPos + 142, 0, 0, (int) (122 / FactionGetXPRequiredProcedure.execute((int) GetFileNumberValueProcedure.execute(factionfile, "factionLevel"))) * (int) GetFileNumberValueProcedure.execute(factionfile, "factionXp"), 8,122, 8);

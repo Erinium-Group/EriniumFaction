@@ -110,20 +110,20 @@ public class FCreateProcedure {
 					}
 					ChangePlayerFactionProcedure.execute(StringArgumentType.getString(arguments, "id"), entity.getStringUUID());
 					if (entity instanceof Player _player && !_player.level().isClientSide())
-						_player.displayClientMessage(Component.literal((entity.getDisplayName().getString() + "" + Component.translatable("f.create.created").getString() + StringArgumentType.getString(arguments, "DisplayName"))), false);
+						_player.displayClientMessage(Component.literal((entity.getDisplayName().getString() + "" + Component.translatable("erinium_faction.faction.create.created").getString() + StringArgumentType.getString(arguments, "DisplayName"))), false);
 				} else {
 					if (entity instanceof Player _player && !_player.level().isClientSide())
 						_player.displayClientMessage(
-								Component.literal((Component.translatable("f.create.needitem").getString() + "" + FactionConfigServerConfiguration.FACTIONCOSTITEM.get() + " x" + (double) FactionConfigServerConfiguration.FACTIONCOSTNUMBER.get())),
+								Component.literal((Component.translatable("erinium_faction.faction.create.needitem").getString() + "" + FactionConfigServerConfiguration.FACTIONCOSTITEM.get() + " x" + (double) FactionConfigServerConfiguration.FACTIONCOSTNUMBER.get())),
 								false);
 				}
 			} else {
 				if (entity instanceof Player _player && !_player.level().isClientSide())
-					_player.displayClientMessage(Component.literal((Component.translatable("f.create.alreadyexist").getString())), false);
+					_player.displayClientMessage(Component.literal((Component.translatable("erinium_faction.faction.create.alreadyexist").getString())), false);
 			}
 		} else {
 			if (entity instanceof Player _player && !_player.level().isClientSide())
-				_player.displayClientMessage(Component.literal((Component.translatable("f.create.alreayinfaction").getString())), false);
+				_player.displayClientMessage(Component.literal((Component.translatable("erinium_faction.faction.create.alreayinfaction").getString())), false);
 		}
 	}
 }

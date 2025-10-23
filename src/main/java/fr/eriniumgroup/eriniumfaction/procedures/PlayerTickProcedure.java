@@ -90,7 +90,7 @@ public class PlayerTickProcedure {
 							if (world instanceof ServerLevel _level)
 								_level.getServer().getCommands().performPrefixedCommand(
 										new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
-										("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("wilderness.desc").getString()) + "\""));
+										("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("erinium_faction.wilderness.desc").getString()) + "\""));
 							if (world instanceof ServerLevel _level)
 								_level.getServer().getCommands().performPrefixedCommand(
 										new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
@@ -105,7 +105,7 @@ public class PlayerTickProcedure {
 							if (world instanceof ServerLevel _level)
 								_level.getServer().getCommands().performPrefixedCommand(
 										new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
-										("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("safezone.desc").getString()) + "\""));
+										("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("erinium_faction.safezone.desc").getString()) + "\""));
 							if (world instanceof ServerLevel _level)
 								_level.getServer().getCommands().performPrefixedCommand(
 										new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
@@ -120,7 +120,7 @@ public class PlayerTickProcedure {
 							if (world instanceof ServerLevel _level)
 								_level.getServer().getCommands().performPrefixedCommand(
 										new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
-										("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("warzone.desc").getString()) + "\""));
+										("title " + entity.getDisplayName().getString() + " subtitle \"" + (Component.translatable("erinium_faction.warzone.desc").getString()) + "\""));
 							if (world instanceof ServerLevel _level)
 								_level.getServer().getCommands().performPrefixedCommand(
 										new CommandSourceStack(CommandSource.NULL, new Vec3((entity.getX()), (entity.getY()), (entity.getZ())), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),

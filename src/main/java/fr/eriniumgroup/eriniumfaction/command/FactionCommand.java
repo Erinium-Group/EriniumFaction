@@ -17,7 +17,7 @@ import fr.eriniumgroup.eriniumfaction.procedures.FCreateProcedure;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 @EventBusSubscriber
-public class FCommand {
+public class FactionCommand {
 	@SubscribeEvent
 	public static void registerCommand(RegisterCommandsEvent event) {
 		event.getDispatcher().register(Commands.literal("f")

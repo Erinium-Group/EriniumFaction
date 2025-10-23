@@ -15,12 +15,15 @@
 package fr.eriniumgroup.eriniumfaction;
 
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.api.distmarker.Dist;
+
+import fr.eriniumgroup.eriniumfaction.rank.EFRManager;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class FactionGuiNetwork {
@@ -41,6 +44,12 @@ public class FactionGuiNetwork {
 	private static class FactionGuiNetworkForgeBusEvents {
 		@SubscribeEvent
 		public static void serverLoad(ServerStartingEvent event) {
+			EFRManager.get().load();
+		}
+
+		@SubscribeEvent
+		public static void serverStop(ServerStoppingEvent event) {
+			EFRManager.get().save();
 		}
 	}
 }
