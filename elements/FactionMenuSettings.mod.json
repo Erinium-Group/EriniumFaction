@@ -1,0 +1,65 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 0,
+    "width": 420,
+    "height": 240,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": false,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "image",
+        "data": {
+          "image": "empty.png",
+          "use1Xscale": false,
+          "x": 4,
+          "y": 0,
+          "locked": false
+        }
+      },
+      {
+        "type": "button",
+        "data": {
+          "name": "button_t",
+          "text": "T",
+          "isUndecorated": false,
+          "onClick": {
+            "name": "ToggleOpenFaction"
+          },
+          "width": 18,
+          "height": 20,
+          "x": 15,
+          "y": 8,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_proc_faction_is_opened",
+          "text": {
+            "fixedValue": "",
+            "name": "FactionIsOpened"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 34,
+          "y": 12,
+          "locked": false
+        }
+      }
+    ],
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": false
+    }
+  }
+}

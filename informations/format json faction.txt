@@ -42,7 +42,7 @@ canBreak, canPlace, canInterract, openChest
 canInvite, canKick, canPromote, canDemote, canHome, canWarp
 
 // gestion
-canManageRanks, canChangeDesc, canClaim, canUnclaim, canSetHome, canManageWarps, canAlly
+ManageSettings, canManageRanks, canChangeDesc, canClaim, canUnclaim, canSetHome, canManageWarps, canAlly
 
 // Economie
 canWithdrawMoney, canDepositMoney

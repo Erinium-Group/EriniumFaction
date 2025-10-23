@@ -41,6 +41,8 @@ options.txt
 .idea/modules/
 *.iml
 
+options.txt
+
 # =============================
 # IntelliJ IDEA
 # =============================

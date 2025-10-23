@@ -142,21 +142,23 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
         FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist, world.getServer());
         this.addRenderableWidget(scrollableList);
 
-        fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64,
-                new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
-            int x = FactionMenuScreen.this.x;
-            int y = FactionMenuScreen.this.y;
-            if (true) {
-                PacketDistributor.sendToServer(new GuiForConstructButtonMessage(0, x, y, z));
-                GuiForConstructButtonMessage.handleButtonAction(entity, 0, x, y, z);
-            }
-        }) {
-            @Override
-            public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-                guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
-            }
-        };
-        this.addRenderableWidget(fsettings);
+        if (HavePermissionProcedure.execute(entity, "ManageSettings")){
+            fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64,
+                    new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
+                int x = FactionMenuScreen.this.x;
+                int y = FactionMenuScreen.this.y;
+                if (true) {
+                    PacketDistributor.sendToServer(new GuiForConstructButtonMessage(0, x, y, z));
+                    GuiForConstructButtonMessage.handleButtonAction(entity, 0, x, y, z);
+                }
+            }) {
+                @Override
+                public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+                    guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
+                }
+            };
+            this.addRenderableWidget(fsettings);
+        }
 	}
 
     @Override

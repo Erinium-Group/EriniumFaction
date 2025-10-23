@@ -5,9 +5,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.bus.api.Event;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
 
@@ -35,8 +33,6 @@ public class PlayerJoinProcedure {
 			return;
 		File file = new File("");
 		com.google.gson.JsonObject JsonObject = new com.google.gson.JsonObject();
-		if (entity instanceof Player _player && !_player.level().isClientSide())
-			_player.displayClientMessage(Component.literal("\u00A7aSync..."), false);
 		file = UuidFileProcedure.execute(entity.getStringUUID());
 		{
 			try {
@@ -79,7 +75,5 @@ public class PlayerJoinProcedure {
 				e.printStackTrace();
 			}
 		}
-		if (entity instanceof Player _player && !_player.level().isClientSide())
-			_player.displayClientMessage(Component.literal("\u00A7aSuccessfully synced"), false);
 	}
 }
