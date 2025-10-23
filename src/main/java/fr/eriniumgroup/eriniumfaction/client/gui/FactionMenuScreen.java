@@ -3,7 +3,11 @@ package fr.eriniumgroup.eriniumfaction.client.gui;
 import fr.eriniumgroup.eriniumfaction.ARGBToInt;
 import fr.eriniumgroup.eriniumfaction.EriFont;
 import fr.eriniumgroup.eriniumfaction.FactionMenuPlayerList;
+import fr.eriniumgroup.eriniumfaction.network.EriniumFactionModVariables;
+import fr.eriniumgroup.eriniumfaction.network.GuiForConstructButtonMessage;
 import fr.eriniumgroup.eriniumfaction.procedures.*;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
@@ -17,14 +21,20 @@ import fr.eriniumgroup.eriniumfaction.world.inventory.FactionMenuMenu;
 import fr.eriniumgroup.eriniumfaction.init.EriniumFactionModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> implements EriniumFactionModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
 	private boolean menuStateUpdateActive = false;
+    ImageButton fsettings;
+
+    EriniumFactionModVariables.PlayerVariables _vars;
 
     private File factionfile;
     private String factionid;
@@ -38,9 +48,15 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		this.entity = container.entity;
 		this.imageWidth = 420;
 		this.imageHeight = 240;
+        this._vars = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES);
 
-        this.factionfile = FactionFileByIdProcedure.execute(GetPlayerFactionProcedure.execute(entity));
-        this.factionid = GetPlayerFactionProcedure.execute(entity);
+        if (_vars.seeOtherFaction){
+            this.factionid = _vars.seeFaction;
+            this.factionfile = FactionFileByIdProcedure.execute(_vars.seeFaction);
+        }else{
+            this.factionfile = FactionFileByIdProcedure.execute(GetPlayerFactionProcedure.execute(entity));
+            this.factionid = GetPlayerFactionProcedure.execute(entity);
+        }
 	}
 
 	@Override
@@ -54,7 +70,18 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		this.renderTooltip(guiGraphics, mouseX, mouseY);
+
+        boolean customTooltipShown = false;
+        if (mouseX > leftPos + 74 && mouseX < leftPos + 74 + 64 && mouseY > topPos + 100 && mouseY < topPos + 100 + 64) {
+            String hoverText = Component.translatable("faction.menu.settings").getString();
+            if (hoverText != null) {
+                guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
+            }
+            customTooltipShown = true;
+        }
+
+        if (!customTooltipShown)
+            this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
@@ -89,6 +116,9 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 	public boolean keyPressed(int key, int b, int c) {
 		if (key == 256) {
 			this.minecraft.player.closeContainer();
+            _vars.seeOtherFaction = false;
+            _vars.seeFaction = "";
+            _vars.syncPlayerVariables(entity);
 			return true;
 		}
 		return super.keyPressed(key, b, c);
@@ -111,6 +141,22 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 
         FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist, world.getServer());
         this.addRenderableWidget(scrollableList);
+
+        fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64,
+                new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
+            int x = FactionMenuScreen.this.x;
+            int y = FactionMenuScreen.this.y;
+            if (true) {
+                PacketDistributor.sendToServer(new GuiForConstructButtonMessage(0, x, y, z));
+                GuiForConstructButtonMessage.handleButtonAction(entity, 0, x, y, z);
+            }
+        }) {
+            @Override
+            public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+                guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
+            }
+        };
+        this.addRenderableWidget(fsettings);
 	}
 
     @Override

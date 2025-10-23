@@ -900,25 +900,6 @@
         ]
       },
       "path": "~/Faction System"
-    },
-    {
-      "name": "Qqff",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "qqff",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "itemstack",
-            "type": "itemstack"
-          }
-        ],
-        "files": [
-          "src/main/java/fr/eriniumgroup/eriniumfaction/procedures/QqffProcedure.java"
-        ]
-      },
-      "path": "~/Block health"
     }
   ],
   "variable_elements": [
@@ -963,6 +944,12 @@
       "type": "number",
       "scope": "player_persistent",
       "value": "10.0"
+    },
+    {
+      "name": "seeOtherFaction",
+      "type": "logic",
+      "scope": "player_persistent",
+      "value": "false"
     }
   ],
   "sound_elements": [],
@@ -985,7 +972,8 @@
       "faction.menu.claims": "Claims : ",
       "faction.menu.membercount": "Members : ",
       "faction.menu.power": "Power : ",
-      "faction.menu.level": "Level : "
+      "faction.menu.level": "Level : ",
+      "faction.menu.playerlist": "Player List"
     }
   },
   "metadata": {

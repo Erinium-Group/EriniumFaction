@@ -66,6 +66,8 @@ public class EriniumFactionModVariables {
 			clone.lastRegion = original.lastRegion;
 			clone.faction_bypass = original.faction_bypass;
 			clone.power = original.power;
+			clone.seeOtherFaction = original.seeOtherFaction;
+			clone.seeFaction = original.seeFaction;
 			if (!event.isWasDeath()) {
 				clone.canfly = original.canfly;
 			}
@@ -81,6 +83,8 @@ public class EriniumFactionModVariables {
 		public String lastRegion = "";
 		public boolean faction_bypass = false;
 		public double power = 10.0;
+		public boolean seeOtherFaction = false;
+		public String seeFaction = "\"\"";
 
 		@Override
 		public CompoundTag serializeNBT(HolderLookup.Provider lookupProvider) {
@@ -92,6 +96,8 @@ public class EriniumFactionModVariables {
 			nbt.putString("lastRegion", lastRegion);
 			nbt.putBoolean("faction_bypass", faction_bypass);
 			nbt.putDouble("power", power);
+			nbt.putBoolean("seeOtherFaction", seeOtherFaction);
+			nbt.putString("seeFaction", seeFaction);
 			return nbt;
 		}
 
@@ -104,6 +110,8 @@ public class EriniumFactionModVariables {
 			lastRegion = nbt.getString("lastRegion");
 			faction_bypass = nbt.getBoolean("faction_bypass");
 			power = nbt.getDouble("power");
+			seeOtherFaction = nbt.getBoolean("seeOtherFaction");
+			seeFaction = nbt.getString("seeFaction");
 		}
 
 		public void syncPlayerVariables(Entity entity) {
