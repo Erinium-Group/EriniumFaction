@@ -1,6 +1,5 @@
 package fr.eriniumgroup.erinium_faction;
 
-import com.mojang.logging.LogUtils;
 import fr.eriniumgroup.erinium_faction.commands.FactionCommand;
 import fr.eriniumgroup.erinium_faction.commands.RankCommand;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
@@ -19,6 +18,13 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import fr.eriniumgroup.erinium_faction.init.EFMenus;
+import fr.eriniumgroup.erinium_faction.init.EFItems;
+import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
+import fr.eriniumgroup.erinium_faction.init.EFArgumentTypes;
+import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -31,6 +37,12 @@ public class EriniumFaction {
 
         // Configuration
         modContainer.registerConfig(ModConfig.Type.SERVER, EFConfig.SPEC);
+
+        // Register DeferredRegisters (must be before client screen registrations)
+        EFMenus.REGISTER.register(modEventBus);
+        EFItems.REGISTER.register(modEventBus);
+        EFVariables.ATTACHMENT_TYPES.register(modEventBus);
+        EFArgumentTypes.REGISTER.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
@@ -50,6 +62,8 @@ public class EriniumFaction {
     private void commonSetup(final FMLCommonSetupEvent event) {
         EFC.log.info("§6Common §aSetup");
         PacketHandler.register();
+        // Link custom argument class to its info so server can sync command tree to clients
+        event.enqueueWork(() -> ArgumentTypeInfos.registerByClass(FactionArgumentType.class, (ArgumentTypeInfo<FactionArgumentType, ?>) EFArgumentTypes.FACTION.get()));
     }
 
     private void onServerStarting(ServerStartingEvent event) {
@@ -68,4 +82,3 @@ public class EriniumFaction {
         RankCommand.register(event.getDispatcher());
     }
 }
-

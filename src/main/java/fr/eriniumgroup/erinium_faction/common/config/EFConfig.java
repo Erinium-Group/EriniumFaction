@@ -1,13 +1,12 @@
 package fr.eriniumgroup.erinium_faction.common.config;
 
-import fr.eriniumgroup.erinium_faction.EriniumFaction;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@EventBusSubscriber(modid = EFC.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = EFC.MODID)
 public class EFConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
@@ -59,8 +58,7 @@ public class EFConfig {
     public static int minFactionNameLength;
     public static int maxFactionNameLength;
 
-    @SubscribeEvent
-    static void onLoad(final ModConfigEvent event) {
+    private static void bake() {
         friendlyFire = FRIENDLY_FIRE.get();
         allyDamage = ALLY_DAMAGE.get();
         maxClaimsPerFaction = MAX_CLAIMS_PER_FACTION.get();
@@ -69,5 +67,17 @@ public class EFConfig {
         cancelOnDamage = CANCEL_ON_DAMAGE.get();
         minFactionNameLength = MIN_FACTION_NAME_LENGTH.get();
         maxFactionNameLength = MAX_FACTION_NAME_LENGTH.get();
+    }
+
+    @SubscribeEvent
+    static void onLoad(final ModConfigEvent.Loading event) {
+        if (!event.getConfig().getModId().equals(EFC.MODID)) return;
+        bake();
+    }
+
+    @SubscribeEvent
+    static void onReload(final ModConfigEvent.Reloading event) {
+        if (!event.getConfig().getModId().equals(EFC.MODID)) return;
+        bake();
     }
 }
