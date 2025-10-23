@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
 import fr.eriniumgroup.erinium_faction.common.network.packets.GuiForConstructButtonMessage;
 import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.core.EriFont;
@@ -32,7 +33,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     private Player entity;
     ImageButton fsettings;
 
-    EriniumFactionModVariables.PlayerVariables _vars;
+    EFVariables.PlayerVariables _vars;
 
     private File factionfile;
     private Faction faction;

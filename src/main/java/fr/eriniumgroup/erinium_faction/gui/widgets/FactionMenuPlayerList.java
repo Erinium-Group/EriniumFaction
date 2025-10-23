@@ -129,7 +129,7 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
         @Override
         public void render(GuiGraphics guiGraphics, int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean isSelected, float partialTick) {
             // Dessine un fond pour chaque élément (facultatif)
-            guiGraphics.fill(x + 1, y + 1, x + itemWidth - 1, y + 18, ARGBToInt.ARGBToInt(128, 17, 17, 44));
+            guiGraphics.fill(x + 1, y + 1, x + itemWidth - 1, y + 18, EFUtils.Color.ARGBToInt(128, 17, 17, 44));
             /*guiGraphics.fill(x + 2, y + 2, x + 2 + 16 - 1, y + 2 + 16 - 1, ARGBToInt.ARGBToInt(255, 128, 128, 128));
             guiGraphics.fill(x + 2 + 16 + 1, y + 2, x + 2 + 16 + 1 + 16 - 1, y + 2 + 16 - 1, ARGBToInt.ARGBToInt(255, 128, 128, 128));*/
 
@@ -179,7 +179,7 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
                     float scalertext = 82f / Minecraft.getInstance().font.width(Playername);
                     guiGraphics.pose().scale(scalertext, scalertext, 1f);
                 }
-                guiGraphics.drawString(Minecraft.getInstance().font, Playername, 0, 0, ARGBToInt.ARGBToInt(255, 255, 255, 255));
+                guiGraphics.drawString(Minecraft.getInstance().font, Playername, 0, 0, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
                 guiGraphics.pose().popPose();
 
             } catch (Exception e) {

@@ -452,6 +452,7 @@ public class EFUtils {
         }
     }
 
+    // File
     public static class F {
         public static String GetFileStringValue(File fileobj, String object) {
             if (fileobj == null || object == null) return "";
