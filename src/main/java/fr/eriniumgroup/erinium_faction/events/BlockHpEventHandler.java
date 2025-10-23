@@ -1,9 +1,9 @@
 package fr.eriniumgroup.erinium_faction.events;
 
 import fr.eriniumgroup.erinium_faction.common.util.PlayerProtection;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.features.block_hp.BlockHpData;
 import fr.eriniumgroup.erinium_faction.features.block_hp.BlockHpSyncMessage;
-import fr.eriniumgroup.erinium_faction.procedures.PlayerProtectionOptimisedProcedure;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,7 +36,7 @@ import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@EventBusSubscriber(modid = "erinium_faction", bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = EFC.MODID)
 public final class BlockHpEventHandler {
 
     private static float strengthOf(Explosion ex) {

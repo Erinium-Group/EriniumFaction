@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "fr.eriniumgroup.eriniumfaction.mixin",
+  "package": "fr.eriniumgroup.erinium_faction.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
   ],

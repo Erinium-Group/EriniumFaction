@@ -2,6 +2,8 @@ package fr.eriniumgroup.erinium_faction.common.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LevelAccessor;
@@ -63,13 +65,13 @@ public class PlayerProtection {
         // === VÉRIFICATIONS RAPIDES (sans I/O) ===
 
         // 1. Bypass admin
-        if (entity instanceof ServerPlayer) {
-            if (entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).faction_bypass) {
+        if (entity instanceof ServerPlayer _player) {
+            if (_player.hasPermissions(4)) {
                 return true;
             }
 
             // 2. Vérification de faction (SAUF wilderness)
-            String playerFaction = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES).faction;
+            String playerFaction = FactionManager.getPlayerFaction(entity.getUUID());
             if (!tempId.equals(playerFaction) && !tempId.equals("wilderness")) {
                 return false;
             }

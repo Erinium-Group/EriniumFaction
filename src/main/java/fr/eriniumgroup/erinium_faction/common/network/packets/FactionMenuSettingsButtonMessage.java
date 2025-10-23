@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.common.network.packets;
 
+import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -12,8 +13,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.core.BlockPos;
-
-import fr.eriniumgroup.eriniumfaction.procedures.ToggleOpenFactionProcedure;
 
 public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z) implements CustomPacketPayload {
 
@@ -52,7 +51,7 @@ public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z
 			return;
 		if (buttonID == 0) {
 
-			ToggleOpenFactionProcedure.execute(entity);
+			EFUtils.Faction.ToggleOpenFaction(entity);
 		}
 	}
 }

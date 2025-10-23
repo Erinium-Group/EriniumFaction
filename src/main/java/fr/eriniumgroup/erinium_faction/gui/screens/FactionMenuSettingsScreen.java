@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
+import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenuSettingsMenu;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
 import net.minecraft.client.gui.GuiGraphics;
@@ -64,7 +65,7 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, FactionIsOpenedProcedure.execute(entity), 30, 12, -12829636, false);
+        guiGraphics.drawString(this.font, EFUtils.Faction.FactionIsOpened(entity), 30, 12, -12829636, false);
     }
 
     @Override

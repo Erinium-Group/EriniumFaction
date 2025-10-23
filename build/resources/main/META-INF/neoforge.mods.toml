@@ -17,7 +17,7 @@ license = "All Rights Reserved"
 # The modid of the mod
 modId = "erinium_faction" #mandatory
 # The version number of the mod
-version = "1.0-SNAPSHOT" #mandatory
+version = "1.0.0-BETA" #mandatory
 # A display name for the mod
 displayName = "Erinium Faction" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.neoforge.net/docs/misc/updatechecker/
@@ -29,10 +29,10 @@ displayName = "Erinium Faction" #mandatory
 # A text field displayed in the mod UI
 #credits="" #optional
 # A text field displayed in the mod UI
-authors = "" #optional
+authors = "Erinium Group & BCK" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
-description = ''''''
+description = '''A comprehensive PvP Faction mod with claim system, ranks, and faction warfare'''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
 [[mixins]]

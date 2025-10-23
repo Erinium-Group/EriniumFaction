@@ -1,0 +1,11 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "erinium_faction:exo2.ttf",
+      "shift": [0, 0],
+      "size": 10.0,
+      "oversample": 5.0
+    }
+  ]
+}

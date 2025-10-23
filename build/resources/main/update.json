@@ -1,0 +1,10 @@
+{
+  "homepage": "https://github.com/JLSkyzer/EriniumFaction",
+  "1.21.1": {
+    "1.0.0-BETA": "A PvP Faction mod"
+  },
+  "promos": {
+    "1.21.1-latest": "1.0.0-BETA",
+    "1.21.1-recommended": "1.0.0-BETA"
+  }
+}

@@ -6,6 +6,8 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import fr.eriniumgroup.erinium_faction.core.EFC;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -25,10 +28,7 @@ import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.neoforged.fml.loading.FMLPaths;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -450,6 +450,97 @@ public class EFUtils {
             }
             return "wilderness";
         }
+
+        public static boolean AdminProtectionBlockPos(LevelAccessor world, double x, double z) {
+            File file = new File("");
+            com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
+            String tempId = "";
+            String factionRank = "";
+            boolean impossibleToInterract = false;
+            boolean needcheckworldfile = false;
+            tempId = CurrentChunkFactionId(world, x, z);
+            if ((tempId).equals("safezone") || (tempId).equals("warzone")) {
+                return false;
+            } else if ((tempId).equals("wilderness")) {
+                return true;
+            } else {
+                file = FactionFileById(tempId);
+                {
+                    try {
+                        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                        StringBuilder jsonstringbuilder = new StringBuilder();
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            jsonstringbuilder.append(line);
+                        }
+                        bufferedReader.close();
+                        jsonObject = new com.google.gson.Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
+                        if (jsonObject.get("isAdminFaction").getAsBoolean() || jsonObject.get("isWarzone").getAsBoolean() || jsonObject.get("isSafezone").getAsBoolean()) {
+                            impossibleToInterract = true;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (impossibleToInterract) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static String FactionIsOpened(Entity entity) {
+            if (entity == null)
+                return "";
+            File file = new File("");
+            com.google.gson.JsonObject JsonObject = new com.google.gson.JsonObject();
+            String returner = "";
+            file = FactionFileById(FactionManager.getPlayerFaction(entity.getUUID()));
+            {
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                    StringBuilder jsonstringbuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        jsonstringbuilder.append(line);
+                    }
+                    bufferedReader.close();
+                    JsonObject = new com.google.gson.Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
+                    if (JsonObject.get("openFaction").getAsBoolean()) {
+                        returner = "\u00A7aOpen";
+                    } else {
+                        returner = "\u00A74Close";
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return returner;
+        }
+
+        public static void ToggleOpenFaction(Entity entity) {
+            if (entity == null)
+                return;
+            File file = new File("");
+            com.google.gson.JsonObject JsonObject = new com.google.gson.JsonObject();
+            String returner = "";
+            file = FactionFileById(FactionManager.getPlayerFaction(entity.getUUID()));
+            {
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                    StringBuilder jsonstringbuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        jsonstringbuilder.append(line);
+                    }
+                    bufferedReader.close();
+                    JsonObject = new com.google.gson.Gson().fromJson(jsonstringbuilder.toString(), com.google.gson.JsonObject.class);
+                    JsonObject.addProperty("openFaction", (!JsonObject.get("openFaction").getAsBoolean()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     // File
@@ -506,6 +597,45 @@ public class EFUtils {
                 }
             }
             return number;
+        }
+
+        public static File UUIDFile(String uuid) {
+            if (uuid == null)
+                return new File("");
+            String filename = "";
+            File file = new File("");
+            com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
+            filename = uuid + ".json";
+            file = new File((FMLPaths.GAMEDIR.get().toString() + "/" + "erinium_faction" + "/" + "players/"), File.separator + filename);
+            if (!file.exists()) {
+                try {
+                    file.getParentFile().mkdirs();
+                    file.createNewFile();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+                jsonObject = new Object() {
+                    public com.google.gson.JsonObject parse(String rawJson) {
+                        try {
+                            return new com.google.gson.Gson().fromJson(rawJson, com.google.gson.JsonObject.class);
+                        } catch (Exception e) {
+                            EFC.log.error("§aUUID", "§cError: ", e);
+                            return new com.google.gson.Gson().fromJson("{}", com.google.gson.JsonObject.class);
+                        }
+                    }
+                }.parse("{}");
+                {
+                    com.google.gson.Gson mainGSONBuilderVariable = new com.google.gson.GsonBuilder().setPrettyPrinting().create();
+                    try {
+                        FileWriter fileWriter = new FileWriter(file);
+                        fileWriter.write(mainGSONBuilderVariable.toJson(jsonObject));
+                        fileWriter.close();
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+            return file;
         }
     }
 

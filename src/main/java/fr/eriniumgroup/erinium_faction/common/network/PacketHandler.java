@@ -1,7 +1,6 @@
 package fr.eriniumgroup.erinium_faction.common.network;
 
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
-import fr.eriniumgroup.erinium_faction.common.network.packets.GuiForConstructButtonMessage;
 import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.features.block_hp.BlockHpSyncMessage;
@@ -37,7 +36,6 @@ public class PacketHandler {
 
         // Paquet GUI -> Serveur (clics, actions)
         registrar.playToServer(FactionGuiNetwork.TYPE, FactionGuiNetwork.STREAM_CODEC, FactionGuiNetwork::handleData);
-        registrar.playToServer(GuiForConstructButtonMessage.TYPE, GuiForConstructButtonMessage.STREAM_CODEC, GuiForConstructButtonMessage::handleData);
         registrar.playToServer(FactionMenuSettingsButtonMessage.TYPE, FactionMenuSettingsButtonMessage.STREAM_CODEC, FactionMenuSettingsButtonMessage::handleData);
 
         // Serveur -> Client (sync affichage HP de bloc)

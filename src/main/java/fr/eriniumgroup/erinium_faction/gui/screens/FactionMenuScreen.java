@@ -2,7 +2,6 @@ package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
-import fr.eriniumgroup.erinium_faction.common.network.packets.GuiForConstructButtonMessage;
 import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.core.EriFont;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
@@ -21,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -138,8 +136,8 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
                 int x = FactionMenuScreen.this.x;
                 int y = FactionMenuScreen.this.y;
                 if (true) {
-                    PacketDistributor.sendToServer(new GuiForConstructButtonMessage(0, x, y, z));
-                    GuiForConstructButtonMessage.handleButtonAction(entity, 0, x, y, z);
+//                    PacketDistributor.sendToServer(new GuiForConstructButtonMessage(0, x, y, z));
+//                    GuiForConstructButtonMessage.handleButtonAction(entity, 0, x, y, z);
                 }
             }) {
                 @Override

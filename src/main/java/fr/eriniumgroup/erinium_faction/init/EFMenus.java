@@ -4,7 +4,6 @@ import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMes
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenuSettingsMenu;
-import fr.eriniumgroup.erinium_faction.gui.menus.GuiForConstructMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +19,6 @@ import java.util.Map;
 
 public class EFMenus {
     public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(Registries.MENU, EFC.MODID);
-    public static final DeferredHolder<MenuType<?>, MenuType<GuiForConstructMenu>> GUI_FOR_CONSTRUCT = REGISTER.register("gui_for_construct", () -> IMenuTypeExtension.create(GuiForConstructMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<FactionMenu>> FACTION_MENU = REGISTER.register("faction_menu", () -> IMenuTypeExtension.create(FactionMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<FactionMenuSettingsMenu>> FACTION_MENU_SETTINGS = REGISTER.register("faction_menu_settings", () -> IMenuTypeExtension.create(FactionMenuSettingsMenu::new));
 

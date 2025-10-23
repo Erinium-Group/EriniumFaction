@@ -1,6 +1,6 @@
 package fr.eriniumgroup.erinium_faction.features.block_hp;
 
-import fr.eriniumgroup.erinium_faction.procedures.AdminProtectionBlockPosProcedure;
+import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -153,7 +153,7 @@ public final class BlockHpData extends SavedData {
      * Applique des dégâts (>=1). Retourne les PV restants après application.
      */
     public static int applyDamage(ServerLevel lvl, BlockPos pos, int dmg, Entity entity) {
-        if (AdminProtectionBlockPosProcedure.execute(lvl, pos.getX(), pos.getZ())) {
+        if (EFUtils.Faction.AdminProtectionBlockPos(lvl, pos.getX(), pos.getZ())) {
             dmg = Math.max(1, dmg);
             if (lvl.isEmptyBlock(pos)) return 0;
             BlockState state = lvl.getBlockState(pos);

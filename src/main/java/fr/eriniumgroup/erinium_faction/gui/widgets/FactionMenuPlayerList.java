@@ -16,8 +16,6 @@ package fr.eriniumgroup.erinium_faction.gui.widgets;
 
 import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.core.EFC;
-import fr.eriniumgroup.erinium_faction.procedures.GetFileStringValueProcedure;
-import fr.eriniumgroup.erinium_faction.procedures.UuidFileProcedure;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
@@ -137,7 +135,7 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
                 UUID playerUUID = UUID.fromString(this.text.split(":")[0]);
                 String rank = this.text.split(":")[1];
                 ResourceLocation ranktexture = ResourceLocation.parse("erinium_faction:textures/screens/" + rank + ".png");
-                String Playername = EFUtils.F.GetFileStringValue(UuidFileProcedure.execute(String.valueOf(playerUUID)), "displayname");
+                String Playername = EFUtils.F.GetFileStringValue(EFUtils.F.UUIDFile(String.valueOf(playerUUID)), "displayname");
 
                 int headX = x + 1;
                 int headY = y + 1;
