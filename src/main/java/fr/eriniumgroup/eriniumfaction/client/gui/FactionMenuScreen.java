@@ -3,7 +3,11 @@ package fr.eriniumgroup.eriniumfaction.client.gui;
 import fr.eriniumgroup.eriniumfaction.ARGBToInt;
 import fr.eriniumgroup.eriniumfaction.EriFont;
 import fr.eriniumgroup.eriniumfaction.FactionMenuPlayerList;
+import fr.eriniumgroup.eriniumfaction.network.EriniumFactionModVariables;
+import fr.eriniumgroup.eriniumfaction.network.GuiForConstructButtonMessage;
 import fr.eriniumgroup.eriniumfaction.procedures.*;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
@@ -17,14 +21,20 @@ import fr.eriniumgroup.eriniumfaction.world.inventory.FactionMenuMenu;
 import fr.eriniumgroup.eriniumfaction.init.EriniumFactionModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> implements EriniumFactionModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
 	private boolean menuStateUpdateActive = false;
+    ImageButton fsettings;
+
+    EriniumFactionModVariables.PlayerVariables _vars;
 
     private File factionfile;
     private String factionid;
@@ -38,9 +48,15 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		this.entity = container.entity;
 		this.imageWidth = 420;
 		this.imageHeight = 240;
+        this._vars = entity.getData(EriniumFactionModVariables.PLAYER_VARIABLES);
 
-        this.factionfile = FactionFileByIdProcedure.execute(GetPlayerFactionProcedure.execute(entity));
-        this.factionid = GetPlayerFactionProcedure.execute(entity);
+        if (_vars.seeOtherFaction){
+            this.factionid = _vars.seeFaction;
+            this.factionfile = FactionFileByIdProcedure.execute(_vars.seeFaction);
+        }else{
+            this.factionfile = FactionFileByIdProcedure.execute(GetPlayerFactionProcedure.execute(entity));
+            this.factionid = GetPlayerFactionProcedure.execute(entity);
+        }
 	}
 
 	@Override
@@ -54,7 +70,18 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		this.renderTooltip(guiGraphics, mouseX, mouseY);
+
+        boolean customTooltipShown = false;
+        if (mouseX > leftPos + 74 && mouseX < leftPos + 74 + 64 && mouseY > topPos + 100 && mouseY < topPos + 100 + 64) {
+            String hoverText = Component.translatable("faction.menu.settings").getString();
+            if (hoverText != null) {
+                guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
+            }
+            customTooltipShown = true;
+        }
+
+        if (!customTooltipShown)
+            this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
@@ -66,15 +93,16 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 		guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos + 0, this.topPos + 0, 0, 0, 420, 240, 420, 240);
 
         drawText(guiGraphics, GetFileStringValueProcedure.execute(factionfile, "displayname"), EriFont::orbitronBold, 14f, -1, 10, false, true, ARGBToInt.ARGBToInt(255,255,215,0));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, 45, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, 45, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("faction.menu.playerlist").getString(), EriFont::orbitron, 10f, 349, 45, true, true, ARGBToInt.ARGBToInt(255,255,255,255));
 
         int claimCount = (GetFileStringValueProcedure.execute(factionfile, "claimlist") == null || GetFileStringValueProcedure.execute(factionfile, "claimlist").isEmpty()) ? 0 : GetFileStringValueProcedure.execute(factionfile, "claimlist").split(",").length;
         int playerCount = (GetFileStringValueProcedure.execute(factionfile, "memberList") == null || GetFileStringValueProcedure.execute(factionfile, "memberList").isEmpty()) ? 1 : GetFileStringValueProcedure.execute(factionfile, "claimlist").split(",").length + 1;
 
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.claims").getString() + claimCount + " / " + (int) GetFileNumberValueProcedure.execute(factionfile, "maxClaims"), EriFont::exo2, 8f, 149, 89, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.membercount").getString() + playerCount + " / " + (int) GetFileNumberValueProcedure.execute(factionfile, "maxPlayer"), EriFont::exo2, 8f, 149, 102, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + (int) GetFileNumberValueProcedure.execute(factionfile, "power") + " / " + (int) GetFactionMaxPowerProcedure.execute(factionid), EriFont::exo2, 8f, 149, 115, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.level").getString() + (int) GetFileNumberValueProcedure.execute(factionfile, "factionLevel"), EriFont::exo2, 8f, -1, 128, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("faction.menu.claims").getString() + claimCount + " / " + (int) GetFileNumberValueProcedure.execute(factionfile, "maxClaims"), EriFont::exo2, 8f, 149, 89, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("faction.menu.membercount").getString() + playerCount + " / " + (int) GetFileNumberValueProcedure.execute(factionfile, "maxPlayer"), EriFont::exo2, 8f, 149, 102, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("faction.menu.power").getString() + (int) GetFileNumberValueProcedure.execute(factionfile, "power") + " / " + (int) GetFactionMaxPowerProcedure.execute(factionid), EriFont::exo2, 8f, 149, 115, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
+        drawText(guiGraphics, Component.translatable("faction.menu.level").getString() + (int) GetFileNumberValueProcedure.execute(factionfile, "factionLevel"), EriFont::exo2, 8f, -1, 128, false, true, ARGBToInt.ARGBToInt(255,255,255,255));
 
         guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), this.leftPos + 149, this.topPos + 141, 0, 0, 122, 10, 122, 10);
         guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), this.leftPos + 150, this.topPos + 142, 0, 0, (int) (122 / FactionGetXPRequiredProcedure.execute((int) GetFileNumberValueProcedure.execute(factionfile, "factionLevel"))) * (int) GetFileNumberValueProcedure.execute(factionfile, "factionXp"), 8,122, 8);
@@ -88,6 +116,9 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 	public boolean keyPressed(int key, int b, int c) {
 		if (key == 256) {
 			this.minecraft.player.closeContainer();
+            _vars.seeOtherFaction = false;
+            _vars.seeFaction = "";
+            _vars.syncPlayerVariables(entity);
 			return true;
 		}
 		return super.keyPressed(key, b, c);
@@ -103,13 +134,29 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenuMenu> 
 
         String playerlist;
         if (GetFileStringValueProcedure.execute(factionfile, "memberList").isEmpty()){
-            playerlist = GetFileStringValueProcedure.execute(factionfile, "owner");
+            playerlist = GetFileStringValueProcedure.execute(factionfile, "owner") + ":owner";
         }else {
-            playerlist = GetFileStringValueProcedure.execute(factionfile, "owner") + "," + GetFileStringValueProcedure.execute(factionfile, "memberList");
+            playerlist = GetFileStringValueProcedure.execute(factionfile, "owner") + ":owner" + "," + GetFileStringValueProcedure.execute(factionfile, "memberList");
         }
 
-        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, "96e76f2a-d77d-4cb7-91a0-3eba67e74397,9cc97115-8d4a-4133-b2fb-5c849ff93b8c,9ef0692c-560d-4bf5-9e87-e53f73a7e446", world.getServer());
+        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist, world.getServer());
         this.addRenderableWidget(scrollableList);
+
+        fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64,
+                new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
+            int x = FactionMenuScreen.this.x;
+            int y = FactionMenuScreen.this.y;
+            if (true) {
+                PacketDistributor.sendToServer(new GuiForConstructButtonMessage(0, x, y, z));
+                GuiForConstructButtonMessage.handleButtonAction(entity, 0, x, y, z);
+            }
+        }) {
+            @Override
+            public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+                guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
+            }
+        };
+        this.addRenderableWidget(fsettings);
 	}
 
     @Override

@@ -1,6 +1,5 @@
 package fr.eriniumgroup.eriniumfaction;
 
-import fr.eriniumgroup.eriniumfaction.logger.EFCC;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -34,84 +33,80 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import fr.eriniumgroup.eriniumfaction.network.EriniumFactionModVariables;
+import fr.eriniumgroup.eriniumfaction.logger.EFCC;
 import fr.eriniumgroup.eriniumfaction.init.EriniumFactionModMenus;
 
 @Mod("erinium_faction")
 public class EriniumFactionMod {
-    public static final Logger LOGGER = LogManager.getLogger(EriniumFactionMod.class);
-    public static final String MODID = "erinium_faction";
+	public static final Logger LOGGER = LogManager.getLogger(EriniumFactionMod.class);
+	public static final String MODID = "erinium_faction";
 
-    public EriniumFactionMod(IEventBus modEventBus) {
-        // Start of user code block mod constructor
-        // End of user code block mod constructor
-        NeoForge.EVENT_BUS.register(this);
-        modEventBus.addListener(this::registerNetworking);
+	public EriniumFactionMod(IEventBus modEventBus) {
+		// Start of user code block mod constructor
+		// End of user code block mod constructor
+		NeoForge.EVENT_BUS.register(this);
+		modEventBus.addListener(this::registerNetworking);
+		EriniumFactionModVariables.ATTACHMENT_TYPES.register(modEventBus);
+		EriniumFactionModMenus.REGISTRY.register(modEventBus);
+		// Start of user code block mod init
+		// Logger customisé EFCC
+		EFCC.install();
+		EFC.log.info("§b" + EFC.MOD_NAME + " §7Mod §ainitialized §7!");
+		// End of user code block mod init
+	}
 
-        EriniumFactionModVariables.ATTACHMENT_TYPES.register(modEventBus);
+	// Start of user code block mod methods
+	// End of user code block mod methods
+	private static boolean networkingRegistered = false;
+	private static final Map<CustomPacketPayload.Type<?>, NetworkMessage<?>> MESSAGES = new HashMap<>();
 
-        EriniumFactionModMenus.REGISTRY.register(modEventBus);
+	private record NetworkMessage<T extends CustomPacketPayload>(StreamCodec<? extends FriendlyByteBuf, T> reader, IPayloadHandler<T> handler) {
+	}
 
-        // Start of user code block mod init
+	public static <T extends CustomPacketPayload> void addNetworkMessage(CustomPacketPayload.Type<T> id, StreamCodec<? extends FriendlyByteBuf, T> reader, IPayloadHandler<T> handler) {
+		if (networkingRegistered)
+			throw new IllegalStateException("Cannot register new network messages after networking has been registered");
+		MESSAGES.put(id, new NetworkMessage<>(reader, handler));
+	}
 
-        // Logger customisé EFCC
-        EFCC.install();
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private void registerNetworking(final RegisterPayloadHandlersEvent event) {
+		final PayloadRegistrar registrar = event.registrar(MODID);
+		MESSAGES.forEach((id, networkMessage) -> registrar.playBidirectional(id, ((NetworkMessage) networkMessage).reader(), ((NetworkMessage) networkMessage).handler()));
+		networkingRegistered = true;
+	}
 
-        EFC.log.info("§b" + EFC.MOD_NAME + " §7Mod §ainitialized §7!");
-        // End of user code block mod init
-    }
+	private static final Collection<Tuple<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
 
-    // Start of user code block mod methods
-    // End of user code block mod methods
-    private static boolean networkingRegistered = false;
-    private static final Map<CustomPacketPayload.Type<?>, NetworkMessage<?>> MESSAGES = new HashMap<>();
+	public static void queueServerWork(int tick, Runnable action) {
+		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
+			workQueue.add(new Tuple<>(action, tick));
+	}
 
-    private record NetworkMessage<T extends CustomPacketPayload>(StreamCodec<? extends FriendlyByteBuf, T> reader,
-                                                                 IPayloadHandler<T> handler) {
-    }
+	@SubscribeEvent
+	public void tick(ServerTickEvent.Post event) {
+		List<Tuple<Runnable, Integer>> actions = new ArrayList<>();
+		workQueue.forEach(work -> {
+			work.setB(work.getB() - 1);
+			if (work.getB() == 0)
+				actions.add(work);
+		});
+		actions.forEach(e -> e.getA().run());
+		workQueue.removeAll(actions);
+	}
 
-    public static <T extends CustomPacketPayload> void addNetworkMessage(CustomPacketPayload.Type<T> id, StreamCodec<? extends FriendlyByteBuf, T> reader, IPayloadHandler<T> handler) {
-        if (networkingRegistered)
-            throw new IllegalStateException("Cannot register new network messages after networking has been registered");
-        MESSAGES.put(id, new NetworkMessage<>(reader, handler));
-    }
+	public static class CuriosApiHelper {
+		private static final EntityCapability<IItemHandler, Void> CURIOS_INVENTORY = EntityCapability.createVoid(ResourceLocation.fromNamespaceAndPath("curios", "item_handler"), IItemHandler.class);
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void registerNetworking(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar(MODID);
-        MESSAGES.forEach((id, networkMessage) -> registrar.playBidirectional(id, ((NetworkMessage) networkMessage).reader(), ((NetworkMessage) networkMessage).handler()));
-        networkingRegistered = true;
-    }
+		public static IItemHandler getCuriosInventory(Player player) {
+			if (ModList.get().isLoaded("curios")) {
+				return player.getCapability(CURIOS_INVENTORY);
+			}
+			return null;
+		}
 
-    private static final Collection<Tuple<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
-
-    public static void queueServerWork(int tick, Runnable action) {
-        if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
-            workQueue.add(new Tuple<>(action, tick));
-    }
-
-    @SubscribeEvent
-    public void tick(ServerTickEvent.Post event) {
-        List<Tuple<Runnable, Integer>> actions = new ArrayList<>();
-        workQueue.forEach(work -> {
-            work.setB(work.getB() - 1);
-            if (work.getB() == 0) actions.add(work);
-        });
-        actions.forEach(e -> e.getA().run());
-        workQueue.removeAll(actions);
-    }
-
-    public static class CuriosApiHelper {
-        private static final EntityCapability<IItemHandler, Void> CURIOS_INVENTORY = EntityCapability.createVoid(ResourceLocation.fromNamespaceAndPath("curios", "item_handler"), IItemHandler.class);
-
-        public static IItemHandler getCuriosInventory(Player player) {
-            if (ModList.get().isLoaded("curios")) {
-                return player.getCapability(CURIOS_INVENTORY);
-            }
-            return null;
-        }
-
-        public static boolean isCurioItem(ItemStack itemstack) {
-            return BuiltInRegistries.ITEM.getTagNames().filter(tagKey -> tagKey.location().getNamespace().equals("curios")).anyMatch(itemstack::is);
-        }
-    }
+		public static boolean isCurioItem(ItemStack itemstack) {
+			return BuiltInRegistries.ITEM.getTagNames().filter(tagKey -> tagKey.location().getNamespace().equals("curios")).anyMatch(itemstack::is);
+		}
+	}
 }
