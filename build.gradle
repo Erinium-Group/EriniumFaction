@@ -1,9 +1,23 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.hierynomus:sshj:0.38.0'
+    }
+}
+
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'idea'
     id 'net.neoforged.moddev' version '2.0.115'
 }
+
+import net.schmizz.sshj.SSHClient
+import net.schmizz.sshj.sftp.SFTPClient
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier
+
 
 version = mod_version
 group = mod_group_id
@@ -207,5 +221,54 @@ tasks.register('checkUpdateJson') {
             }
         }
         println "update.json OK for ${mcVer} / ${modVer}"
+    }
+}
+
+task uploadToSFTP {
+    dependsOn build
+
+    // Capturer les valeurs au moment de la configuration
+    def modId = project.mod_id
+    def modVersion = project.version
+    def buildDir = project.layout.buildDirectory.get().asFile
+
+    doLast {
+        def ssh = new SSHClient()
+
+        try {
+            println "Connexion au serveur SFTP..."
+
+            // Accepter tous les host keys (pour simplifier)
+            ssh.addHostKeyVerifier(new PromiscuousVerifier())
+
+            // Connexion
+            ssh.connect("9002.mystrator.com", 2022)
+            ssh.authPassword("jlskyzer.6806ca8f", "2317Mon723Feb-MSR")
+
+            println "✓ Connecté au serveur"
+
+            // Utiliser File directement sans file()
+            def jarFile = new File(buildDir, "libs/${modId}-${modVersion}.jar")
+
+            if (!jarFile.exists()) {
+                throw new GradleException("Le fichier JAR n'existe pas: ${jarFile}")
+            }
+
+            println "Upload de ${jarFile.name}..."
+
+            // Upload via SFTP
+            ssh.newSFTPClient().withCloseable { sftp ->
+                sftp.put(jarFile.absolutePath, "/mods/${jarFile.name}")
+            }
+
+            println "✓ Upload réussi : ${jarFile.name}"
+
+        } catch (Exception e) {
+            throw new GradleException("Erreur SFTP: ${e.message}", e)
+        } finally {
+            if (ssh.isConnected()) {
+                ssh.disconnect()
+            }
+        }
     }
 }
