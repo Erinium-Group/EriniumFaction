@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erinium Faction - Team Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #6c5ce7;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #636e72;
+            font-weight: 300;
+            margin-top: 10px;
+        }
+
+        .version {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        h1 {
+            color: #2d3436;
+            font-size: 32px;
+            margin: 40px 0 20px 0;
+            padding-left: 15px;
+            border-left: 5px solid #6c5ce7;
+        }
+
+        h2 {
+            color: #6c5ce7;
+            font-size: 24px;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        h3 {
+            color: #2d3436;
+            font-size: 20px;
+            margin: 20px 0 10px 0;
+        }
+
+        h4 {
+            color: #6c5ce7;
+            font-size: 18px;
+            margin: 15px 0 8px 0;
+        }
+
+        p {
+            margin: 12px 0;
+            text-align: justify;
+            color: #2d3436;
+            font-size: 15px;
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .intro-box p {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #6c5ce7;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #00d2ff10 0%, #3a47d510 100%);
+            border: 2px solid #00d2ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .role-card {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #6c5ce7;
+        }
+
+        .role-card h3 {
+            color: #6c5ce7;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        ul {
+            margin: 15px 0 15px 25px;
+            color: #2d3436;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        ul ul {
+            margin-top: 8px;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .tech-badge {
+            background: #6c5ce7;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-left: 3px solid #6c5ce7;
+        }
+
+        .feature-item h4 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .feature-item p {
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 30px 0;
+            margin: 30px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 25px 0 25px 50px;
+            border-left: 3px solid #6c5ce7;
+            margin-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -9px;
+            top: 30px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #6c5ce7;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #6c5ce7;
+        }
+
+        .timeline-item h4 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .timeline-item .duration {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #636e72;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #6c5ce7;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .commitment-table td:first-child {
+            font-weight: 600;
+            color: #6c5ce7;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #636e72;
+        }
+
+        .footer p {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .contact-section h2 {
+            color: white;
+            border: none;
+            margin-bottom: 15px;
+        }
+
+        .contact-section p {
+            text-align: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        strong {
+            color: #2d3436;
+            font-weight: 600;
+        }
+
+        .key-point {
+            background: #fff;
+            border-left: 4px solid #00d2ff;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #6c5ce7 50%, transparent 100%);
+            margin: 40px 0;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">ERINIUM FACTION</div>
+            <div class="subtitle">Complete Team Guide & Project Documentation</div>
+            <div class="version">Version 1.0 • Cyber-Astral Universe</div>
+        </div>
+
+        <!-- Welcome -->
+        <div class="intro-box">
+            <h2>🎉 Welcome to the Erinium Team!</h2>
+            <p>Thank you for joining this ambitious project. This document is your comprehensive guide to understanding <strong>Erinium Faction</strong>, the project's vision, your role and responsibilities, our development roadmap, and how we work together as a team.</p>
+            <p>This is a <strong>living document</strong> that will evolve as the project grows. Feel free to reference it anytime and suggest improvements!</p>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="section">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><strong>Project Overview</strong> - What is Erinium Faction?</li>
+                <li><strong>Vision & Goals</strong> - What we're building and why</li>
+                <li><strong>Core Features</strong> - Key gameplay mechanics</li>
+                <li><strong>Development Roadmap</strong> - Timeline and milestones</li>
+                <li><strong>Your Role & Missions</strong> - Specific responsibilities by role</li>
+                <li><strong>Team Workflow</strong> - How we collaborate</li>
+                <li><strong>Commitment & Expectations</strong> - What we expect from you</li>
+                <li><strong>Compensation Model</strong> - Current and future plans</li>
+                <li><strong>Getting Started</strong> - First steps for new members</li>
+            </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- PROJECT OVERVIEW -->
+        <h1>🌌 Project Overview</h1>
+
+        <div class="section">
+            <h2>What is Erinium Faction?</h2>
+            <p><strong>Erinium Faction</strong> is an ambitious Minecraft PvP faction server project that combines two distinct aesthetic universes: <strong>cyberpunk technology</strong> and <strong>cosmic fantasy</strong>. This unique "Cyber-Astral" theme sets us apart from traditional faction servers and creates a visually stunning, immersive experience.</p>
+            
+            <p>The custom mods are being developed for <strong>NeoForge 1.21.1</strong> using <strong>MCreator 2025.2+</strong> as our primary development tool, with additional Java coding in <strong>IntelliJ IDEA</strong> for advanced features. We're building a full-featured faction warfare experience with territorial control, strategic gameplay, and epic multiplayer battles.</p>
+
+            <div class="highlight-box">
+                <h4>🎯 Core Concept</h4>
+                <p><strong>Territorial warfare meets cosmic adventure.</strong> Players form factions, claim territories infused with astral energy, wage wars using cyber-enhanced weapons, and build empires in a universe where technology and cosmic magic collide.</p>
+            </div>
+
+            <div class="info-box">
+                <p><strong>🔒 Server-Exclusive Project:</strong> This is a custom server project. The mods we're creating are <strong>exclusive to the Erinium Faction server</strong> and will not be publicly released on CurseForge or Modrinth. This allows us to create a unique, cohesive experience that players can only find on our server.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Why Erinium is Different</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4>🎨 Unique Theme</h4>
+                    <p>Cyber-Astral aesthetic - no other faction server blends cyberpunk and cosmic fantasy like we do.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🔒 Server-Exclusive Content</h4>
+                    <p>Custom mods available nowhere else - a truly unique experience players can't find anywhere.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>⚡ Modern Tech Stack</h4>
+                    <p>Built on NeoForge 1.21.1 - the latest and most performant modding platform.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🎮 Strategic Depth</h4>
+                    <p>Not just PvP - complex faction management, diplomacy, and territory control systems.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Technical Stack</h2>
+            <div class="tech-stack">
+                <span class="tech-badge">NeoForge 1.21.1</span>
+                <span class="tech-badge">MCreator 2025.2+</span>
+                <span class="tech-badge">IntelliJ IDEA</span>
+                <span class="tech-badge">Java 21</span>
+                <span class="tech-badge">Minecraft 1.21.1</span>
+                <span class="tech-badge">Git/GitHub</span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- VISION & GOALS -->
+        <h1>🎯 Vision & Goals</h1>
+
+        <div class="section">
+            <h2>Our Vision</h2>
+            <p>To create the <strong>most innovative and visually stunning faction server</strong> in the Minecraft community by combining cutting-edge custom mods with a unique Cyber-Astral aesthetic that players have never experienced before.</p>
+
+            <div class="key-point">
+                <p><strong>Long-term Vision:</strong> Become a premier destination for PvP faction gameplay, build an active and passionate community around Erinium, and continuously evolve the server with custom content updates that keep players engaged for years.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Project Goals</h2>
+            
+            <h3>Short-term Goals (0-6 months)</h3>
+            <ul>
+                <li>✅ Assemble a talented, passionate team</li>
+                <li>🎮 Create comprehensive game design documentation</li>
+                <li>🎨 Develop core Cyber-Astral visual identity and asset library</li>
+                <li>⚙️ Build functional prototype with basic faction mechanics</li>
+                <li>🧪 Implement alpha testing with team members</li>
+                <li>🖥️ Set up dedicated server infrastructure</li>
+            </ul>
+
+            <h3>Mid-term Goals (6-12 months)</h3>
+            <ul>
+                <li>🚀 Launch private beta server for testing</li>
+                <li>🌐 Implement server infrastructure and anti-cheat systems</li>
+                <li>📊 Gather analytics and iterate on gameplay balance</li>
+                <li>🎥 Create promotional content (trailer, screenshots, wiki)</li>
+                <li>👥 Build initial community of 100-200 beta testers</li>
+                <li>💬 Establish Discord community and support systems</li>
+            </ul>
+
+            <h3>Long-term Goals (12+ months)</h3>
+            <ul>
+                <li>🏆 Official public server launch (Season 1)</li>
+                <li>🔄 Regular content seasons and major updates</li>
+                <li>💰 Sustainable server funding through ethical monetization (ranks, cosmetics)</li>
+                <li>🌟 Recognition as a premier faction server in the community</li>
+                <li>🤝 Partnerships with content creators and streamers</li>
+                <li>📈 Growth to 500+ concurrent players during peak times</li>
+            </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- CORE FEATURES -->
+        <h1>⚔️ Core Features</h1>
+
+        <div class="section">
+            <h2>Faction System</h2>
+            <ul>
+                <li><strong>Faction Creation & Management:</strong> Players can create factions with customizable names, descriptions, and Cyber-Astral banners</li>
+                <li><strong>Rank System:</strong> Hierarchical structure from Recruit to Leader with customizable permissions</li>
+                <li><strong>Member Management:</strong> Invite, kick, promote, and demote faction members</li>
+                <li><strong>Faction Chat:</strong> Private communication channels for faction members</li>
+                <li><strong>Alliances & Enemies:</strong> Diplomatic relations with other factions</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Territory & Claims</h2>
+            <ul>
+                <li><strong>Land Claiming:</strong> Claim chunks for your faction using astral energy resources</li>
+                <li><strong>Territory Protection:</strong> Prevent enemy building/breaking in claimed territory</li>
+                <li><strong>Power System:</strong> Faction power determines claim capacity and resilience</li>
+                <li><strong>Territory Visualization:</strong> Cyber-themed boundary markers and HUD displays</li>
+                <li><strong>Strategic Resources:</strong> Certain territories contain valuable Cyber-Astral resources</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Combat & Warfare</h2>
+            <ul>
+                <li><strong>Raid Mechanics:</strong> Organized faction raids on enemy territories</li>
+                <li><strong>Cyber-Enhanced Weapons:</strong> Unique faction-exclusive weapons with Cyber-Astral themes</li>
+                <li><strong>Siege Equipment:</strong> Craftable siege tools for breaking through defenses</li>
+                <li><strong>Power Loss:</strong> Deaths reduce faction power, making territories vulnerable</li>
+                <li><strong>War Declarations:</strong> Formal war system with scheduled battles</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Cyber-Astral Theme Integration</h2>
+            <ul>
+                <li><strong>Astral Energy:</strong> Cosmic resource used for advanced faction abilities</li>
+                <li><strong>Cyber Upgrades:</strong> Technology-based enhancements for faction bases</li>
+                <li><strong>Themed Blocks & Items:</strong> Neon-lit, holographic, and cosmic-themed content</li>
+                <li><strong>Visual Effects:</strong> Particle effects, custom animations, and shader-friendly designs</li>
+                <li><strong>Lore Integration:</strong> Deep backstory connecting cyber technology and cosmic forces</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <p><strong>🎨 Art Direction Note:</strong> Every visual element should evoke the fusion of futuristic technology (neon lights, holograms, circuits) with cosmic mysticism (stars, nebulae, ethereal energy). Think "Cyberpunk 2077 meets Interstellar."</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- DEVELOPMENT ROADMAP -->
+        <h1>🗺️ Development Roadmap</h1>
+
+        <div class="section">
+            <p>Our development is structured in four main phases, each with clear objectives and deliverables. This timeline is flexible and may adjust based on team availability and project scope changes.</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <span class="duration">Current - Month 3</span>
+                <h4>Phase 1: Foundation & Core Team</h4>
+                <p><strong>Objectives:</strong></p>
+                <ul>
+                    <li>Recruit and onboard team members across all roles</li>
+                    <li>Define complete game design document (GDD)</li>
+                    <li>Establish visual identity and art style guidelines</li>
+                    <li>Set up development environment and project structure</li>
+                    <li>Create initial concept art and texture prototypes</li>
+                    <li>Develop basic faction creation/management system</li>
+                </ul>
+                <p><strong>Key Deliverables:</strong> Complete GDD, art style guide, working prototype with basic faction commands, first batch of Cyber-Astral textures, server infrastructure planning document.</p>
+            </div>
+
+            <div class="timeline-item">
+                <span class="duration">Month 3-6</span>
+                <h4>Phase 2: Core Development</h4>
+                <p><strong>Objectives:</strong></p>
+                <ul>
+                    <li>Implement territory claiming and protection systems</li>
+                    <li>Develop faction rank and permission framework</li>
+                    <li>Create faction GUI (menus, management interfaces)</li>
+                    <li>Build power system and combat integration</li>
+                    <li>Design and implement 50+ custom textures</li>
+                    <li>Develop first set of Cyber-Astral items and blocks</li>
+                </ul>
+                <p><strong>Key Deliverables:</strong> Alpha version 0.5 with playable faction mechanics, complete texture pack, functional GUI system.</p>
+            </div>
+
+            <div class="timeline-item">
+                <span class="duration">Month 6-9</span>
+                <h4>Phase 3: Content & Polish</h4>
+                <p><strong>Objectives:</strong></p>
+                <ul>
+                    <li>Add advanced features (alliances, wars, diplomacy)</li>
+                    <li>Implement Cyber-Astral unique mechanics (astral energy, cyber upgrades)</li>
+                    <li>Create custom weapons, armor, and tools</li>
+                    <li>Extensive gameplay testing and balance adjustments</li>
+                    <li>Performance optimization and bug fixing</li>
+                    <li>Develop comprehensive wiki and documentation</li>
+                </ul>
+                <p><strong>Key Deliverables:</strong> Beta version 0.8, complete feature set, promotional trailer, private beta server with whitelisted testers.</p>
+            </div>
+
+            <div class="timeline-item">
+                <span class="duration">Month 9-12</span>
+                <h4>Phase 4: Server Launch & Community Growth</h4>
+                <p><strong>Objectives:</strong></p>
+                <ul>
+                    <li>Final bug fixes and polish based on beta feedback</li>
+                    <li>Official public server launch (Season 1)</li>
+                    <li>Launch marketing campaign (Reddit, Discord, YouTube, TikTok)</li>
+                    <li>Establish official Discord community with moderation</li>
+                    <li>Implement anti-cheat and server protection systems</li>
+                    <li>Provide ongoing support, hotfixes, and content updates</li>
+                    <li>Plan Season 2 content and new features</li>
+                </ul>
+                <p><strong>Key Deliverables:</strong> Version 1.0 official server launch, active community of 500+ members, stable server infrastructure, regular update schedule.</p>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <p><strong>⚠️ Important Note:</strong> This roadmap is ambitious and assumes consistent team participation. Delays are normal in volunteer projects. The key is steady progress, not perfection. We prioritize quality over speed.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- YOUR ROLE & MISSIONS -->
+        <h1>👤 Your Role & Missions</h1>
+
+        <div class="section">
+            <p>Each role is critical to the project's success. Below you'll find detailed responsibilities, expected contributions, and skills that will help you excel in your position.</p>
+        </div>
+
+        <!-- Game Designer -->
+        <div class="role-card">
+            <h3>🎮 Game Designer</h3>
+            
+            <h4>Core Responsibilities</h4>
+            <ul>
+                <li><strong>Design Game Mechanics:</strong> Create and document all faction-related systems (claiming, power, ranks, permissions, combat)</li>
+                <li><strong>Balance Gameplay:</strong> Ensure fair, engaging, and strategic gameplay loops</li>
+                <li><strong>Create GDD:</strong> Write comprehensive game design documents with clear specifications</li>
+                <li><strong>Design Economy:</strong> Balance resource costs, rewards, and progression systems</li>
+                <li><strong>Playtest & Iterate:</strong> Test mechanics and refine based on feedback</li>
+                <li><strong>Collaborate with Devs:</strong> Work closely with developers to ensure feasibility</li>
+            </ul>
+
+            <h4>Key Deliverables</h4>
+            <ul>
+                <li>Complete Game Design Document (GDD) with all systems documented</li>
+                <li>Balance spreadsheets for combat, economy, and progression</li>
+                <li>Detailed feature specifications for developers to implement</li>
+                <li>Playtest reports and iteration recommendations</li>
+            </ul>
+
+            <h4>Skills That Help</h4>
+            <ul>
+                <li>Experience playing faction mods (Factions, FactionsUUID, etc.)</li>
+                <li>Understanding of PvP balance and multiplayer dynamics</li>
+                <li>Analytical thinking and systems design</li>
+                <li>Clear technical writing skills</li>
+                <li>Knowledge of Minecraft mechanics and limitations</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>💡 Pro Tip:</strong> Always think about "Is this fun?" and "Is this exploitable?" when designing mechanics. Test everything from a player's perspective, including edge cases.</p>
+            </div>
+        </div>
+
+        <!-- Graphic Designer / Texture Artist -->
+        <div class="role-card">
+            <h3>🎨 Graphic Designer / Texture Artist</h3>
+            
+            <h4>Core Responsibilities</h4>
+            <ul>
+                <li><strong>Create Textures:</strong> Design 16x16 (or higher resolution) textures for blocks, items, and entities</li>
+                <li><strong>Design GUIs:</strong> Create intuitive, themed user interfaces (faction menus, HUD elements)</li>
+                <li><strong>Develop Visual Identity:</strong> Design logos, banners, icons that represent Erinium</li>
+                <li><strong>3D Modeling:</strong> Create custom models for special blocks/items (Blockbench)</li>
+                <li><strong>Art Style Consistency:</strong> Ensure all assets follow Cyber-Astral aesthetic</li>
+                <li><strong>Promotional Assets:</strong> Create screenshots, banners, and marketing visuals</li>
+            </ul>
+
+            <h4>Key Deliverables</h4>
+            <ul>
+                <li>Complete texture pack with 50+ custom textures</li>
+                <li>GUI mockups and final designs for all interfaces</li>
+                <li>Logo and branding assets (various sizes and formats)</li>
+                <li>3D models for unique blocks and items</li>
+                <li>Promotional artwork for mod pages and social media</li>
+            </ul>
+
+            <h4>Skills That Help</h4>
+            <ul>
+                <li>Proficiency in pixel art and 2D design tools (Photoshop, GIMP, Aseprite, Paint.NET)</li>
+                <li>Understanding of Minecraft's art style and technical requirements</li>
+                <li>3D modeling experience (Blockbench is ideal for Minecraft)</li>
+                <li>Color theory and aesthetic sensibility</li>
+                <li>Experience with UI/UX design principles</li>
+            </ul>
+
+            <div class="highlight-box">
+                <h4>🎨 Cyber-Astral Art Direction</h4>
+                <p><strong>Cyberpunk Elements:</strong> Neon colors (cyan, magenta, yellow), circuit patterns, holographic effects, industrial metals, digital glitches</p>
+                <p><strong>Cosmic Elements:</strong> Deep space purples/blues, stars, nebulae, ethereal glows, crystalline structures, aurora effects</p>
+                <p><strong>Fusion:</strong> Tech that glows with cosmic energy, circuits that resemble constellations, holograms of galaxies, cyber-enhanced cosmic crystals</p>
+            </div>
+        </div>
+
+        <!-- Game Innovator -->
+        <div class="role-card">
+            <h3>💡 Game Innovator</h3>
+            
+            <h4>Core Responsibilities</h4>
+            <ul>
+                <li><strong>Brainstorm Features:</strong> Propose unique, creative mechanics that make Erinium stand out</li>
+                <li><strong>Research Competitors:</strong> Analyze other faction mods and identify gaps/opportunities</li>
+                <li><strong>Player Psychology:</strong> Understand what makes players engaged and design for retention</li>
+                <li><strong>Trend Analysis:</strong> Stay updated on Minecraft modding and gaming trends</li>
+                <li><strong>Creative Problem Solving:</strong> Find innovative solutions to design challenges</li>
+                <li><strong>Community Engagement:</strong> Propose features based on potential player feedback</li>
+            </ul>
+
+            <h4>Key Deliverables</h4>
+            <ul>
+                <li>Weekly/monthly innovation reports with new feature ideas</li>
+                <li>Competitive analysis documents</li>
+                <li>Unique mechanic proposals with justification</li>
+                <li>Player engagement and retention strategy suggestions</li>
+            </ul>
+
+            <h4>Skills That Help</h4>
+            <ul>
+                <li>Broad knowledge of game design across different genres</li>
+                <li>Active player of Minecraft mods and multiplayer servers</li>
+                <li>Creative thinking and "outside the box" ideation</li>
+                <li>Understanding of player motivation and psychology</li>
+                <li>Good communication skills to pitch ideas effectively</li>
+            </ul>
+
+            <div class="success-box">
+                <p><strong>🌟 Your Impact:</strong> As an innovator, you're our "creative engine." Your ideas will directly shape what makes Erinium unique. Don't hold back - even "crazy" ideas can spark brilliant features!</p>
+            </div>
+        </div>
+
+        <!-- Developer -->
+        <div class="role-card">
+            <h3>👨‍💻 Developer (Java/MCreator)</h3>
+            
+            <h4>Core Responsibilities</h4>
+            <ul>
+                <li><strong>Implement Features:</strong> Code game mechanics based on design specifications</li>
+                <li><strong>MCreator Development:</strong> Use MCreator 2025.2+ for rapid prototyping and visual scripting</li>
+                <li><strong>Custom Coding:</strong> Write Java code in IntelliJ for advanced features beyond MCreator's capabilities</li>
+                <li><strong>Bug Fixing:</strong> Identify, troubleshoot, and resolve technical issues</li>
+                <li><strong>Optimization:</strong> Ensure mod runs smoothly and doesn't cause performance issues</li>
+                <li><strong>Integration:</strong> Connect different systems (GUI, commands, data storage, etc.)</li>
+                <li><strong>Testing:</strong> Conduct thorough testing before each release</li>
+            </ul>
+
+            <h4>Key Deliverables</h4>
+            <ul>
+                <li>Working mod builds at each development milestone</li>
+                <li>Clean, documented code following best practices</li>
+                <li>Bug reports and fix implementations</li>
+                <li>Technical documentation for complex systems</li>
+                <li>Performance profiling and optimization reports</li>
+            </ul>
+
+            <h4>Skills That Help</h4>
+            <ul>
+                <li>Java programming experience (even basic level is fine to start)</li>
+                <li>Familiarity with MCreator or willingness to learn</li>
+                <li>Understanding of NeoForge/Forge mod development</li>
+                <li>Problem-solving and debugging skills</li>
+                <li>Git/GitHub for version control</li>
+                <li>Ability to read and understand existing code</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>🛠️ Tech Stack Learning Resources:</strong> We'll provide tutorials and documentation for MCreator and NeoForge development. Even if you're new to modding, we'll help you get up to speed!</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- TEAM WORKFLOW -->
+        <h1>🤝 Team Workflow & Collaboration</h1>
+
+        <div class="section">
+            <h2>Communication Channels</h2>
+            <ul>
+                <li><strong>Discord:</strong> Primary communication platform for real-time chat, voice calls, and file sharing</li>
+                <li><strong>GitHub:</strong> Code repository, issue tracking, and project management</li>
+                <li><strong>Google Drive/Docs:</strong> Shared documents, design docs, and asset storage</li>
+                <li><strong>Trello/Notion:</strong> Task management and roadmap tracking (optional, may be implemented)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Typical Workflow</h2>
+            
+            <h3>1. Planning Phase</h3>
+            <ul>
+                <li>Game Designer proposes feature with detailed specs</li>
+                <li>Innovator provides creative input and enhancements</li>
+                <li>Team discusses feasibility and priority</li>
+                <li>Developer assesses technical requirements</li>
+                <li>Artist begins concept art and asset planning</li>
+            </ul>
+
+            <h3>2. Development Phase</h3>
+            <ul>
+                <li>Artist creates textures, models, and GUI mockups</li>
+                <li>Developer implements feature based on specs</li>
+                <li>Designer playtests and provides balance feedback</li>
+                <li>Iterative improvements based on team feedback</li>
+            </ul>
+
+            <h3>3. Testing & Refinement</h3>
+            <ul>
+                <li>Internal testing by all team members</li>
+                <li>Bug reporting and prioritization</li>
+                <li>Developer fixes critical issues</li>
+                <li>Designer adjusts balance based on playtesting</li>
+            </ul>
+
+            <h3>4. Release & Feedback</h3>
+            <ul>
+                <li>Public release (alpha, beta, or full version)</li>
+                <li>Community feedback collection</li>
+                <li>Analysis and planning for next iteration</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Meeting Schedule</h2>
+            <table>
+                <tr>
+                    <th>Meeting Type</th>
+                    <th>Frequency</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td><strong>Weekly Sync</strong></td>
+                    <td>Every week</td>
+                    <td>Quick check-in on progress, blockers, and upcoming tasks</td>
+                </tr>
+                <tr>
+                    <td><strong>Design Review</strong></td>
+                    <td>Bi-weekly</td>
+                    <td>Present and discuss new features, mechanics, and design decisions</td>
+                </tr>
+                <tr>
+                    <td><strong>Playtest Sessions</strong></td>
+                    <td>Monthly</td>
+                    <td>Team plays together to test new features and provide feedback</td>
+                </tr>
+                <tr>
+                    <td><strong>Milestone Reviews</strong></td>
+                    <td>Per phase</td>
+                    <td>Celebrate achievements, assess roadmap, plan next phase</td>
+                </tr>
+            </table>
+            <p><em>Note: Attendance is flexible. We understand real-life commitments. Async updates via Discord are always welcome!</em></p>
+        </div>
+
+        <div class="success-box">
+            <h4>🌟 Collaboration Best Practices</h4>
+            <ul>
+                <li><strong>Communicate Early:</strong> If you're stuck or falling behind, let the team know</li>
+                <li><strong>Be Constructive:</strong> Feedback should be helpful, not critical</li>
+                <li><strong>Respect Time:</strong> Everyone is volunteering - be understanding of availability</li>
+                <li><strong>Stay Organized:</strong> Use our tools to track your work and update progress</li>
+                <li><strong>Have Fun:</strong> This is a passion project - enjoy the creative process!</li>
+            </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- COMMITMENT & EXPECTATIONS -->
+        <h1>⏰ Commitment & Expectations</h1>
+
+        <div class="section">
+            <h2>Time Commitment</h2>
+            <p>We understand this is a volunteer project and everyone has real-life obligations. Here's what we generally expect:</p>
+
+            <table class="commitment-table">
+                <tr>
+                    <td>Minimum Commitment</td>
+                    <td>2-3 hours per week</td>
+                </tr>
+                <tr>
+                    <td>Ideal Contribution</td>
+                    <td>5-10 hours per week</td>
+                </tr>
+                <tr>
+                    <td>Communication</td>
+                    <td>Check Discord at least 2-3 times per week</td>
+                </tr>
+                <tr>
+                    <td>Meetings</td>
+                    <td>Attend when possible, async updates are fine</td>
+                </tr>
+                <tr>
+                    <td>Flexibility</td>
+                    <td>100% - life happens, we understand</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>What We Expect From You</h2>
+            <ul>
+                <li><strong>Passion:</strong> Genuine interest in the project and its success</li>
+                <li><strong>Communication:</strong> Keep the team informed of your progress and any challenges</li>
+                <li><strong>Quality:</strong> Do your best work, but don't stress about perfection</li>
+                <li><strong>Reliability:</strong> If you commit to a task, follow through or let us know early if you can't</li>
+                <li><strong>Collaboration:</strong> Work well with others, be open to feedback</li>
+                <li><strong>Initiative:</strong> Don't wait to be assigned tasks - propose ideas and tackle challenges proactively</li>
+                <li><strong>Learning:</strong> Be willing to learn new tools and techniques</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>What You Can Expect From Us</h2>
+            <ul>
+                <li><strong>Flexibility:</strong> We understand real-life commitments and will never pressure you</li>
+                <li><strong>Support:</strong> Help with tools, tutorials, and guidance whenever you need it</li>
+                <li><strong>Recognition:</strong> Your work will be credited and celebrated</li>
+                <li><strong>Creative Freedom:</strong> We encourage your ideas and creative input</li>
+                <li><strong>Transparency:</strong> Open communication about project status, decisions, and future plans</li>
+                <li><strong>Fair Treatment:</strong> Everyone's contributions are valued equally</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Important: No Pressure Zone</h4>
+            <p>This is a <strong>passion project</strong>, not a job. If you need to take a break, reduce hours, or even leave the project, there are absolutely <strong>no hard feelings</strong>. Your well-being comes first. Just communicate with us so we can plan accordingly.</p>
+        </div>
+
+        <div class="section">
+            <h2>Leaving the Project</h2>
+            <p>If you decide to leave at any point:</p>
+            <ul>
+                <li>Give us a heads-up (even a short notice is appreciated)</li>
+                <li>We'll credit your contributions in the mod's credits</li>
+                <li>Your work remains part of the project (with credit)</li>
+                <li>You're always welcome to return if circumstances change</li>
+                <li>No explanation needed - we respect your decision</li>
+            </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- COMPENSATION MODEL -->
+        <h1>💰 Compensation Model</h1>
+
+        <div class="section">
+            <h2>Current Status: Volunteer-Based</h2>
+            <p>Erinium Faction is currently a <strong>100% volunteer passion project</strong>. No one, including the project lead, is being paid. We're building this because we love modding and want to create something amazing.</p>
+        </div>
+
+        <div class="section">
+            <h2>What You Gain Right Now</h2>
+            <ul>
+                <li><strong>Portfolio Work:</strong> Real project experience you can showcase to future employers or clients</li>
+                <li><strong>Skill Development:</strong> Learn game design, Java programming, 3D modeling, or other valuable skills</li>
+                <li><strong>Team Collaboration:</strong> Experience working in a structured team environment</li>
+                <li><strong>Creative Freedom:</strong> Bring your ideas to life in a supportive environment</li>
+                <li><strong>Community Recognition:</strong> Get credited and recognized in the Minecraft modding community</li>
+                <li><strong>Networking:</strong> Build connections with other talented creators</li>
+                <li><strong>Fun:</strong> Enjoy creating something you're passionate about</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Future Revenue Sharing (If Applicable)</h2>
+            <p>If the project ever generates revenue beyond basic server costs (which is not guaranteed), we will implement a fair commission system based on:</p>
+            
+            <ul>
+                <li><strong>Contribution Tracking:</strong> We track all contributions (commits, assets, design docs, hours invested)</li>
+                <li><strong>Role Weight:</strong> Different roles may have different weights based on project needs</li>
+                <li><strong>Active vs. Past Contributors:</strong> Active members receive priority, but past contributors are not forgotten</li>
+                <li><strong>Transparent Calculation:</strong> Revenue sharing formula will be clearly communicated</li>
+            </ul>
+
+            <div class="highlight-box">
+                <h4>💡 Potential Revenue Sources (Future Possibilities)</h4>
+                <ul>
+                    <li>VIP ranks with cosmetic perks (never pay-to-win)</li>
+                    <li>Cosmetic items, pets, and particle effects</li>
+                    <li>Custom titles and name colors</li>
+                    <li>Server boosters and supporter perks</li>
+                    <li>Patreon or Ko-fi for supporters (access to exclusive cosmetics)</li>
+                    <li>Merchandising (if the server becomes very popular)</li>
+                </ul>
+                <p><strong>Important:</strong> Any monetization will be strictly ethical, community-friendly, and <strong>never pay-to-win</strong>. All gameplay-affecting features will remain equal for all players. We follow Mojang's EULA strictly.</p>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p><strong>🔒 Protection of Your Work:</strong> All contributors will be properly credited. If we ever monetize, legal agreements will ensure fair compensation. Your intellectual contributions are valued and protected.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- GETTING STARTED -->
+        <h1>🚀 Getting Started - Your First Steps</h1>
+
+        <div class="section">
+            <h2>Welcome Checklist</h2>
+            <ul>
+                <li>✅ <strong>Join Discord:</strong> Get access to all team channels and introduce yourself</li>
+                <li>✅ <strong>Set Up Tools:</strong> Install necessary software for your role (MCreator, Blockbench, etc.)</li>
+                <li>✅ <strong>Access Resources:</strong> Get links to GitHub, Google Drive, design documents</li>
+                <li>✅ <strong>Review Documentation:</strong> Read this guide and any role-specific documentation</li>
+                <li>✅ <strong>Meet the Team:</strong> Join a voice call or introduce yourself in text chat</li>
+                <li>✅ <strong>Claim Your First Task:</strong> Pick a small task to get started and learn the workflow</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>First Week Goals (By Role)</h2>
+            
+            <h3>🎮 Game Designer</h3>
+            <ul>
+                <li>Review existing game design documents</li>
+                <li>Familiarize yourself with popular faction mods (play them if possible)</li>
+                <li>Start drafting one system (e.g., power system, rank structure)</li>
+                <li>Participate in first design discussion meeting</li>
+            </ul>
+
+            <h3>🎨 Graphic Designer / Texture Artist</h3>
+            <ul>
+                <li>Review Cyber-Astral art direction guidelines</li>
+                <li>Study existing Minecraft texture packs for technical reference</li>
+                <li>Create 3-5 test textures to establish style</li>
+                <li>Get feedback from team on initial work</li>
+            </ul>
+
+            <h3>💡 Game Innovator</h3>
+            <ul>
+                <li>Research competing faction mods and take notes</li>
+                <li>Play popular faction servers to understand player behavior</li>
+                <li>Brainstorm 5-10 unique feature ideas</li>
+                <li>Present your best idea to the team</li>
+            </ul>
+
+            <h3>👨‍💻 Developer</h3>
+            <ul>
+                <li>Set up development environment (MCreator, IntelliJ, NeoForge)</li>
+                <li>Clone the GitHub repository and familiarize yourself with project structure</li>
+                <li>Review existing codebase (if any)</li>
+                <li>Implement a small feature or fix a minor bug to test workflow</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Resources & Links</h2>
+            <ul>
+                <li><strong>Discord Server:</strong> [Link will be provided upon acceptance]</li>
+                <li><strong>GitHub Repository:</strong> [Link will be provided upon acceptance]</li>
+                <li><strong>Design Documents:</strong> Google Drive folder with GDD, art guides, server specs, etc.</li>
+                <li><strong>Asset Library:</strong> Shared folder for textures, models, and other assets</li>
+                <li><strong>Test Server:</strong> IP and credentials will be provided when available</li>
+                <li><strong>NeoForge Documentation:</strong> <a href="https://docs.neoforged.net/">https://docs.neoforged.net/</a></li>
+                <li><strong>MCreator Wiki:</strong> <a href="https://mcreator.net/wiki/">https://mcreator.net/wiki/</a></li>
+            </ul>
+        </div>
+
+        <div class="success-box">
+            <h4>🎉 You're Ready to Start!</h4>
+            <p>Don't worry if you feel overwhelmed - everyone starts somewhere. Ask questions, experiment, and most importantly, have fun creating. We're here to support you every step of the way!</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- CONTACT SECTION -->
+        <div class="contact-section">
+            <h2>📬 Questions or Need Help?</h2>
+            <p>Don't hesitate to reach out if you have any questions about the project, your role, or anything else. We're all here to help each other succeed!</p>
+            <p><strong>Best way to reach us:</strong> Discord DM or team channels</p>
+            <p style="margin-top: 20px; font-size: 18px;"><strong>Let's build something legendary together! 🚀✨</strong></p>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p><strong>Erinium Faction Server</strong> - Cyber-Astral Universe</p>
+            <p>Custom Server-Exclusive Mods • NeoForge 1.21.1 • MCreator 2025.2+ • Made with passion by an amazing team</p>
+            <p style="margin-top: 15px; font-size: 12px; color: #95a5a6;">
+                This document is version 1.0 and may be updated as the project evolves.<br>
+                Last updated: October 2025
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>
