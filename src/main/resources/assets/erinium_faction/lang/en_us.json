@@ -14,6 +14,7 @@
   "erinium_faction.faction.menu.playerlist": "§6Player List",
   "erinium_faction.faction.menu.settings": "§6Settings",
   "erinium_faction.faction.menu.open_settings_wip": "§6[§bErinium§6/§dFaction§6] §eOpening settings (WIP)",
+  "erinium_faction.faction.menu.title": "§6Faction",
 
   "erinium_faction.rank.create.success": "§6[§bErinium§6/§aRank§6] §aRank §b%s§a created.§r",
   "erinium_faction.rank.create.fail": "§6[§bErinium§6/§aRank§6] §cUnable to create rank (§7already exists or invalid id§c).§r",
