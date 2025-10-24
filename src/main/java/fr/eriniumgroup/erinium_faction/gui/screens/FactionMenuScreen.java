@@ -137,7 +137,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             claimCount = cc;
             maxClaims = EFConfig.FACTION_MAX_CLAIMS.get();
             memberCount = this.faction.getMembers().size();
-            maxPlayers = EFConfig.FACTION_MAX_MEMBERS.get();
+            maxPlayers = FactionManager.getMaxMembersFor(this.faction);
             level = this.faction.getLevel();
             xp = this.faction.getXp();
             xpRequired = this.faction.xpNeededForNextLevel();
@@ -240,7 +240,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         } else if (hasFaction && faction != null) {
             StringBuilder playerlist = new StringBuilder();
             for (Map.Entry<UUID, Faction.Member> t : faction.getMembers().entrySet()) {
-                if (playerlist.length() > 0) playerlist.append(",");
+                if (!playerlist.isEmpty()) playerlist.append(",");
                 String rankId = t.getValue().rankId;
                 String name = t.getValue().nameCached != null ? t.getValue().nameCached : t.getKey().toString();
                 playerlist.append(t.getKey()).append(":").append(rankId).append(":").append(name);

@@ -33,16 +33,33 @@ public class FactionSnapshot {
         s.claims = FactionManager.countClaims(f.getId());
         s.maxClaims = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_CLAIMS.get();
         s.membersCount = f.getMembers().size();
-        s.maxPlayers = Integer.MAX_VALUE; // pas de limite interne ici (placeholder)
+        s.maxPlayers = FactionManager.getMaxMembersFor(f);
         s.level = f.getLevel();
         s.xp = f.getXp();
         s.xpRequired = f.xpNeededForNextLevel();
         s.currentPower = (int) Math.round(f.getPower());
         s.maxPower = (int) Math.round(f.getMaxPower());
-        // claims: non implémenté -> 0/0
+
+        var server = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
+        var profileCache = server != null ? server.getProfileCache() : null;
+
         for (var e : f.getMembers().entrySet()) {
-            s.membersRank.put(e.getKey(), e.getValue().rankId);
-            s.memberNames.put(e.getKey(), e.getValue().nameCached != null ? e.getValue().nameCached : e.getKey().toString());
+            UUID uuid = e.getKey();
+            s.membersRank.put(uuid, e.getValue().rankId);
+            String name = e.getValue().nameCached;
+            if (name == null || name.isBlank()) {
+                if (server != null) {
+                    var sp = server.getPlayerList().getPlayer(uuid);
+                    if (sp != null) {
+                        name = sp.getGameProfile().getName();
+                    } else if (profileCache != null) {
+                        var opt = profileCache.get(uuid);
+                        if (opt.isPresent()) name = opt.get().getName();
+                    }
+                }
+            }
+            if (name == null || name.isBlank()) name = uuid.toString();
+            s.memberNames.put(uuid, name);
         }
         return s;
     }

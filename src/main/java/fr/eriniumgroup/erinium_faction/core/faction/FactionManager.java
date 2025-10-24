@@ -92,7 +92,7 @@ public final class FactionManager {
     // Membership -------------------------------------------------------------
     public static boolean invite(Faction f, UUID player, String name) {
         if (f == null) return false;
-        int max = EFConfig.FACTION_MAX_MEMBERS.get();
+        int max = getMaxMembersFor(f);
         if (f.getMembers().size() >= max) return false;
         boolean ok = f.addMember(player, name, "recruit");
         if (ok) {
@@ -226,5 +226,13 @@ public final class FactionManager {
         if (SERVER == null) return false;
         var data = ClaimsSavedData.get(SERVER);
         return data.unclaim(key, factionId);
+    }
+
+    public static int getMaxMembersFor(Faction f) {
+        int base = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_BASE_MAX_PLAYERS.get();
+        int perLvl = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_PLAYERS_PER_LEVEL.get();
+        int hardCap = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_MEMBERS.get();
+        int computed = base + Math.max(0, f.getLevel()) * Math.max(0, perLvl);
+        return Math.min(hardCap, computed);
     }
 }

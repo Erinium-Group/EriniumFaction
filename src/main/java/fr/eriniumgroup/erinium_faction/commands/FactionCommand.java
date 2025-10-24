@@ -77,6 +77,11 @@ public class FactionCommand {
                         ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
                         return 0;
                     }
+                    int cap = FactionManager.getMaxMembersFor(f);
+                    if (f.getMembers().size() >= cap) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.full", cap));
+                        return 0;
+                    }
                     boolean ok = FactionManager.invite(f, sp.getUUID(), sp.getGameProfile().getName());
                     if (!ok) {
                         ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.fail"));
