@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.commands;
 
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import io.netty.buffer.Unpooled;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -62,7 +63,12 @@ public class TempCommand {
 
                 @Override
                 public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-                    return new FactionMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(_bpos));
+                    String playerFaction = FactionManager.getPlayerFaction(player.getUUID());
+                    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                    buf.writeBlockPos(_bpos);
+                    // Toujours écrire le nom de faction (peut être null -> écrire chaîne vide)
+                    buf.writeUtf(playerFaction != null ? playerFaction : "");
+                    return new FactionMenu(id, inventory, buf);
                 }
             }, _bpos);
         }

@@ -54,11 +54,14 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         String factionId = null;
         if (this.faction != null) {
             factionId = this.faction.getName();
+        } else if (container.factionName != null && !container.factionName.isEmpty()) {
+            // fallback sur le nom transmis par le serveur
+            factionId = container.factionName;
         } else {
             factionId = FactionManager.getPlayerFaction(entity.getUUID());
         }
         this.factionfile = (factionId != null && !factionId.isEmpty()) ? EFUtils.Faction.FactionFileById(factionId) : null;
-        this.hasFaction = this.faction != null && this.factionfile != null;
+        this.hasFaction = (factionId != null && !factionId.isEmpty()) && this.factionfile != null;
     }
 
     @Override

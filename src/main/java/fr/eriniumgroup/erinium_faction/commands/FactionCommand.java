@@ -60,10 +60,7 @@ public class FactionCommand {
 
                 .then(Commands.literal("info").executes(ctx -> info(ctx, null)).then(Commands.argument("faction", FactionArgumentType.faction()).executes(ctx -> info(ctx, FactionArgumentType.getFaction(ctx, "faction")))))
 
-                .then(Commands.literal("f")
-                        .executes(ctx -> openMenu(ctx, null))
-                        .then(Commands.argument("faction", FactionArgumentType.faction())
-                                .executes(ctx -> openMenu(ctx, FactionArgumentType.getFaction(ctx, "faction")))))
+                .then(Commands.literal("f").executes(ctx -> openMenu(ctx, null)).then(Commands.argument("faction", FactionArgumentType.faction()).executes(ctx -> openMenu(ctx, FactionArgumentType.getFaction(ctx, "faction")))))
 
                 .then(Commands.literal("list").executes(FactionCommand::list)));
 
@@ -426,10 +423,12 @@ public class FactionCommand {
             }
 
             @Override
-            public AbstractContainerMenu createMenu(int id, Inventory inventory, Player p) {
+            public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+                String playerFaction = FactionManager.getPlayerFaction(player.getUUID());
                 FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeBlockPos(pos);
-                buf.writeUtf(targetFaction);
+                // Toujours écrire le nom de faction (peut être null -> écrire chaîne vide)
+                buf.writeUtf(playerFaction != null ? playerFaction : "");
                 return new FactionMenu(id, inventory, buf);
             }
         }, pos);
