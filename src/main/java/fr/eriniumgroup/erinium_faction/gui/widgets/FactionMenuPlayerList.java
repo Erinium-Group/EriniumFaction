@@ -1,6 +1,5 @@
 package fr.eriniumgroup.erinium_faction.gui.widgets;
 
-import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -113,24 +112,14 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
         @Override
         public void render(GuiGraphics guiGraphics, int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean isSelected, float partialTick) {
             // Dessine un fond pour chaque élément (facultatif)
-            guiGraphics.fill(x + 1, y + 1, x + itemWidth - 1, y + 18, EFUtils.Color.ARGBToInt(128, 17, 17, 44));
-            /*guiGraphics.fill(x + 2, y + 2, x + 2 + 16 - 1, y + 2 + 16 - 1, ARGBToInt.ARGBToInt(255, 128, 128, 128));
-            guiGraphics.fill(x + 2 + 16 + 1, y + 2, x + 2 + 16 + 1 + 16 - 1, y + 2 + 16 - 1, ARGBToInt.ARGBToInt(255, 128, 128, 128));*/
-
+            guiGraphics.fill(x + 1, y + 1, x + itemWidth - 1, y + 18, fr.eriniumgroup.erinium_faction.common.util.EFUtils.Color.ARGBToInt(128, 17, 17, 44));
             try {
                 String[] parts = this.text.split(":");
-                if (parts.length < 2) return; // format inattendu
+                if (parts.length < 2) return; // format: uuid:rank[:name]
                 UUID playerUUID = UUID.fromString(parts[0]);
                 String rank = parts[1];
                 ResourceLocation ranktexture = ResourceLocation.parse("erinium_faction:textures/screens/" + rank + ".png");
-                // Utiliser le nom fourni si présent; sinon fallback EFUtils
-                String Playername;
-                if (parts.length >= 3 && parts[2] != null && !parts[2].isEmpty()) {
-                    Playername = parts[2];
-                } else {
-                    Playername = EFUtils.F.GetFileStringValue(EFUtils.F.UUIDFile(String.valueOf(playerUUID)), "displayname");
-                    if (Playername == null || Playername.isEmpty()) Playername = playerUUID.toString();
-                }
+                String playerName = (parts.length >= 3 && parts[2] != null && !parts[2].isEmpty()) ? parts[2] : playerUUID.toString();
 
                 int headX = x + 1;
                 int headY = y + 1;
@@ -142,7 +131,7 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
                     headCache.put(playerUUID, head);
 
                     // Déclenche une résolution asynchrone (offline OK) une seule fois
-                    headFutures.computeIfAbsent(playerUUID, id -> EFUtils.Head.resolveProfileByUUID(id).thenApply(rp -> {
+                    headFutures.computeIfAbsent(playerUUID, id -> fr.eriniumgroup.erinium_faction.common.util.EFUtils.Head.resolveProfileByUUID(id).thenApply(rp -> {
                         ItemStack s = new ItemStack(Items.PLAYER_HEAD);
                         s.set(DataComponents.PROFILE, rp);
                         return s;
@@ -168,20 +157,17 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
                 int textX = x + 2 + 16 + 1 + 16;
                 int textY = y + 9 - 3;
                 guiGraphics.pose().translate(textX, textY, 0);
-                if (Minecraft.getInstance().font.width(Playername) > 82) {
-                    float scalertext = 82f / Minecraft.getInstance().font.width(Playername);
+                if (Minecraft.getInstance().font.width(playerName) > 82) {
+                    float scalertext = 82f / Minecraft.getInstance().font.width(playerName);
                     guiGraphics.pose().scale(scalertext, scalertext, 1f);
                 }
-                guiGraphics.drawString(Minecraft.getInstance().font, Playername, 0, 0, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+                guiGraphics.drawString(Minecraft.getInstance().font, playerName, 0, 0, fr.eriniumgroup.erinium_faction.common.util.EFUtils.Color.ARGBToInt(255, 255, 255, 255));
                 guiGraphics.pose().popPose();
 
             } catch (Exception e) {
                 // Si ce n'est pas un UUID, affiche une tête par défaut
                 guiGraphics.renderItem(new ItemStack(Items.PLAYER_HEAD), x + 2, y + 2);
             }
-
-            // Dessine le texte, avec un léger décalage vers la droite
-            //guiGraphics.drawString(Minecraft.getInstance().font, this.text, x + 10, y + 5, 0xFFFFFF);
         }
 
         @Override
@@ -193,3 +179,4 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
         }
     }
 }
+

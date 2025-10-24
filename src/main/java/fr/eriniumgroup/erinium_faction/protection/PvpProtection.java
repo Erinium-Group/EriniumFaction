@@ -22,9 +22,9 @@ public class PvpProtection {
         if (attacker.level().isClientSide()) return;
 
         if (FactionManager.areSameFaction(attacker.getUUID(), victim.getUUID())) {
-            if (!EFConfig.friendlyFire) {
+            if (!EFConfig.FRIENDLY_FIRE.get()) {
                 event.setCanceled(true);
-                attacker.sendSystemMessage(Component.literal("§cVous ne pouvez pas attaquer un membre de votre faction !"));
+                attacker.sendSystemMessage(Component.translatable("erinium_faction.pvp.friendly_fire_blocked"));
                 return;
             }
         }
@@ -34,12 +34,11 @@ public class PvpProtection {
 
         if (attackerFaction != null && victimFaction != null) {
             if (FactionManager.areAllies(attackerFaction, victimFaction)) {
-                if (!EFConfig.allyDamage) {
+                if (!EFConfig.ALLY_DAMAGE.get()) {
                     event.setCanceled(true);
-                    attacker.sendSystemMessage(Component.literal("§cVous ne pouvez pas attaquer un allié !"));
+                    attacker.sendSystemMessage(Component.translatable("erinium_faction.pvp.ally_damage_blocked"));
                 }
             }
         }
     }
 }
-

@@ -13,7 +13,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -24,34 +23,35 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.function.Supplier;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class EFVariables {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, EFC.MODID);
-    public static final Supplier<AttachmentType<PlayerVariables>> PLAYER_VARIABLES = ATTACHMENT_TYPES.register("player_variables", () -> AttachmentType.serializable(() -> new PlayerVariables()).build());
-
-    @SubscribeEvent
-    public static void init(FMLCommonSetupEvent event) {
-        // rien à faire ici pour l’instant
-    }
+    public static final Supplier<AttachmentType<PlayerVariables>> PLAYER_VARIABLES = ATTACHMENT_TYPES.register("player_variables", () -> AttachmentType.serializable(PlayerVariables::new).build());
 
     @EventBusSubscriber
     public static class EventBusVariableHandlers {
         @SubscribeEvent
         public static void onPlayerLoggedInSyncPlayerVariables(PlayerEvent.PlayerLoggedInEvent event) {
-            if (event.getEntity() instanceof ServerPlayer player)
+            if (event.getEntity() instanceof ServerPlayer player) {
+                // mettre à jour les variables depuis le serveur avant sync
+                fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(player, player.getData(PLAYER_VARIABLES));
                 player.getData(PLAYER_VARIABLES).syncPlayerVariables(event.getEntity());
+            }
         }
 
         @SubscribeEvent
         public static void onPlayerRespawnedSyncPlayerVariables(PlayerEvent.PlayerRespawnEvent event) {
-            if (event.getEntity() instanceof ServerPlayer player)
+            if (event.getEntity() instanceof ServerPlayer player) {
+                fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(player, player.getData(PLAYER_VARIABLES));
                 player.getData(PLAYER_VARIABLES).syncPlayerVariables(event.getEntity());
+            }
         }
 
         @SubscribeEvent
         public static void onPlayerChangedDimensionSyncPlayerVariables(PlayerEvent.PlayerChangedDimensionEvent event) {
-            if (event.getEntity() instanceof ServerPlayer player)
+            if (event.getEntity() instanceof ServerPlayer player) {
+                fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(player, player.getData(PLAYER_VARIABLES));
                 player.getData(PLAYER_VARIABLES).syncPlayerVariables(event.getEntity());
+            }
         }
 
         @SubscribeEvent
@@ -61,6 +61,16 @@ public class EFVariables {
             clone.lastChunk = original.lastChunk;
             clone.factionInChunk = original.factionInChunk;
             clone.lastRegion = original.lastRegion;
+            // nouveaux champs
+            clone.factionId = original.factionId;
+            clone.factionName = original.factionName;
+            clone.factionPower = original.factionPower;
+            clone.factionMaxPower = original.factionMaxPower;
+            clone.factionLevel = original.factionLevel;
+            clone.factionXp = original.factionXp;
+            clone.serverRankId = original.serverRankId;
+            clone.playerPower = original.playerPower;
+            clone.playerMaxPower = original.playerMaxPower;
             event.getEntity().setData(PLAYER_VARIABLES, clone);
         }
     }
@@ -70,12 +80,33 @@ public class EFVariables {
         public String factionInChunk = "";
         public String lastRegion = "";
 
+        // affichage client faction
+        public String factionId = "";
+        public String factionName = "";
+        public double factionPower = 0;
+        public double factionMaxPower = 0;
+        public int factionLevel = 0;
+        public int factionXp = 0;
+        public String serverRankId = ""; // rank global (VIP, etc.)
+        public double playerPower = 0;
+        public double playerMaxPower = 0;
+
         @Override
         public CompoundTag serializeNBT(HolderLookup.Provider lookupProvider) {
             CompoundTag nbt = new CompoundTag();
             nbt.putString("lastChunk", lastChunk);
             nbt.putString("factionInChunk", factionInChunk);
             nbt.putString("lastRegion", lastRegion);
+
+            nbt.putString("factionId", factionId);
+            nbt.putString("factionName", factionName);
+            nbt.putDouble("factionPower", factionPower);
+            nbt.putDouble("factionMaxPower", factionMaxPower);
+            nbt.putInt("factionLevel", factionLevel);
+            nbt.putInt("factionXp", factionXp);
+            nbt.putString("serverRankId", serverRankId);
+            nbt.putDouble("playerPower", playerPower);
+            nbt.putDouble("playerMaxPower", playerMaxPower);
             return nbt;
         }
 
@@ -84,6 +115,16 @@ public class EFVariables {
             lastChunk = nbt.getString("lastChunk");
             factionInChunk = nbt.getString("factionInChunk");
             lastRegion = nbt.getString("lastRegion");
+
+            factionId = nbt.getString("factionId");
+            factionName = nbt.getString("factionName");
+            factionPower = nbt.getDouble("factionPower");
+            factionMaxPower = nbt.getDouble("factionMaxPower");
+            factionLevel = nbt.getInt("factionLevel");
+            factionXp = nbt.getInt("factionXp");
+            serverRankId = nbt.getString("serverRankId");
+            playerPower = nbt.getDouble("playerPower");
+            playerMaxPower = nbt.getDouble("playerMaxPower");
         }
 
         public void syncPlayerVariables(Entity entity) {

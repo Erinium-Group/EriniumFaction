@@ -12,6 +12,8 @@
   "erinium_faction.faction.menu.power": "§6Puissance : §e",
   "erinium_faction.faction.menu.level": "§6Niveau : §e",
   "erinium_faction.faction.menu.playerlist": "§6Liste des joueurs",
+  "erinium_faction.faction.menu.settings": "§6Paramètres",
+  "erinium_faction.faction.menu.open_settings_wip": "§6[§bErinium§6/§dFaction§6] §eOuverture des paramètres (WIP)",
 
   "erinium_faction.rank.create.success": "§6[§bErinium§6/§aRank§6] §aRank §b%s§a créé.§r",
   "erinium_faction.rank.create.fail": "§6[§bErinium§6/§aRank§6] §cImpossible de créer le rank (§7existe déjà ou id invalide§c).§r",
@@ -32,5 +34,36 @@
   "erinium_faction.rank.set.fail": "§6[§bErinium§6/§aRank§6] §cAssignation échouée (§7rank introuvable§c).§r",
   "erinium_faction.rank.get.none": "§6[§bErinium§6/§aRank§6] §b%s §7n'a aucun rank.§r",
   "erinium_faction.rank.get.success": "§6[§bErinium§6/§aRank§6] §7Rank de §b%s§7 = §b%s §7(§e%s§7)§r",
-  "erinium_faction.rank.reload.success": "§6[§bErinium§6/§aRank§6] §aRanks rechargés depuis les fichiers.§r"
+  "erinium_faction.rank.reload.success": "§6[§bErinium§6/§aRank§6] §aRanks rechargés depuis les fichiers.§r",
+
+  "erinium_faction.pvp.friendly_fire_blocked": "§6[§bErinium§6/§ePvP§6] §cVous ne pouvez pas attaquer un membre de votre faction !",
+  "erinium_faction.pvp.ally_damage_blocked": "§6[§bErinium§6/§ePvP§6] §cVous ne pouvez pas attaquer un allié !",
+
+  "erinium_faction.claim.blocked.other_faction": "§6[§bErinium§6/§dFaction§6] §cCe territoire appartient à une autre faction !",
+  "erinium_faction.interact.blocked.other_faction": "§6[§bErinium§6/§dFaction§6] §cVous ne pouvez pas interagir ici !",
+
+  "erinium_faction.cmd.faction.create.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de créer la faction.",
+  "erinium_faction.cmd.faction.create.success": "§6[§bErinium§6/§dFaction§6] §aFaction créée : §b%s§r",
+  "erinium_faction.cmd.faction.delete.success": "§6[§bErinium§6/§dFaction§6] §aFaction supprimée.",
+  "erinium_faction.cmd.faction.not_found": "§6[§bErinium§6/§dFaction§6] §cFaction introuvable.",
+  "erinium_faction.cmd.faction.info": "§6[§bErinium§6/§dFaction§6] §7Faction §b%s§7 | §6Puissance : §e%s§6/§e%s§6 | §6Niveau : §e%s§6 (§e%s§6)",
+  "erinium_faction.cmd.faction.join.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de rejoindre.",
+  "erinium_faction.cmd.faction.join.success": "§6[§bErinium§6/§dFaction§6] §aRejoint la faction §b%s§a.",
+  "erinium_faction.cmd.faction.not_in_faction": "§6[§bErinium§6/§dFaction§6] §cVous n'êtes dans aucune faction.",
+  "erinium_faction.cmd.faction.leave.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de quitter.",
+  "erinium_faction.cmd.faction.leave.success": "§6[§bErinium§6/§dFaction§6] §aVous avez quitté la faction.",
+  "erinium_faction.cmd.faction.addxp.success": "§6[§bErinium§6/§dFaction§6] §aXP ajouté.",
+  "erinium_faction.cmd.faction.setrank.placeholder": "§6[§bErinium§6/§dFaction§6] §7/!\\ Placeholder setrank.",
+
+  "erinium_faction.cmd.faction.claim.already": "§6[§bErinium§6/§dFaction§6] §cChunk déjà claim.",
+  "erinium_faction.cmd.faction.claim.limit": "§6[§bErinium§6/§dFaction§6] §cImpossible de claim (limite atteinte ?).",
+  "erinium_faction.cmd.faction.claim.success": "§6[§bErinium§6/§dFaction§6] §aChunk claim.",
+
+  "erinium_faction.cmd.faction.unclaim.not_claimed": "§6[§bErinium§6/§dFaction§6] §cChunk non claim.",
+  "erinium_faction.cmd.faction.unclaim.not_owner": "§6[§bErinium§6/§dFaction§6] §cCe chunk n'appartient pas à votre faction.",
+  "erinium_faction.cmd.faction.unclaim.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible d'unclaim.",
+  "erinium_faction.cmd.faction.unclaim.success": "§6[§bErinium§6/§dFaction§6] §aChunk unclaim.",
+
+  "erinium_faction.faction.menu.no_faction_hint": "§6[§bErinium§6/§dFaction§6] §7Vous n'êtes dans aucune faction.",
+  "erinium_faction.faction.menu.no_faction": "§6[§bErinium§6/§dFaction§6] §7Aucune faction"
 }

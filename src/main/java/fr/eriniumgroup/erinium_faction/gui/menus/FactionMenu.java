@@ -4,6 +4,7 @@ import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.init.EFMenus;
+import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -52,14 +53,12 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         this.internal = new ItemStackHandler(0);
         BlockPos pos;
         if (extraData != null) {
-            // Position
             pos = extraData.readBlockPos();
             this.x = pos.getX();
             this.y = pos.getY();
             this.z = pos.getZ();
             access = ContainerLevelAccess.create(world, pos);
 
-            // Payload version + snapshot
             if (extraData.readableBytes() > 0) {
                 int version = extraData.readVarInt();
                 if (version >= 1) {
@@ -68,11 +67,19 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
                 }
             }
         }
-        // Fallbacks
         if (this.factionName == null) {
-            this.factionName = FactionManager.getPlayerFaction(this.entity.getUUID());
+            if (this.world.isClientSide()) {
+                var vars = this.entity.getData(EFVariables.PLAYER_VARIABLES);
+                this.factionName = (vars != null && vars.factionName != null && !vars.factionName.isEmpty()) ? vars.factionName : null;
+            } else {
+                this.factionName = FactionManager.getPlayerFaction(this.entity.getUUID());
+            }
         }
-        this.faction = (this.factionName != null && !this.factionName.isEmpty()) ? FactionManager.getFaction(this.factionName) : null;
+        if (!this.world.isClientSide()) {
+            this.faction = (this.factionName != null && !this.factionName.isEmpty()) ? FactionManager.getFaction(this.factionName) : null;
+        } else {
+            this.faction = null; // côté client, on se fie au snapshot/EFVariables
+        }
     }
 
     @Override

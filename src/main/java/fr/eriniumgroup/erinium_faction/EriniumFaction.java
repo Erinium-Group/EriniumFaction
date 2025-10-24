@@ -25,6 +25,8 @@ import fr.eriniumgroup.erinium_faction.init.EFArgumentTypes;
 import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
+import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -43,6 +45,7 @@ public class EriniumFaction {
         EFItems.REGISTER.register(modEventBus);
         EFVariables.ATTACHMENT_TYPES.register(modEventBus);
         EFArgumentTypes.REGISTER.register(modEventBus);
+        PowerManager.ATTACHMENTS.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
@@ -69,11 +72,14 @@ public class EriniumFaction {
     private void onServerStarting(ServerStartingEvent event) {
         EFC.log.info("§aLoading §dfaction §7data...");
         FactionManager.load(event.getServer());
+        // Ranks system
+        EFRManager.get().load();
     }
 
     private void onServerStopping(ServerStoppingEvent event) {
         EFC.log.info("§2Saving §dfaction §7data...");
         FactionManager.save(event.getServer());
+        EFRManager.get().save();
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {

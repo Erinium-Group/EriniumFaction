@@ -16,7 +16,7 @@ import fr.eriniumgroup.erinium_faction.common.network.EFVariables.*;
  * - Utilise RegisterPayloadHandlersEvent (NeoForge 1.21)
  * - Versionnable (permet d’ajouter d’autres paquets facilement)
  */
-@EventBusSubscriber(modid = EFC.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = EFC.MODID)
 public class PacketHandler {
 
     // Optionnel: log manuel si vous appelez register() ailleurs

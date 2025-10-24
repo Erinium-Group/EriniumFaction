@@ -12,6 +12,8 @@
   "erinium_faction.faction.menu.power": "§6Power: §e",
   "erinium_faction.faction.menu.level": "§6Level: §e",
   "erinium_faction.faction.menu.playerlist": "§6Player List",
+  "erinium_faction.faction.menu.settings": "§6Settings",
+  "erinium_faction.faction.menu.open_settings_wip": "§6[§bErinium§6/§dFaction§6] §eOpening settings (WIP)",
 
   "erinium_faction.rank.create.success": "§6[§bErinium§6/§aRank§6] §aRank §b%s§a created.§r",
   "erinium_faction.rank.create.fail": "§6[§bErinium§6/§aRank§6] §cUnable to create rank (§7already exists or invalid id§c).§r",
@@ -32,5 +34,36 @@
   "erinium_faction.rank.set.fail": "§6[§bErinium§6/§aRank§6] §cAssignment failed (§7rank not found§c).§r",
   "erinium_faction.rank.get.none": "§6[§bErinium§6/§aRank§6] §b%s §7has no rank.§r",
   "erinium_faction.rank.get.success": "§6[§bErinium§6/§aRank§6] §7Rank of §b%s§7 = §b%s §7(§e%s§7)§r",
-  "erinium_faction.rank.reload.success": "§6[§bErinium§6/§aRank§6] §aRanks reloaded from files.§r"
+  "erinium_faction.rank.reload.success": "§6[§bErinium§6/§aRank§6] §aRanks reloaded from files.§r",
+
+  "erinium_faction.pvp.friendly_fire_blocked": "§6[§bErinium§6/§ePvP§6] §cYou can't attack a member of your faction!",
+  "erinium_faction.pvp.ally_damage_blocked": "§6[§bErinium§6/§ePvP§6] §cYou can't attack an ally!",
+
+  "erinium_faction.claim.blocked.other_faction": "§6[§bErinium§6/§dFaction§6] §cThis land belongs to another faction!",
+  "erinium_faction.interact.blocked.other_faction": "§6[§bErinium§6/§dFaction§6] §cYou can't interact here!",
+
+  "erinium_faction.cmd.faction.create.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to create the faction.",
+  "erinium_faction.cmd.faction.create.success": "§6[§bErinium§6/§dFaction§6] §aFaction created: §b%s§r",
+  "erinium_faction.cmd.faction.delete.success": "§6[§bErinium§6/§dFaction§6] §aFaction deleted.",
+  "erinium_faction.cmd.faction.not_found": "§6[§bErinium§6/§dFaction§6] §cFaction not found.",
+  "erinium_faction.cmd.faction.info": "§6[§bErinium§6/§dFaction§6] §7Faction §b%s§7 | §6Power: §e%s§6/§e%s§6 | §6Level: §e%s§6 (§e%s§6)",
+  "erinium_faction.cmd.faction.join.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to join.",
+  "erinium_faction.cmd.faction.join.success": "§6[§bErinium§6/§dFaction§6] §aJoined faction §b%s§a.",
+  "erinium_faction.cmd.faction.not_in_faction": "§6[§bErinium§6/§dFaction§6] §cYou are not in a faction.",
+  "erinium_faction.cmd.faction.leave.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to leave.",
+  "erinium_faction.cmd.faction.leave.success": "§6[§bErinium§6/§dFaction§6] §aYou left the faction.",
+  "erinium_faction.cmd.faction.addxp.success": "§6[§bErinium§6/§dFaction§6] §aXP added.",
+  "erinium_faction.cmd.faction.setrank.placeholder": "§6[§bErinium§6/§dFaction§6] §7/!\\ Placeholder setrank.",
+
+  "erinium_faction.cmd.faction.claim.already": "§6[§bErinium§6/§dFaction§6] §cChunk already claimed.",
+  "erinium_faction.cmd.faction.claim.limit": "§6[§bErinium§6/§dFaction§6] §cUnable to claim (limit reached?).",
+  "erinium_faction.cmd.faction.claim.success": "§6[§bErinium§6/§dFaction§6] §aChunk claimed.",
+
+  "erinium_faction.cmd.faction.unclaim.not_claimed": "§6[§bErinium§6/§dFaction§6] §cChunk is not claimed.",
+  "erinium_faction.cmd.faction.unclaim.not_owner": "§6[§bErinium§6/§dFaction§6] §cThis chunk doesn't belong to your faction.",
+  "erinium_faction.cmd.faction.unclaim.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to unclaim.",
+  "erinium_faction.cmd.faction.unclaim.success": "§6[§bErinium§6/§dFaction§6] §aChunk unclaimed.",
+
+  "erinium_faction.faction.menu.no_faction_hint": "§6[§bErinium§6/§dFaction§6] §7You are not in a faction.",
+  "erinium_faction.faction.menu.no_faction": "§6[§bErinium§6/§dFaction§6] §7No Faction"
 }

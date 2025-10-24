@@ -31,7 +31,7 @@ public class ClaimProtection {
 
         if (!canModifyInClaim(player, claim)) {
             event.setCanceled(true);
-            player.sendSystemMessage(Component.literal("§cCe territoire appartient à une autre faction !"));
+            player.sendSystemMessage(Component.translatable("erinium_faction.claim.blocked.other_faction"));
         }
     }
 
@@ -47,7 +47,7 @@ public class ClaimProtection {
 
         if (!canModifyInClaim(player, claim)) {
             event.setCanceled(true);
-            player.sendSystemMessage(Component.literal("§cCe territoire appartient à une autre faction !"));
+            player.sendSystemMessage(Component.translatable("erinium_faction.claim.blocked.other_faction"));
         }
     }
 
@@ -63,7 +63,7 @@ public class ClaimProtection {
 
         if (!canModifyInClaim(player, claim)) {
             event.setCanceled(true);
-            player.sendSystemMessage(Component.literal("§cVous ne pouvez pas interagir ici !"));
+            player.sendSystemMessage(Component.translatable("erinium_faction.interact.blocked.other_faction"));
         }
     }
 
@@ -73,9 +73,8 @@ public class ClaimProtection {
         String claimOwner = FactionManager.getClaimOwner(claim);
         String playerFaction = FactionManager.getPlayerFaction(player.getUUID());
 
-        if (claimOwner.equals(playerFaction)) return true;
+        if (claimOwner != null && claimOwner.equals(playerFaction)) return true;
 
         return false;
     }
 }
-

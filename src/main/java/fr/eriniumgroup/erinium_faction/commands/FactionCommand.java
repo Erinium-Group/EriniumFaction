@@ -1,473 +1,140 @@
 package fr.eriniumgroup.erinium_faction.commands;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
-import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
-import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
-import fr.eriniumgroup.erinium_faction.common.util.TeleportUtil;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
-import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
-import fr.eriniumgroup.erinium_faction.core.faction.Rank;
-import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
-import io.netty.buffer.Unpooled;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
 
-import java.util.Collection;
-
-/**
- * Main faction command handler - /faction or /f
- */
 public class FactionCommand {
-
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("faction").then(Commands.literal("create").then(Commands.argument("name", StringArgumentType.word()).executes(FactionCommand::create)))
-
-                .then(Commands.literal("disband").executes(FactionCommand::disband))
-
-                .then(Commands.literal("invite").then(Commands.argument("players", GameProfileArgument.gameProfile()).executes(FactionCommand::invite)))
-
-                .then(Commands.literal("kick").then(Commands.argument("players", GameProfileArgument.gameProfile()).executes(FactionCommand::kick)))
-
-                .then(Commands.literal("leave").executes(FactionCommand::leave))
-
-                .then(Commands.literal("claim").executes(FactionCommand::claim))
-
-                .then(Commands.literal("unclaim").executes(FactionCommand::unclaim))
-
-                .then(Commands.literal("sethome").executes(FactionCommand::setHome))
-
-                .then(Commands.literal("home").executes(FactionCommand::home))
-
-                .then(Commands.literal("ally").then(Commands.argument("faction", FactionArgumentType.faction()).executes(FactionCommand::ally)))
-
-                .then(Commands.literal("enemy").then(Commands.argument("faction", FactionArgumentType.faction()).executes(FactionCommand::enemy)))
-
-                .then(Commands.literal("neutral").then(Commands.argument("faction", FactionArgumentType.faction()).executes(FactionCommand::neutral)))
-
-                .then(Commands.literal("info").executes(ctx -> info(ctx, null)).then(Commands.argument("faction", FactionArgumentType.faction()).executes(ctx -> info(ctx, FactionArgumentType.getFaction(ctx, "faction")))))
-
-                .then(Commands.literal("f").executes(ctx -> openMenu(ctx, null)).then(Commands.argument("faction", FactionArgumentType.faction()).executes(ctx -> openMenu(ctx, FactionArgumentType.getFaction(ctx, "faction")))))
-
-                .then(Commands.literal("list").executes(FactionCommand::list)));
-
-        // Alias /f
-        dispatcher.register(Commands.literal("f").redirect(dispatcher.register(Commands.literal("faction"))));
-    }
-
-    private static int create(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-        String name = StringArgumentType.getString(ctx, "name");
-
-        if (name.length() < EFConfig.minFactionNameLength) {
-            ctx.getSource().sendFailure(Component.literal("§cLe nom doit contenir au moins " + EFConfig.minFactionNameLength + " caractères !"));
-            return 0;
-        }
-        if (name.length() > EFConfig.maxFactionNameLength) {
-            ctx.getSource().sendFailure(Component.literal("§cLe nom doit contenir au maximum " + EFConfig.maxFactionNameLength + " caractères !"));
-            return 0;
-        }
-
-        if (FactionManager.isInFaction(player.getUUID())) {
-            ctx.getSource().sendFailure(Component.literal("§cVous êtes déjà dans une faction !"));
-            return 0;
-        }
-
-        Faction faction = FactionManager.createFaction(name, player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cCe nom de faction est déjà pris !"));
-            return 0;
-        }
-
-        ctx.getSource().sendSuccess(() -> Component.literal("§aFaction §6" + name + " §acréée avec succès !"), true);
-        return 1;
-    }
-
-    private static int disband(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        if (faction.getRank(player.getUUID()) != Rank.OWNER) {
-            ctx.getSource().sendFailure(Component.literal("§cSeul le chef peut dissoudre la faction !"));
-            return 0;
-        }
-
-        String factionName = faction.getName();
-        FactionManager.disbandFaction(factionName);
-        ctx.getSource().sendSuccess(() -> Component.literal("§cFaction §6" + factionName + " §cdissoute !"), true);
-        return 1;
-    }
-
-    private static int invite(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-        Collection<GameProfile> targets = GameProfileArgument.getGameProfiles(ctx, "players");
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        Rank playerRank = faction.getRank(player.getUUID());
-        if (!playerRank.canInvite()) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'avez pas la permission d'inviter !"));
-            return 0;
-        }
-
-        int count = 0;
-        for (GameProfile profile : targets) {
-            if (FactionManager.addMemberToFaction(faction.getName(), profile.getId(), Rank.RECRUIT)) {
-                count++;
-            }
-        }
-
-        final int finalCount = count;
-        ctx.getSource().sendSuccess(() -> Component.literal("§a" + finalCount + " joueur(s) invité(s) !"), true);
-        return count;
-    }
-
-    private static int kick(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-        Collection<GameProfile> targets = GameProfileArgument.getGameProfiles(ctx, "players");
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        Rank playerRank = faction.getRank(player.getUUID());
-        if (!playerRank.canKick()) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'avez pas la permission d'expulser !"));
-            return 0;
-        }
-
-        int count = 0;
-        for (GameProfile profile : targets) {
-            if (profile.getId().equals(faction.getOwnerId())) {
-                ctx.getSource().sendFailure(Component.literal("§cVous ne pouvez pas expulser le chef !"));
-                continue;
-            }
-            if (FactionManager.removeMemberFromFaction(faction.getName(), profile.getId())) {
-                count++;
-            }
-        }
-
-        final int finalCount = count;
-        ctx.getSource().sendSuccess(() -> Component.literal("§a" + finalCount + " joueur(s) expulsé(s) !"), true);
-        return count;
-    }
-
-    private static int leave(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        if (faction.getOwnerId().equals(player.getUUID())) {
-            ctx.getSource().sendFailure(Component.literal("§cLe chef doit dissoudre la faction avec /f disband !"));
-            return 0;
-        }
-
-        FactionManager.removeMemberFromFaction(faction.getName(), player.getUUID());
-        ctx.getSource().sendSuccess(() -> Component.literal("§aVous avez quitté la faction !"), false);
-        return 1;
-    }
-
-    private static int claim(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        Rank playerRank = faction.getRank(player.getUUID());
-        if (!playerRank.canClaim()) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'avez pas la permission de claim !"));
-            return 0;
-        }
-
-        int chunkX = player.getBlockX() >> 4;
-        int chunkZ = player.getBlockZ() >> 4;
-        ClaimKey claim = ClaimKey.of(player.level().dimension(), chunkX, chunkZ);
-
-        if (FactionManager.isClaimed(claim)) {
-            String owner = FactionManager.getClaimOwner(claim);
-            ctx.getSource().sendFailure(Component.literal("§cCe chunk appartient à §6" + owner + " §c!"));
-            return 0;
-        }
-
-        if (!faction.canClaimMore()) {
-            ctx.getSource().sendFailure(Component.literal("§cVotre faction a atteint la limite de claims ! (Power: " + faction.getPower() + ")"));
-            return 0;
-        }
-
-        FactionManager.addClaim(faction.getName(), claim);
-        ctx.getSource().sendSuccess(() -> Component.literal("§aChunk [" + chunkX + ", " + chunkZ + "] claimé !"), true);
-        return 1;
-    }
-
-    private static int unclaim(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        Rank playerRank = faction.getRank(player.getUUID());
-        if (!playerRank.canUnclaim()) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'avez pas la permission d'unclaim !"));
-            return 0;
-        }
-
-        int chunkX = player.getBlockX() >> 4;
-        int chunkZ = player.getBlockZ() >> 4;
-        ClaimKey claim = ClaimKey.of(player.level().dimension(), chunkX, chunkZ);
-
-        if (FactionManager.removeClaim(faction.getName(), claim)) {
-            ctx.getSource().sendSuccess(() -> Component.literal("§aChunk [" + chunkX + ", " + chunkZ + "] unclaimé !"), true);
-            return 1;
-        } else {
-            ctx.getSource().sendFailure(Component.literal("§cCe chunk n'appartient pas à votre faction !"));
-            return 0;
-        }
-    }
-
-    private static int setHome(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        Rank playerRank = faction.getRank(player.getUUID());
-        if (!playerRank.canSetHome()) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'avez pas la permission de définir le home !"));
-            return 0;
-        }
-
-        faction.setHome(player.level().dimension().location().toString(), player.blockPosition());
-        ctx.getSource().sendSuccess(() -> Component.literal("§aHome de la faction défini !"), true);
-        return 1;
-    }
-
-    private static int home(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        if (!faction.hasHome()) {
-            ctx.getSource().sendFailure(Component.literal("§cVotre faction n'a pas de home !"));
-            return 0;
-        }
-
-        boolean success = TeleportUtil.teleport(player, faction.getHomeDimension(), faction.getHomePosition());
-        if (success) {
-            ctx.getSource().sendSuccess(() -> Component.literal("§aTéléportation au home de la faction !"), false);
-            return 1;
-        } else {
-            ctx.getSource().sendFailure(Component.literal("§cErreur lors de la téléportation !"));
-            return 0;
-        }
-    }
-
-    private static int ally(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-        String targetFaction = FactionArgumentType.getFaction(ctx, "faction");
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        Rank playerRank = faction.getRank(player.getUUID());
-        if (!playerRank.canManageRelations()) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'avez pas la permission de gérer les relations !"));
-            return 0;
-        }
-
-        faction.addAlly(targetFaction);
-        faction.removeEnemy(targetFaction);
-        ctx.getSource().sendSuccess(() -> Component.literal("§a" + targetFaction + " ajouté comme allié !"), true);
-        return 1;
-    }
-
-    private static int enemy(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-        String targetFaction = FactionArgumentType.getFaction(ctx, "faction");
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        Rank playerRank = faction.getRank(player.getUUID());
-        if (!playerRank.canManageRelations()) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'avez pas la permission de gérer les relations !"));
-            return 0;
-        }
-
-        faction.addEnemy(targetFaction);
-        faction.removeAlly(targetFaction);
-        ctx.getSource().sendSuccess(() -> Component.literal("§c" + targetFaction + " déclaré comme ennemi !"), true);
-        return 1;
-    }
-
-    private static int neutral(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-        String targetFaction = FactionArgumentType.getFaction(ctx, "faction");
-
-        Faction faction = FactionManager.getPlayerFactionObject(player.getUUID());
-        if (faction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-            return 0;
-        }
-
-        Rank playerRank = faction.getRank(player.getUUID());
-        if (!playerRank.canManageRelations()) {
-            ctx.getSource().sendFailure(Component.literal("§cVous n'avez pas la permission de gérer les relations !"));
-            return 0;
-        }
-
-        faction.removeAlly(targetFaction);
-        faction.removeEnemy(targetFaction);
-        ctx.getSource().sendSuccess(() -> Component.literal("§e" + targetFaction + " est maintenant neutre !"), true);
-        return 1;
-    }
-
-    private static int info(CommandContext<CommandSourceStack> ctx, String factionName) throws CommandSyntaxException {
-        Faction faction;
-
-        if (factionName == null) {
-            ServerPlayer player = ctx.getSource().getPlayerOrException();
-            faction = FactionManager.getPlayerFactionObject(player.getUUID());
-            if (faction == null) {
-                ctx.getSource().sendFailure(Component.literal("§cVous n'êtes pas dans une faction !"));
-                return 0;
-            }
-        } else {
-            faction = FactionManager.getFaction(factionName);
-            if (faction == null) {
-                ctx.getSource().sendFailure(Component.literal("§cFaction introuvable !"));
-                return 0;
-            }
-        }
-
-        ctx.getSource().sendSuccess(() -> Component.literal("§6====== Faction: " + faction.getName() + " ======\n" + "§eMembres: §f" + faction.getMembers().size() + "\n" + "§ePower: §f" + faction.getPower() + "\n" + "§eClaims: §f" + faction.getClaimCount() + "/" + faction.getMaxClaims() + "\n" + "§eAlliés: §f" + faction.getAllies().size() + "\n" + "§eEnnemis: §f" + faction.getEnemies().size()), false);
-        return 1;
-    }
-
-    private static int list(CommandContext<CommandSourceStack> ctx) {
-        Collection<Faction> factions = FactionManager.getAllFactions();
-
-        ctx.getSource().sendSuccess(() -> Component.literal("§6====== Factions (" + factions.size() + ") ======\n" + factions.stream().map(f -> "§e- " + f.getName() + " §7(" + f.getMembers().size() + " membres)").reduce((a, b) -> a + "\n" + b).orElse("§7Aucune faction")), false);
-        return 1;
-    }
-
-    private static int openMenu(CommandContext<CommandSourceStack> ctx, String factionName) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        String targetFaction = factionName != null ? factionName : FactionManager.getPlayerFaction(player.getUUID());
-        if (targetFaction == null) {
-            ctx.getSource().sendFailure(Component.literal("§cAucune faction spécifiée et vous n'êtes pas dans une faction !"));
-            return 0;
-        }
-        if (!FactionManager.factionExists(targetFaction)) {
-            ctx.getSource().sendFailure(Component.literal("§cFaction introuvable !"));
-            return 0;
-        }
-
-        Faction f = FactionManager.getFaction(targetFaction);
-        FactionSnapshot snapshot = makeSnapshot(f);
-
-        BlockPos pos = player.blockPosition();
-        player.openMenu(new MenuProvider() {
-            @Override
-            public Component getDisplayName() {
-                return Component.literal("FactionMenu");
-            }
-
-            @Override
-            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
-                return false;
-            }
-
-            @Override
-            public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                buf.writeBlockPos(pos);
-                buf.writeVarInt(1); // version du payload
-                snapshot.write(buf);
-                return new FactionMenu(id, inventory, buf);
-            }
-        }, pos);
-
-        return 1;
-    }
-
-    private static FactionSnapshot makeSnapshot(Faction f) {
-        if (f == null)
-            return new FactionSnapshot("", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, java.util.Map.of(), java.util.Map.of());
-        String name = f.getName();
-        java.io.File factionFile = EFUtils.Faction.FactionFileById(name);
-        String displayName = EFUtils.F.GetFileStringValue(factionFile, "displayname");
-        if (displayName == null || displayName.isEmpty()) displayName = name;
-        String claimList = EFUtils.F.GetFileStringValue(factionFile, "claimlist");
-        int claims = (claimList == null || claimList.isEmpty()) ? 0 : claimList.split(",").length;
-        int maxClaims = (int) EFUtils.F.GetFileNumberValue(factionFile, "maxClaims");
-        int maxPlayers = (int) EFUtils.F.GetFileNumberValue(factionFile, "maxPlayer");
-        int level = (int) EFUtils.F.GetFileNumberValue(factionFile, "factionLevel");
-        int xp = (int) EFUtils.F.GetFileNumberValue(factionFile, "factionXp");
-        int currentPower = (int) EFUtils.F.GetFileNumberValue(factionFile, "power");
-        int maxPower = (int) Math.floor(f.getPower());
-        int xpRequired = (int) Math.round(f.getXPRequiredForNextLevel(level));
-        java.util.Map<java.util.UUID, String> membersRank = new java.util.LinkedHashMap<>();
-        java.util.Map<java.util.UUID, String> memberNames = new java.util.LinkedHashMap<>();
-        for (var e : f.getMembers().entrySet()) {
-            java.util.UUID id = e.getKey();
-            String rankName = e.getValue().name();
-            membersRank.put(id, rankName);
-            String disp = EFUtils.F.GetFileStringValue(EFUtils.F.UUIDFile(String.valueOf(id)), "displayname");
-            if (disp == null || disp.isEmpty()) disp = id.toString();
-            memberNames.put(id, disp);
-        }
-        int membersCount = f.getMembers().size();
-        return new FactionSnapshot(name, displayName, claims, maxClaims, membersCount, maxPlayers, level, xp, xpRequired, currentPower, maxPower, membersRank, memberNames);
+    public static void register(CommandDispatcher<CommandSourceStack> d) {
+        d.register(
+            Commands.literal("faction")
+                .then(Commands.literal("create")
+                    .then(Commands.argument("name", StringArgumentType.word()).executes(ctx -> {
+                        ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                        String name = StringArgumentType.getString(ctx, "name");
+                        Faction f = FactionManager.create(name, name.substring(0, Math.min(4, name.length())).toUpperCase(), sp.getUUID());
+                        if (f == null) {
+                            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.create.fail"));
+                            return 0;
+                        }
+                        FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
+                        sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
+                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.create.success", f.getName()), true);
+                        return 1;
+                    })))
+                .then(Commands.literal("delete")
+                    .then(Commands.argument("name", StringArgumentType.word()).requires(src -> src.hasPermission(2)).executes(ctx -> {
+                        String name = StringArgumentType.getString(ctx, "name");
+                        boolean ok = FactionManager.delete(name);
+                        if (!ok) {
+                            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
+                            return 0;
+                        }
+                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.delete.success"), true);
+                        return 1;
+                    })))
+                .then(Commands.literal("info")
+                    .then(Commands.argument("name", StringArgumentType.word()).executes(ctx -> {
+                        String name = StringArgumentType.getString(ctx, "name");
+                        Faction f = FactionManager.getByName(name);
+                        if (f == null) {
+                            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
+                            return 0;
+                        }
+                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.info", f.getName(), String.format("%.0f", f.getPower()), String.format("%.0f", f.getMaxPower()), f.getLevel(), f.getXp()), false);
+                        return 1;
+                    })))
+                .then(Commands.literal("join")
+                    .then(Commands.argument("name", StringArgumentType.word()).executes(ctx -> {
+                        ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                        String name = StringArgumentType.getString(ctx, "name");
+                        Faction f = FactionManager.getByName(name);
+                        if (f == null) {
+                            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
+                            return 0;
+                        }
+                        boolean ok = FactionManager.invite(f, sp.getUUID(), sp.getGameProfile().getName());
+                        if (!ok) {
+                            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.fail"));
+                            return 0;
+                        }
+                        FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
+                        sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
+                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.join.success", f.getName()), true);
+                        return 1;
+                    })))
+                .then(Commands.literal("leave")
+                    .executes(ctx -> {
+                        ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                        Faction f = FactionManager.getFactionOf(sp.getUUID());
+                        if (f == null) {
+                            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                            return 0;
+                        }
+                        boolean ok = FactionManager.kick(f, sp.getUUID());
+                        if (!ok) {
+                            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.leave.fail"));
+                            return 0;
+                        }
+                        FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
+                        sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
+                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.leave.success"), true);
+                        return 1;
+                    }))
+                .then(Commands.literal("addxp").requires(src -> src.hasPermission(2))
+                    .then(Commands.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("amount", IntegerArgumentType.integer(1)).executes(ctx -> {
+                            String name = StringArgumentType.getString(ctx, "name");
+                            int amount = IntegerArgumentType.getInteger(ctx, "amount");
+                            Faction f = FactionManager.getByName(name);
+                            if (f == null) {
+                                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
+                                return 0;
+                            }
+                            f.addXp(amount);
+                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.addxp.success"), true);
+                            return 1;
+                        }))))
+                .then(Commands.literal("setrank").requires(src -> src.hasPermission(2))
+                    .then(Commands.argument("player", StringArgumentType.word())
+                        .then(Commands.argument("rankId", StringArgumentType.word()).executes(ctx -> {
+                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.setrank.placeholder"), false);
+                            return 1;
+                        }))))
+                .then(Commands.literal("claim").executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
+                    Level lvl = sp.level();
+                    ClaimKey key = ClaimKey.of(lvl.dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
+                    if (FactionManager.isClaimed(key)) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claim.already")); return 0; }
+                    boolean ok = FactionManager.tryClaim(key, f.getId());
+                    if (!ok) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claim.limit")); return 0; }
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claim.success"), true);
+                    return 1;
+                }))
+                .then(Commands.literal("unclaim").executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
+                    Level lvl = sp.level();
+                    ClaimKey key = ClaimKey.of(lvl.dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
+                    String owner = FactionManager.getClaimOwner(key);
+                    if (owner == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_claimed")); return 0; }
+                    if (!owner.equalsIgnoreCase(f.getId())) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner")); return 0; }
+                    boolean ok = FactionManager.tryUnclaim(key, f.getId());
+                    if (!ok) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.fail")); return 0; }
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.unclaim.success"), true);
+                    return 1;
+                }))
+        );
     }
 }
-

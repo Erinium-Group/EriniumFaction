@@ -50,7 +50,10 @@ public record FactionGuiNetwork(int buttonID, int x, int y, int z) implements Cu
         if (!world.hasChunkAt(new BlockPos(x, y, z))) return;
 
         if (buttonID == 0) {
-            FactionManager.getPlayerFactionObject(entity.getUUID()).openSettings(world, x, y, z, entity);
+            var f = FactionManager.getPlayerFactionObject(entity.getUUID());
+            if (f != null) {
+                entity.sendSystemMessage(Component.translatable("erinium_faction.faction.menu.open_settings_wip"));
+            }
         }
         // ...ajoutez ici d’autres IDs de boutons si nécessaire...
     }

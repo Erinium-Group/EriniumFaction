@@ -1,83 +1,61 @@
 package fr.eriniumgroup.erinium_faction.common.config;
 
-import fr.eriniumgroup.erinium_faction.core.EFC;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@EventBusSubscriber(modid = EFC.MODID)
-public class EFConfig {
-    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+public final class EFConfig {
+    public static final ModConfigSpec SPEC;
 
-    // PvP Settings
-    public static final ModConfigSpec.BooleanValue FRIENDLY_FIRE = BUILDER
-            .comment("Allow friendly fire between faction members")
-            .define("pvp.friendlyFire", false);
+    public static final ModConfigSpec.IntValue FACTION_NAME_MIN;
+    public static final ModConfigSpec.IntValue FACTION_NAME_MAX;
+    public static final ModConfigSpec.IntValue FACTION_MAX_MEMBERS;
 
-    public static final ModConfigSpec.BooleanValue ALLY_DAMAGE = BUILDER
-            .comment("Allow damage between allied factions")
-            .define("pvp.allyDamage", false);
+    public static final ModConfigSpec.DoubleValue FACTION_BASE_MAX_POWER;
+    public static final ModConfigSpec.DoubleValue FACTION_POWER_PER_MEMBER;
+    public static final ModConfigSpec.DoubleValue POWER_REGEN_PER_MINUTE;
+    public static final ModConfigSpec.DoubleValue POWER_LOSS_ON_DEATH;
 
-    // Claim Settings
-    public static final ModConfigSpec.IntValue MAX_CLAIMS_PER_FACTION = BUILDER
-            .comment("Maximum number of chunks a faction can claim")
-            .defineInRange("claims.maxClaimsPerFaction", 100, 1, 10000);
+    public static final ModConfigSpec.IntValue XP_PER_KILL;
+    public static final ModConfigSpec.BooleanValue FRIENDLY_FIRE;
+    public static final ModConfigSpec.BooleanValue ALLOW_ALLIES;
+    public static final ModConfigSpec.BooleanValue ALLY_DAMAGE;
 
-    public static final ModConfigSpec.IntValue MAX_POWER_PER_PLAYER = BUILDER
-            .comment("Maximum power per player (affects max claims)")
-            .defineInRange("claims.maxPowerPerPlayer", 10, 1, 100);
+    // Joueur power
+    public static final ModConfigSpec.DoubleValue PLAYER_BASE_MAX_POWER;
+    public static final ModConfigSpec.DoubleValue PLAYER_POWER_REGEN_PER_MINUTE;
+    public static final ModConfigSpec.DoubleValue PLAYER_POWER_LOSS_ON_DEATH;
+    public static final ModConfigSpec.BooleanValue FACTION_MAX_POWER_FROM_PLAYERS;
 
-    // Teleport Settings
-    public static final ModConfigSpec.IntValue HOME_TELEPORT_DELAY = BUILDER
-            .comment("Delay in seconds before teleporting to faction home")
-            .defineInRange("teleport.homeDelay", 3, 0, 60);
+    public static final ModConfigSpec.IntValue FACTION_MAX_CLAIMS;
 
-    public static final ModConfigSpec.BooleanValue CANCEL_ON_DAMAGE = BUILDER
-            .comment("Cancel teleportation if player takes damage")
-            .define("teleport.cancelOnDamage", true);
+    static {
+        ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
-    // Faction Settings
-    public static final ModConfigSpec.IntValue MIN_FACTION_NAME_LENGTH = BUILDER
-            .comment("Minimum length for faction names")
-            .defineInRange("faction.minNameLength", 3, 1, 16);
+        b.push("factions");
+        FACTION_NAME_MIN = b.comment("Longueur minimale du nom de faction").defineInRange("nameMin", 3, 2, 32);
+        FACTION_NAME_MAX = b.comment("Longueur maximale du nom de faction").defineInRange("nameMax", 16, 3, 32);
+        FACTION_MAX_MEMBERS = b.comment("Nombre maximum de membres par faction").defineInRange("maxMembers", 20, 1, 200);
 
-    public static final ModConfigSpec.IntValue MAX_FACTION_NAME_LENGTH = BUILDER
-            .comment("Maximum length for faction names")
-            .defineInRange("faction.maxNameLength", 16, 1, 32);
+        FACTION_BASE_MAX_POWER = b.comment("Puissance maximale de base par faction").defineInRange("baseMaxPower", 100.0, 0.0, 100000.0);
+        FACTION_POWER_PER_MEMBER = b.comment("Bonus de puissance max par membre (non utilisé si FACTION_MAX_POWER_FROM_PLAYERS=true)").defineInRange("powerPerMember", 10.0, 0.0, 10000.0);
+        POWER_REGEN_PER_MINUTE = b.comment("Régénération de puissance par minute (faction)").defineInRange("powerRegenPerMinute", 1.0, 0.0, 1000.0);
+        POWER_LOSS_ON_DEATH = b.comment("Perte de puissance de faction à la mort d'un membre").defineInRange("powerLossOnDeath", 2.5, 0.0, 1000.0);
 
-    public static final ModConfigSpec SPEC = BUILDER.build();
+        XP_PER_KILL = b.comment("XP de faction gagné par kill").defineInRange("xpPerKill", 10, 0, 10000);
+        FRIENDLY_FIRE = b.comment("Le friendly fire au sein d'une faction est-il autorisé ?").define("friendlyFire", false);
+        ALLOW_ALLIES = b.comment("Autoriser des alliances (placeholder)").define("allowAllies", true);
+        ALLY_DAMAGE = b.comment("Autoriser les dégâts entre alliés").define("allyDamage", false);
+        FACTION_MAX_POWER_FROM_PLAYERS = b.comment("Additionner les max power des joueurs au max de faction").define("factionMaxFromPlayers", true);
+        FACTION_MAX_CLAIMS = b.comment("Nombre maximum de chunks claim par faction").defineInRange("maxClaims", 100, 0, 100000);
+        b.pop();
 
-    // Cached values
-    public static boolean friendlyFire;
-    public static boolean allyDamage;
-    public static int maxClaimsPerFaction;
-    public static int maxPowerPerPlayer;
-    public static int homeTeleportDelay;
-    public static boolean cancelOnDamage;
-    public static int minFactionNameLength;
-    public static int maxFactionNameLength;
+        b.push("players");
+        PLAYER_BASE_MAX_POWER = b.comment("Puissance max de base par joueur").defineInRange("baseMaxPower", 50.0, 0.0, 100000.0);
+        PLAYER_POWER_REGEN_PER_MINUTE = b.comment("Régénération de puissance par minute (joueur)").defineInRange("powerRegenPerMinute", 0.5, 0.0, 1000.0);
+        PLAYER_POWER_LOSS_ON_DEATH = b.comment("Perte de puissance à la mort (joueur)").defineInRange("powerLossOnDeath", 5.0, 0.0, 1000.0);
+        b.pop();
 
-    private static void bake() {
-        friendlyFire = FRIENDLY_FIRE.get();
-        allyDamage = ALLY_DAMAGE.get();
-        maxClaimsPerFaction = MAX_CLAIMS_PER_FACTION.get();
-        maxPowerPerPlayer = MAX_POWER_PER_PLAYER.get();
-        homeTeleportDelay = HOME_TELEPORT_DELAY.get();
-        cancelOnDamage = CANCEL_ON_DAMAGE.get();
-        minFactionNameLength = MIN_FACTION_NAME_LENGTH.get();
-        maxFactionNameLength = MAX_FACTION_NAME_LENGTH.get();
+        SPEC = b.build();
     }
 
-    @SubscribeEvent
-    static void onLoad(final ModConfigEvent.Loading event) {
-        if (!event.getConfig().getModId().equals(EFC.MODID)) return;
-        bake();
-    }
-
-    @SubscribeEvent
-    static void onReload(final ModConfigEvent.Reloading event) {
-        if (!event.getConfig().getModId().equals(EFC.MODID)) return;
-        bake();
-    }
+    private EFConfig() {}
 }

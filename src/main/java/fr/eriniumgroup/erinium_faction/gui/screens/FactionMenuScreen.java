@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
 import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.core.EriFont;
@@ -21,11 +22,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> implements EFScreens.ScreenAccessor {
     private final Level world;
@@ -36,9 +34,13 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     EFVariables.PlayerVariables _vars;
 
-    private File factionfile;
     private Faction faction;
-    private boolean hasFaction; // nouveau: indique si une faction valide est disponible
+    private boolean hasFaction;
+    private String fallbackFactionName;
+    private int fallbackLevel;
+    private int fallbackXp;
+    private int fallbackPower;
+    private int fallbackMaxPower;
 
     public FactionMenuScreen(FactionMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -55,20 +57,22 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         FactionSnapshot snap = container.snapshot;
         if (snap != null && snap.name != null && !snap.name.isEmpty()) {
             this.faction = container.faction; // peut être null côté client, mais pas requis
-            this.factionfile = null; // on n'utilise pas les fichiers côté client si snapshot dispo
             this.hasFaction = true;
         } else {
             this.faction = container.faction != null ? container.faction : FactionManager.getPlayerFactionObject(entity.getUUID());
-            String factionId = null;
             if (this.faction != null) {
-                factionId = this.faction.getName();
-            } else if (container.factionName != null && !container.factionName.isEmpty()) {
-                factionId = container.factionName;
+                this.hasFaction = true;
             } else {
-                factionId = FactionManager.getPlayerFaction(entity.getUUID());
+                // Fallback: utiliser EFVariables/nom transmis
+                this.fallbackFactionName = container.factionName != null && !container.factionName.isEmpty() ? container.factionName : (this._vars != null ? this._vars.factionName : "");
+                this.hasFaction = (this.fallbackFactionName != null && !this.fallbackFactionName.isEmpty());
+                if (this._vars != null) {
+                    this.fallbackLevel = this._vars.factionLevel;
+                    this.fallbackXp = this._vars.factionXp;
+                    this.fallbackPower = (int) Math.round(this._vars.factionPower);
+                    this.fallbackMaxPower = (int) Math.round(this._vars.factionMaxPower);
+                }
             }
-            this.factionfile = (factionId != null && !factionId.isEmpty()) ? EFUtils.Faction.FactionFileById(factionId) : null;
-            this.hasFaction = (factionId != null && !factionId.isEmpty()) && this.factionfile != null;
         }
     }
 
@@ -85,12 +89,9 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         boolean customTooltipShown = false;
-        // Afficher le tooltip des paramètres uniquement si le bouton existe
         if (fsettings != null && mouseX > leftPos + 74 && mouseX < leftPos + 74 + 64 && mouseY > topPos + 100 && mouseY < topPos + 100 + 64) {
             String hoverText = Component.translatable("erinium_faction.faction.menu.settings").getString();
-            if (hoverText != null) {
-                guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
-            }
+            guiGraphics.renderComponentTooltip(font, java.util.List.of(Component.literal(hoverText)), mouseX, mouseY);
             customTooltipShown = true;
         }
 
@@ -103,9 +104,9 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos + 0, this.topPos + 0, 0, 0, 420, 240, 420, 240);
+        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos, this.topPos, 0, 0, 420, 240, 420, 240);
 
-        // Données: utiliser snapshot si dispo, sinon fichiers
+        // Données: utiliser snapshot si dispo, sinon objet faction
         FactionSnapshot snap = this.menu instanceof FactionMenu fm ? fm.snapshot : null;
 
         String displayName;
@@ -130,20 +131,41 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             xpRequired = snap.xpRequired;
             currentPower = snap.currentPower;
             maxPower = snap.maxPower;
+        } else if (hasFaction && this.faction != null) {
+            displayName = this.faction.getName();
+            int cc = FactionManager.countClaims(this.faction.getId());
+            claimCount = cc;
+            maxClaims = EFConfig.FACTION_MAX_CLAIMS.get();
+            memberCount = this.faction.getMembers().size();
+            maxPlayers = EFConfig.FACTION_MAX_MEMBERS.get();
+            level = this.faction.getLevel();
+            xp = this.faction.getXp();
+            xpRequired = this.faction.xpNeededForNextLevel();
+            currentPower = (int) Math.round(this.faction.getPower());
+            maxPower = (int) Math.round(this.faction.getMaxPower());
+        } else if (hasFaction) {
+            // Fallback via EFVariables (client-only)
+            displayName = (this.fallbackFactionName != null && !this.fallbackFactionName.isEmpty()) ? this.fallbackFactionName : Component.translatable("erinium_faction.faction.menu.no_faction").getString();
+            claimCount = 0; // inconnu côté client sans snapshot
+            maxClaims = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_CLAIMS.get();
+            memberCount = 0; // inconnu sans snapshot
+            maxPlayers = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_MEMBERS.get();
+            level = this.fallbackLevel;
+            xp = this.fallbackXp;
+            xpRequired = level > 0 ? Math.max(100, (level + 1) * (level + 1) * 50) : 0;
+            currentPower = this.fallbackPower;
+            maxPower = this.fallbackMaxPower;
         } else {
-            displayName = hasFaction ? EFUtils.F.GetFileStringValue(factionfile, "displayname") : Component.translatable("erinium_faction.faction.menu.no_faction").getString();
-            if (displayName == null || displayName.isEmpty()) displayName = "-";
-            String claimlist = hasFaction ? EFUtils.F.GetFileStringValue(factionfile, "claimlist") : null;
-            claimCount = (claimlist == null || claimlist.isEmpty()) ? 0 : claimlist.split(",").length;
-            maxClaims = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "maxClaims") : 0;
-            String memberList = hasFaction ? EFUtils.F.GetFileStringValue(factionfile, "memberList") : null;
-            memberCount = (memberList == null || memberList.isEmpty()) ? (hasFaction ? 1 : 0) : memberList.split(",").length + 1;
-            maxPlayers = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "maxPlayer") : 0;
-            level = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "factionLevel") : 0;
-            xp = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "factionXp") : 0;
-            xpRequired = (hasFaction && this.faction != null) ? (int) this.faction.getXPRequiredForNextLevel(level) : 0;
-            currentPower = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "power") : 0;
-            maxPower = (hasFaction && this.faction != null) ? (int) this.faction.getPower() : 0;
+            displayName = Component.translatable("erinium_faction.faction.menu.no_faction").getString();
+            claimCount = 0;
+            maxClaims = 0;
+            memberCount = 0;
+            maxPlayers = 0;
+            level = 0;
+            xp = 0;
+            xpRequired = 0;
+            currentPower = 0;
+            maxPower = 0;
         }
 
         drawText(guiGraphics, displayName, EriFont::orbitronBold, 14f, -1, 10, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
@@ -152,7 +174,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
         drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.claims").getString() + claimCount + " / " + maxClaims, EriFont::exo2, 8f, 149, 89, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
         drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.membercount").getString() + memberCount + " / " + maxPlayers, EriFont::exo2, 8f, 149, 102, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + currentPower + " / " + (maxPower > 0 ? maxPower : 0), EriFont::exo2, 8f, 149, 115, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + currentPower + " / " + Math.max(0, maxPower), EriFont::exo2, 8f, 149, 115, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
         drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.level").getString() + level, EriFont::exo2, 8f, -1, 128, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
 
         if (xpRequired > 0) {
@@ -174,7 +196,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     @Override
     public boolean keyPressed(int key, int b, int c) {
         if (key == 256) {
-            this.minecraft.player.closeContainer();
+            if (this.minecraft != null && this.minecraft.player != null) this.minecraft.player.closeContainer();
             return true;
         }
         return super.keyPressed(key, b, c);
@@ -197,21 +219,16 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
                 String rank = e.getValue();
                 String name = snap.memberNames.getOrDefault(id, id.toString());
                 if (playerlist.length() > 0) playerlist.append(",");
-                // Inclure le nom pour éviter lecture disque côté client
                 playerlist.append(id).append(":").append(rank).append(":").append(name);
             }
             FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist.toString(), world != null ? world.getServer() : null);
             this.addRenderableWidget(scrollableList);
 
-            // Bouton settings selon rang du joueur (si faction objet dispo côté client)
             Rank rank = (this.faction != null) ? this.faction.getRank(entity.getUUID()) : null;
             if (rank != null && rank.canManageSettings()) {
                 fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
                     int x = FactionMenuScreen.this.x;
                     int y = FactionMenuScreen.this.y;
-                    if (true) {
-                        // action réseau si nécessaire
-                    }
                 }) {
                     @Override
                     public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
@@ -222,9 +239,11 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             }
         } else if (hasFaction && faction != null) {
             StringBuilder playerlist = new StringBuilder();
-            for (Map.Entry<UUID, Rank> t : faction.getMembers().entrySet()) {
+            for (Map.Entry<UUID, Faction.Member> t : faction.getMembers().entrySet()) {
                 if (playerlist.length() > 0) playerlist.append(",");
-                playerlist.append(t.getKey()).append(":").append(t.getValue());
+                String rankId = t.getValue().rankId;
+                String name = t.getValue().nameCached != null ? t.getValue().nameCached : t.getKey().toString();
+                playerlist.append(t.getKey()).append(":").append(rankId).append(":").append(name);
             }
             FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist.toString(), world != null ? world.getServer() : null);
             this.addRenderableWidget(scrollableList);
@@ -234,9 +253,6 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
                 fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
                     int x = FactionMenuScreen.this.x;
                     int y = FactionMenuScreen.this.y;
-                    if (true) {
-                        // action réseau si nécessaire
-                    }
                 }) {
                     @Override
                     public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
@@ -250,19 +266,6 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         }
     }
 
-    @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        // Si tu as plusieurs scrolls, répète la ligne pour chaque (ex : shopScrollList2, etc.)
-        for (var widget : this.renderables) {
-            if (widget instanceof FactionMenuPlayerList scrollList) {
-                if (scrollList.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
-                    return true;
-                }
-            }
-        }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
-    }
-
     private void drawText(GuiGraphics guiGraphics, String text, EriFont.EriFontAccess fontAccess, float fontSize, float x, float y, boolean isXCentered, boolean hasShadow, int color) {
         float textScale = fontSize / 8f;
         if (text == null) text = "";
@@ -271,22 +274,18 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         int tw = this.minecraft.font.width(comp);
         float totalTextWidth = tw * textScale;
 
-        // Calcul de la position X
         float xPos;
         if (isXCentered) {
             xPos = x - (totalTextWidth / 2f);
         } else if (x == -1f) {
-            // Centrer sur la largeur du GUI (420px)
             xPos = (this.imageWidth - totalTextWidth) / 2f;
         } else {
             xPos = x;
         }
 
-        // Position absolue à l'écran
         float xFinal = this.leftPos + xPos;
         float yFinal = this.topPos + y;
 
-        // Appliquer le scale pour le texte
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(textScale, textScale, 1f);
 

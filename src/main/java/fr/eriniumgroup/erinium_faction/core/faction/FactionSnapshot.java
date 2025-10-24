@@ -2,106 +2,92 @@ package fr.eriniumgroup.erinium_faction.core.faction;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Snapshot immuable de données de faction pour l'affichage client.
+ * Petit snapshot sérialisable pour UI client.
  */
 public class FactionSnapshot {
-    public final String name;
-    public final String displayName;
-    public final int claims;
-    public final int maxClaims;
-    public final int membersCount;
-    public final int maxPlayers;
-    public final int level;
-    public final int xp;
-    public final int xpRequired;
-    public final int currentPower;
-    public final int maxPower;
-    public final Map<UUID, String> membersRank; // UUID -> Rank name
-    public final Map<UUID, String> memberNames; // UUID -> display name
+    public String name;
+    public String displayName;
+    public int claims;
+    public int maxClaims;
+    public int membersCount;
+    public int maxPlayers;
+    public int level;
+    public int xp;
+    public int xpRequired;
+    public int currentPower;
+    public int maxPower;
 
-    public FactionSnapshot(String name,
-                           String displayName,
-                           int claims,
-                           int maxClaims,
-                           int membersCount,
-                           int maxPlayers,
-                           int level,
-                           int xp,
-                           int xpRequired,
-                           int currentPower,
-                           int maxPower,
-                           Map<UUID, String> membersRank,
-                           Map<UUID, String> memberNames) {
-        this.name = name;
-        this.displayName = displayName;
-        this.claims = claims;
-        this.maxClaims = maxClaims;
-        this.membersCount = membersCount;
-        this.maxPlayers = maxPlayers;
-        this.level = level;
-        this.xp = xp;
-        this.xpRequired = xpRequired;
-        this.currentPower = currentPower;
-        this.maxPower = maxPower;
-        this.membersRank = membersRank != null ? Map.copyOf(membersRank) : Map.of();
-        this.memberNames = memberNames != null ? Map.copyOf(memberNames) : Map.of();
+    public Map<UUID, String> membersRank = new HashMap<>();
+    public Map<UUID, String> memberNames = new HashMap<>();
+
+    public static FactionSnapshot of(Faction f) {
+        FactionSnapshot s = new FactionSnapshot();
+        s.name = f.getName();
+        s.displayName = f.getName();
+        // claims depuis SavedData
+        s.claims = FactionManager.countClaims(f.getId());
+        s.maxClaims = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_CLAIMS.get();
+        s.membersCount = f.getMembers().size();
+        s.maxPlayers = Integer.MAX_VALUE; // pas de limite interne ici (placeholder)
+        s.level = f.getLevel();
+        s.xp = f.getXp();
+        s.xpRequired = f.xpNeededForNextLevel();
+        s.currentPower = (int) Math.round(f.getPower());
+        s.maxPower = (int) Math.round(f.getMaxPower());
+        // claims: non implémenté -> 0/0
+        for (var e : f.getMembers().entrySet()) {
+            s.membersRank.put(e.getKey(), e.getValue().rankId);
+            s.memberNames.put(e.getKey(), e.getValue().nameCached != null ? e.getValue().nameCached : e.getKey().toString());
+        }
+        return s;
     }
 
-    public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(name != null ? name : "");
-        buf.writeUtf(displayName != null ? displayName : "");
-        buf.writeInt(claims);
-        buf.writeInt(maxClaims);
-        buf.writeInt(membersCount);
-        buf.writeInt(maxPlayers);
-        buf.writeInt(level);
-        buf.writeInt(xp);
-        buf.writeInt(xpRequired);
-        buf.writeInt(currentPower);
-        buf.writeInt(maxPower);
-        buf.writeVarInt(membersRank.size());
-        for (var e : membersRank.entrySet()) {
+    public static void write(FactionSnapshot s, FriendlyByteBuf buf) {
+        buf.writeUtf(s.name == null ? "" : s.name);
+        buf.writeUtf(s.displayName == null ? "" : s.displayName);
+        buf.writeVarInt(s.claims);
+        buf.writeVarInt(s.maxClaims);
+        buf.writeVarInt(s.membersCount);
+        buf.writeVarInt(s.maxPlayers);
+        buf.writeVarInt(s.level);
+        buf.writeVarInt(s.xp);
+        buf.writeVarInt(s.xpRequired);
+        buf.writeVarInt(s.currentPower);
+        buf.writeVarInt(s.maxPower);
+        buf.writeVarInt(s.membersRank.size());
+        for (var e : s.membersRank.entrySet()) {
             buf.writeUUID(e.getKey());
             buf.writeUtf(e.getValue());
-        }
-        buf.writeVarInt(memberNames.size());
-        for (var e : memberNames.entrySet()) {
-            buf.writeUUID(e.getKey());
-            buf.writeUtf(e.getValue());
+            buf.writeUtf(s.memberNames.getOrDefault(e.getKey(), e.getKey().toString()));
         }
     }
 
     public static FactionSnapshot read(FriendlyByteBuf buf) {
-        String name = buf.readUtf(32767);
-        String displayName = buf.readUtf(32767);
-        int claims = buf.readInt();
-        int maxClaims = buf.readInt();
-        int membersCount = buf.readInt();
-        int maxPlayers = buf.readInt();
-        int level = buf.readInt();
-        int xp = buf.readInt();
-        int xpRequired = buf.readInt();
-        int currentPower = buf.readInt();
-        int maxPower = buf.readInt();
-        int size = buf.readVarInt();
-        Map<UUID, String> membersRank = new LinkedHashMap<>(Math.max(1, size));
-        for (int i = 0; i < size; i++) {
+        FactionSnapshot s = new FactionSnapshot();
+        s.name = buf.readUtf();
+        s.displayName = buf.readUtf();
+        s.claims = buf.readVarInt();
+        s.maxClaims = buf.readVarInt();
+        s.membersCount = buf.readVarInt();
+        s.maxPlayers = buf.readVarInt();
+        s.level = buf.readVarInt();
+        s.xp = buf.readVarInt();
+        s.xpRequired = buf.readVarInt();
+        s.currentPower = buf.readVarInt();
+        s.maxPower = buf.readVarInt();
+        int n = buf.readVarInt();
+        for (int i = 0; i < n; i++) {
             UUID id = buf.readUUID();
-            String rank = buf.readUtf(32767);
-            membersRank.put(id, rank);
+            String rank = buf.readUtf();
+            String name = buf.readUtf();
+            s.membersRank.put(id, rank);
+            s.memberNames.put(id, name);
         }
-        int sizeNames = buf.readVarInt();
-        Map<UUID, String> memberNames = new LinkedHashMap<>(Math.max(1, sizeNames));
-        for (int i = 0; i < sizeNames; i++) {
-            UUID id = buf.readUUID();
-            String nameStr = buf.readUtf(32767);
-            memberNames.put(id, nameStr);
-        }
-        return new FactionSnapshot(name, displayName, claims, maxClaims, membersCount, maxPlayers, level, xp, xpRequired, currentPower, maxPower, membersRank, memberNames);
+        return s;
     }
 }
