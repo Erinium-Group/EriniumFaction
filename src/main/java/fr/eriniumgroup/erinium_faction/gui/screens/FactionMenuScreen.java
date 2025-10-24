@@ -6,6 +6,7 @@ import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.core.EriFont;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
+import fr.eriniumgroup.erinium_faction.core.faction.Rank;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.widgets.FactionMenuPlayerList;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
@@ -22,6 +23,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> implements EFScreens.ScreenAccessor {
@@ -121,14 +124,12 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     public void init() {
         super.init();
 
-        String playerlist;
-        if (EFUtils.F.GetFileStringValue(factionfile, "memberList").isEmpty()) {
-            playerlist = EFUtils.F.GetFileStringValue(factionfile, "owner") + ":owner";
-        } else {
-            playerlist = EFUtils.F.GetFileStringValue(factionfile, "owner") + ":owner" + "," + EFUtils.F.GetFileStringValue(factionfile, "memberList");
+        StringBuilder playerlist = new StringBuilder();
+        for (Map.Entry<UUID, Rank> t : faction.getMembers().entrySet()){
+            playerlist.append(t.getKey()).append(":").append(t.getValue());
         }
 
-        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist, world.getServer());
+        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist.toString(), world.getServer());
         this.addRenderableWidget(scrollableList);
 
         if (faction != null && faction.getRank(entity.getUUID()).canManageSettings()) {
