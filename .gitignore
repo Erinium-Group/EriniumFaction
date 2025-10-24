@@ -92,4 +92,3 @@ Thumbs.db
 /.gradle/**
 /.idea/**
 /build/**
-*.log
