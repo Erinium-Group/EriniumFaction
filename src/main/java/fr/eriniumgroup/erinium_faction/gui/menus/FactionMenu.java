@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.gui.menus;
 
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.init.EFMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,7 +35,8 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
     public final Player entity;
     public int x, y, z;
     public Faction faction;
-    public String factionName; // nouveau: nom de faction transmis côté client
+    public String factionName; // nom de faction transmis
+    public FactionSnapshot snapshot; // données sérialisées pour l'affichage client
     private ContainerLevelAccess access = ContainerLevelAccess.NULL;
     private IItemHandler internal;
     private final Map<Integer, Slot> customSlots = new HashMap<>();
@@ -48,26 +50,28 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         this.entity = inv.player;
         this.world = inv.player.level();
         this.internal = new ItemStackHandler(0);
-        BlockPos pos = null;
-        String readFactionName = null;
+        BlockPos pos;
         if (extraData != null) {
-            // Lire la position si fournie (compatibilité existante)
+            // Position
             pos = extraData.readBlockPos();
             this.x = pos.getX();
             this.y = pos.getY();
             this.z = pos.getZ();
             access = ContainerLevelAccess.create(world, pos);
 
-            // Lire le nom de faction si présent
+            // Payload version + snapshot
             if (extraData.readableBytes() > 0) {
-                readFactionName = extraData.readUtf(32767);
+                int version = extraData.readVarInt();
+                if (version >= 1) {
+                    this.snapshot = FactionSnapshot.read(extraData);
+                    this.factionName = (this.snapshot != null) ? this.snapshot.name : null;
+                }
             }
         }
-        // Déterminer le nom de faction à utiliser
-        String fallback = FactionManager.getPlayerFaction(this.entity.getUUID());
-        this.factionName = (readFactionName != null && !readFactionName.isEmpty()) ? readFactionName : fallback;
-
-        // Résoudre l'objet Faction si possible (souvent côté serveur). Côté client, cela peut rester null.
+        // Fallbacks
+        if (this.factionName == null) {
+            this.factionName = FactionManager.getPlayerFaction(this.entity.getUUID());
+        }
         this.faction = (this.factionName != null && !this.factionName.isEmpty()) ? FactionManager.getFaction(this.factionName) : null;
     }
 

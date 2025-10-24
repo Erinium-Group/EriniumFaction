@@ -7,10 +7,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
+import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.common.util.TeleportUtil;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.core.faction.Rank;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import io.netty.buffer.Unpooled;
@@ -410,6 +412,9 @@ public class FactionCommand {
             return 0;
         }
 
+        Faction f = FactionManager.getFaction(targetFaction);
+        FactionSnapshot snapshot = makeSnapshot(f);
+
         BlockPos pos = player.blockPosition();
         player.openMenu(new MenuProvider() {
             @Override
@@ -424,15 +429,45 @@ public class FactionCommand {
 
             @Override
             public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-                String playerFaction = FactionManager.getPlayerFaction(player.getUUID());
                 FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeBlockPos(pos);
-                // Toujours écrire le nom de faction (peut être null -> écrire chaîne vide)
-                buf.writeUtf(playerFaction != null ? playerFaction : "");
+                buf.writeVarInt(1); // version du payload
+                snapshot.write(buf);
                 return new FactionMenu(id, inventory, buf);
             }
         }, pos);
 
         return 1;
     }
+
+    private static FactionSnapshot makeSnapshot(Faction f) {
+        if (f == null)
+            return new FactionSnapshot("", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, java.util.Map.of(), java.util.Map.of());
+        String name = f.getName();
+        java.io.File factionFile = EFUtils.Faction.FactionFileById(name);
+        String displayName = EFUtils.F.GetFileStringValue(factionFile, "displayname");
+        if (displayName == null || displayName.isEmpty()) displayName = name;
+        String claimList = EFUtils.F.GetFileStringValue(factionFile, "claimlist");
+        int claims = (claimList == null || claimList.isEmpty()) ? 0 : claimList.split(",").length;
+        int maxClaims = (int) EFUtils.F.GetFileNumberValue(factionFile, "maxClaims");
+        int maxPlayers = (int) EFUtils.F.GetFileNumberValue(factionFile, "maxPlayer");
+        int level = (int) EFUtils.F.GetFileNumberValue(factionFile, "factionLevel");
+        int xp = (int) EFUtils.F.GetFileNumberValue(factionFile, "factionXp");
+        int currentPower = (int) EFUtils.F.GetFileNumberValue(factionFile, "power");
+        int maxPower = (int) Math.floor(f.getPower());
+        int xpRequired = (int) Math.round(f.getXPRequiredForNextLevel(level));
+        java.util.Map<java.util.UUID, String> membersRank = new java.util.LinkedHashMap<>();
+        java.util.Map<java.util.UUID, String> memberNames = new java.util.LinkedHashMap<>();
+        for (var e : f.getMembers().entrySet()) {
+            java.util.UUID id = e.getKey();
+            String rankName = e.getValue().name();
+            membersRank.put(id, rankName);
+            String disp = EFUtils.F.GetFileStringValue(EFUtils.F.UUIDFile(String.valueOf(id)), "displayname");
+            if (disp == null || disp.isEmpty()) disp = id.toString();
+            memberNames.put(id, disp);
+        }
+        int membersCount = f.getMembers().size();
+        return new FactionSnapshot(name, displayName, claims, maxClaims, membersCount, maxPlayers, level, xp, xpRequired, currentPower, maxPower, membersRank, memberNames);
+    }
 }
+

@@ -1,17 +1,3 @@
-/*
- * The code of this mod element is always locked.
- *
- * You can register new events in this class too.
- *
- * If you want to make a plain independent class, create it using
- * Project Browser -> New... and make sure to make the class
- * outside fr.eriniumgroup.eriniumfaction as this package is managed by MCreator.
- *
- * If you change workspace package, modid or prefix, you will need
- * to manually adapt this file to these changes or remake it.
- *
- * This class will be added in the mod root package.
- */
 package fr.eriniumgroup.erinium_faction.gui.widgets;
 
 import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
@@ -132,10 +118,19 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
             guiGraphics.fill(x + 2 + 16 + 1, y + 2, x + 2 + 16 + 1 + 16 - 1, y + 2 + 16 - 1, ARGBToInt.ARGBToInt(255, 128, 128, 128));*/
 
             try {
-                UUID playerUUID = UUID.fromString(this.text.split(":")[0]);
-                String rank = this.text.split(":")[1];
+                String[] parts = this.text.split(":");
+                if (parts.length < 2) return; // format inattendu
+                UUID playerUUID = UUID.fromString(parts[0]);
+                String rank = parts[1];
                 ResourceLocation ranktexture = ResourceLocation.parse("erinium_faction:textures/screens/" + rank + ".png");
-                String Playername = EFUtils.F.GetFileStringValue(EFUtils.F.UUIDFile(String.valueOf(playerUUID)), "displayname");
+                // Utiliser le nom fourni si présent; sinon fallback EFUtils
+                String Playername;
+                if (parts.length >= 3 && parts[2] != null && !parts[2].isEmpty()) {
+                    Playername = parts[2];
+                } else {
+                    Playername = EFUtils.F.GetFileStringValue(EFUtils.F.UUIDFile(String.valueOf(playerUUID)), "displayname");
+                    if (Playername == null || Playername.isEmpty()) Playername = playerUUID.toString();
+                }
 
                 int headX = x + 1;
                 int headY = y + 1;
