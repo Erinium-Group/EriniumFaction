@@ -19,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.File;
 import java.util.Arrays;
@@ -38,6 +37,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     private File factionfile;
     private Faction faction;
+    private boolean hasFaction; // nouveau: indique si une faction valide est disponible
 
     public FactionMenuScreen(FactionMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -51,8 +51,14 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         this._vars = entity.getData(EFVariables.PLAYER_VARIABLES);
 
         this.faction = container.faction != null ? container.faction : FactionManager.getPlayerFactionObject(entity.getUUID());
-        String factionId = this.faction != null ? this.faction.getName() : FactionManager.getPlayerFaction(entity.getUUID());
-        this.factionfile = EFUtils.Faction.FactionFileById(factionId);
+        String factionId = null;
+        if (this.faction != null) {
+            factionId = this.faction.getName();
+        } else {
+            factionId = FactionManager.getPlayerFaction(entity.getUUID());
+        }
+        this.factionfile = (factionId != null && !factionId.isEmpty()) ? EFUtils.Faction.FactionFileById(factionId) : null;
+        this.hasFaction = this.faction != null && this.factionfile != null;
     }
 
     @Override
@@ -68,7 +74,8 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         boolean customTooltipShown = false;
-        if (mouseX > leftPos + 74 && mouseX < leftPos + 74 + 64 && mouseY > topPos + 100 && mouseY < topPos + 100 + 64) {
+        // Afficher le tooltip des paramètres uniquement si le bouton existe
+        if (fsettings != null && mouseX > leftPos + 74 && mouseX < leftPos + 74 + 64 && mouseY > topPos + 100 && mouseY < topPos + 100 + 64) {
             String hoverText = Component.translatable("erinium_faction.faction.menu.settings").getString();
             if (hoverText != null) {
                 guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
@@ -87,22 +94,49 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
         guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos + 0, this.topPos + 0, 0, 0, 420, 240, 420, 240);
 
-        drawText(guiGraphics, EFUtils.F.GetFileStringValue(factionfile, "displayname"), EriFont::orbitronBold, 14f, -1, 10, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
+        // Valeurs sûres quand pas de faction
+        String displayName = hasFaction ? EFUtils.F.GetFileStringValue(factionfile, "displayname") : Component.translatable("erinium_faction.faction.menu.no_faction").getString();
+        if (displayName == null || displayName.isEmpty()) displayName = "-";
+        drawText(guiGraphics, displayName, EriFont::orbitronBold, 14f, -1, 10, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
         drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, 45, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
         drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.playerlist").getString(), EriFont::orbitron, 10f, 349, 45, true, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
 
-        int claimCount = (EFUtils.F.GetFileStringValue(factionfile, "claimlist") == null || EFUtils.F.GetFileStringValue(factionfile, "claimlist").isEmpty()) ? 0 : EFUtils.F.GetFileStringValue(factionfile, "claimlist").split(",").length;
-        int playerCount = (EFUtils.F.GetFileStringValue(factionfile, "memberList") == null || EFUtils.F.GetFileStringValue(factionfile, "memberList").isEmpty()) ? 1 : EFUtils.F.GetFileStringValue(factionfile, "claimlist").split(",").length + 1;
+        String claimlist = hasFaction ? EFUtils.F.GetFileStringValue(factionfile, "claimlist") : null;
+        int claimCount = (claimlist == null || claimlist.isEmpty()) ? 0 : claimlist.split(",").length;
+        String memberList = hasFaction ? EFUtils.F.GetFileStringValue(factionfile, "memberList") : null;
+        int playerCount = (memberList == null || memberList.isEmpty()) ? (hasFaction ? 1 : 0) : memberList.split(",").length + 1;
 
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.claims").getString() + claimCount + " / " + (int) EFUtils.F.GetFileNumberValue(factionfile, "maxClaims"), EriFont::exo2, 8f, 149, 89, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.membercount").getString() + playerCount + " / " + (int) EFUtils.F.GetFileNumberValue(factionfile, "maxPlayer"), EriFont::exo2, 8f, 149, 102, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + (int) EFUtils.F.GetFileNumberValue(factionfile, "power") + " / " + (int) faction.getPower(), EriFont::exo2, 8f, 149, 115, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.level").getString() + (int) EFUtils.F.GetFileNumberValue(factionfile, "factionLevel"), EriFont::exo2, 8f, -1, 128, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        int maxClaims = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "maxClaims") : 0;
+        int maxPlayer = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "maxPlayer") : 0;
+        int power = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "power") : 0;
+        int maxPower = hasFaction && faction != null ? (int) faction.getPower() : 0;
+        int level = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "factionLevel") : 0;
+        int xp = hasFaction ? (int) EFUtils.F.GetFileNumberValue(factionfile, "factionXp") : 0;
 
-        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), this.leftPos + 149, this.topPos + 141, 0, 0, 122, 10, 122, 10);
-        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), this.leftPos + 150, this.topPos + 142, 0, 0, (int) (122 / faction.getXPRequiredForNextLevel((int) EFUtils.F.GetFileNumberValue(factionfile, "factionLevel"))) * (int) EFUtils.F.GetFileNumberValue(factionfile, "factionXp"), 8, 122, 8);
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.claims").getString() + claimCount + " / " + maxClaims, EriFont::exo2, 8f, 149, 89, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.membercount").getString() + playerCount + " / " + maxPlayer, EriFont::exo2, 8f, 149, 102, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + power + " / " + (maxPower > 0 ? maxPower : 0), EriFont::exo2, 8f, 149, 115, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.level").getString() + level, EriFont::exo2, 8f, -1, 128, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
 
-        drawText(guiGraphics, (int) EFUtils.F.GetFileNumberValue(factionfile, "factionXp") + " / " + (int) faction.getXPRequiredForNextLevel((int) EFUtils.F.GetFileNumberValue(factionfile, "factionLevel")), EriFont::exo2, 6.5f, -1, 154, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
+        // Barre d'XP uniquement si la faction est valide
+        if (hasFaction && faction != null) {
+            guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), this.leftPos + 149, this.topPos + 141, 0, 0, 122, 10, 122, 10);
+            int xpReq = (int) faction.getXPRequiredForNextLevel(level);
+            int fillWidth = 0;
+            if (xpReq > 0) {
+                // clamp entre 0 et 122
+                fillWidth = Math.min(122, Math.max(0, (int) Math.round(122.0 * xp / (double) xpReq)));
+            }
+            if (fillWidth > 0) {
+                guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), this.leftPos + 150, this.topPos + 142, 0, 0, fillWidth, 8, 122, 8);
+            }
+            drawText(guiGraphics, xp + " / " + (xpReq > 0 ? xpReq : 0), EriFont::exo2, 6.5f, -1, 154, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
+        }
+
+        // Si aucune faction, afficher un message d'information
+        if (!hasFaction) {
+            drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.no_faction_hint").getString(), EriFont::exo2, 8f, -1, 160, false, true, EFUtils.Color.ARGBToInt(255, 200, 200, 200));
+        }
 
         RenderSystem.disableBlend();
     }
@@ -124,29 +158,37 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     public void init() {
         super.init();
 
-        StringBuilder playerlist = new StringBuilder();
-        for (Map.Entry<UUID, Rank> t : faction.getMembers().entrySet()){
-            playerlist.append(t.getKey()).append(":").append(t.getValue());
-        }
+        // Construire la liste des joueurs uniquement si une faction est disponible
+        if (hasFaction && faction != null) {
+            StringBuilder playerlist = new StringBuilder();
+            for (Map.Entry<UUID, Rank> t : faction.getMembers().entrySet()) {
+                if (playerlist.length() > 0) playerlist.append(",");
+                playerlist.append(t.getKey()).append(":").append(t.getValue());
+            }
 
-        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist.toString(), world.getServer());
-        this.addRenderableWidget(scrollableList);
+            FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist.toString(), world != null ? world.getServer() : null);
+            this.addRenderableWidget(scrollableList);
 
-        if (faction != null && faction.getRank(entity.getUUID()).canManageSettings()) {
-            fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
-                int x = FactionMenuScreen.this.x;
-                int y = FactionMenuScreen.this.y;
-                if (true) {
+            Rank rank = faction.getRank(entity.getUUID());
+            if (rank != null && rank.canManageSettings()) {
+                fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
+                    int x = FactionMenuScreen.this.x;
+                    int y = FactionMenuScreen.this.y;
+                    if (true) {
 //                    PacketDistributor.sendToServer(new GuiForConstructButtonMessage(0, x, y, z));
 //                    GuiForConstructButtonMessage.handleButtonAction(entity, 0, x, y, z);
-                }
-            }) {
-                @Override
-                public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-                    guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
-                }
-            };
-            this.addRenderableWidget(fsettings);
+                    }
+                }) {
+                    @Override
+                    public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+                        guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
+                    }
+                };
+                this.addRenderableWidget(fsettings);
+            }
+        } else {
+            // Pas de faction: s'assurer que le bouton est null et ne rien ajouter
+            fsettings = null;
         }
     }
 
@@ -165,6 +207,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     private void drawText(GuiGraphics guiGraphics, String text, EriFont.EriFontAccess fontAccess, float fontSize, float x, float y, boolean isXCentered, boolean hasShadow, int color) {
         float textScale = fontSize / 8f;
+        if (text == null) text = "";
         Component comp = fontAccess.get(text);
 
         int tw = this.minecraft.font.width(comp);
