@@ -190,9 +190,6 @@ public class FactionCommand {
 
     private static CompletableFuture<Suggestions> suggestNewFactionName(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
         // Proposer quelques exemples si aucune faction actuelle
-        builder.suggest("Knights");
-        builder.suggest("Wolves");
-        builder.suggest("Dragons");
         return builder.buildFuture();
     }
 
