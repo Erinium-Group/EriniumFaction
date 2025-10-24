@@ -1,0 +1,13 @@
+# Supprimer les dossiers du cache Git (sans les supprimer physiquement)
+git rm -r --cached .gradle
+git rm -r --cached .idea
+git rm -r --cached build
+
+# Ajouter tous les changements
+git add .
+
+# Commit
+git commit -m "Remove ignored files from tracking"
+
+# Push
+git push
