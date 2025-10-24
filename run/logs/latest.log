@@ -1,145 +1,58 @@
-[24oct.2025 02:55:46.377] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgeclientdev, --version, 21.1.213, --assetIndex, 17, --assetsDir, C:\\Users\\DragC\\.gradle\\caches\\neoformruntime\\assets, --gameDir, ., --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.213, --fml.neoFormVersion, 20240808.144430, --username, Blaackknight, --uuid, b03197e4-1f1a-316b-8873-ed0870397060]
-[24oct.2025 02:55:46.396] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Oracle Corporation OpenJDK 64-Bit Server VM 23.0.2+7-58
-[24oct.2025 02:55:46.402] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 23.0.2 by Oracle Corporation; OS Windows 10 arch amd64 version 10.0
-[24oct.2025 02:55:46.740] [main/WARN] [net.neoforged.fml.loading.FMLConfig/CORE]: Configuration file C:\Users\DragC\Desktop\Mods\EriniumFaction\run\config\fml.toml is not correct. Correcting
-[24oct.2025 02:55:46.921] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: Loading ImmediateWindowProvider fmlearlywindow
-[24oct.2025 02:55:47.517] [main/INFO] [EARLYDISPLAY/]: Trying GL version 4.6
-[24oct.2025 02:55:47.916] [main/INFO] [EARLYDISPLAY/]: Requested GL version 4.6 got version 4.6
-[24oct.2025 02:55:48.623] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/DragC/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23138!/ Service=ModLauncher Env=CLIENT
-[24oct.2025 02:55:48.717] [main/WARN] [net.neoforged.fml.loading.FMLConfig/CORE]: Configuration file C:\Users\DragC\Desktop\Mods\EriniumFaction\run\config\fml.toml is not correct. Correcting
-[24oct.2025 02:55:49.849] [pool-2-thread-1/INFO] [EARLYDISPLAY/]: GL info: Intel(R) UHD Graphics 620 GL version 4.6.0 - Build 31.0.101.2137, Intel
-[24oct.2025 02:55:51.367] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
-[24oct.2025 02:55:51.376] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+[24oct.2025 03:09:08.440] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgeclientdev, --version, 21.1.213, --assetIndex, 17, --assetsDir, C:\\Users\\DragC\\.gradle\\caches\\neoformruntime\\assets, --gameDir, ., --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.213, --fml.neoFormVersion, 20240808.144430, --username, Blaackknight, --uuid, b03197e4-1f1a-316b-8873-ed0870397060]
+[24oct.2025 03:09:08.463] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Oracle Corporation OpenJDK 64-Bit Server VM 23.0.2+7-58
+[24oct.2025 03:09:08.478] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 23.0.2 by Oracle Corporation; OS Windows 10 arch amd64 version 10.0
+[24oct.2025 03:09:09.266] [main/WARN] [net.neoforged.fml.loading.FMLConfig/CORE]: Configuration file C:\Users\DragC\Desktop\Mods\EriniumFaction\run\config\fml.toml is not correct. Correcting
+[24oct.2025 03:09:09.637] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: Loading ImmediateWindowProvider fmlearlywindow
+[24oct.2025 03:09:10.091] [main/INFO] [EARLYDISPLAY/]: Trying GL version 4.6
+[24oct.2025 03:09:10.350] [main/INFO] [EARLYDISPLAY/]: Requested GL version 4.6 got version 4.6
+[24oct.2025 03:09:10.770] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/DragC/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23138!/ Service=ModLauncher Env=CLIENT
+[24oct.2025 03:09:10.799] [main/WARN] [net.neoforged.fml.loading.FMLConfig/CORE]: Configuration file C:\Users\DragC\Desktop\Mods\EriniumFaction\run\config\fml.toml is not correct. Correcting
+[24oct.2025 03:09:11.411] [pool-2-thread-1/INFO] [EARLYDISPLAY/]: GL info: Intel(R) UHD Graphics 620 GL version 4.6.0 - Build 31.0.101.2137, Intel
+[24oct.2025 03:09:12.217] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
+[24oct.2025 03:09:12.222] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
      Mod List:
 		Name Version (Mod Id)
 
 		Erinium Faction 1.0.0-BETA (erinium_faction)
 		Minecraft 1.21.1 (minecraft)
 		NeoForge 21.1.213 (neoforge)
-[24oct.2025 02:55:58.422] [main/INFO] [mixin/]: Compatibility level set to JAVA_21
-[24oct.2025 02:55:58.495] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgeclientdev' with arguments [--version, 21.1.213, --gameDir, ., --assetsDir, C:\Users\DragC\.gradle\caches\neoformruntime\assets, --uuid, b03197e4-1f1a-316b-8873-ed0870397060, --assetIndex, 17, --username, Blaackknight]
-[24oct.2025 02:56:10.872] [Datafixer Bootstrap/INFO] [com.mojang.datafixers.DataFixerBuilder/]: 229 Datafixer optimizations took 2355 milliseconds
-[24oct.2025 02:56:15.484] [pool-7-thread-1/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
-[24oct.2025 02:56:52.031] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[24oct.2025 02:56:52.035] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
-[24oct.2025 02:56:52.047] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[24oct.2025 02:56:52.052] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
-[24oct.2025 02:56:52.057] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
-[24oct.2025 02:56:52.450] [Render thread/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/DragC/Desktop/Mods/EriniumFaction/build/moddev/artifacts/neoforge-21.1.213.jar%23189!/assets/.mcassetsroot' uses unexpected schema
-[24oct.2025 02:56:52.451] [Render thread/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/DragC/Desktop/Mods/EriniumFaction/build/moddev/artifacts/neoforge-21.1.213.jar%23189!/data/.mcassetsroot' uses unexpected schema
-[24oct.2025 02:56:52.550] [Render thread/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
-[24oct.2025 02:56:52.589] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Blaackknight
-[24oct.2025 02:56:52.810] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.3.3+5
-[24oct.2025 02:56:56.207] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.213, for MC 1.21.1
-[24oct.2025 02:56:58.435] [Render thread/INFO] [net.neoforged.neoforge.gametest.GameTestHooks/]: Enabled Gametest Namespaces: [erinium_faction]
-[24oct.2025 02:56:59.521] [Render thread/INFO] [net.minecraft.server.packs.resources.ReloadableResourceManager/]: Reloading ResourceManager: vanilla, mod_resources, mod/neoforge, mod/erinium_faction
-[24oct.2025 02:56:59.934] [Worker-Main-5/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_all_no_pua-15.1.05.hex, loading
-[24oct.2025 02:57:00.308] [Worker-Main-7/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_jp_patch-15.1.05.hex, loading
-[24oct.2025 02:57:13.905] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.goat_horn.play
-[24oct.2025 02:57:13.928] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.goat.screaming.horn_break
-[24oct.2025 02:57:14.757] [Render thread/INFO] [com.mojang.blaze3d.audio.Library/]: OpenAL initialized on device OpenAL Soft on Haut-parleurs (Razer Kraken V3 HyperSense)
-[24oct.2025 02:57:14.761] [Render thread/INFO] [net.minecraft.client.sounds.SoundEngine/SOUNDS]: Sound engine started
-[24oct.2025 02:57:15.250] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
-[24oct.2025 02:57:19.327] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x256x4 minecraft:textures/atlas/signs.png-atlas
-[24oct.2025 02:57:19.508] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
-[24oct.2025 02:57:20.002] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
-[24oct.2025 02:57:20.433] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x1024x4 minecraft:textures/atlas/armor_trims.png-atlas
-[24oct.2025 02:57:25.701] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 128x64x4 minecraft:textures/atlas/decorated_pot.png-atlas
-[24oct.2025 02:57:25.954] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
-[24oct.2025 02:57:26.070] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
-[24oct.2025 02:57:26.266] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
-[24oct.2025 02:57:29.817] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
-[24oct.2025 02:57:30.245] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
-[24oct.2025 02:57:30.256] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x128x0 minecraft:textures/atlas/mob_effects.png-atlas
-[24oct.2025 02:57:30.271] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 64x64x0 minecraft:textures/atlas/map_decorations.png-atlas
-[24oct.2025 02:57:30.276] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x512x0 minecraft:textures/atlas/gui.png-atlas
-[24oct.2025 02:57:32.068] [Render thread/WARN] [net.minecraft.client.renderer.ShaderInstance/]: Shader rendertype_entity_translucent_emissive could not find sampler named Sampler2 in the specified shader program.
-[24oct.2025 02:57:35.090] [Render thread/INFO] [net.neoforged.neoforge.client.entity.animation.json.AnimationLoader/]: Loaded 0 entity animations
-[24oct.2025 02:59:08.038] [Render thread/INFO] [net.minecraft.client.gui.screens.ConnectScreen/]: Connecting to 91.197.6.16, 27004
-[24oct.2025 02:59:13.543] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 2 advancements
-[24oct.2025 02:59:14.006] [Render thread/WARN] [net.minecraft.client.multiplayer.ClientPacketListener/]: Received passengers for unknown entity
-[24oct.2025 02:59:38.777] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Aucune faction spécifiée et vous n'êtes pas dans une faction !
-[24oct.2025 03:00:08.079] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Unknown or incomplete command, see below for error
-[24oct.2025 03:00:08.083] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] f<--[HERE]
-[24oct.2025 03:00:09.963] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Incorrect argument for command
-[24oct.2025 03:00:09.963] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] f fa<--[HERE]
-[24oct.2025 03:00:21.895] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Vous n'êtes pas dans une faction !
-[24oct.2025 03:00:33.516] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] ═══════════ [MyBoxFree] ═══════════\n◆ Sauvegardes automatiques avec MineStrator SmartBackup™\n════════════════════════════════
-[24oct.2025 03:01:13.266] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Faction Caca créée avec succès !
-[24oct.2025 03:01:18.554] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Unknown or incomplete command, see below for error
-[24oct.2025 03:01:18.555] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] f<--[HERE]
-[24oct.2025 03:01:19.856] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Incorrect argument for command
-[24oct.2025 03:01:19.858] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] f f<--[HERE]
-[24oct.2025 03:01:22.005] [Render thread/ERROR] [net.neoforged.neoforge.network.handlers.ClientPayloadHandler/]: Failed to handle advanced open screen from server.
-java.lang.NullPointerException: Cannot invoke "fr.eriniumgroup.erinium_faction.core.faction.Faction.getMembers()" because "this.faction" is null
-	at TRANSFORMER/erinium_faction@1.0.0-BETA/fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen.init(FactionMenuScreen.java:128) ~[%23191!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.gui.screens.Screen.init(Screen.java:337) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.Minecraft.setScreen(Minecraft.java:1063) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/neoforge@21.1.213/net.neoforged.neoforge.network.handlers.ClientPayloadHandler.lambda$createMenuScreen$0(ClientPayloadHandler.java:132) ~[neoforge-21.1.213.jar%23190!/:?]
-	at java.base/java.util.Optional.ifPresent(Optional.java:178) ~[?:?]
-	at TRANSFORMER/neoforge@21.1.213/net.neoforged.neoforge.network.handlers.ClientPayloadHandler.createMenuScreen(ClientPayloadHandler.java:129) ~[neoforge-21.1.213.jar%23190!/:?]
-	at TRANSFORMER/neoforge@21.1.213/net.neoforged.neoforge.network.handlers.ClientPayloadHandler.handle(ClientPayloadHandler.java:118) ~[neoforge-21.1.213.jar%23190!/:?]
-	at TRANSFORMER/neoforge@21.1.213/net.neoforged.neoforge.network.handling.MainThreadPayloadHandler.lambda$handle$0(MainThreadPayloadHandler.java:16) ~[neoforge-21.1.213.jar%23190!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.BlockableEventLoop.lambda$submitAsync$0(BlockableEventLoop.java:60) ~[neoforge-21.1.213.jar%23189!/:?]
-	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1812) ~[?:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.BlockableEventLoop.doRunTask(BlockableEventLoop.java:151) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.ReentrantBlockableEventLoop.doRunTask(ReentrantBlockableEventLoop.java:24) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.BlockableEventLoop.pollTask(BlockableEventLoop.java:122) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.BlockableEventLoop.runAllTasks(BlockableEventLoop.java:111) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.Minecraft.runTick(Minecraft.java:1161) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.Minecraft.run(Minecraft.java:813) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.main.Main.main(Main.java:230) ~[neoforge-21.1.213.jar%23189!/:?]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?]
-	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.runTarget(CommonLaunchHandler.java:136) ~[loader-4.0.42.jar%23146!/:4.0]
-	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.clientService(CommonLaunchHandler.java:124) ~[loader-4.0.42.jar%23146!/:4.0]
-	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.NeoForgeClientDevLaunchHandler.runService(NeoForgeClientDevLaunchHandler.java:23) ~[loader-4.0.42.jar%23146!/:4.0]
-	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.lambda$launchService$4(CommonLaunchHandler.java:118) ~[loader-4.0.42.jar%23146!/:4.0]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.run(Launcher.java:103) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.main(Launcher.java:74) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) [modlauncher-11.0.5.jar%23128!/:?]
-	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.run(BootstrapLauncher.java:210) [bootstraplauncher-2.0.2.jar:?]
-	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:69) [bootstraplauncher-2.0.2.jar:?]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?]
-	at net.neoforged.devlaunch.Main.main(Main.java:57) [DevLaunch-1.0.2.jar:?]
-[24oct.2025 03:01:22.561] [Render thread/ERROR] [net.minecraft.client.Minecraft/FATAL]: Reported exception thrown!
-net.minecraft.ReportedException: Rendering screen
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.renderer.GameRenderer.render(GameRenderer.java:1126) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.Minecraft.runTick(Minecraft.java:1201) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.Minecraft.run(Minecraft.java:813) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.main.Main.main(Main.java:230) ~[neoforge-21.1.213.jar%23189!/:?]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?]
-	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.runTarget(CommonLaunchHandler.java:136) ~[loader-4.0.42.jar%23146!/:4.0]
-	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.clientService(CommonLaunchHandler.java:124) ~[loader-4.0.42.jar%23146!/:4.0]
-	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.NeoForgeClientDevLaunchHandler.runService(NeoForgeClientDevLaunchHandler.java:23) ~[loader-4.0.42.jar%23146!/:4.0]
-	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.lambda$launchService$4(CommonLaunchHandler.java:118) ~[loader-4.0.42.jar%23146!/:4.0]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.run(Launcher.java:103) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.main(Launcher.java:74) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) [modlauncher-11.0.5.jar%23128!/:?]
-	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) [modlauncher-11.0.5.jar%23128!/:?]
-	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.run(BootstrapLauncher.java:210) [bootstraplauncher-2.0.2.jar:?]
-	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:69) [bootstraplauncher-2.0.2.jar:?]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?]
-	at net.neoforged.devlaunch.Main.main(Main.java:57) [DevLaunch-1.0.2.jar:?]
-Caused by: java.lang.NullPointerException: Cannot invoke "fr.eriniumgroup.erinium_faction.core.faction.Faction.getPower()" because "this.faction" is null
-	at TRANSFORMER/erinium_faction@1.0.0-BETA/fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen.renderBg(FactionMenuScreen.java:99) ~[%23191!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.renderBackground(AbstractContainerScreen.java:198) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.render(AbstractContainerScreen.java:136) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/erinium_faction@1.0.0-BETA/fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen.render(FactionMenuScreen.java:68) ~[%23191!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.gui.screens.Screen.renderWithTooltip(Screen.java:112) ~[neoforge-21.1.213.jar%23189!/:?]
-	at TRANSFORMER/neoforge@21.1.213/net.neoforged.neoforge.client.ClientHooks.drawScreenInternal(ClientHooks.java:429) ~[neoforge-21.1.213.jar%23190!/:?]
-	at TRANSFORMER/neoforge@21.1.213/net.neoforged.neoforge.client.ClientHooks.drawScreen(ClientHooks.java:423) ~[neoforge-21.1.213.jar%23190!/:?]
-	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.renderer.GameRenderer.render(GameRenderer.java:1098) ~[neoforge-21.1.213.jar%23189!/:?]
-	... 21 more
-[24oct.2025 03:01:24.501] [Render thread/FATAL] [net.neoforged.neoforge.common.NeoForgeMod/]: Preparing crash report with UUID 51f195c2-be2b-4b33-8360-001a5aa344d5
-[24oct.2025 03:01:24.597] [Render thread/FATAL] [net.neoforged.neoforge.common.NeoForgeMod/]: Preparing crash report with UUID 40ff6a91-bb1c-4bca-980d-1c95ab9e7a25
+[24oct.2025 03:09:18.657] [main/INFO] [mixin/]: Compatibility level set to JAVA_21
+[24oct.2025 03:09:18.690] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgeclientdev' with arguments [--version, 21.1.213, --gameDir, ., --assetsDir, C:\Users\DragC\.gradle\caches\neoformruntime\assets, --uuid, b03197e4-1f1a-316b-8873-ed0870397060, --assetIndex, 17, --username, Blaackknight]
+[24oct.2025 03:09:27.341] [Datafixer Bootstrap/INFO] [com.mojang.datafixers.DataFixerBuilder/]: 229 Datafixer optimizations took 1665 milliseconds
+[24oct.2025 03:09:28.925] [pool-7-thread-1/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[24oct.2025 03:09:44.256] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[24oct.2025 03:09:44.262] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[24oct.2025 03:09:44.269] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[24oct.2025 03:09:44.273] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[24oct.2025 03:09:44.276] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[24oct.2025 03:09:44.638] [Render thread/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/DragC/Desktop/Mods/EriniumFaction/build/moddev/artifacts/neoforge-21.1.213.jar%23189!/assets/.mcassetsroot' uses unexpected schema
+[24oct.2025 03:09:44.638] [Render thread/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/DragC/Desktop/Mods/EriniumFaction/build/moddev/artifacts/neoforge-21.1.213.jar%23189!/data/.mcassetsroot' uses unexpected schema
+[24oct.2025 03:09:44.687] [Render thread/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[24oct.2025 03:09:44.703] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Blaackknight
+[24oct.2025 03:09:46.957] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.3.3+5
+[24oct.2025 03:09:49.793] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.213, for MC 1.21.1
+[24oct.2025 03:09:52.809] [Render thread/INFO] [net.neoforged.neoforge.gametest.GameTestHooks/]: Enabled Gametest Namespaces: [erinium_faction]
+[24oct.2025 03:09:53.667] [Render thread/INFO] [net.minecraft.server.packs.resources.ReloadableResourceManager/]: Reloading ResourceManager: vanilla, mod_resources, mod/neoforge, mod/erinium_faction
+[24oct.2025 03:09:54.053] [Worker-Main-4/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_all_no_pua-15.1.05.hex, loading
+[24oct.2025 03:09:58.057] [Worker-Main-4/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_jp_patch-15.1.05.hex, loading
+[24oct.2025 03:10:39.351] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.goat_horn.play
+[24oct.2025 03:10:39.352] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.goat.screaming.horn_break
+[24oct.2025 03:10:40.268] [Render thread/INFO] [com.mojang.blaze3d.audio.Library/]: OpenAL initialized on device OpenAL Soft on Haut-parleurs (Razer Kraken V3 HyperSense)
+[24oct.2025 03:10:40.272] [Render thread/INFO] [net.minecraft.client.sounds.SoundEngine/SOUNDS]: Sound engine started
+[24oct.2025 03:10:40.986] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
+[24oct.2025 03:10:49.662] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x256x4 minecraft:textures/atlas/signs.png-atlas
+[24oct.2025 03:10:49.930] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
+[24oct.2025 03:10:50.685] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
+[24oct.2025 03:10:51.389] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x1024x4 minecraft:textures/atlas/armor_trims.png-atlas
+[24oct.2025 03:11:01.532] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 128x64x4 minecraft:textures/atlas/decorated_pot.png-atlas
+[24oct.2025 03:11:01.821] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
+[24oct.2025 03:11:01.932] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
+[24oct.2025 03:11:02.175] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
+[24oct.2025 03:11:04.273] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
+[24oct.2025 03:11:04.868] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
+[24oct.2025 03:11:04.888] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x128x0 minecraft:textures/atlas/mob_effects.png-atlas
+[24oct.2025 03:11:04.895] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 64x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[24oct.2025 03:11:04.900] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x512x0 minecraft:textures/atlas/gui.png-atlas
+[24oct.2025 03:11:05.983] [Render thread/WARN] [net.minecraft.client.renderer.ShaderInstance/]: Shader rendertype_entity_translucent_emissive could not find sampler named Sampler2 in the specified shader program.
+[24oct.2025 03:11:07.935] [Render thread/INFO] [net.neoforged.neoforge.client.entity.animation.json.AnimationLoader/]: Loaded 0 entity animations
+[24oct.2025 03:11:13.233] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Stopping!

@@ -34,6 +34,7 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
     public final Player entity;
     public int x, y, z;
     public Faction faction;
+    public String factionName; // nouveau: nom de faction transmis côté client
     private ContainerLevelAccess access = ContainerLevelAccess.NULL;
     private IItemHandler internal;
     private final Map<Integer, Slot> customSlots = new HashMap<>();
@@ -48,6 +49,7 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         this.world = inv.player.level();
         this.internal = new ItemStackHandler(0);
         BlockPos pos = null;
+        String readFactionName = null;
         if (extraData != null) {
             // Lire la position si fournie (compatibilité existante)
             pos = extraData.readBlockPos();
@@ -56,17 +58,17 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
             this.z = pos.getZ();
             access = ContainerLevelAccess.create(world, pos);
 
-            // Si des données supplémentaires sont présentes, tenter de lire le nom de faction
+            // Lire le nom de faction si présent
             if (extraData.readableBytes() > 0) {
-                String factionName = extraData.readUtf(32767);
-                Faction f = FactionManager.getFaction(factionName);
-                this.faction = (f != null) ? f : FactionManager.getPlayerFactionObject(this.entity.getUUID());
-            } else {
-                this.faction = FactionManager.getPlayerFactionObject(this.entity.getUUID());
+                readFactionName = extraData.readUtf(32767);
             }
-        } else {
-            this.faction = FactionManager.getPlayerFactionObject(this.entity.getUUID());
         }
+        // Déterminer le nom de faction à utiliser
+        String fallback = FactionManager.getPlayerFaction(this.entity.getUUID());
+        this.factionName = (readFactionName != null && !readFactionName.isEmpty()) ? readFactionName : fallback;
+
+        // Résoudre l'objet Faction si possible (souvent côté serveur). Côté client, cela peut rester null.
+        this.faction = (this.factionName != null && !this.factionName.isEmpty()) ? FactionManager.getFaction(this.factionName) : null;
     }
 
     @Override
