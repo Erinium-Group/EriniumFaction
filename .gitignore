@@ -89,6 +89,6 @@ Thumbs.db
 *.token
 *.secret
 
-/.gradle
-/.idea
-/build
+/.gradle/**
+/.idea/**
+/build/**
