@@ -1,3 +1,5 @@
+# CLAUDE HAS BEEN USING JUST FOR COMMIT
+
 # 🛡️ Erinium Faction
 
 > Un mod PvP Faction complet pour Minecraft 1.21.1 (NeoForge)
