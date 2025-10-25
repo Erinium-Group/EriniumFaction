@@ -3,6 +3,7 @@ package fr.eriniumgroup.erinium_faction.gui.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
+import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
 import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
 import fr.eriniumgroup.erinium_faction.core.EriFont;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
@@ -21,7 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
-import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
 
 import java.util.Map;
 import java.util.UUID;
@@ -114,10 +114,21 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         this.scaleY = this.imageHeight / (double) BASE_H;
     }
 
-    private int sx(int base) { return this.leftPos + (int) Math.round(base * this.scaleX); }
-    private int sy(int base) { return this.topPos + (int) Math.round(base * this.scaleY); }
-    private int sw(int base) { return (int) Math.round(base * this.scaleX); }
-    private int sh(int base) { return (int) Math.round(base * this.scaleY); }
+    private int sx(int base) {
+        return this.leftPos + (int) Math.round(base * this.scaleX);
+    }
+
+    private int sy(int base) {
+        return this.topPos + (int) Math.round(base * this.scaleY);
+    }
+
+    private int sw(int base) {
+        return (int) Math.round(base * this.scaleX);
+    }
+
+    private int sh(int base) {
+        return (int) Math.round(base * this.scaleY);
+    }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -140,7 +151,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         RenderSystem.defaultBlendFunc();
 
         // Fond étiré au nouveau ratio
-        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, BASE_W, BASE_H);
+        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos, this.topPos, this.imageWidth, this.imageHeight, 0, 0, BASE_W, BASE_H, BASE_W, BASE_H);
 
         // Données: utiliser snapshot si dispo, sinon objet faction
         FactionSnapshot snap = this.menu instanceof FactionMenu fm ? fm.snapshot : null;
@@ -281,8 +292,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             int btnSize = Math.max(32, Math.min(72, sw(64)));
             int bx = sx(20);
             int by = this.topPos + this.imageHeight - btnSize - sh(20);
-            fsettings = new ImageButton(bx, by, btnSize, btnSize,
-                    new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
+            fsettings = new ImageButton(bx, by, btnSize, btnSize, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
                 int px = FactionMenuScreen.this.x;
                 int py = FactionMenuScreen.this.y;
                 int pz = FactionMenuScreen.this.z;
