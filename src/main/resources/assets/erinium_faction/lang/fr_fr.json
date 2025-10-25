@@ -95,6 +95,7 @@
   "erinium_faction.tp.canceled.damage": "§6[§bErinium§6/§dFaction§6] §cTéléportation annulée (dégâts).",
   "erinium_faction.tp.cooldown": "§6[§bErinium§6/§dFaction§6] §cEncore §e%s§cs de cooldown.",
   "erinium_faction.tp.crossdim_denied": "§6[§bErinium§6/§dFaction§6] §cTéléportation inter-dimensionnelle désactivée.",
+
   "erinium_faction.faction.menu.settings.toggle_mode": "Basculer le mode (PUBLIC / INVITE_ONLY)",
   "erinium_faction.faction.menu.settings.toggle_safezone": "Basculer SAFEZONE",
   "erinium_faction.faction.map.title": "Carte des claims",
