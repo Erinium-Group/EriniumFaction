@@ -127,5 +127,9 @@
 
   "erinium_faction.cmd.economy.top.header": "§6[§bErinium§6/§aEco§6] §7Top §e%s§7/§e%s§7 (total: §e%s§7)",
   "erinium_faction.cmd.economy.top.item": "§7#%s §b%s§7 — §e%s",
-  "erinium_faction.cmd.economy.top.empty": "§6[§bErinium§6/§aEco§6] §7No players online."
+  "erinium_faction.cmd.economy.top.empty": "§6[§bErinium§6/§aEco§6] §7No players online.",
+
+  "erinium_faction.chat.faction_format": "§6[§aFaction§6] §r%s: %s",
+  "erinium_faction.chat.ally_format": "§3[§eAlly§3] §r%s: %s",
+  "erinium_faction.chat.global_format": "%s§r %s§r §f%s:§r %s"
 }
