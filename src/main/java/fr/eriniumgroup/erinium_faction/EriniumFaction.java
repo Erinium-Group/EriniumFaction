@@ -94,6 +94,8 @@ public class EriniumFaction {
         RankCommand.register(event.getDispatcher());
         // Commandes économie
         EconomyCommand.register(event.getDispatcher());
+        // Commande ef (perm per-player)
+        fr.eriniumgroup.erinium_faction.commands.EFCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
     }

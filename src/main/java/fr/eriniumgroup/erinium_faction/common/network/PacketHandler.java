@@ -53,6 +53,9 @@ public class PacketHandler {
         // Nouveau paquet clientbound pour synchroniser l’état des Settings
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, GuiForConstructButtonMessage, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi-directionnel), PlayerVariables (bi-directionnel) + ClaimsMap (request/data) + FactionSettingsStateMessage (clientbound)");
+        // Nouveau paquet clientbound: afficher un titre overlay
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket::handleData);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound)");
     }
 }

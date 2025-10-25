@@ -56,6 +56,8 @@ public class EFRManager {
 
     private final Map<String, Rank> ranks = new ConcurrentHashMap<>(); // id -> Rank
     private final Map<UUID, String> playerRanks = new ConcurrentHashMap<>(); // uuid -> rankId
+    // Overrides de permissions au niveau joueur (en plus du rank)
+    private final Map<UUID, Set<String>> playerOverrides = new ConcurrentHashMap<>(); // uuid -> perms
 
     private EFRManager() {
     }
@@ -99,6 +101,7 @@ public class EFRManager {
 
         // Players
         playerRanks.clear();
+        playerOverrides.clear();
         if (Files.exists(PLAYERS_FILE)) {
             try {
                 CompoundTag root = NbtIo.read(PLAYERS_FILE);
@@ -112,6 +115,19 @@ public class EFRManager {
                                 playerRanks.put(uuid, rankId.toLowerCase(Locale.ROOT));
                             }
                         } catch (Exception ignored) { }
+                    }
+                    // Overrides de permissions au niveau joueur (facultatif)
+                    if (root.contains("perm_overrides", 10)) { // 10 = Compound
+                        CompoundTag ov = root.getCompound("perm_overrides");
+                        for (String key : ov.getAllKeys()) {
+                            try {
+                                UUID uuid = UUID.fromString(key);
+                                ListTag list = ov.getList(key, 8); // 8 = StringTag
+                                Set<String> set = new HashSet<>();
+                                for (int i = 0; i < list.size(); i++) set.add(list.getString(i));
+                                if (!set.isEmpty()) playerOverrides.put(uuid, set);
+                            } catch (Exception ignored) { }
+                        }
                     }
                 }
             } catch (Exception ex) {
@@ -174,6 +190,16 @@ public class EFRManager {
                 players.putString(e.getKey().toString(), e.getValue());
             }
             root.put("players", players);
+            // Sauvegarder overrides
+            if (!playerOverrides.isEmpty()) {
+                CompoundTag ov = new CompoundTag();
+                for (Map.Entry<UUID, Set<String>> e : playerOverrides.entrySet()) {
+                    ListTag list = new ListTag();
+                    for (String p : e.getValue()) list.add(StringTag.valueOf(p));
+                    ov.put(e.getKey().toString(), list);
+                }
+                root.put("perm_overrides", ov);
+            }
             NbtIo.write(root, PLAYERS_FILE);
         } catch (Exception e) {
             EFC.log.error("Ranks", "§cErreur écriture players.dat: {}", e.toString());
@@ -247,23 +273,61 @@ public class EFRManager {
         return id == null ? null : getRank(id);
     }
 
+    // Overrides par joueur ----------------------------------------------------
+
+    public synchronized boolean addPlayerPermission(UUID uuid, String perm) {
+        if (uuid == null || perm == null || perm.isBlank()) return false;
+        Set<String> set = playerOverrides.computeIfAbsent(uuid, k -> new HashSet<>());
+        boolean changed = set.add(perm);
+        if (changed) savePlayers();
+        return changed;
+    }
+
+    public synchronized boolean removePlayerPermission(UUID uuid, String perm) {
+        if (uuid == null || perm == null || perm.isBlank()) return false;
+        Set<String> set = playerOverrides.get(uuid);
+        if (set == null) return false;
+        boolean changed = set.remove(perm);
+        if (changed) savePlayers();
+        if (set.isEmpty()) playerOverrides.remove(uuid);
+        return changed;
+    }
+
+    public synchronized Set<String> listPlayerPermissions(UUID uuid) {
+        Set<String> set = playerOverrides.get(uuid);
+        return set == null ? Collections.emptySet() : new HashSet<>(set);
+    }
+
     public boolean hasPermission(ServerPlayer player, String node) {
         if (player == null || node == null || node.isBlank()) return false;
         // OP a tous les droits
         if (player.hasPermissions(2)) return true;
         Rank r;
+        Set<String> overrides;
         synchronized (this) {
             r = getPlayerRank(player.getUUID());
+            overrides = listPlayerPermissions(player.getUUID());
         }
+        // Check overrides joueur
+        if (!overrides.isEmpty()) {
+            if (overrides.contains("*")) return true;
+            if (overrides.contains(node)) return true;
+            if (matchWildcard(overrides, node)) return true;
+        }
+        // Check rank
         if (r == null) return false;
         if (r.permissions.contains("*")) return true;
         if (r.permissions.contains(node)) return true;
-        // support simple des préfixes (ex: "efr.*")
+        if (matchWildcard(r.permissions, node)) return true;
+        return false;
+    }
+
+    private boolean matchWildcard(Set<String> perms, String node) {
         int dot;
         String current = node;
         while ((dot = current.lastIndexOf('.')) > 0) {
             current = current.substring(0, dot) + ".*";
-            if (r.permissions.contains(current)) return true;
+            if (perms.contains(current)) return true;
             current = current.substring(0, current.length() - 2); // retire .* pour la boucle
         }
         return false;
@@ -282,5 +346,17 @@ public class EFRManager {
     public static File getPlayersFile() {
         return PLAYERS_FILE.toFile();
     }
-}
 
+    // Collecte de permissions connues (ranks + overrides existants)
+    public synchronized Set<String> getKnownPermissions() {
+        Set<String> set = new HashSet<>();
+        for (Rank r : ranks.values()) if (r.permissions != null) set.addAll(r.permissions);
+        for (Set<String> s : playerOverrides.values()) set.addAll(s);
+        // quelques bases utiles
+        set.add("player.place");
+        set.add("player.break");
+        set.add("player.interact");
+        set.add("server.command.*");
+        return set;
+    }
+}

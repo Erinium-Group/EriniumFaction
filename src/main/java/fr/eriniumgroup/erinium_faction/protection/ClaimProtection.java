@@ -4,6 +4,7 @@ import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -26,7 +27,7 @@ public class ClaimProtection {
         if (player == null || player.level().isClientSide()) return;
 
         // Vérification permission globale player.break
-        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+        if (player instanceof ServerPlayer sp) {
             if (!EFPerms.canBreak(sp)) {
                 event.setCanceled(true);
                 player.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
