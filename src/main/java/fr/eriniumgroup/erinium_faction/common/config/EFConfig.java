@@ -46,13 +46,13 @@ public final class EFConfig {
         FACTION_NAME_MIN = b.comment("Longueur minimale du nom de faction").defineInRange("nameMin", 3, 2, 32);
         FACTION_NAME_MAX = b.comment("Longueur maximale du nom de faction").defineInRange("nameMax", 16, 3, 32);
         FACTION_MAX_MEMBERS = b.comment("Plafond global dur du nombre de membres par faction").defineInRange("maxMembers", 30, 1, 2000);
-        FACTION_BASE_MAX_PLAYERS = b.comment("Nombre de membres autorisés par faction au niveau 0").defineInRange("baseMaxPlayers", 10, 1, 2000);
+        FACTION_BASE_MAX_PLAYERS = b.comment("Nombre de membres autorisés par faction au niveau 0").defineInRange("baseMaxPlayers", 9, 1, 2000);
         FACTION_PLAYERS_PER_LEVEL = b.comment("Augmentation du nombre de membres autorisés par niveau").defineInRange("playersPerLevel", 1, 0, 2000);
 
-        FACTION_BASE_MAX_POWER = b.comment("Puissance maximale de base par faction").defineInRange("baseMaxPower", 100.0, 0.0, 100000.0);
+        FACTION_BASE_MAX_POWER = b.comment("Puissance maximale de base par faction").defineInRange("baseMaxPower", 10.0, 0.0, 100000.0);
         FACTION_POWER_PER_MEMBER = b.comment("Bonus de puissance max par membre (non utilisé si FACTION_MAX_POWER_FROM_PLAYERS=true)").defineInRange("powerPerMember", 10.0, 0.0, 10000.0);
-        POWER_REGEN_PER_MINUTE = b.comment("Régénération de puissance par minute (faction)").defineInRange("powerRegenPerMinute", 1.0, 0.0, 1000.0);
-        POWER_LOSS_ON_DEATH = b.comment("Perte de puissance de faction à la mort d'un membre").defineInRange("powerLossOnDeath", 2.5, 0.0, 1000.0);
+        POWER_REGEN_PER_MINUTE = b.comment("Régénération de puissance par minute (faction)").defineInRange("powerRegenPerMinute", 0.2, 0.0, 1000.0);
+        POWER_LOSS_ON_DEATH = b.comment("Perte de puissance de faction à la mort d'un membre").defineInRange("powerLossOnDeath", 1.5, 0.0, 1000.0);
 
         XP_PER_KILL = b.comment("XP de faction gagné par kill").defineInRange("xpPerKill", 10, 0, 10000);
         FRIENDLY_FIRE = b.comment("Le friendly fire au sein d'une faction est-il autorisé ?").define("friendlyFire", false);
@@ -70,9 +70,9 @@ public final class EFConfig {
         b.pop();
 
         b.push("players");
-        PLAYER_BASE_MAX_POWER = b.comment("Puissance max de base par joueur").defineInRange("baseMaxPower", 50.0, 0.0, 100000.0);
-        PLAYER_POWER_REGEN_PER_MINUTE = b.comment("Régénération de puissance par minute (joueur)").defineInRange("powerRegenPerMinute", 0.5, 0.0, 1000.0);
-        PLAYER_POWER_LOSS_ON_DEATH = b.comment("Perte de puissance à la mort (joueur)").defineInRange("powerLossOnDeath", 5.0, 0.0, 1000.0);
+        PLAYER_BASE_MAX_POWER = b.comment("Puissance max de base par joueur").defineInRange("baseMaxPower", 10.0, 0.0, 100000.0);
+        PLAYER_POWER_REGEN_PER_MINUTE = b.comment("Régénération de puissance par minute (joueur)").defineInRange("powerRegenPerMinute", 0.2, 0.0, 1000.0);
+        PLAYER_POWER_LOSS_ON_DEATH = b.comment("Perte de puissance à la mort (joueur)").defineInRange("powerLossOnDeath", 2, 0.0, 1000.0);
         b.pop();
 
         SPEC = b.build();
