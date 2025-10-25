@@ -16,6 +16,7 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 @EventBusSubscriber(modid = EFC.MODID, value = Dist.CLIENT)
 public class FactionTitleOverlay extends Overlay {
 
+    // Etat courant du titre à afficher
     private static Component title = null;
     private static Component subtitle = null;
     private static long startMs = 0L;
@@ -69,6 +70,26 @@ public class FactionTitleOverlay extends Overlay {
         return 0f;
     }
 
+    // Dessine un rectangle à coins arrondis (approximation pixel) de couleur ARGB
+    private static void drawRoundedRect(GuiGraphics g, int x, int y, int w, int h, int radius, int argb) {
+        radius = Math.max(0, Math.min(radius, Math.min(w, h) / 2));
+        if (radius == 0) {
+            g.fill(x, y, x + w, y + h, argb);
+            return;
+        }
+        int left = x, right = x + w - 1, top = y, bottom = y + h - 1;
+        // bandes horizontales arrondies en haut et bas
+        for (int i = 0; i < radius; i++) {
+            int inset = radius - i - 1;
+            // ligne du haut
+            g.fill(left + inset, top + i, right - inset + 1, top + i + 1, argb);
+            // ligne du bas
+            g.fill(left + inset, bottom - i, right - inset + 1, bottom - i + 1, argb);
+        }
+        // zone centrale
+        g.fill(left, top + radius, right + 1, bottom - radius + 1, argb);
+    }
+
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
@@ -78,43 +99,55 @@ public class FactionTitleOverlay extends Overlay {
 
         long now = System.currentTimeMillis();
         float alpha = computeAlpha(now);
-        if (alpha <= 0f) {
-            clear();
-            return;
-        }
+        if (alpha <= 0f) { clear(); return; }
 
         GuiGraphics g = event.getGuiGraphics();
         int w = mc.getWindow().getGuiScaledWidth();
         int h = mc.getWindow().getGuiScaledHeight();
 
-        // Couleur blanche avec alpha
         int a = Math.min(255, Math.max(0, (int) (alpha * 255f)));
-        int color = (a << 24) | 0xFFFFFF; // ARGB
+        int fgTitle = (a << 24) | 0xFFFFFF;
+        int fgSub = (a << 24) | 0xE0E0E0; // un peu moins vif pour le sous-titre
 
-        // Dessin titre
         var font = mc.font;
+
         String t = title.getString();
         int tw = font.width(t);
         int tx = (w - tw) / 2;
         int ty = (int) (h * 0.28f);
 
+        String st = subtitle != null ? subtitle.getString() : null;
+        int stw = st != null ? font.width(st) : 0;
+
+        int padX = 8;
+        int padY = 4;
+        int spacing = 6;
+        boolean hasSubtitle = (st != null && !st.isEmpty());
+        int contentW = Math.max(tw, stw) + 1; // +1 couvre l’ombre à droite
+        int boxW = contentW + padX * 2;
+        int boxLeft = (w - boxW) / 2;
+        int boxTop = ty - padY;
+        int boxBottom = hasSubtitle
+                ? (ty + font.lineHeight + spacing + font.lineHeight + padY + 1)
+                : (ty + font.lineHeight + padY + 1);
+        int boxH = boxBottom - boxTop;
+
         RenderSystem.enableBlend();
-        g.drawString(font, t, tx + 1, ty + 1, (a << 24), false);
-        g.drawString(font, t, tx, ty, color, false);
+        int bg = (a << 24) | 0x000000; // fond noir translucide dépendant du fade
+        drawRoundedRect(g, boxLeft, boxTop, boxW, boxH, 6, bg);
 
-        if (subtitle != null) {
-            String st = subtitle.getString();
-            int stw = font.width(st);
+        // Titre + sous-titre
+        g.drawString(font, t, tx, ty, fgTitle, true);
+        if (hasSubtitle) {
             int sx = (w - stw) / 2;
-            int sy = ty + font.lineHeight + 6;
-
-            g.drawString(font, st, sx + 1, sy + 1, (a << 24), false);
-            g.drawString(font, st, sx, sy, color, false);
+            int sy = ty + font.lineHeight + spacing;
+            g.drawString(font, st, sx, sy, fgSub, true);
         }
         RenderSystem.disableBlend();
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int i1, float v) {
+        // Rendu via l’event
     }
 }
