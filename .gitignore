@@ -33,7 +33,7 @@ run/
 logs/
 crash-reports/
 saves/
-config/
+run/config/
 options.txt
 
 # Forge dev workspace cache
