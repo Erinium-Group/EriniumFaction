@@ -102,8 +102,6 @@ public class ClaimProtection {
         String claimOwner = FactionManager.getClaimOwner(claim);
         String playerFaction = FactionManager.getPlayerFactionObject(player.getUUID()).getId();
 
-        EFC.log.warn(claimOwner + "/" + playerFaction);
-
         if (claimOwner != null && claimOwner.equals(playerFaction)) return true;
 
         return false;
