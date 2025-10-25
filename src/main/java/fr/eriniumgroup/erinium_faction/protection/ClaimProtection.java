@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.protection;
 
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import net.minecraft.network.chat.Component;
@@ -99,7 +100,9 @@ public class ClaimProtection {
         if (!FactionManager.isClaimed(claim)) return true;
 
         String claimOwner = FactionManager.getClaimOwner(claim);
-        String playerFaction = FactionManager.getPlayerFaction(player.getUUID());
+        String playerFaction = FactionManager.getPlayerFactionObject(player.getUUID()).getId();
+
+        EFC.log.warn(claimOwner + "/" + playerFaction);
 
         if (claimOwner != null && claimOwner.equals(playerFaction)) return true;
 
