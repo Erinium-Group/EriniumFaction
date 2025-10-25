@@ -30,15 +30,24 @@ public final class EFConfig {
 
     public static final ModConfigSpec.IntValue FACTION_MAX_CLAIMS;
 
+    public static final ModConfigSpec.IntValue FACTION_BASE_WARPS;
+    public static final ModConfigSpec.IntValue FACTION_WARPS_PER_5_LEVELS;
+
+    public static final ModConfigSpec.IntValue FACTION_TP_WARMUP_SECONDS;
+    public static final ModConfigSpec.IntValue FACTION_TP_COOLDOWN_SECONDS;
+    public static final ModConfigSpec.BooleanValue FACTION_TP_CANCEL_ON_MOVE;
+    public static final ModConfigSpec.BooleanValue FACTION_TP_CANCEL_ON_DAMAGE;
+    public static final ModConfigSpec.BooleanValue FACTION_TP_ALLOW_CROSS_DIM;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
         b.push("factions");
         FACTION_NAME_MIN = b.comment("Longueur minimale du nom de faction").defineInRange("nameMin", 3, 2, 32);
         FACTION_NAME_MAX = b.comment("Longueur maximale du nom de faction").defineInRange("nameMax", 16, 3, 32);
-        FACTION_MAX_MEMBERS = b.comment("Plafond global dur du nombre de membres par faction").defineInRange("maxMembers", 20, 1, 2000);
+        FACTION_MAX_MEMBERS = b.comment("Plafond global dur du nombre de membres par faction").defineInRange("maxMembers", 30, 1, 2000);
         FACTION_BASE_MAX_PLAYERS = b.comment("Nombre de membres autorisés par faction au niveau 0").defineInRange("baseMaxPlayers", 10, 1, 2000);
-        FACTION_PLAYERS_PER_LEVEL = b.comment("Augmentation du nombre de membres autorisés par niveau").defineInRange("playersPerLevel", 2, 0, 2000);
+        FACTION_PLAYERS_PER_LEVEL = b.comment("Augmentation du nombre de membres autorisés par niveau").defineInRange("playersPerLevel", 1, 0, 2000);
 
         FACTION_BASE_MAX_POWER = b.comment("Puissance maximale de base par faction").defineInRange("baseMaxPower", 100.0, 0.0, 100000.0);
         FACTION_POWER_PER_MEMBER = b.comment("Bonus de puissance max par membre (non utilisé si FACTION_MAX_POWER_FROM_PLAYERS=true)").defineInRange("powerPerMember", 10.0, 0.0, 10000.0);
@@ -51,6 +60,13 @@ public final class EFConfig {
         ALLY_DAMAGE = b.comment("Autoriser les dégâts entre alliés").define("allyDamage", false);
         FACTION_MAX_POWER_FROM_PLAYERS = b.comment("Additionner les max power des joueurs au max de faction").define("factionMaxFromPlayers", true);
         FACTION_MAX_CLAIMS = b.comment("Nombre maximum de chunks claim par faction").defineInRange("maxClaims", 100, 0, 100000);
+        FACTION_BASE_WARPS = b.comment("Nombre de warps autorisés au niveau 0").defineInRange("baseWarps", 1, 0, 1000);
+        FACTION_WARPS_PER_5_LEVELS = b.comment("Warps supplémentaires tous les 5 niveaux").defineInRange("warpsPer5Levels", 1, 0, 1000);
+        FACTION_TP_WARMUP_SECONDS = b.comment("Temps de préparation (warmup) avant une TP home/warp, en secondes").defineInRange("tpWarmupSeconds", 3, 0, 300);
+        FACTION_TP_COOLDOWN_SECONDS = b.comment("Cooldown entre deux TP home/warp, en secondes").defineInRange("tpCooldownSeconds", 15, 0, 3600);
+        FACTION_TP_CANCEL_ON_MOVE = b.comment("Annuler le warmup si le joueur bouge").define("tpCancelOnMove", true);
+        FACTION_TP_CANCEL_ON_DAMAGE = b.comment("Annuler le warmup si le joueur prend des dégâts").define("tpCancelOnDamage", true);
+        FACTION_TP_ALLOW_CROSS_DIM = b.comment("Autoriser la téléportation inter-dimensionnelle").define("tpAllowCrossDimension", true);
         b.pop();
 
         b.push("players");

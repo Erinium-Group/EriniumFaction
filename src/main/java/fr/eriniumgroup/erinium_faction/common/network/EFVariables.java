@@ -70,7 +70,8 @@ public class EFVariables {
             clone.factionXp = original.factionXp;
             clone.serverRankId = original.serverRankId;
             clone.playerPower = original.playerPower;
-            clone.playerMaxPower = original.playerMaxPower;
+            clone.playerMaxPower = original.playerMaxPower;// money
+            clone.money = original.money;
             event.getEntity().setData(PLAYER_VARIABLES, clone);
         }
     }
@@ -90,6 +91,8 @@ public class EFVariables {
         public String serverRankId = ""; // rank global (VIP, etc.)
         public double playerPower = 0;
         public double playerMaxPower = 0;
+        // économie joueur
+        public double money = 0;
 
         @Override
         public CompoundTag serializeNBT(HolderLookup.Provider lookupProvider) {
@@ -107,6 +110,7 @@ public class EFVariables {
             nbt.putString("serverRankId", serverRankId);
             nbt.putDouble("playerPower", playerPower);
             nbt.putDouble("playerMaxPower", playerMaxPower);
+            nbt.putDouble("money", money);
             return nbt;
         }
 
@@ -125,6 +129,7 @@ public class EFVariables {
             serverRankId = nbt.getString("serverRankId");
             playerPower = nbt.getDouble("playerPower");
             playerMaxPower = nbt.getDouble("playerMaxPower");
+            money = nbt.contains("money") ? nbt.getDouble("money") : 0;
         }
 
         public void syncPlayerVariables(Entity entity) {
@@ -156,3 +161,4 @@ public class EFVariables {
         }
     }
 }
+

@@ -4,7 +4,6 @@ import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMes
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenuSettingsMenu;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -32,8 +31,12 @@ public class EFMenus {
             if (player instanceof ServerPlayer serverPlayer) {
                 PacketDistributor.sendToPlayer(serverPlayer, new MenuStateUpdateMessage(elementType, name, elementState));
             } else if (player.level().isClientSide) {
-                if (Minecraft.getInstance().screen instanceof EFScreens.ScreenAccessor accessor && needClientUpdate)
-                    accessor.updateMenuState(elementType, name, elementState);
+                try {
+                    Class.forName("fr.eriniumgroup.erinium_faction.client.ClientMenuHelper");
+                    fr.eriniumgroup.erinium_faction.client.ClientMenuHelper.localScreenUpdate(elementType, name, elementState, needClientUpdate);
+                } catch (Throwable ignored) {
+                    // en environnement serveur, la classe client n'existe pas
+                }
                 PacketDistributor.sendToServer(new MenuStateUpdateMessage(elementType, name, elementState));
             }
         }

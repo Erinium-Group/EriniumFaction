@@ -8,7 +8,6 @@ import fr.eriniumgroup.erinium_faction.core.EriFont;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
-import fr.eriniumgroup.erinium_faction.core.faction.Rank;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.widgets.FactionMenuPlayerList;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
@@ -21,6 +20,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
+import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
 
 import java.util.Map;
 import java.util.UUID;
@@ -42,6 +43,13 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     private int fallbackPower;
     private int fallbackMaxPower;
 
+    // Base design size
+    private static final int BASE_W = 420;
+    private static final int BASE_H = 240;
+
+    private double scaleX = 1.0;
+    private double scaleY = 1.0;
+
     public FactionMenuScreen(FactionMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
         this.world = container.world;
@@ -49,8 +57,8 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         this.y = container.y;
         this.z = container.z;
         this.entity = container.entity;
-        this.imageWidth = 420;
-        this.imageHeight = 240;
+        this.imageWidth = BASE_W;
+        this.imageHeight = BASE_H;
         this._vars = entity.getData(EFVariables.PLAYER_VARIABLES);
 
         // Préférer le snapshot envoyé par le serveur
@@ -84,12 +92,39 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     private static final ResourceLocation texture = ResourceLocation.parse("erinium_faction:textures/screens/faction_menu.png");
 
+    private void recomputeLayout() {
+        // Adapter la taille de la GUI à la fenêtre tout en conservant le ratio BASE_W:BASE_H
+        int availW = this.width - 20;
+        int availH = this.height - 20;
+        int targetW = BASE_W;
+        int targetH = BASE_H;
+        if (availW > 0 && availH > 0) {
+            double scaleByW = availW / (double) BASE_W;
+            double scaleByH = availH / (double) BASE_H;
+            double scale = Math.min(scaleByW, scaleByH);
+            scale = Math.max(1.0, Math.min(scale, 2.5)); // éviter trop petit/trop grand
+            targetW = (int) Math.round(BASE_W * scale);
+            targetH = (int) Math.round(BASE_H * scale);
+        }
+        this.imageWidth = targetW;
+        this.imageHeight = targetH;
+        this.leftPos = (this.width - this.imageWidth) / 2;
+        this.topPos = (this.height - this.imageHeight) / 2;
+        this.scaleX = this.imageWidth / (double) BASE_W;
+        this.scaleY = this.imageHeight / (double) BASE_H;
+    }
+
+    private int sx(int base) { return this.leftPos + (int) Math.round(base * this.scaleX); }
+    private int sy(int base) { return this.topPos + (int) Math.round(base * this.scaleY); }
+    private int sw(int base) { return (int) Math.round(base * this.scaleX); }
+    private int sh(int base) { return (int) Math.round(base * this.scaleY); }
+
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         boolean customTooltipShown = false;
-        if (fsettings != null && mouseX > leftPos + 74 && mouseX < leftPos + 74 + 64 && mouseY > topPos + 100 && mouseY < topPos + 100 + 64) {
+        if (fsettings != null && fsettings.isMouseOver(mouseX, mouseY)) {
             String hoverText = Component.translatable("erinium_faction.faction.menu.settings").getString();
             guiGraphics.renderComponentTooltip(font, java.util.List.of(Component.literal(hoverText)), mouseX, mouseY);
             customTooltipShown = true;
@@ -104,7 +139,8 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos, this.topPos, 0, 0, 420, 240, 420, 240);
+        // Fond étiré au nouveau ratio
+        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, BASE_W, BASE_H);
 
         // Données: utiliser snapshot si dispo, sinon objet faction
         FactionSnapshot snap = this.menu instanceof FactionMenu fm ? fm.snapshot : null;
@@ -168,26 +204,32 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             maxPower = 0;
         }
 
-        drawText(guiGraphics, displayName, EriFont::orbitronBold, 14f, -1, 10, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, 45, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.playerlist").getString(), EriFont::orbitron, 10f, 349, 45, true, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        // Titres et labels (positions relatives)
+        drawText(guiGraphics, displayName, EriFont::orbitronBold, 14f, -1, sy(10) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, sy(45) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.playerlist").getString(), EriFont::orbitron, 10f, sx(349) - this.leftPos, sy(45) - this.topPos, true, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
 
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.claims").getString() + claimCount + " / " + maxClaims, EriFont::exo2, 8f, 149, 89, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.membercount").getString() + memberCount + " / " + maxPlayers, EriFont::exo2, 8f, 149, 102, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + currentPower + " / " + Math.max(0, maxPower), EriFont::exo2, 8f, 149, 115, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.level").getString() + level, EriFont::exo2, 8f, -1, 128, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.claims").getString() + claimCount + " / " + maxClaims, EriFont::exo2, 8f, sx(149) - this.leftPos, sy(89) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.membercount").getString() + memberCount + " / " + maxPlayers, EriFont::exo2, 8f, sx(149) - this.leftPos, sy(102) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + currentPower + " / " + Math.max(0, maxPower), EriFont::exo2, 8f, sx(149) - this.leftPos, sy(115) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
+        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.level").getString() + level, EriFont::exo2, 8f, -1, sy(128) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
 
         if (xpRequired > 0) {
-            guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), this.leftPos + 149, this.topPos + 141, 0, 0, 122, 10, 122, 10);
-            int fillWidth = Math.min(122, Math.max(0, (int) Math.round(122.0 * xp / (double) xpRequired)));
+            // barre de XP ajustée
+            int barX = sx(149);
+            int barY = sy(141);
+            int bw = sw(122);
+            int bh = sh(10);
+            guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), barX, barY, 0, 0, bw, bh, 122, 10);
+            int fillWidth = Math.min(bw, Math.max(0, (int) Math.round(bw * xp / (double) xpRequired)));
             if (fillWidth > 0) {
-                guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), this.leftPos + 150, this.topPos + 142, 0, 0, fillWidth, 8, 122, 8);
+                guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), barX + sw(1), barY + sh(1), 0, 0, fillWidth, Math.max(1, bh - sh(2)), 122, 8);
             }
-            drawText(guiGraphics, xp + " / " + xpRequired, EriFont::exo2, 6.5f, -1, 154, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
+            drawText(guiGraphics, xp + " / " + xpRequired, EriFont::exo2, 6.5f, -1, sy(154) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
         }
 
         if (!hasFaction && (snap == null || snap.name == null || snap.name.isEmpty())) {
-            drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.no_faction_hint").getString(), EriFont::exo2, 8f, -1, 160, false, true, EFUtils.Color.ARGBToInt(255, 200, 200, 200));
+            drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.no_faction_hint").getString(), EriFont::exo2, 8f, -1, sy(160) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 200, 200, 200));
         }
 
         RenderSystem.disableBlend();
@@ -209,11 +251,12 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     @Override
     public void init() {
         super.init();
+        recomputeLayout();
 
         // Construire la liste des joueurs
         FactionSnapshot snap = this.menu instanceof FactionMenu fm ? fm.snapshot : null;
+        StringBuilder playerlist = new StringBuilder();
         if (snap != null && snap.name != null && !snap.name.isEmpty()) {
-            StringBuilder playerlist = new StringBuilder();
             for (var e : snap.membersRank.entrySet()) {
                 UUID id = e.getKey();
                 String rank = e.getValue();
@@ -221,49 +264,46 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
                 if (playerlist.length() > 0) playerlist.append(",");
                 playerlist.append(id).append(":").append(rank).append(":").append(name);
             }
-            FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist.toString(), world != null ? world.getServer() : null);
-            this.addRenderableWidget(scrollableList);
-
-            Rank rank = (this.faction != null) ? this.faction.getRank(entity.getUUID()) : null;
-            if (rank != null && rank.canManageSettings()) {
-                fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
-                    int x = FactionMenuScreen.this.x;
-                    int y = FactionMenuScreen.this.y;
-                }) {
-                    @Override
-                    public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-                        guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
-                    }
-                };
-                this.addRenderableWidget(fsettings);
-            }
         } else if (hasFaction && faction != null) {
-            StringBuilder playerlist = new StringBuilder();
             for (Map.Entry<UUID, Faction.Member> t : faction.getMembers().entrySet()) {
                 if (!playerlist.isEmpty()) playerlist.append(",");
                 String rankId = t.getValue().rankId;
                 String name = t.getValue().nameCached != null ? t.getValue().nameCached : t.getKey().toString();
                 playerlist.append(t.getKey()).append(":").append(rankId).append(":").append(name);
             }
-            FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, this.leftPos + 290, this.topPos + 54, 120, 145, playerlist.toString(), world != null ? world.getServer() : null);
-            this.addRenderableWidget(scrollableList);
+        }
+        // Liste scrollable à droite, dimension en fonction de la fenêtre
+        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, sx(BASE_W - 130), sy(54), 120, Math.max(60, this.imageHeight - sh(95)), playerlist.toString(), world != null ? world.getServer() : null);
+        this.addRenderableWidget(scrollableList);
 
-            Rank rank = faction.getRank(entity.getUUID());
-            if (rank != null && rank.canManageSettings()) {
-                fsettings = new ImageButton(this.leftPos + 74, this.topPos + 100, 64, 64, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
-                    int x = FactionMenuScreen.this.x;
-                    int y = FactionMenuScreen.this.y;
-                }) {
-                    @Override
-                    public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-                        guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
-                    }
-                };
-                this.addRenderableWidget(fsettings);
-            }
+        // Bouton settings réintroduit si le joueur a une faction
+        if (hasFaction) {
+            int btnSize = Math.max(32, Math.min(72, sw(64)));
+            int bx = sx(20);
+            int by = this.topPos + this.imageHeight - btnSize - sh(20);
+            fsettings = new ImageButton(bx, by, btnSize, btnSize,
+                    new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/fsettings.png"), ResourceLocation.parse("erinium_faction:textures/screens/fsettings_hover.png")), e -> {
+                int px = FactionMenuScreen.this.x;
+                int py = FactionMenuScreen.this.y;
+                int pz = FactionMenuScreen.this.z;
+                PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(1, px, py, pz));
+            }) {
+                @Override
+                public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+                    guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
+                }
+            };
+            this.addRenderableWidget(fsettings);
         } else {
             fsettings = null;
         }
+    }
+
+    @Override
+    public void resize(net.minecraft.client.Minecraft mc, int width, int height) {
+        super.resize(mc, width, height);
+        recomputeLayout();
+        this.init();
     }
 
     private void drawText(GuiGraphics guiGraphics, String text, EriFont.EriFontAccess fontAccess, float fontSize, float x, float y, boolean isXCentered, boolean hasShadow, int color) {

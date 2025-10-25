@@ -67,5 +67,62 @@
   "erinium_faction.cmd.faction.unclaim.success": "§6[§bErinium§6/§dFaction§6] §aChunk unclaimed.",
 
   "erinium_faction.faction.menu.no_faction_hint": "§6[§bErinium§6/§dFaction§6] §7You are not in a faction.",
-  "erinium_faction.faction.menu.no_faction": "§6[§bErinium§6/§dFaction§6] §7No Faction"
+  "erinium_faction.faction.menu.no_faction": "§6[§bErinium§6/§dFaction§6] §7No Faction",
+
+  "erinium_faction.common.no_permission": "§6[§bErinium§6/§dFaction§6] §cYou don't have permission.",
+
+  "erinium_faction.cmd.faction.mode.set": "§6[§bErinium§6/§dFaction§6] §aMode set: §b%s",
+  "erinium_faction.cmd.faction.mode.invalid": "§6[§bErinium§6/§dFaction§6] §cInvalid mode (PUBLIC/INVITE_ONLY).",
+  "erinium_faction.cmd.faction.flag.invalid": "§6[§bErinium§6/§dFaction§6] §cInvalid flag (admin/warzone/safezone).",
+  "erinium_faction.cmd.faction.flag.set": "§6[§bErinium§6/§dFaction§6] §aFlag §b%s§a = §e%s",
+  "erinium_faction.cmd.faction.desc.set": "§6[§bErinium§6/§dFaction§6] §aDescription updated.",
+  "erinium_faction.cmd.faction.bank.deposit": "§6[§bErinium§6/§dFaction§6] §aDeposit: §e%s",
+  "erinium_faction.cmd.faction.bank.withdraw": "§6[§bErinium§6/§dFaction§6] §aWithdraw: §e%s",
+  "erinium_faction.cmd.faction.bank.not_enough": "§6[§bErinium§6/§dFaction§6] §cNot enough balance.",
+  "erinium_faction.cmd.faction.home.set": "§6[§bErinium§6/§dFaction§6] §aHome set at §e%s§a, §e%s§a, §e%s§a.",
+  "erinium_faction.cmd.faction.home.missing": "§6[§bErinium§6/§dFaction§6] §cNo home set.",
+  "erinium_faction.cmd.faction.home.show": "§6[§bErinium§6/§dFaction§6] §7Home: §e%s§7, §e%s§7, §e%s§7.",
+  "erinium_faction.cmd.faction.warp.add.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to add warp (limit reached?).",
+  "erinium_faction.cmd.faction.warp.add.success": "§6[§bErinium§6/§dFaction§6] §aWarp §b%s§a added.",
+  "erinium_faction.cmd.faction.warp.del.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to delete warp.",
+  "erinium_faction.cmd.faction.warp.del.success": "§6[§bErinium§6/§dFaction§6] §aWarp §b%s§a deleted.",
+  "erinium_faction.cmd.faction.warp.list.header": "§6[§bErinium§6/§dFaction§6] §7Warps (§e%s§7/§e%s§7):",
+  "erinium_faction.cmd.faction.warp.list.item": "§7 - §b%s §7(§ex=%s y=%s z=%s§7)",
+  "erinium_faction.cmd.faction.home.tp.success": "§6[§bErinium§6/§dFaction§6] §aTeleported to home.",
+  "erinium_faction.cmd.faction.warp.tp.success": "§6[§bErinium§6/§dFaction§6] §aTeleported to warp §b%s§a.",
+  "erinium_faction.cmd.faction.warp.tp.not_found": "§6[§bErinium§6/§dFaction§6] §cWarp not found.",
+  "erinium_faction.tp.warmup": "§6[§bErinium§6/§dFaction§6] §7Teleporting in §e%s§7s… Don't move.",
+  "erinium_faction.tp.canceled.move": "§6[§bErinium§6/§dFaction§6] §cTeleportation canceled (movement).",
+  "erinium_faction.tp.canceled.damage": "§6[§bErinium§6/§dFaction§6] §cTeleportation canceled (damage).",
+  "erinium_faction.tp.cooldown": "§6[§bErinium§6/§dFaction§6] §cCooldown remaining: §e%s§cs.",
+  "erinium_faction.tp.crossdim_denied": "§6[§bErinium§6/§dFaction§6] §cCross-dimension teleport disabled.",
+
+  "erinium_faction.faction.menu.settings.toggle_mode": "Toggle mode (PUBLIC / INVITE_ONLY)",
+  "erinium_faction.faction.menu.settings.toggle_safezone": "Toggle SAFEZONE",
+  "erinium_faction.faction.map.title": "Claims Map",
+  "key.erinium_faction.map": "Open claims map",
+  "key.categories.erinium_faction": "Erinium Faction",
+
+  "erinium_faction.settings.label.open": "Open",
+  "erinium_faction.settings.label.mode": "Mode",
+  "erinium_faction.settings.label.safezone": "Safezone",
+  "erinium_faction.settings.tooltip.open": "Allow anyone to join the faction",
+  "erinium_faction.settings.tooltip.mode": "PUBLIC: anyone can join | INVITE: by invitation",
+  "erinium_faction.settings.tooltip.safezone": "Enable Safezone for the faction",
+
+  "erinium_faction.cmd.faction.bank.player_not_enough": "§6[§bErinium§6/§dFaction§6] §cYou don't have enough money.",
+
+  "erinium_faction.cmd.economy.balance": "§6[§bErinium§6/§aEco§6] §7Balance: §e%s§6.",
+  "erinium_faction.cmd.economy.player_not_found": "§6[§bErinium§6/§aEco§6] §cPlayer not found.",
+  "erinium_faction.cmd.economy.invalid_amount": "§6[§bErinium§6/§aEco§6] §cInvalid amount.",
+  "erinium_faction.cmd.economy.not_enough": "§6[§bErinium§6/§aEco§6] §cNot enough funds.",
+  "erinium_faction.cmd.economy.pay.success": "§6[§bErinium§6/§aEco§6] §aPaid §b%s§a: §e%s§a.",
+  "erinium_faction.cmd.economy.set": "§6[§bErinium§6/§aEco§6] §aSet §b%s§a balance to §e%s§a.",
+  "erinium_faction.cmd.economy.give": "§6[§bErinium§6/§aEco§6] §aGave to §b%s§a: §e%s§a.",
+  "erinium_faction.cmd.economy.take": "§6[§bErinium§6/§aEco§6] §aTook from §b%s§a: §e%s§a.",
+  "erinium_faction.cmd.economy.only_players": "§6[§bErinium§6/§aEco§6] §cPlayers only.",
+
+  "erinium_faction.cmd.economy.top.header": "§6[§bErinium§6/§aEco§6] §7Top §e%s§7/§e%s§7 (total: §e%s§7)",
+  "erinium_faction.cmd.economy.top.item": "§7#%s §b%s§7 — §e%s",
+  "erinium_faction.cmd.economy.top.empty": "§6[§bErinium§6/§aEco§6] §7No players online."
 }

@@ -22,6 +22,15 @@ public class FactionSnapshot {
     public int currentPower;
     public int maxPower;
 
+    public boolean admin;
+    public boolean warzone;
+    public boolean safezone;
+    public String mode;
+    public String description;
+    public int warpsCount;
+    public int maxWarps;
+    public int bank; // arrondi pour affichage
+
     public Map<UUID, String> membersRank = new HashMap<>();
     public Map<UUID, String> memberNames = new HashMap<>();
 
@@ -39,6 +48,14 @@ public class FactionSnapshot {
         s.xpRequired = f.xpNeededForNextLevel();
         s.currentPower = (int) Math.round(f.getPower());
         s.maxPower = (int) Math.round(f.getMaxPower());
+        s.admin = f.isAdminFaction();
+        s.warzone = f.isWarzone();
+        s.safezone = f.isSafezone();
+        s.mode = f.getMode().name();
+        s.description = f.getDescription();
+        s.warpsCount = f.getWarps().size();
+        s.maxWarps = f.getMaxWarps();
+        s.bank = (int) Math.round(f.getBankBalance());
 
         var server = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
         var profileCache = server != null ? server.getProfileCache() : null;
@@ -76,6 +93,14 @@ public class FactionSnapshot {
         buf.writeVarInt(s.xpRequired);
         buf.writeVarInt(s.currentPower);
         buf.writeVarInt(s.maxPower);
+        buf.writeBoolean(s.admin);
+        buf.writeBoolean(s.warzone);
+        buf.writeBoolean(s.safezone);
+        buf.writeUtf(s.mode == null ? "INVITE_ONLY" : s.mode);
+        buf.writeUtf(s.description == null ? "" : s.description);
+        buf.writeVarInt(s.warpsCount);
+        buf.writeVarInt(s.maxWarps);
+        buf.writeVarInt(s.bank);
         buf.writeVarInt(s.membersRank.size());
         for (var e : s.membersRank.entrySet()) {
             buf.writeUUID(e.getKey());
@@ -97,6 +122,14 @@ public class FactionSnapshot {
         s.xpRequired = buf.readVarInt();
         s.currentPower = buf.readVarInt();
         s.maxPower = buf.readVarInt();
+        s.admin = buf.readBoolean();
+        s.warzone = buf.readBoolean();
+        s.safezone = buf.readBoolean();
+        s.mode = buf.readUtf();
+        s.description = buf.readUtf();
+        s.warpsCount = buf.readVarInt();
+        s.maxWarps = buf.readVarInt();
+        s.bank = buf.readVarInt();
         int n = buf.readVarInt();
         for (int i = 0; i < n; i++) {
             UUID id = buf.readUUID();

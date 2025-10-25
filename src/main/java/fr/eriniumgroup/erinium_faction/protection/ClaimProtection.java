@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
 
 /**
  * Handles protection of claimed chunks from unauthorized access
@@ -22,6 +23,15 @@ public class ClaimProtection {
     private static void onBlockBreak(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
         if (player == null || player.level().isClientSide()) return;
+
+        // Vérification permission globale player.break
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+            if (!EFPerms.canBreak(sp)) {
+                event.setCanceled(true);
+                player.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
+                return;
+            }
+        }
 
         ClaimKey claim = ClaimKey.of(
             player.level().dimension(),
@@ -39,6 +49,15 @@ public class ClaimProtection {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide()) return;
 
+        // Vérification permission globale player.place
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+            if (!EFPerms.canPlace(sp)) {
+                event.setCanceled(true);
+                player.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
+                return;
+            }
+        }
+
         ClaimKey claim = ClaimKey.of(
             player.level().dimension(),
             event.getPos().getX() >> 4,
@@ -54,6 +73,15 @@ public class ClaimProtection {
     private static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         Player player = event.getEntity();
         if (player.level().isClientSide()) return;
+
+        // Vérification permission globale player.interact
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+            if (!EFPerms.canInteract(sp)) {
+                event.setCanceled(true);
+                player.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
+                return;
+            }
+        }
 
         ClaimKey claim = ClaimKey.of(
             player.level().dimension(),

@@ -168,6 +168,8 @@ public final class FactionManager {
         PlayerPower pp = PowerManager.get(player);
         vars.playerPower = pp.getPower();
         vars.playerMaxPower = pp.getMaxPower();
+        // argent joueur (attachment)
+        vars.money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(player);
     }
 
     public static String getPlayerFaction(UUID player) {
@@ -234,5 +236,11 @@ public final class FactionManager {
         int hardCap = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_MEMBERS.get();
         int computed = base + Math.max(0, f.getLevel()) * Math.max(0, perLvl);
         return Math.min(hardCap, computed);
+    }
+
+    public static void markDirty() {
+        if (SERVER != null) {
+            FactionSavedData.get(SERVER).setDirty();
+        }
     }
 }

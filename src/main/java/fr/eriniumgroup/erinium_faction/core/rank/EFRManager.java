@@ -1,7 +1,10 @@
 package fr.eriniumgroup.erinium_faction.core.rank;
 
-import com.google.gson.*;
 import fr.eriniumgroup.erinium_faction.core.EFC;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.loading.FMLPaths;
 
@@ -14,16 +17,15 @@ import java.util.stream.Collectors;
 
 /**
  * EFRManager – Gestionnaire des ranks et permissions côté serveur.
- * - Persistance: ${GAMEDIR}/erinium_faction/ranks/{ranks.json, players.json}
+ * - Persistance: ${GAMEDIR}/erinium_faction/ranks/{ranks.dat, players.dat}
  * - Un rank par joueur (simple, extensible plus tard si besoin)
  * - Permissions: chaînes style "module.action"; le joker "*" donne tous les droits.
  */
 public class EFRManager {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private static final Path DATA_DIR = FMLPaths.GAMEDIR.get().resolve(EFC.MOD_ID).resolve("ranks");
-    private static final Path RANKS_FILE = DATA_DIR.resolve("ranks.json");
-    private static final Path PLAYERS_FILE = DATA_DIR.resolve("players.json");
+    private static final Path RANKS_FILE = DATA_DIR.resolve("ranks.dat");
+    private static final Path PLAYERS_FILE = DATA_DIR.resolve("players.dat");
 
     private static final EFRManager INSTANCE = new EFRManager();
 
@@ -70,50 +72,59 @@ public class EFRManager {
         // Ranks
         ranks.clear();
         if (Files.exists(RANKS_FILE)) {
-            try (BufferedReader r = new BufferedReader(new FileReader(RANKS_FILE.toFile()))) {
-                JsonElement root = JsonParser.parseReader(r);
-                if (root != null && root.isJsonObject()) {
-                    JsonObject obj = root.getAsJsonObject();
-                    for (Map.Entry<String, JsonElement> e : obj.entrySet()) {
-                        Rank rank = GSON.fromJson(e.getValue(), Rank.class);
-                        if (rank != null && rank.id != null && !rank.id.isBlank()) {
-                            rank.id = rank.id.toLowerCase(Locale.ROOT);
-                            if (rank.permissions == null) rank.permissions = new HashSet<>();
-                            ranks.put(rank.id, rank);
-                        }
+            try {
+                CompoundTag root = NbtIo.read(RANKS_FILE);
+                if (root != null) {
+                    ListTag list = root.getList("ranks", 10); // 10 = CompoundTag
+                    for (int i = 0; i < list.size(); i++) {
+                        CompoundTag rt = list.getCompound(i);
+                        Rank r = new Rank();
+                        r.id = rt.getString("id");
+                        if (r.id == null || r.id.isBlank()) continue;
+                        r.id = r.id.toLowerCase(Locale.ROOT);
+                        r.displayName = rt.getString("display");
+                        r.priority = rt.getInt("priority");
+                        r.prefix = rt.getString("prefix");
+                        r.suffix = rt.getString("suffix");
+                        r.permissions = new HashSet<>();
+                        ListTag perms = rt.getList("perms", 8); // 8 = StringTag
+                        for (int j = 0; j < perms.size(); j++) r.permissions.add(perms.getString(j));
+                        ranks.put(r.id, r);
                     }
                 }
             } catch (Exception ex) {
-                EFC.log.error("Ranks", "§cErreur lecture ranks.json: {}", ex.toString());
+                EFC.log.error("Ranks", "§cErreur lecture ranks.dat: {}", ex.toString());
             }
         }
 
         // Players
         playerRanks.clear();
         if (Files.exists(PLAYERS_FILE)) {
-            try (BufferedReader r = new BufferedReader(new FileReader(PLAYERS_FILE.toFile()))) {
-                JsonElement root = JsonParser.parseReader(r);
-                if (root != null && root.isJsonObject()) {
-                    JsonObject obj = root.getAsJsonObject();
-                    for (Map.Entry<String, JsonElement> e : obj.entrySet()) {
+            try {
+                CompoundTag root = NbtIo.read(PLAYERS_FILE);
+                if (root != null) {
+                    CompoundTag players = root.getCompound("players");
+                    for (String key : players.getAllKeys()) {
                         try {
-                            UUID uuid = UUID.fromString(e.getKey());
-                            String rankId = e.getValue().getAsString();
+                            UUID uuid = UUID.fromString(key);
+                            String rankId = players.getString(key);
                             if (rankId != null && !rankId.isBlank()) {
                                 playerRanks.put(uuid, rankId.toLowerCase(Locale.ROOT));
                             }
-                        } catch (Exception ignored) {
-                        }
+                        } catch (Exception ignored) { }
                     }
                 }
             } catch (Exception ex) {
-                EFC.log.error("Ranks", "§cErreur lecture players.json: {}", ex.toString());
+                EFC.log.error("Ranks", "§cErreur lecture players.dat: {}", ex.toString());
             }
         }
 
         // Si aucune définition, créer des ranks par défaut
         if (ranks.isEmpty()) {
             Rank def = new Rank("default", "§7Joueur", 0);
+            // Permissions de base pour ne pas bloquer l'expérience vanilla
+            def.permissions.add("player.*");
+            def.permissions.add("server.command.*");
             Rank vip = new Rank("vip", "§6VIP", 10);
             vip.permissions.add("efr.example.kit.vip");
             ranks.put(def.id, def);
@@ -133,30 +144,39 @@ public class EFRManager {
     private void saveRanks() {
         try {
             Files.createDirectories(DATA_DIR);
-            JsonObject obj = new JsonObject();
+            CompoundTag root = new CompoundTag();
+            ListTag list = new ListTag();
             for (Rank r : ranks.values()) {
-                obj.add(r.id, GSON.toJsonTree(r));
+                CompoundTag rt = new CompoundTag();
+                rt.putString("id", r.id);
+                rt.putString("display", r.displayName == null ? "" : r.displayName);
+                rt.putInt("priority", r.priority);
+                rt.putString("prefix", r.prefix == null ? "" : r.prefix);
+                rt.putString("suffix", r.suffix == null ? "" : r.suffix);
+                ListTag perms = new ListTag();
+                if (r.permissions != null) for (String p : r.permissions) perms.add(StringTag.valueOf(p));
+                rt.put("perms", perms);
+                list.add(rt);
             }
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(RANKS_FILE.toFile()))) {
-                GSON.toJson(obj, w);
-            }
+            root.put("ranks", list);
+            NbtIo.write(root, RANKS_FILE);
         } catch (Exception e) {
-            EFC.log.error("Ranks", "§cErreur écriture ranks.json: {}", e.toString());
+            EFC.log.error("Ranks", "§cErreur écriture ranks.dat: {}", e.toString());
         }
     }
 
     private void savePlayers() {
         try {
             Files.createDirectories(DATA_DIR);
-            JsonObject obj = new JsonObject();
+            CompoundTag root = new CompoundTag();
+            CompoundTag players = new CompoundTag();
             for (Map.Entry<UUID, String> e : playerRanks.entrySet()) {
-                obj.addProperty(e.getKey().toString(), e.getValue());
+                players.putString(e.getKey().toString(), e.getValue());
             }
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(PLAYERS_FILE.toFile()))) {
-                GSON.toJson(obj, w);
-            }
+            root.put("players", players);
+            NbtIo.write(root, PLAYERS_FILE);
         } catch (Exception e) {
-            EFC.log.error("Ranks", "§cErreur écriture players.json: {}", e.toString());
+            EFC.log.error("Ranks", "§cErreur écriture players.dat: {}", e.toString());
         }
     }
 
@@ -263,3 +283,4 @@ public class EFRManager {
         return PLAYERS_FILE.toFile();
     }
 }
+

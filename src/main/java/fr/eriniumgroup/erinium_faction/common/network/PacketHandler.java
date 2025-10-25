@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.common.network;
 
+import fr.eriniumgroup.erinium_faction.common.network.EFVariables.PlayerVariablesSyncMessage;
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
 import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
@@ -8,8 +9,6 @@ import fr.eriniumgroup.erinium_faction.gui.widgets.FactionGuiNetwork;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-
-import fr.eriniumgroup.erinium_faction.common.network.EFVariables.*;
 
 /**
  * Système central d’enregistrement des paquets réseau (client <-> serveur).
@@ -47,6 +46,13 @@ public class PacketHandler {
         // Variables
         registrar.playBidirectional(PlayerVariablesSyncMessage.TYPE, PlayerVariablesSyncMessage.STREAM_CODEC, PlayerVariablesSyncMessage::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, GuiForConstructButtonMessage, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi-directionnel), PlayerVariables (bi-directionnel)");
+        // Nouveaux paquets: carte des claims
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage::handleData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage::handleData);
+
+        // Nouveau paquet clientbound pour synchroniser l’état des Settings
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage::handleData);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, GuiForConstructButtonMessage, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi-directionnel), PlayerVariables (bi-directionnel) + ClaimsMap (request/data) + FactionSettingsStateMessage (clientbound)");
     }
 }

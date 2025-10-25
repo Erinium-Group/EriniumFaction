@@ -2,6 +2,8 @@ package fr.eriniumgroup.erinium_faction;
 
 import fr.eriniumgroup.erinium_faction.commands.FactionCommand;
 import fr.eriniumgroup.erinium_faction.commands.RankCommand;
+import fr.eriniumgroup.erinium_faction.commands.EconomyCommand;
+import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.network.PacketHandler;
 import fr.eriniumgroup.erinium_faction.core.EFC;
@@ -27,6 +29,7 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
+import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -39,6 +42,7 @@ public class EriniumFaction {
 
         // Configuration
         modContainer.registerConfig(ModConfig.Type.SERVER, EFConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.CLIENT, EFClientConfig.SPEC);
 
         // Register DeferredRegisters (must be before client screen registrations)
         EFMenus.REGISTER.register(modEventBus);
@@ -46,6 +50,8 @@ public class EriniumFaction {
         EFVariables.ATTACHMENT_TYPES.register(modEventBus);
         EFArgumentTypes.REGISTER.register(modEventBus);
         PowerManager.ATTACHMENTS.register(modEventBus);
+        // Enregistrer l’économie (players.dat)
+        fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.ATTACHMENTS.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
@@ -86,5 +92,9 @@ public class EriniumFaction {
         EFC.log.info("§aRegistering §dfaction §7commands...");
         FactionCommand.register(event.getDispatcher());
         RankCommand.register(event.getDispatcher());
+        // Commandes économie
+        EconomyCommand.register(event.getDispatcher());
+        // Appliquer la garde globale des permissions sur toutes les commandes
+        EFPerms.guardDispatcher(event.getDispatcher());
     }
 }

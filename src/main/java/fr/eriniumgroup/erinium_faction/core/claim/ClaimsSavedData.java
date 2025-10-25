@@ -71,5 +71,17 @@ public class ClaimsSavedData extends SavedData {
         setDirty();
         return true;
     }
-}
 
+    // --- Nouveau: lister les claims dans un rectangle de chunks ---
+    public List<Map.Entry<ClaimKey, String>> listInArea(String dimension, int minCx, int minCz, int maxCx, int maxCz) {
+        List<Map.Entry<ClaimKey, String>> out = new ArrayList<>();
+        for (Map.Entry<ClaimKey, String> e : claims.entrySet()) {
+            ClaimKey k = e.getKey();
+            if (!Objects.equals(k.dimension(), dimension)) continue;
+            if (k.chunkX() >= minCx && k.chunkX() <= maxCx && k.chunkZ() >= minCz && k.chunkZ() <= maxCz) {
+                out.add(e);
+            }
+        }
+        return out;
+    }
+}
