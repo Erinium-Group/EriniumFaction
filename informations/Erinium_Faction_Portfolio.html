@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erinium Faction - Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==================== ROOT VARIABLES (THEMES) ==================== */
+        :root[data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-accent: #3b82f6;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+            --accent-1: #3b82f6;
+            --accent-2: #8b5cf6;
+            --accent-3: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-accent: #60a5fa;
+            --border-color: #475569;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --accent-1: #60a5fa;
+            --accent-2: #a78bfa;
+            --accent-3: #f472b6;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+        }
+
+        :root[data-theme="erinium"] {
+            --bg-primary: #0f0c29;
+            --bg-secondary: #1a1f3a;
+            --bg-card: #2d1b4e;
+            --text-primary: #e9d5ff;
+            --text-secondary: #c084fc;
+            --text-accent: #00d2ff;
+            --border-color: #667eea;
+            --shadow-sm: 0 2px 8px rgba(139, 92, 246, 0.2);
+            --shadow-md: 0 4px 16px rgba(139, 92, 246, 0.3);
+            --shadow-lg: 0 8px 32px rgba(139, 92, 246, 0.4), 0 0 40px rgba(0, 210, 255, 0.2);
+            --accent-1: #667eea;
+            --accent-2: #8b5cf6;
+            --accent-3: #c084fc;
+            --success: #10b981;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+        }
+
+        /* ==================== BASE STYLES ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* ==================== CONTROLS BAR ==================== */
+        .controls-bar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-label {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .theme-btn, .lang-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            border-radius: 8px;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover, .lang-btn:hover {
+            border-color: var(--accent-2);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-btn.active, .lang-btn.active {
+            background: var(--accent-2);
+            border-color: var(--accent-2);
+            color: #ffffff;
+        }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            margin-top: 80px;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, var(--accent-1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--accent-2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, var(--accent-3) 0%, transparent 50%);
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: glow 3s ease-in-out infinite alternate;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 20px var(--accent-1));
+            }
+            to {
+                filter: drop-shadow(0 0 40px var(--accent-3));
+            }
+        }
+
+        .tagline {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            background: var(--accent-2);
+            color: #ffffff;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px 30px;
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-2);
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* ==================== CONTAINER ==================== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        /* ==================== SECTION STYLES ==================== */
+        .section {
+            margin-bottom: 100px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        /* ==================== FEATURE GRID ==================== */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 35px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-2);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px var(--accent-2));
+        }
+
+        .feature-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            color: var(--text-secondary);
+            padding: 8px 0 8px 25px;
+            position: relative;
+            font-size: 0.95em;
+        }
+
+        .feature-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-2);
+            font-weight: bold;
+        }
+
+        /* ==================== TECH STACK ==================== */
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .tech-item {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid var(--border-color);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            border-color: var(--accent-2);
+            transform: scale(1.05);
+        }
+
+        .tech-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--accent-2);
+            margin-bottom: 10px;
+        }
+
+        .tech-version {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        /* ==================== HIGHLIGHT BOX ==================== */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border-radius: 25px;
+            padding: 50px;
+            color: #ffffff;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            margin: 60px 0;
+        }
+
+        .highlight-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .highlight-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        /* ==================== LINKS SECTION ==================== */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .link-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid var(--border-color);
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-2);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .link-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .link-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .link-desc {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 2px solid var(--border-color);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        .footer-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .controls-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .feature-grid,
+            .tech-stack,
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .highlight-box {
+                padding: 30px 20px;
+            }
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* ==================== SCROLLBAR (Dark themes) ==================== */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-2);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+        <div class="control-group">
+            <span class="control-label" data-i18n="theme">Theme</span>
+            <button class="theme-btn active" data-theme="erinium">Erinium</button>
+            <button class="theme-btn" data-theme="dark">Dark</button>
+            <button class="theme-btn" data-theme="light">Light</button>
+        </div>
+        <div class="control-group">
+            <span class="control-label" data-i18n="language">Language</span>
+            <button class="lang-btn active" data-lang="fr">🇫🇷 FR</button>
+            <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content fade-in-up">
+            <h1 class="logo">Erinium Faction</h1>
+            <p class="tagline" data-i18n="tagline">Le mod de faction PvP ultime pour Minecraft 1.21.1</p>
+            <span class="version-badge">v1.0-SNAPSHOT</span>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-number">81</div>
+                    <div class="stat-label" data-i18n="classes">Classes Java</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label" data-i18n="systems">Systèmes Majeurs</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label" data-i18n="players">Joueurs Supportés</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- About Section -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="about-title">À Propos</h2>
+                <p class="section-subtitle" data-i18n="about-subtitle">Un mod de faction complet pour serveurs PvP compétitifs</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3 class="highlight-title" data-i18n="vision-title">Notre Vision</h3>
+                <p class="highlight-text" data-i18n="vision-text">
+                    Erinium Faction transforme Minecraft multiplayer en introduisant des mécaniques de faction avancées,
+                    un contrôle territorial sophistiqué, des systèmes économiques profonds et des combats PvP équilibrés.
+                    Conçu pour les serveurs compétitifs de 1000+ joueurs avec des performances optimales.
+                </p>
+            </div>
+        </section>
+
+        <!-- Core Systems -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="systems-title">Systèmes Principaux</h2>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title" data-i18n="faction-system">Système de Faction</h3>
+                    <p class="feature-desc" data-i18n="faction-desc">
+                        Système de faction hiérarchique avec gestion avancée des membres, rangs personnalisables et progression par niveaux.
+                    </p>
+                    <ul class="feature-list">
+                        <li data-i18n="faction-f1">Rangs avec permissions granulaires</li>
+                        <li data-i18n="faction-f2">Système de power faction/joueur</li>
+                        <li data-i18n="faction-f3">Leveling avec XP et paliers</li>
+                        <li data-i18n="faction-f4">Invitations et gestion membres</li>
+                        <li data-i18n="faction-f5">Relations diplomatiques (alliés/ennemis)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h3 class="feature-title" data-i18n="territory-system">Territoire & Claims</h3>
+                    <p class="feature-desc" data-i18n="territory-desc">
+                        Système de claims basé sur chunks avec protection avancée et visualisation carte en temps réel.
+                    </p>
+                    <ul class="feature-list">
+                        <li data-i18n="territory-f1">Claims par chunk optimisés (O(1) lookup)</li>
+                        <li data-i18n="territory-f2">Protection contre griefing</li>
+                        <li data-i18n="territory-f3">Carte interactive avec radius configurable</li>
+                        <li data-i18n="territory-f4">Visualisation couleur par faction</li>
+                        <li data-i18n="territory-f5">Système de power pour limiter claims</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title" data-i18n="economy-system">Économie Intégrée</h3>
+                    <p class="feature-desc" data-i18n="economy-desc">
+                        Système économique complet avec balances joueurs, transferts et classements.
+                    </p>
+                    <ul class="feature-list">
+                        <li data-i18n="economy-f1">Balances avec précision BigDecimal</li>
+                        <li data-i18n="economy-f2">Transferts joueur-à-joueur</li>
+                        <li data-i18n="economy-f3">Leaderboard paginé</li>
+                        <li data-i18n="economy-f4">Support joueurs offline</li>
+                        <li data-i18n="economy-f5">Commandes admin complètes</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title" data-i18n="teleport-system">Téléportation Avancée</h3>
+                    <p class="feature-desc" data-i18n="teleport-desc">
+                        Système de TP avec warmup, cooldown et annulation intelligente.
+                    </p>
+                    <ul class="feature-list">
+                        <li data-i18n="teleport-f1">Warmup configurable (défaut: 3s)</li>
+                        <li data-i18n="teleport-f2">Cooldown entre TPs (défaut: 15s)</li>
+                        <li data-i18n="teleport-f3">Annulation sur mouvement/dégâts</li>
+                        <li data-i18n="teleport-f4">Home faction + warps multiples</li>
+                        <li data-i18n="teleport-f5">Support cross-dimension</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title" data-i18n="permissions-system">Permissions Hiérarchiques</h3>
+                    <p class="feature-desc" data-i18n="permissions-desc">
+                        Système de permissions avec wildcards, rangs serveur et overrides joueur.
+                    </p>
+                    <ul class="feature-list">
+                        <li data-i18n="permissions-f1">Wildcards (module.*)</li>
+                        <li data-i18n="permissions-f2">Rangs serveur globaux</li>
+                        <li data-i18n="permissions-f3">Rangs faction personnalisés</li>
+                        <li data-i18n="permissions-f4">Overrides par joueur</li>
+                        <li data-i18n="permissions-f5">Protection commandes auto</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3 class="feature-title" data-i18n="blockhp-system">Block HP System</h3>
+                    <p class="feature-desc" data-i18n="blockhp-desc">
+                        Système unique assignant des points de vie aux blocs pour des sièges stratégiques.
+                    </p>
+                    <ul class="feature-list">
+                        <li data-i18n="blockhp-f1">HP personnalisables par type</li>
+                        <li data-i18n="blockhp-f2">Feedback visuel destruction</li>
+                        <li data-i18n="blockhp-f3">Drops vanilla préservés</li>
+                        <li data-i18n="blockhp-f4">Registry configurable</li>
+                        <li data-i18n="blockhp-f5">Optimisé FastUtil maps</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title" data-i18n="gui-system">Interface Graphique</h3>
+                    <p class="feature-desc" data-i18n="gui-desc">
+                        Interfaces utilisateur modernes avec scaling responsive et animations.
+                    </p>
+                    <ul class="feature-list">
+                        <li data-i18n="gui-f1">Menu faction responsive</li>
+                        <li data-i18n="gui-f2">Écran paramètres avec toggles</li>
+                        <li data-i18n="gui-f3">Carte territoire interactive</li>
+                        <li data-i18n="gui-f4">Overlays title personnalisés</li>
+                        <li data-i18n="gui-f5">Fonts TrueType custom</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title" data-i18n="anticheat-system">Anti-Cheat Multi-thread</h3>
+                    <p class="feature-desc" data-i18n="anticheat-desc">
+                        Système anti-triche haute performance pour 1000+ joueurs concurrent.
+                    </p>
+                    <ul class="feature-list">
+                        <li data-i18n="anticheat-f1">Thread pool asynchrone (4 workers)</li>
+                        <li data-i18n="anticheat-f2">Smart sampling (30% check rate)</li>
+                        <li data-i18n="anticheat-f3">Détections: speed, fly, reach, teleport</li>
+                        <li data-i18n="anticheat-f4">Seuils adaptatifs selon load</li>
+                        <li data-i18n="anticheat-f5">Système de violations progressives</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="tech-title">Stack Technique</h2>
+                <p class="section-subtitle" data-i18n="tech-subtitle">Technologies et frameworks utilisés</p>
+            </div>
+
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="tech-name">NeoForge</div>
+                    <div class="tech-version">21.1.213</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">Minecraft</div>
+                    <div class="tech-version">1.21.1</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">Java</div>
+                    <div class="tech-version">21+</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">Gradle</div>
+                    <div class="tech-version">8.10+</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">Parchment</div>
+                    <div class="tech-version">Mappings</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">Brigadier</div>
+                    <div class="tech-version">Commands</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">NBT</div>
+                    <div class="tech-version">Serialization</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">FastUtil</div>
+                    <div class="tech-version">Collections</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentation Links -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="docs-title">Documentation</h2>
+                <p class="section-subtitle" data-i18n="docs-subtitle">Explorez les différentes documentations du projet</p>
+            </div>
+
+            <div class="links-grid">
+                <a href="HTML DOC/machines.html" class="link-card">
+                    <div class="link-icon">⚙️</div>
+                    <h3 class="link-title" data-i18n="doc-machines">Machines de Faction</h3>
+                    <p class="link-desc" data-i18n="doc-machines-desc">
+                        Tourelles automatiques, beacons améliorés, détecteurs et systèmes de production avancés.
+                    </p>
+                </a>
+
+                <a href="HTML DOC/dungeon.html" class="link-card">
+                    <div class="link-icon">🏰</div>
+                    <h3 class="link-title" data-i18n="doc-dungeons">Donjons Épiques</h3>
+                    <p class="link-desc" data-i18n="doc-dungeons-desc">
+                        5 donjons légendaires avec boss uniques, mécaniques innovantes et loots exclusifs.
+                    </p>
+                </a>
+
+                <a href="HTML DOC/sorcelry.html" class="link-card">
+                    <div class="link-icon">✨</div>
+                    <h3 class="link-title" data-i18n="doc-magic">Système de Magie</h3>
+                    <p class="link-desc" data-i18n="doc-magic-desc">
+                        Progression niveau 1-100, 7 écoles de magie, sorts ultime et ascension archimage.
+                    </p>
+                </a>
+
+                <a href="HTML DOC/cupronickel + electrum.html" class="link-card">
+                    <div class="link-icon">🔩</div>
+                    <h3 class="link-title" data-i18n="doc-alloys">Alliages Avancés</h3>
+                    <p class="link-desc" data-i18n="doc-alloys-desc">
+                        Cupronickel, électrum et systèmes de fonderie pour créer des alliages puissants.
+                    </p>
+                </a>
+
+                <a href="HTML DOC/radar unclaim.html" class="link-card">
+                    <div class="link-icon">📡</div>
+                    <h3 class="link-title" data-i18n="doc-radar">Radar & Unclaim</h3>
+                    <p class="link-desc" data-i18n="doc-radar-desc">
+                        Système de radar pour détecter les territoires non réclamés et opportunités stratégiques.
+                    </p>
+                </a>
+
+                <a href="HTML DOC/mana progress.html" class="link-card">
+                    <div class="link-icon">💫</div>
+                    <h3 class="link-title" data-i18n="doc-mana">Progression Mana</h3>
+                    <p class="link-desc" data-i18n="doc-mana-desc">
+                        Documentation complète du système de mana et progression magique jusqu'au niveau 100.
+                    </p>
+                </a>
+
+                <a href="pour les staff.html" class="link-card">
+                    <div class="link-icon">🛠️</div>
+                    <h3 class="link-title" data-i18n="doc-staff">Guide Staff</h3>
+                    <p class="link-desc" data-i18n="doc-staff-desc">
+                        Commandes administrateur, gestion serveur et outils de modération.
+                    </p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Performance Highlights -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="perf-title">Performance</h2>
+            </div>
+
+            <div class="highlight-box">
+                <h3 class="highlight-title" data-i18n="perf-highlight-title">Optimisé pour les Grands Serveurs</h3>
+                <p class="highlight-text" data-i18n="perf-highlight-text">
+                    Architecture conçue pour supporter 1000+ joueurs simultanés avec un impact minimal sur les performances.
+                    Thread pools asynchrones, structures de données optimisées (FastUtil), caching intelligent (Guava),
+                    et algorithmes O(1) pour les opérations critiques. Smart sampling pour l'anti-cheat (30% check rate)
+                    et système adaptatif qui ajuste les seuils selon la charge serveur.
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-text">
+            <span data-i18n="footer-made">Développé avec passion par</span>
+            <span class="footer-brand">Erinium Group & BCK</span>
+        </p>
+        <p class="footer-text" style="margin-top: 10px;">
+            <span data-i18n="footer-powered">Propulsé par</span> NeoForge 21.1.213 | Minecraft 1.21.1
+        </p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // ==================== TRANSLATIONS ====================
+        const translations = {
+            fr: {
+                // Controls
+                theme: "Thème",
+                language: "Langue",
+
+                // Hero
+                tagline: "Le mod de faction PvP ultime pour Minecraft 1.21.1",
+                classes: "Classes Java",
+                systems: "Systèmes Majeurs",
+                players: "Joueurs Supportés",
+
+                // About
+                "about-title": "À Propos",
+                "about-subtitle": "Un mod de faction complet pour serveurs PvP compétitifs",
+                "vision-title": "Notre Vision",
+                "vision-text": "Erinium Faction transforme Minecraft multiplayer en introduisant des mécaniques de faction avancées, un contrôle territorial sophistiqué, des systèmes économiques profonds et des combats PvP équilibrés. Conçu pour les serveurs compétitifs de 1000+ joueurs avec des performances optimales.",
+
+                // Systems
+                "systems-title": "Systèmes Principaux",
+                "faction-system": "Système de Faction",
+                "faction-desc": "Système de faction hiérarchique avec gestion avancée des membres, rangs personnalisables et progression par niveaux.",
+                "faction-f1": "Rangs avec permissions granulaires",
+                "faction-f2": "Système de power faction/joueur",
+                "faction-f3": "Leveling avec XP et paliers",
+                "faction-f4": "Invitations et gestion membres",
+                "faction-f5": "Relations diplomatiques (alliés/ennemis)",
+
+                "territory-system": "Territoire & Claims",
+                "territory-desc": "Système de claims basé sur chunks avec protection avancée et visualisation carte en temps réel.",
+                "territory-f1": "Claims par chunk optimisés (O(1) lookup)",
+                "territory-f2": "Protection contre griefing",
+                "territory-f3": "Carte interactive avec radius configurable",
+                "territory-f4": "Visualisation couleur par faction",
+                "territory-f5": "Système de power pour limiter claims",
+
+                "economy-system": "Économie Intégrée",
+                "economy-desc": "Système économique complet avec balances joueurs, transferts et classements.",
+                "economy-f1": "Balances avec précision BigDecimal",
+                "economy-f2": "Transferts joueur-à-joueur",
+                "economy-f3": "Leaderboard paginé",
+                "economy-f4": "Support joueurs offline",
+                "economy-f5": "Commandes admin complètes",
+
+                "teleport-system": "Téléportation Avancée",
+                "teleport-desc": "Système de TP avec warmup, cooldown et annulation intelligente.",
+                "teleport-f1": "Warmup configurable (défaut: 3s)",
+                "teleport-f2": "Cooldown entre TPs (défaut: 15s)",
+                "teleport-f3": "Annulation sur mouvement/dégâts",
+                "teleport-f4": "Home faction + warps multiples",
+                "teleport-f5": "Support cross-dimension",
+
+                "permissions-system": "Permissions Hiérarchiques",
+                "permissions-desc": "Système de permissions avec wildcards, rangs serveur et overrides joueur.",
+                "permissions-f1": "Wildcards (module.*)",
+                "permissions-f2": "Rangs serveur globaux",
+                "permissions-f3": "Rangs faction personnalisés",
+                "permissions-f4": "Overrides par joueur",
+                "permissions-f5": "Protection commandes auto",
+
+                "blockhp-system": "Block HP System",
+                "blockhp-desc": "Système unique assignant des points de vie aux blocs pour des sièges stratégiques.",
+                "blockhp-f1": "HP personnalisables par type",
+                "blockhp-f2": "Feedback visuel destruction",
+                "blockhp-f3": "Drops vanilla préservés",
+                "blockhp-f4": "Registry configurable",
+                "blockhp-f5": "Optimisé FastUtil maps",
+
+                "gui-system": "Interface Graphique",
+                "gui-desc": "Interfaces utilisateur modernes avec scaling responsive et animations.",
+                "gui-f1": "Menu faction responsive",
+                "gui-f2": "Écran paramètres avec toggles",
+                "gui-f3": "Carte territoire interactive",
+                "gui-f4": "Overlays title personnalisés",
+                "gui-f5": "Fonts TrueType custom",
+
+                "anticheat-system": "Anti-Cheat Multi-thread",
+                "anticheat-desc": "Système anti-triche haute performance pour 1000+ joueurs concurrent.",
+                "anticheat-f1": "Thread pool asynchrone (4 workers)",
+                "anticheat-f2": "Smart sampling (30% check rate)",
+                "anticheat-f3": "Détections: speed, fly, reach, teleport",
+                "anticheat-f4": "Seuils adaptatifs selon load",
+                "anticheat-f5": "Système de violations progressives",
+
+                // Tech
+                "tech-title": "Stack Technique",
+                "tech-subtitle": "Technologies et frameworks utilisés",
+
+                // Documentation
+                "docs-title": "Documentation",
+                "docs-subtitle": "Explorez les différentes documentations du projet",
+                "doc-machines": "Machines de Faction",
+                "doc-machines-desc": "Tourelles automatiques, beacons améliorés, détecteurs et systèmes de production avancés.",
+                "doc-dungeons": "Donjons Épiques",
+                "doc-dungeons-desc": "5 donjons légendaires avec boss uniques, mécaniques innovantes et loots exclusifs.",
+                "doc-magic": "Système de Magie",
+                "doc-magic-desc": "Progression niveau 1-100, 7 écoles de magie, sorts ultime et ascension archimage.",
+                "doc-alloys": "Alliages Avancés",
+                "doc-alloys-desc": "Cupronickel, électrum et systèmes de fonderie pour créer des alliages puissants.",
+                "doc-radar": "Radar & Unclaim",
+                "doc-radar-desc": "Système de radar pour détecter les territoires non réclamés et opportunités stratégiques.",
+                "doc-mana": "Progression Mana",
+                "doc-mana-desc": "Documentation complète du système de mana et progression magique jusqu'au niveau 100.",
+                "doc-staff": "Guide Staff",
+                "doc-staff-desc": "Commandes administrateur, gestion serveur et outils de modération.",
+
+                // Performance
+                "perf-title": "Performance",
+                "perf-highlight-title": "Optimisé pour les Grands Serveurs",
+                "perf-highlight-text": "Architecture conçue pour supporter 1000+ joueurs simultanés avec un impact minimal sur les performances. Thread pools asynchrones, structures de données optimisées (FastUtil), caching intelligent (Guava), et algorithmes O(1) pour les opérations critiques. Smart sampling pour l'anti-cheat (30% check rate) et système adaptatif qui ajuste les seuils selon la charge serveur.",
+
+                // Footer
+                "footer-made": "Développé avec passion par",
+                "footer-powered": "Propulsé par"
+            },
+            en: {
+                // Controls
+                theme: "Theme",
+                language: "Language",
+
+                // Hero
+                tagline: "The ultimate PvP faction mod for Minecraft 1.21.1",
+                classes: "Java Classes",
+                systems: "Major Systems",
+                players: "Supported Players",
+
+                // About
+                "about-title": "About",
+                "about-subtitle": "A complete faction mod for competitive PvP servers",
+                "vision-title": "Our Vision",
+                "vision-text": "Erinium Faction transforms Minecraft multiplayer by introducing advanced faction mechanics, sophisticated territorial control, deep economic systems and balanced PvP combat. Designed for competitive servers with 1000+ players with optimal performance.",
+
+                // Systems
+                "systems-title": "Core Systems",
+                "faction-system": "Faction System",
+                "faction-desc": "Hierarchical faction system with advanced member management, customizable ranks and level progression.",
+                "faction-f1": "Ranks with granular permissions",
+                "faction-f2": "Faction/player power system",
+                "faction-f3": "Leveling with XP and tiers",
+                "faction-f4": "Invitations and member management",
+                "faction-f5": "Diplomatic relations (allies/enemies)",
+
+                "territory-system": "Territory & Claims",
+                "territory-desc": "Chunk-based claims system with advanced protection and real-time map visualization.",
+                "territory-f1": "Optimized chunk claims (O(1) lookup)",
+                "territory-f2": "Griefing protection",
+                "territory-f3": "Interactive map with configurable radius",
+                "territory-f4": "Color visualization by faction",
+                "territory-f5": "Power system to limit claims",
+
+                "economy-system": "Integrated Economy",
+                "economy-desc": "Complete economic system with player balances, transfers and leaderboards.",
+                "economy-f1": "Balances with BigDecimal precision",
+                "economy-f2": "Player-to-player transfers",
+                "economy-f3": "Paginated leaderboard",
+                "economy-f4": "Offline player support",
+                "economy-f5": "Complete admin commands",
+
+                "teleport-system": "Advanced Teleportation",
+                "teleport-desc": "TP system with warmup, cooldown and smart cancellation.",
+                "teleport-f1": "Configurable warmup (default: 3s)",
+                "teleport-f2": "Cooldown between TPs (default: 15s)",
+                "teleport-f3": "Cancellation on movement/damage",
+                "teleport-f4": "Faction home + multiple warps",
+                "teleport-f5": "Cross-dimension support",
+
+                "permissions-system": "Hierarchical Permissions",
+                "permissions-desc": "Permission system with wildcards, server ranks and player overrides.",
+                "permissions-f1": "Wildcards (module.*)",
+                "permissions-f2": "Global server ranks",
+                "permissions-f3": "Custom faction ranks",
+                "permissions-f4": "Per-player overrides",
+                "permissions-f5": "Auto command protection",
+
+                "blockhp-system": "Block HP System",
+                "blockhp-desc": "Unique system assigning hit points to blocks for strategic sieges.",
+                "blockhp-f1": "Customizable HP per type",
+                "blockhp-f2": "Visual destruction feedback",
+                "blockhp-f3": "Preserved vanilla drops",
+                "blockhp-f4": "Configurable registry",
+                "blockhp-f5": "Optimized FastUtil maps",
+
+                "gui-system": "Graphical Interface",
+                "gui-desc": "Modern user interfaces with responsive scaling and animations.",
+                "gui-f1": "Responsive faction menu",
+                "gui-f2": "Settings screen with toggles",
+                "gui-f3": "Interactive territory map",
+                "gui-f4": "Custom title overlays",
+                "gui-f5": "Custom TrueType fonts",
+
+                "anticheat-system": "Multi-threaded Anti-Cheat",
+                "anticheat-desc": "High-performance anti-cheat system for 1000+ concurrent players.",
+                "anticheat-f1": "Asynchronous thread pool (4 workers)",
+                "anticheat-f2": "Smart sampling (30% check rate)",
+                "anticheat-f3": "Detections: speed, fly, reach, teleport",
+                "anticheat-f4": "Adaptive thresholds based on load",
+                "anticheat-f5": "Progressive violation system",
+
+                // Tech
+                "tech-title": "Tech Stack",
+                "tech-subtitle": "Technologies and frameworks used",
+
+                // Documentation
+                "docs-title": "Documentation",
+                "docs-subtitle": "Explore the different project documentations",
+                "doc-machines": "Faction Machines",
+                "doc-machines-desc": "Automatic turrets, improved beacons, detectors and advanced production systems.",
+                "doc-dungeons": "Epic Dungeons",
+                "doc-dungeons-desc": "5 legendary dungeons with unique bosses, innovative mechanics and exclusive loot.",
+                "doc-magic": "Magic System",
+                "doc-magic-desc": "Level 1-100 progression, 7 magic schools, ultimate spells and archmage ascension.",
+                "doc-alloys": "Advanced Alloys",
+                "doc-alloys-desc": "Cupronickel, electrum and foundry systems to create powerful alloys.",
+                "doc-radar": "Radar & Unclaim",
+                "doc-radar-desc": "Radar system to detect unclaimed territories and strategic opportunities.",
+                "doc-mana": "Mana Progression",
+                "doc-mana-desc": "Complete documentation of the mana system and magical progression up to level 100.",
+                "doc-staff": "Staff Guide",
+                "doc-staff-desc": "Administrator commands, server management and moderation tools.",
+
+                // Performance
+                "perf-title": "Performance",
+                "perf-highlight-title": "Optimized for Large Servers",
+                "perf-highlight-text": "Architecture designed to support 1000+ simultaneous players with minimal performance impact. Asynchronous thread pools, optimized data structures (FastUtil), intelligent caching (Guava), and O(1) algorithms for critical operations. Smart sampling for anti-cheat (30% check rate) and adaptive system that adjusts thresholds based on server load.",
+
+                // Footer
+                "footer-made": "Developed with passion by",
+                "footer-powered": "Powered by"
+            }
+        };
+
+        // ==================== THEME MANAGEMENT ====================
+        const root = document.documentElement;
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const langButtons = document.querySelectorAll('.lang-btn');
+
+        // Load saved preferences
+        const savedTheme = localStorage.getItem('theme') || 'erinium';
+        const savedLang = localStorage.getItem('lang') || 'fr';
+
+        // Apply saved theme
+        root.setAttribute('data-theme', savedTheme);
+        themeButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.theme === savedTheme);
+        });
+
+        // Apply saved language
+        document.documentElement.lang = savedLang;
+        langButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === savedLang);
+        });
+        applyTranslations(savedLang);
+
+        // Theme switcher
+        themeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const theme = button.dataset.theme;
+                root.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+
+                themeButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+
+        // Language switcher
+        langButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const lang = button.dataset.lang;
+                document.documentElement.lang = lang;
+                localStorage.setItem('lang', lang);
+
+                langButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                applyTranslations(lang);
+            });
+        });
+
+        // ==================== TRANSLATION FUNCTION ====================
+        function applyTranslations(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.dataset.i18n;
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        // ==================== SMOOTH SCROLL ====================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // ==================== SCROLL ANIMATIONS ====================
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card, .tech-item, .link-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+
+</body>
+</html>
