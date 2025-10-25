@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machines Faction - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            to {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.4em;
+            margin-bottom: 50px;
+            font-style: italic;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+        }
+
+        .card.combat::before {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .card.defense::before {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+        }
+
+        .card.utility::before {
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+        }
+
+        .card.production::before {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #e5e7eb;
+        }
+
+        .icon {
+            font-size: 3.5em;
+            margin-right: 20px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .card-title {
+            font-size: 1.8em;
+            color: #1f2937;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.combat {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .badge.defense {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .badge.utility {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .badge.production {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .section {
+            margin-top: 25px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #374151;
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            color: #4b5563;
+            font-size: 1.05em;
+        }
+
+        .feature-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 8px;
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #92400e;
+        }
+
+        .tier-box {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .tier-title {
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .tier-item {
+            padding: 8px 0;
+            color: #6b7280;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tier-item::before {
+            content: '•';
+            position: absolute;
+            left: 5px;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            padding: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1f2937;
+            margin-top: 4px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-left: 5px solid #ef4444;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .warning-title {
+            font-weight: bold;
+            color: #991b1b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .warning-title::before {
+            content: '⚠️';
+            margin-right: 8px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 5px solid #3b82f6;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .info-title {
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-title::before {
+            content: 'ℹ️';
+            margin-right: 8px;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 5px solid #22c55e;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .success-title {
+            font-weight: bold;
+            color: #166534;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .success-title::before {
+            content: '✓';
+            margin-right: 8px;
+        }
+
+        .section-divider {
+            text-align: center;
+            margin: 60px 0 40px 0;
+            position: relative;
+        }
+
+        .section-divider h2 {
+            display: inline-block;
+            background: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: #1f2937;
+            font-size: 2.2em;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+        }
+
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .card-title {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .icon {
+                font-size: 2.5em;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Machines de Faction ⚙️</h1>
+        <p class="subtitle">Systèmes avancés pour dominer et protéger votre territoire</p>
+
+        <div class="section-divider">
+            <h2>⚔️ Combat & Défense</h2>
+        </div>
+
+        <div class="grid">
+            <!-- Tourelle Automatique -->
+            <div class="card combat">
+                <div class="card-header">
+                    <div class="icon">🎯</div>
+                    <div>
+                        <div class="card-title">Tourelle Automatique</div>
+                        <span class="badge combat">Combat</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📋 Description</div>
+                    <p style="color: #6b7280; padding-left: 10px;">
+                        Système de défense automatisé qui cible et tire sur les joueurs ennemis entrant dans votre territoire. 
+                        Utilise un système d'identification par faction pour éviter les tirs amis.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✨ Fonctionnalités</div>
+                    <ul class="feature-list">
+                        <li>Détection automatique des <span class="highlight">joueurs ennemis</span></li>
+                        <li>Portée configurable selon le tier (15-50 blocs)</li>
+                        <li>Types de munitions : flèches, potions, projectiles explosifs</li>
+                        <li>Rotation 360° avec priorisation des cibles</li>
+                        <li>Mode veille pour économiser l'énergie</li>
+                        <li>Désactivable par redstone ou switch manuel</li>
+                    </ul>
+                </div>
+
+                <div class="tier-box">
+                    <div class="tier-title">🔧 Tiers de Tourelle</div>
+                    <div class="tier-item"><strong>Tier 1 :</strong> Portée 15 blocs, flèches normales, 1 tir/2s</div>
+                    <div class="tier-item"><strong>Tier 2 :</strong> Portée 30 blocs, flèches + potions, 2 tirs/s</div>
+                    <div class="tier-item"><strong>Tier 3 :</strong> Portée 50 blocs, toutes munitions, 3 tirs/s, double cible</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Consommation</div>
+                        <div class="stat-value">50-200 RF/tir</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Capacité Munitions</div>
+                        <div class="stat-value">128-512 items</div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">Limitations</div>
+                    <p style="color: #991b1b; font-size: 0.95em;">
+                        Ne peut pas tirer à travers les blocs solides. Vulnérable aux TNT et aux attaques à distance. 
+                        Peut être hackée par des joueurs avec des items spéciaux.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Beacon Amélioré de Faction -->
+            <div class="card defense">
+                <div class="card-header">
+                    <div class="icon">🗼</div>
+                    <div>
+                        <div class="card-title">Beacon Amélioré de Faction</div>
+                        <span class="badge defense">Défense</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📋 Description</div>
+                    <p style="color: #6b7280; padding-left: 10px;">
+                        Version améliorée du beacon vanilla qui applique des effets de buffs puissants uniquement aux membres 
+                        de votre faction dans un rayon étendu. Parfait pour fortifier une zone de guerre.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✨ Fonctionnalités</div>
+                    <ul class="feature-list">
+                        <li>Effets <span class="highlight">réservés aux membres</span> de la faction</li>
+                        <li>Portée étendue : 100-300 blocs selon tier</li>
+                        <li>Buffs stackables avec plusieurs beacons</li>
+                        <li>Effets custom : Résistance aux explosions, Régénération améliorée</li>
+                        <li>Indicateur visuel de la zone d'effet (particules)</li>
+                        <li>Activation/désactivation via GUI</li>
+                    </ul>
+                </div>
+
+                <div class="tier-box">
+                    <div class="tier-title">🔧 Tiers de Beacon</div>
+                    <div class="tier-item"><strong>Tier 1 :</strong> 100 blocs, 2 effets simultanés, niveau I</div>
+                    <div class="tier-item"><strong>Tier 2 :</strong> 200 blocs, 3 effets simultanés, niveau II</div>
+                    <div class="tier-item"><strong>Tier 3 :</strong> 300 blocs, 5 effets simultanés, niveau III</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">Effets Disponibles</div>
+                    <p style="color: #1e40af; font-size: 0.95em;">
+                        Speed, Strength, Resistance, Regeneration, Jump Boost, Fire Resistance, Absorption, 
+                        + Effets custom : Blast Resistance (réduit dégâts explosion 30%), Combat Focus (+15% dégâts critiques)
+                    </p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Consommation</div>
+                        <div class="stat-value">500 RF/s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Coût Activation</div>
+                        <div class="stat-value">Nether Star</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Détecteur de Mouvement -->
+            <div class="card defense">
+                <div class="card-header">
+                    <div class="icon">📡</div>
+                    <div>
+                        <div class="card-title">Détecteur de Mouvement</div>
+                        <span class="badge defense">Sécurité</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📋 Description</div>
+                    <p style="color: #6b7280; padding-left: 10px;">
+                        Système de surveillance avancé qui détecte tout mouvement dans votre base et envoie des alertes 
+                        en temps réel sur Discord via webhook. Parfait pour surveiller votre territoire même offline.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✨ Fonctionnalités</div>
+                    <ul class="feature-list">
+                        <li>Détection des <span class="highlight">joueurs ennemis uniquement</span></li>
+                        <li>Envoi automatique sur Discord webhook</li>
+                        <li>Informations : pseudo, coordonnées, timestamp, screenshot (optionnel)</li>
+                        <li>Rayon de détection : 20-100 blocs selon tier</li>
+                        <li>Filtres configurables (membres, alliés, tous)</li>
+                        <li>Mode furtif (pas de particules visibles)</li>
+                        <li>Logs internes sauvegardés</li>
+                    </ul>
+                </div>
+
+                <div class="tier-box">
+                    <div class="tier-title">🔧 Tiers de Détecteur</div>
+                    <div class="tier-item"><strong>Tier 1 :</strong> 20 blocs, alerte texte simple</div>
+                    <div class="tier-item"><strong>Tier 2 :</strong> 50 blocs, embed Discord avec coordonnées</div>
+                    <div class="tier-item"><strong>Tier 3 :</strong> 100 blocs, embed + screenshot + historique</div>
+                </div>
+
+                <div class="success-box">
+                    <div class="success-title">Format Message Discord</div>
+                    <p style="color: #166534; font-size: 0.95em; font-family: monospace;">
+                        🚨 <strong>INTRUSION DÉTECTÉE</strong><br>
+                        👤 Joueur: EnemyPlayer<br>
+                        📍 Position: X:1234 Y:64 Z:5678<br>
+                        🕐 Heure: 14:32:15<br>
+                        🏴 Faction: EnnemiFaction
+                    </p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Cooldown Alerte</div>
+                        <div class="stat-value">30s - 5s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Consommation</div>
+                        <div class="stat-value">10 RF/s</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">Configuration Webhook</div>
+                    <p style="color: #1e40af; font-size: 0.95em;">
+                        Configurez l'URL du webhook Discord dans le GUI de la machine. Testez la connexion avec le bouton "Test Alert". 
+                        Permissions requises : Grade Officier minimum dans la faction.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <h2>🏭 Production & Ressources</h2>
+        </div>
+
+        <div class="grid">
+            <!-- Raffinerie de Minerais -->
+            <div class="card production">
+                <div class="card-header">
+                    <div class="icon">⛏️</div>
+                    <div>
+                        <div class="card-title">Raffinerie de Minerais</div>
+                        <span class="badge production">Production</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📋 Description</div>
+                    <p style="color: #6b7280; padding-left: 10px;">
+                        Machine de traitement avancée qui multiplie vos rendements de minerais bruts. Plus vous investissez 
+                        d'énergie, plus vous obtenez de ressources en retour. Essential pour l'économie de faction.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✨ Fonctionnalités</div>
+                    <ul class="feature-list">
+                        <li>Multiplication des minerais : <span class="highlight">x2 à x4</span> selon tier</li>
+                        <li>Bonus aléatoire de minerais rares (5-15% de chance)</li>
+                        <li>Processus par étapes : broyage → lavage → raffinage</li>
+                        <li>Interface multibloc avec animations visuelles</li>
+                        <li>Compatible avec tous les minerais (vanilla + modded)</li>
+                        <li>Système de file d'attente automatique</li>
+                    </ul>
+                </div>
+
+                <div class="tier-box">
+                    <div class="tier-title">🔧 Tiers de Raffinerie</div>
+                    <div class="tier-item"><strong>Tier 1 :</strong> x2 minerais, 100 RF/opération, 10s/minerai</div>
+                    <div class="tier-item"><strong>Tier 2 :</strong> x3 minerais, 250 RF/opération, 7s/minerai, 5% bonus rare</div>
+                    <div class="tier-item"><strong>Tier 3 :</strong> x4 minerais, 500 RF/opération, 5s/minerai, 15% bonus rare</div>
+                </div>
+
+                <div class="success-box">
+                    <div class="success-title">Bonus Rares</div>
+                    <p style="color: #166534; font-size: 0.95em;">
+                        Lors du raffinage de fer → chance de diamant | Or → chance d'émeraude | 
+                        Cuivre → chance de redstone | Diamant → chance de netherite scrap
+                    </p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Capacité Input</div>
+                        <div class="stat-value">64 stacks</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Capacité Output</div>
+                        <div class="stat-value">128 stacks</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Vitesse Max</div>
+                        <div class="stat-value">12 items/s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Buffer Énergie</div>
+                        <div class="stat-value">100k RF</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">Structure Multibloc</div>
+                    <p style="color: #1e40af; font-size: 0.95em;">
+                        3x3x4 blocs. Base en acier renforcé, parois en verre industriel, cœur de traitement en électrum. 
+                        Utilisez le Guide du Constructeur (item) pour voir la structure exacte en jeu.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Fonderie d'Alliages -->
+            <div class="card production">
+                <div class="card-header">
+                    <div class="icon">🔥</div>
+                    <div>
+                        <div class="card-title">Fonderie d'Alliages</div>
+                        <span class="badge production">Production</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📋 Description</div>
+                    <p style="color: #6b7280; padding-left: 10px;">
+                        Four haute température permettant de créer des alliages avancés en combinant différents métaux. 
+                        Contrôlez la température et le temps de fusion pour des résultats optimaux.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✨ Fonctionnalités</div>
+                    <ul class="feature-list">
+                        <li>Création d'alliages : <span class="highlight">Bronze, Électrum, Cupronickel</span>, etc.</li>
+                        <li>Système de température (500°C - 2000°C)</li>
+                        <li>Recettes avec ratios précis (90/10, 70/30, etc.)</li>
+                        <li>Visualisation du processus de fonte (liquide animé)</li>
+                        <li>Mode automatique avec hoppers</li>
+                        <li>Chance de production bonus (qualité supérieure)</li>
+                    </ul>
+                </div>
+
+                <div class="tier-box">
+                    <div class="tier-title">🔧 Recettes d'Alliages</div>
+                    <div class="tier-item"><strong>Bronze :</strong> 90% Cuivre + 10% Étain → 800°C, 20s</div>
+                    <div class="tier-item"><strong>Électrum :</strong> 50% Or + 50% Cuivre → 1200°C, 30s</div>
+                    <div class="tier-item"><strong>Cupronickel :</strong> 75% Cuivre + 25% Nickel → 1400°C, 25s</div>
+                    <div class="tier-item"><strong>Acier :</strong> 98% Fer + 2% Charbon → 1500°C, 40s</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Consommation</div>
+                        <div class="stat-value">150-400 RF/s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Capacité Creuset</div>
+                        <div class="stat-value">16 ingots</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Temps Chauffe</div>
+                        <div class="stat-value">5-45s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Rendement</div>
+                        <div class="stat-value">100-110%</div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">Attention</div>
+                    <p style="color: #991b1b; font-size: 0.95em;">
+                        Une température incorrecte peut ruiner le lot ! Bronze trop chaud = perte de matériaux. 
+                        Surveillez la jauge de température et suivez les recettes avec précision.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">Interface GUI</div>
+                    <p style="color: #1e40af; font-size: 0.95em;">
+                        Slots Input (2x) pour les métaux, jauge de température avec indicateurs de zones optimales, 
+                        timer de fusion, slot output pour l'alliage produit. Mode auto activable via toggle.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Assembleur Automatique -->
+            <div class="card production">
+                <div class="card-header">
+                    <div class="icon">🤖</div>
+                    <div>
+                        <div class="card-title">Assembleur Automatique</div>
+                        <span class="badge production">Automatisation</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📋 Description</div>
+                    <p style="color: #6b7280; padding-left: 10px;">
+                        Machine d'auto-crafting intelligente qui automatise la production d'items complexes. 
+                        Programmez vos recettes favorites et laissez la machine travailler en continu.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✨ Fonctionnalités</div>
+                    <ul class="feature-list">
+                        <li>Auto-craft de <span class="highlight">toutes les recettes</span> vanilla et modded</li>
+                        <li>File d'attente de production (jusqu'à 10 recettes)</li>
+                        <li>Sauvegarde de 20 recettes préférées</li>
+                        <li>Importation automatique depuis coffres connectés</li>
+                        <li>Vitesse de craft ajustable (1-10 items/s)</li>
+                        <li>Interface utilisateur intuitive avec recherche</li>
+                        <li>Mode bulk (craft 64x d'un coup)</li>
+                    </ul>
+                </div>
+
+                <div class="tier-box">
+                    <div class="tier-title">🔧 Tiers d'Assembleur</div>
+                    <div class="tier-item"><strong>Tier 1 :</strong> 1 craft/s, 5 recettes sauvegardées, 50 RF/craft</div>
+                    <div class="tier-item"><strong>Tier 2 :</strong> 5 crafts/s, 10 recettes sauvegardées, 30 RF/craft</div>
+                    <div class="tier-item"><strong>Tier 3 :</strong> 10 crafts/s, 20 recettes sauvegardées, 20 RF/craft, priorités</div>
+                </div>
+
+                <div class="success-box">
+                    <div class="success-title">Exemples d'Utilisation</div>
+                    <p style="color: #166534; font-size: 0.95em;">
+                        Production de masse d'armures pour faction wars | Craft automatique de potions de combat | 
+                        Fabrication continue d'outils pour les membres | Assembly d'items complexes (pistons, dispensers)
+                    </p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Slots Input</div>
+                        <div class="stat-value">27 (1 chest)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Slots Output</div>
+                        <div class="stat-value">54 (2 chests)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Buffer Craft</div>
+                        <div class="stat-value">256 items</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Vitesse Max</div>
+                        <div class="stat-value">10 items/s</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">Gestion des Recettes</div>
+                    <p style="color: #1e40af; font-size: 0.95em;">
+                        Cliquez sur "Apprendre Recette" en tenant un item crafté pour l'enregistrer. 
+                        Organisez vos recettes par catégories (Combat, Construction, Redstone). 
+                        Export/Import de profils de recettes via items "Pattern Card".
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <h2>🔧 Utilitaires</h2>
+        </div>
+
+        <div class="grid">
+            <!-- Station de Réparation -->
+            <div class="card utility">
+                <div class="card-header">
+                    <div class="icon">🔨</div>
+                    <div>
+                        <div class="card-title">Station de Réparation de Faction</div>
+                        <span class="badge utility">Support</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📋 Description</div>
+                    <p style="color: #6b7280; padding-left: 10px;">
+                        Système de réparation électrique qui répare automatiquement les items équipés et dans l'inventaire 
+                        des joueurs de la faction dans un rayon configurable. Fini les items cassés en pleine bataille !
+                    </p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✨ Fonctionnalités</div>
+                    <ul class="feature-list">
+                        <li>Réparation automatique en <span class="highlight">temps réel</span></li>
+                        <li>Affecte tous les membres dans le rayon</li>
+                        <li>Répare armures, outils, armes, et items modded</li>
+                        <li>Bonus de durabilité (+10-30% selon tier)</li>
+                        <li>Priorité aux items équipés puis inventaire</li>
+                        <li>Indicateur de progression au-dessus de la tête</li>
+                        <li>Désactivation manuelle possible par joueur</li>
+                    </ul>
+                </div>
+
+                <div class="tier-box">
+                    <div class="tier-title">🔧 Tiers de Station</div>
+                    <div class="tier-item"><strong>Tier 1 :</strong> 10 blocs, 1 durabilité/s, 100 RF/durabilité</div>
+                    <div class="tier-item"><strong>Tier 2 :</strong> 25 blocs, 5 durabilité/s, 50 RF/durabilité, +10% bonus</div>
+                    <div class="tier-item"><strong>Tier 3 :</strong> 50 blocs, 15 durabilité/s, 25 RF/durabilité, +30% bonus</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Rayon Max</div>
+                        <div class="stat-value">50 blocs</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Joueurs Simultanés</div>
+                        <div class="stat-value">10 max</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Vitesse Réparation</div>
+                        <div class="stat-value">15 dur/s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Buffer Énergie</div>
+                        <div class="stat-value">500k RF</div>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <div class="success-title">Effets Visuels</div>
+                    <p style="color: #166534; font-size: 0.95em;">
+                        Particules vertes en spirale autour du joueur pendant la réparation. 
+                        Barre de progression au-dessus de la tête montrant l'item en cours de réparation. 
+                        Son de cliquetis métallique apaisant.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">Optimisations</div>
+                    <p style="color: #1e40af; font-size: 0.95em;">
+                        Mode "Urgence" : répare uniquement les items à moins de 20% de durabilité pour économiser l'énergie. 
+                        Mode "Passif" : réparation lente mais continue (parfait pour les bases). 
+                        Whitelist/blacklist d'items configurables.
+                    </p>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">Limitations</div>
+                    <p style="color: #991b1b; font-size: 0.95em;">
+                        Ne peut pas réparer les items avec durabilité infinie. Les items maudits (curse of vanishing/binding) 
+                        nécessitent 3x plus d'énergie. La réparation s'arrête si le buffer d'énergie tombe sous 10%.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Block Miné -->
+            <div class="card utility">
+                <div class="card-header">
+                    <div class="icon">💣</div>
+                    <div>
+                        <div class="card-title">Block Miné</div>
+                        <span class="badge utility">Piège</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📋 Description</div>
+                    <p style="color: #6b7280; padding-left: 10px;">
+                        Alternative discrète à la plaque de pression. Ce bloc se déclenche lorsqu'un joueur ennemi 
+                        le mine, permettant des pièges créatifs et défenses surprises dans votre base.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">✨ Fonctionnalités</div>
+                    <ul class="feature-list">
+                        <li>Se déclenche uniquement au <span class="highlight">minage</span>, pas au passage</li>
+                        <li>Détection faction : ne se déclenche que pour les ennemis</li>
+                        <li>Apparence configurable (imite d'autres blocs)</li>
+                        <li>Actions : explosion, signal redstone, alert Discord, TP, poison</li>
+                        <li>Durabilité configurable avant explosion (1-10 hits)</li>
+                        <li>Mode "Réarmement auto" après 5 minutes</li>
+                        <li>Compatible avec redstone pour chaînes de pièges</li>
+                    </ul>
+                </div>
+
+                <div class="tier-box">
+                    <div class="tier-title">🔧 Types d'Actions</div>
+                    <div class="tier-item"><strong>Explosion :</strong> TNT, Creeper, ou custom (force 1-4)</div>
+                    <div class="tier-item"><strong>Effets :</strong> Poison, Blindness, Slowness, Wither (10-30s)</div>
+                    <div class="tier-item"><strong>Redstone :</strong> Signal 1-15, durée 1-10s</div>
+                    <div class="tier-item"><strong>Alerte :</strong> Message faction + optionnel Discord webhook</div>
+                    <div class="tier-item"><strong>TP Piège :</strong> Téléporte l'ennemi dans une cellule</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Déguisements</div>
+                        <div class="stat-value">50+ blocs</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Cooldown Réarm</div>
+                        <div class="stat-value">5 min</div>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <div class="success-title">Stratégies d'Utilisation</div>
+                    <p style="color: #166534; font-size: 0.95em;">
+                        <strong>Faux Minerais :</strong> Déguisez en diamant ore dans votre mine<br>
+                        <strong>Murs Piégés :</strong> Intégrez dans les murs de votre base<br>
+                        <strong>Coffres Explosifs :</strong> Placez sous des coffres appâts<br>
+                        <strong>Chaîne de Pièges :</strong> Connectez plusieurs blocs en cascade
+                    </p>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">Attention</div>
+                    <p style="color: #991b1b; font-size: 0.95em;">
+                        Peut affecter les membres de votre faction si mal configuré ! Toujours tester en créatif. 
+                        Les explosions peuvent endommager votre propre base. Utilisez avec précaution près de vos valuables.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">Configuration Avancée</div>
+                    <p style="color: #1e40af; font-size: 0.95em;">
+                        Clic droit avec wrench pour ouvrir le GUI. Sélectionnez le déguisement, l'action, l'intensité. 
+                        Possibilité de créer des "Profils" de pièges pour déploiement rapide. 
+                        Shift+clic droit pour copier/coller la config entre blocks.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

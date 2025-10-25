@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Magie & Mana - Documentation Complète (Niveau 100)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b4e 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #c084fc;
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(192, 132, 252, 0.8), 0 0 40px rgba(168, 85, 247, 0.6);
+            animation: magicGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes magicGlow {
+            from {
+                text-shadow: 0 0 20px rgba(192, 132, 252, 0.8), 0 0 40px rgba(168, 85, 247, 0.6);
+                transform: scale(1);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(192, 132, 252, 1), 0 0 60px rgba(168, 85, 247, 0.8), 0 0 80px rgba(139, 92, 246, 0.6);
+                transform: scale(1.02);
+            }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #a78bfa;
+            font-size: 1.6em;
+            margin-bottom: 60px;
+            font-style: italic;
+            text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+        }
+
+        .main-section {
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.95) 0%, rgba(45, 27, 78, 0.95) 100%);
+            border-radius: 30px;
+            padding: 50px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.3);
+            border: 3px solid rgba(192, 132, 252, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #8b5cf6, #c084fc, #a78bfa, #8b5cf6);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .section-title {
+            font-size: 2.8em;
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '✨';
+            margin-right: 20px;
+            font-size: 1.2em;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .info-card {
+            background: rgba(15, 14, 40, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(192, 132, 252, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(192, 132, 252, 0.6);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+        }
+
+        .card-header {
+            font-size: 1.8em;
+            color: #a78bfa;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-icon {
+            margin-right: 15px;
+            font-size: 1.4em;
+            filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.6));
+        }
+
+        .card-content {
+            color: #cbd5e1;
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            padding: 12px 0 12px 35px;
+            position: relative;
+            color: #cbd5e1;
+            font-size: 1.05em;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.1);
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: '◆';
+            position: absolute;
+            left: 8px;
+            color: #c084fc;
+            font-weight: bold;
+            font-size: 1.2em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #8b5cf6 0%, #c084fc 100%);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 10px rgba(139, 92, 246, 0.5);
+        }
+
+        .magic-school {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(192, 132, 252, 0.2) 100%);
+            border-left: 5px solid;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .school-fire { border-color: #ef4444; }
+        .school-water { border-color: #3b82f6; }
+        .school-earth { border-color: #10b981; }
+        .school-air { border-color: #a78bfa; }
+        .school-light { border-color: #fbbf24; }
+        .school-dark { border-color: #6b21a8; }
+        .school-arcane { border-color: #c084fc; }
+
+        .school-header {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .school-icon {
+            margin-right: 15px;
+            font-size: 1.5em;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        .spell-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .spell-card {
+            background: rgba(15, 14, 40, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .spell-card:hover {
+            transform: scale(1.05);
+            border-color: rgba(192, 132, 252, 0.6);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .spell-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #c084fc;
+            margin-bottom: 10px;
+        }
+
+        .spell-level {
+            color: #fbbf24;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .spell-cost {
+            color: #60a5fa;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .spell-desc {
+            color: #cbd5e1;
+            font-size: 0.95em;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(192, 132, 252, 0.3) 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(192, 132, 252, 0.4);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: rgba(15, 14, 40, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .stat-label {
+            color: #a78bfa;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            color: #c084fc;
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+
+        .mechanic-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .mechanic-title {
+            font-size: 1.5em;
+            color: #60a5fa;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .mechanic-title::before {
+            content: '⚡';
+            margin-right: 12px;
+            font-size: 1.3em;
+        }
+
+        .item-showcase {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(251, 191, 36, 0.2) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .item-showcase-title {
+            font-size: 1.6em;
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .item-showcase-title::before {
+            content: '🎁';
+            margin-right: 12px;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .item-card {
+            background: rgba(15, 14, 40, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .item-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fde68a;
+            margin-bottom: 10px;
+        }
+
+        .item-type {
+            color: #fb923c;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .item-desc {
+            color: #cbd5e1;
+            font-size: 0.95em;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+            border-left: 5px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .warning-title {
+            color: #fca5a5;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .warning-title::before {
+            content: '⚠️';
+            margin-right: 10px;
+        }
+
+        .warning-text {
+            color: #fecaca;
+            font-size: 0.95em;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+            border-left: 5px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .tip-title {
+            color: #6ee7b7;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .tip-title::before {
+            content: '💡';
+            margin-right: 10px;
+        }
+
+        .tip-text {
+            color: #d1fae5;
+            font-size: 0.95em;
+        }
+
+        .progression-track {
+            background: rgba(15, 14, 40, 0.6);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(192, 132, 252, 0.3);
+        }
+
+        .level-step {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+        }
+
+        .level-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #c084fc;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .level-info {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .level-title {
+            font-size: 1.2em;
+            color: #a78bfa;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .level-desc {
+            color: #cbd5e1;
+            font-size: 0.95em;
+        }
+
+        .ascension-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.3) 100%);
+            border: 3px solid rgba(251, 191, 36, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
+        }
+
+        .ascension-title {
+            font-size: 2em;
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+        }
+
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8em;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .main-section {
+                padding: 30px 20px;
+            }
+
+            .spell-grid, .item-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Système de Magie & Mana ✨</h1>
+        <p class="subtitle">Maîtrisez les forces arcaniques - Progression jusqu'au niveau 100</p>
+
+        <!-- SECTION 1: Fondamentaux du Mana -->
+        <div class="main-section">
+            <div class="section-title">🌟 Le Mana : Fondamentaux</div>
+            
+            <div class="content-grid">
+                <div class="info-card">
+                    <div class="card-header">
+                        <span class="card-icon">💠</span>
+                        Qu'est-ce que le Mana ?
+                    </div>
+                    <div class="card-content">
+                        <p>
+                            Le Mana est une <span class="highlight">ressource énergétique mystique</span> qui alimente 
+                            tous les sorts et capacités magiques. Contrairement à la santé, le Mana se régénère naturellement 
+                            mais peut être épuisé rapidement lors de combats intenses.
+                        </p>
+                        <ul class="feature-list" style="margin-top: 15px;">
+                            <li>Barre visible sous la barre de vie (couleur bleue/violette)</li>
+                            <li>Régénération passive : 1-10 mana/seconde selon niveau</li>
+                            <li>Peut être boosté par équipement, enchantements, potions</li>
+                            <li>Capacité maximale augmente de façon exponentielle avec le niveau</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-header">
+                        <span class="card-icon">⚗️</span>
+                        Obtenir & Restaurer du Mana
+                    </div>
+                    <div class="card-content">
+                        <ul class="feature-list">
+                            <li><strong>Régénération Passive:</strong> 1-10 mana/s selon stats (scale avec niveau)</li>
+                            <li><strong>Méditation:</strong> Shift+sneak immobile = x10 regen pendant 30s</li>
+                            <li><strong>Potions de Mana:</strong> Restore 100/250/500/1000 mana (4 tiers)</li>
+                            <li><strong>Cristaux de Mana:</strong> Items consommables (+100-500 mana selon tier)</li>
+                            <li><strong>Fontaines Arcaniques:</strong> Structures qui rechargent 100% + buff 5min</li>
+                            <li><strong>Repos:</strong> Dormir restore 100% mana + bonus temporaire (10% mana max)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <h3 style="color: #c084fc; font-size: 1.5em; margin-bottom: 15px;">📊 Statistiques Évolutives</h3>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Niveau 1</div>
+                        <div class="stat-value">100 Mana</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Niveau 25</div>
+                        <div class="stat-value">500 Mana</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Niveau 50</div>
+                        <div class="stat-value">1200 Mana</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Niveau 75</div>
+                        <div class="stat-value">2500 Mana</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Niveau 100</div>
+                        <div class="stat-value">5000 Mana</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Régén. Max</div>
+                        <div class="stat-value">10/s</div>
+                    </div>
+                </div>
+                <p style="color: #a78bfa; margin-top: 15px; text-align: center; font-style: italic;">
+                    * La progression est exponentielle : les derniers niveaux donnent beaucoup plus de mana
+                </p>
+            </div>
+
+            <div class="mechanic-box">
+                <div class="mechanic-title">Mécanique: Surcharge Arcanique</div>
+                <div class="card-content">
+                    <p style="margin-bottom: 15px;">
+                        Si vous essayez de lancer un sort sans assez de Mana, vous entrez en <span class="highlight">Surcharge</span>:
+                    </p>
+                    <ul class="feature-list">
+                        <li>Le sort se lance quand même MAIS consomme de la vie (2 HP = 1 mana manquant)</li>
+                        <li>Effet visuel: écran rouge, particules de sang</li>
+                        <li>Debuff "Épuisement Magique" (-50% regen mana pendant 30s)</li>
+                        <li>Risque de mort si HP trop bas !</li>
+                        <li>Système risk/reward pour situations désespérées</li>
+                        <li><strong>Nouveau (Niv 60+):</strong> "Maîtrise de la Surcharge" réduit le coût HP à 1.5:1</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Progression Magique (Niveau 100) -->
+        <div class="main-section">
+            <div class="section-title">📈 Système de Progression (1-100)</div>
+
+            <div class="content-grid">
+                <div class="info-card">
+                    <div class="card-header">
+                        <span class="card-icon">⭐</span>
+                        Niveau de Magie
+                    </div>
+                    <div class="card-content">
+                        <p style="margin-bottom: 15px;">
+                            Votre <span class="highlight">Niveau de Magie</span> détermine votre puissance arcanique globale. 
+                            Il augmente séparément de votre niveau d'XP Minecraft standard et va jusqu'à <span class="highlight">100</span>.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Gagnez XP magique en lançant des sorts (scale avec niveau du sort)</li>
+                            <li>+XP bonus en tuant des mobs avec magie (x2 pour boss)</li>
+                            <li>Chaque niveau débloque nouveaux sorts et augmente mana max</li>
+                            <li>Tous les 10 niveaux : déblocage de nouvelles capacités majeures</li>
+                            <li>XP requise augmente exponentiellement (niv 90-100 = marathon)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        Spécialisation & Multi-classe
+                    </div>
+                    <div class="card-content">
+                        <p style="margin-bottom: 15px;">
+                            Système de spécialisation évolué pour progression longue :
+                        </p>
+                        <ul class="feature-list">
+                            <li><strong>Niveau 10:</strong> Choix de l'école principale (-30% coût, +20% dégâts)</li>
+                            <li><strong>Niveau 30:</strong> Déblocage école secondaire (-15% coût, +10% dégâts)</li>
+                            <li><strong>Niveau 60:</strong> Déblocage école tertiaire (bonus mineurs)</li>
+                            <li><strong>Niveau 80:</strong> Fusion des écoles = sorts hybrides custom</li>
+                            <li>Changement de spé possible mais coûteux (perte 20% XP de l'école)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progression-track">
+                <h3 style="color: #c084fc; font-size: 1.6em; margin-bottom: 20px;">🎓 Paliers de Progression Détaillés</h3>
+                
+                <div class="level-step">
+                    <div class="level-number">1-20</div>
+                    <div class="level-info">
+                        <div class="level-title">⚪ Novice</div>
+                        <div class="level-desc">
+                            Sorts basiques, apprentissage des fondamentaux. Mana: 100-300. 
+                            Unlock: 3 écoles + Tier 1 spells. Focus: Survie et maîtrise des bases.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-step">
+                    <div class="level-number">21-40</div>
+                    <div class="level-info">
+                        <div class="level-title">🟢 Apprenti</div>
+                        <div class="level-desc">
+                            Sorts intermédiaires, combos simples. Mana: 300-700. 
+                            Unlock: Toutes écoles + Tier 2 spells + École secondaire (niv 30). Multi-casting basique.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-step">
+                    <div class="level-number">41-60</div>
+                    <div class="level-info">
+                        <div class="level-title">🔵 Adepte</div>
+                        <div class="level-desc">
+                            Sorts avancés, combos complexes. Mana: 700-1500. 
+                            Unlock: Tier 3 spells + Rituels + Métamagie + École tertiaire (niv 60). Enchantements magiques custom.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-step">
+                    <div class="level-number">61-80</div>
+                    <div class="level-info">
+                        <div class="level-title">🟣 Expert</div>
+                        <div class="level-desc">
+                            Sorts maîtres, création de sorts. Mana: 1500-3000. 
+                            Unlock: Tier 4 spells + Sorts Hybrides (niv 80) + Aura passive. Domination du champ de bataille.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-step">
+                    <div class="level-number">81-99</div>
+                    <div class="level-info">
+                        <div class="level-title">🟠 Maître Arcanique</div>
+                        <div class="level-desc">
+                            Sorts ultimes, redéfinition de la magie. Mana: 3000-4800. 
+                            Unlock: Tier 5 spells (Ultimes) + Transcendance + Forme Astrale. Légende vivante.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-step" style="border-left-color: #fbbf24; background: rgba(251, 191, 36, 0.15);">
+                    <div class="level-number" style="color: #fbbf24;">100</div>
+                    <div class="level-info">
+                        <div class="level-title" style="color: #fbbf24;">👑 Archimage Transcendant</div>
+                        <div class="level-desc">
+                            Apogée de la magie mortelle. Mana: 5000. 
+                            Unlock: Sort Signature Unique + Immortalité Arcanique + Pouvoir de Création. 
+                            Vous êtes une force de la nature. Seuls quelques élus atteignent ce niveau.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ascension-box">
+                <div class="ascension-title">🌟 NIVEAU 100 : L'ASCENSION 🌟</div>
+                <div style="color: #fde68a; text-align: center; margin-bottom: 20px; font-size: 1.1em;">
+                    <em>"Quand un mage atteint le niveau 100, il transcende la mortalité..."</em>
+                </div>
+                <div class="content-grid">
+                    <div style="color: #fde68a;">
+                        <strong style="font-size: 1.3em; display: block; margin-bottom: 10px;">🎁 Récompenses Uniques :</strong>
+                        <ul class="feature-list">
+                            <li><strong>Sort Signature:</strong> Créez UN sort complètement custom sans limites de puissance</li>
+                            <li><strong>Forme Transcendante:</strong> Transformation permanente (apparence éthérée, particules)</li>
+                            <li><strong>Immortalité Arcanique:</strong> 1 mort gratuite/jour (respawn avec 100% stats)</li>
+                            <li><strong>Titre Légendaire:</strong> "[Archimage]" devant votre pseudo (couleur arc-en-ciel)</li>
+                            <li><strong>Sanctuaire Personnel:</strong> Dimension pocket accessible uniquement par vous</li>
+                            <li><strong>Familier Légendaire:</strong> Créature mythique loyale (dragon/phénix/etc.)</li>
+                        </ul>
+                    </div>
+                    <div style="color: #fde68a;">
+                        <strong style="font-size: 1.3em; display: block; margin-bottom: 10px;">⚡ Capacités Passives :</strong>
+                        <ul class="feature-list">
+                            <li>Tous les sorts coûtent -50% mana</li>
+                            <li>Régénération mana x5 (50 mana/s au repos)</li>
+                            <li>Immunité aux effets magiques hostiles</li>
+                            <li>Aura de 50 blocs qui buff les alliés (+30% dégâts)</li>
+                            <li>Vol libre permanent (sans elytra)</li>
+                            <li>Téléportation inter-dimensionnelle instantanée</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; padding: 20px; background: rgba(239, 68, 68, 0.2); border-radius: 10px; border: 2px solid #ef4444;">
+                    <strong style="color: #fca5a5; font-size: 1.2em;">⚠️ Quête d'Ascension :</strong>
+                    <p style="color: #fecaca; margin-top: 10px;">
+                        Atteindre niveau 100 ne suffit pas. Vous devez compléter la <strong>"Quête des 7 Sceaux"</strong> :
+                        Vaincre les 7 boss ultimes des donjons légendaires, collecter leurs essences, 
+                        et accomplir un rituel d'ascension coûtant toutes vos ressources rares. 
+                        Le rituel échoue si interrompu = recommencer. Seuls les plus déterminés réussissent.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-title">Astuce XP Magique (Optimisée pour Niveau 100)</div>
+                <div class="tip-text">
+                    <strong>Niveaux 1-30 (Rapide):</strong> Donjons standards, mobs farming, quêtes tutorielles<br>
+                    <strong>Niveaux 31-60 (Moyen):</strong> Donjons difficiles, événements magiques, boss farming<br>
+                    <strong>Niveaux 61-85 (Lent):</strong> Raids de faction, donjons légendaires, crafts complexes de sorts<br>
+                    <strong>Niveaux 86-99 (Très lent):</strong> Boss ultimes répétables, défis hebdomadaires, PvP magique classé<br>
+                    <strong>Niveau 100 (Quête):</strong> Complétion de la Quête des 7 Sceaux uniquement<br><br>
+                    
+                    💡 <strong>Boosts XP disponibles:</strong><br>
+                    • Potions d'Éveil (+50% XP pendant 1h)<br>
+                    • Événement "Confluence Arcanique" (double XP weekend)<br>
+                    • Mentor bonus (jouer avec niv 100 = +25% XP)<br>
+                    • Artefact "Tome de Sagesse Infinie" (+100% XP permanent)
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Écoles de Magie (Adaptées Niveau 100) -->
+        <div class="main-section">
+            <div class="section-title">🎓 Les 7 Écoles de Magie (Tiers Étendus)</div>
+
+            <p style="color: #cbd5e1; margin-bottom: 30px; font-size: 1.1em; text-align: center;">
+                Chaque école possède maintenant <span class="highlight">5 Tiers de sorts</span> débloqués progressivement jusqu'au niveau 100.
+            </p>
+
+            <!-- École du Feu -->
+            <div class="magic-school school-fire">
+                <div class="school-header">
+                    <span class="school-icon" style="color: #ef4444;">🔥</span>
+                    <span style="color: #ef4444;">École du Feu (Pyromancy)</span>
+                </div>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <em>"De l'étincelle au soleil, maîtrisez l'inferno"</em><br>
+                    Spécialisation DPS pure. Dégâts massifs évolutifs, AoE croissant, DoTs puissants.
+                </p>
+                <div class="spell-grid">
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 1 (Niv 1)</div>
+                        <div class="spell-name">Boule de Feu</div>
+                        <div class="spell-cost">💠 15 Mana | ⏱️ 2s cooldown</div>
+                        <div class="spell-desc">Projectile basique. 20 dmg + brûlure 3s (5 dmg/s).</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 2 (Niv 20)</div>
+                        <div class="spell-name">Mur de Flammes</div>
+                        <div class="spell-cost">💠 40 Mana | ⏱️ 10s cooldown</div>
+                        <div class="spell-desc">Barrière 5x3. Bloque ennemis, 15 dmg/s contact.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 3 (Niv 45)</div>
+                        <div class="spell-name">Météore</div>
+                        <div class="spell-cost">💠 80 Mana | ⏱️ 25s cooldown</div>
+                        <div class="spell-desc">Appel céleste. 150 dmg + explosion 10x10 blocs.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 4 (Niv 70)</div>
+                        <div class="spell-name">Tempête de Feu</div>
+                        <div class="spell-cost">💠 150 Mana | ⏱️ 45s cooldown</div>
+                        <div class="spell-desc">Zone 20x20. Pluie de feu pendant 15s. 300 dmg total.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 5 (Niv 90)</div>
+                        <div class="spell-name">☀️ Soleil Destructeur</div>
+                        <div class="spell-cost">💠 400 Mana | ⏱️ 3min cooldown</div>
+                        <div class="spell-desc">Mini-soleil explosif. 1000 dmg dans 30 blocs. Apocalypse.</div>
+                    </div>
+                    <div class="spell-card" style="border: 3px solid #fbbf24;">
+                        <div class="spell-level" style="color: #fbbf24;">🌟 Ultime (Niv 100)</div>
+                        <div class="spell-name" style="color: #fbbf24;">Incarnation du Phénix</div>
+                        <div class="spell-cost">💠 500 Mana | ⏱️ 10min cooldown</div>
+                        <div class="spell-desc">Transformation en phénix 60s. Vol, immunité feu, tous sorts feu x3 dmg.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- École de l'Eau -->
+            <div class="magic-school school-water">
+                <div class="school-header">
+                    <span class="school-icon" style="color: #3b82f6;">💧</span>
+                    <span style="color: #3b82f6;">École de l'Eau (Hydromancy)</span>
+                </div>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <em>"De la goutte à l'océan, contrôlez le flux vital"</em><br>
+                    Spécialisation Support/Heal évolué. Soins puissants, contrôle massif, survie extrême.
+                </p>
+                <div class="spell-grid">
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 1 (Niv 1)</div>
+                        <div class="spell-name">Vague Curative</div>
+                        <div class="spell-cost">💠 25 Mana | ⏱️ 5s cooldown</div>
+                        <div class="spell-desc">Soigne ciblé pour 30 HP. Courte portée.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 2 (Niv 20)</div>
+                        <div class="spell-name">Prison Aqueuse</div>
+                        <div class="spell-cost">💠 35 Mana | ⏱️ 12s cooldown</div>
+                        <div class="spell-desc">Bulle d'eau. Immobilise ennemi 8s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 3 (Niv 45)</div>
+                        <div class="spell-name">Tsunami</div>
+                        <div class="spell-cost">💠 70 Mana | ⏱️ 20s cooldown</div>
+                        <div class="spell-desc">Vague géante. 80 dmg + knockback massif.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 4 (Niv 70)</div>
+                        <div class="spell-name">Déluge Purificateur</div>
+                        <div class="spell-cost">💠 120 Mana | ⏱️ 40s cooldown</div>
+                        <div class="spell-desc">Pluie curative zone 25x25. Alliés: +150 HP total sur 10s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 5 (Niv 90)</div>
+                        <div class="spell-name">🌊 Maelström</div>
+                        <div class="spell-cost">💠 350 Mana | ⏱️ 3min cooldown</div>
+                        <div class="spell-desc">Vortex géant 40x40. Aspire tout. 600 dmg + drown effect.</div>
+                    </div>
+                    <div class="spell-card" style="border: 3px solid #fbbf24;">
+                        <div class="spell-level" style="color: #fbbf24;">🌟 Ultime (Niv 100)</div>
+                        <div class="spell-name" style="color: #fbbf24;">Avatar de l'Océan</div>
+                        <div class="spell-cost">💠 450 Mana | ⏱️ 10min cooldown</div>
+                        <div class="spell-desc">Forme liquide 60s. Intangible, TP via eau, heal continu team.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- École de la Terre -->
+            <div class="magic-school school-earth">
+                <div class="school-header">
+                    <span class="school-icon" style="color: #10b981;">🪨</span>
+                    <span style="color: #10b981;">École de la Terre (Geomancy)</span>
+                </div>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <em>"De la pierre à la montagne, devenez immuable"</em><br>
+                    Spécialisation Tank ultime. Défense inégalée, contrôle terrain, invulnérabilité.
+                </p>
+                <div class="spell-grid">
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 1 (Niv 1)</div>
+                        <div class="spell-name">Peau de Pierre</div>
+                        <div class="spell-cost">💠 20 Mana | ⏱️ 8s cooldown</div>
+                        <div class="spell-desc">+10 armor 15s. Réduit dmg 30%.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 2 (Niv 20)</div>
+                        <div class="spell-name">Mur de Roche</div>
+                        <div class="spell-cost">💠 30 Mana | ⏱️ 10s cooldown</div>
+                        <div class="spell-desc">Barrière cobblestone 7x4. Dure 45s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 3 (Niv 45)</div>
+                        <div class="spell-name">Séisme</div>
+                        <div class="spell-cost">💠 65 Mana | ⏱️ 18s cooldown</div>
+                        <div class="spell-desc">Tremblement 15 blocs. 70 dmg + stun 3s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 4 (Niv 70)</div>
+                        <div class="spell-name">Forteresse de Bedrock</div>
+                        <div class="spell-cost">💠 180 Mana | ⏱️ 60s cooldown</div>
+                        <div class="spell-desc">Dôme indestructible 10x10. Dure 20s. Refuge absolu.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 5 (Niv 90)</div>
+                        <div class="spell-name">🏔️ Cataclysme Tellurique</div>
+                        <div class="spell-cost">💠 380 Mana | ⏱️ 3min cooldown</div>
+                        <div class="spell-desc">Faille massive 50x50. 900 dmg. Remodèle le terrain.</div>
+                    </div>
+                    <div class="spell-card" style="border: 3px solid #fbbf24;">
+                        <div class="spell-level" style="color: #fbbf24;">🌟 Ultime (Niv 100)</div>
+                        <div class="spell-name" style="color: #fbbf24;">Titan Éternel</div>
+                        <div class="spell-cost">💠 500 Mana | ⏱️ 10min cooldown</div>
+                        <div class="spell-desc">Transformation titan 60s. +50 armor, immunité knockback, x5 HP.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- École de l'Air -->
+            <div class="magic-school school-air">
+                <div class="school-header">
+                    <span class="school-icon" style="color: #a78bfa;">💨</span>
+                    <span style="color: #a78bfa;">École de l'Air (Aeromancy)</span>
+                </div>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <em>"De la brise à l'ouragan, soyez insaisissable"</em><br>
+                    Spécialisation Mobilité extrême. Vitesse supersonique, évasion parfaite, omniprésen ce.
+                </p>
+                <div class="spell-grid">
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 1 (Niv 1)</div>
+                        <div class="spell-name">Lame de Vent</div>
+                        <div class="spell-cost">💠 12 Mana | ⏱️ 1s cooldown</div>
+                        <div class="spell-desc">Projectile rapide. 18 dmg. Traverse ennemis.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 2 (Niv 20)</div>
+                        <div class="spell-name">Dash Aérien</div>
+                        <div class="spell-cost">💠 20 Mana | ⏱️ 4s cooldown</div>
+                        <div class="spell-desc">TP rapide 20 blocs. i-frames 1s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 3 (Niv 45)</div>
+                        <div class="spell-name">Cyclone</div>
+                        <div class="spell-cost">💠 55 Mana | ⏱️ 15s cooldown</div>
+                        <div class="spell-desc">Tornade qui aspire. 85 dmg + projection.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 4 (Niv 70)</div>
+                        <div class="spell-name">Tempête Foudro yante</div>
+                        <div class="spell-cost">💠 140 Mana | ⏱️ 35s cooldown</div>
+                        <div class="spell-desc">Zone 30x30. Éclairs aléatoires. 400 dmg total en 12s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 5 (Niv 90)</div>
+                        <div class="spell-name">🌪️ Œil de l'Ouragan</div>
+                        <div class="spell-cost">💠 320 Mana | ⏱️ 3min cooldown</div>
+                        <div class="spell-desc">Mega-tornade 60x60. 1200 dmg. Dure 20s. Chaos absolu.</div>
+                    </div>
+                    <div class="spell-card" style="border: 3px solid #fbbf24;">
+                        <div class="spell-level" style="color: #fbbf24;">🌟 Ultime (Niv 100)</div>
+                        <div class="spell-name" style="color: #fbbf24;">Esprit du Zéphyr</div>
+                        <div class="spell-cost">💠 420 Mana | ⏱️ 10min cooldown</div>
+                        <div class="spell-desc">Forme élémentaire air 60s. Vol, +500% speed, intangible.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- École de Lumière -->
+            <div class="magic-school school-light">
+                <div class="school-header">
+                    <span class="school-icon" style="color: #fbbf24;">✨</span>
+                    <span style="color: #fbbf24;">École de la Lumière (Lumomancy)</span>
+                </div>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <em>"De la lueur au brasier sacré, purifiez tout"</em><br>
+                    Spécialisation Heal/Buff divine. Soins miraculeux, purification totale, résurrection.
+                </p>
+                <div class="spell-grid">
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 1 (Niv 1)</div>
+                        <div class="spell-name">Rayon Sacré</div>
+                        <div class="spell-cost">💠 18 Mana | ⏱️ 3s cooldown</div>
+                        <div class="spell-desc">Laser lumière. 28 dmg (+75% vs undead).</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 2 (Niv 20)</div>
+                        <div class="spell-name">Aura de Régénération</div>
+                        <div class="spell-cost">💠 40 Mana | ⏱️ 12s cooldown</div>
+                        <div class="spell-desc">Zone 12 blocs. +3 HP/s pendant 12s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 3 (Niv 45)</div>
+                        <div class="spell-name">Nova Lumineuse</div>
+                        <div class="spell-cost">💠 60 Mana | ⏱️ 18s cooldown</div>
+                        <div class="spell-desc">Explosion 360° 15 blocs. 90 dmg + aveuglement 8s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 4 (Niv 70)</div>
+                        <div class="spell-name">Bénédiction Divine</div>
+                        <div class="spell-cost">💠 150 Mana | ⏱️ 45s cooldown</div>
+                        <div class="spell-desc">Buff team 25 blocs. +40% dmg, +30% def, 30s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 5 (Niv 90)</div>
+                        <div class="spell-name">☀️ Colère Céleste</div>
+                        <div class="spell-cost">💠 400 Mana | ⏱️ 3min cooldown</div>
+                        <div class="spell-desc">Rayon du ciel 40 blocs. 1100 dmg. Vaporise undead.</div>
+                    </div>
+                    <div class="spell-card" style="border: 3px solid #fbbf24;">
+                        <div class="spell-level" style="color: #fbbf24;">🌟 Ultime (Niv 100)</div>
+                        <div class="spell-name" style="color: #fbbf24;">Résurrection</div>
+                        <div class="spell-cost">💠 800 Mana | ⏱️ 15min cooldown</div>
+                        <div class="spell-desc">Ressuscite joueur mort dans 5min avec 100% stats. Miracle.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- École des Ténèbres -->
+            <div class="magic-school school-dark">
+                <div class="school-header">
+                    <span class="school-icon" style="color: #6b21a8;">🌑</span>
+                    <span style="color: #6b21a8;">École des Ténèbres (Umbramancy)</span>
+                </div>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <em>"De l'ombre au néant, embrassez l'interdit"</em><br>
+                    Spécialisation DoT/Necromancy. Corruption extrême, armée de morts, drain vital massif.
+                </p>
+                <div class="spell-grid">
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 1 (Niv 1)</div>
+                        <div class="spell-name">Drain Vital</div>
+                        <div class="spell-cost">💠 25 Mana | ⏱️ 4s cooldown</div>
+                        <div class="spell-desc">Vole 25 HP. Life steal pur.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 2 (Niv 20)</div>
+                        <div class="spell-name">Malédiction</div>
+                        <div class="spell-cost">💠 30 Mana | ⏱️ 10s cooldown</div>
+                        <div class="spell-desc">-60% dégâts infligés par cible. Dure 18s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 3 (Niv 45)</div>
+                        <div class="spell-name">Armée d'Ombres</div>
+                        <div class="spell-cost">💠 70 Mana | ⏱️ 20s cooldown</div>
+                        <div class="spell-desc">Invoque 8 adds ombre. Chacun: 15 dmg/hit.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 4 (Niv 70)</div>
+                        <div class="spell-name">Peste Nécrotique</div>
+                        <div class="spell-cost">💠 160 Mana | ⏱️ 50s cooldown</div>
+                        <div class="spell-desc">Plague contagieuse. 500 dmg total sur 20s. Se propage.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 5 (Niv 90)</div>
+                        <div class="spell-name">💀 Légion des Damnés</div>
+                        <div class="spell-cost">💠 450 Mana | ⏱️ 4min cooldown</div>
+                        <div class="spell-desc">Réanime 15 mobs récents comme minions. Durent 90s.</div>
+                    </div>
+                    <div class="spell-card" style="border: 3px solid #fbbf24;">
+                        <div class="spell-level" style="color: #fbbf24;">🌟 Ultime (Niv 100)</div>
+                        <div class="spell-name" style="color: #fbbf24;">Seigneur Liche</div>
+                        <div class="spell-cost">💠 600 Mana | ⏱️ 10min cooldown</div>
+                        <div class="spell-desc">Transformation liche 60s. Invulnérable, armée permanente, drain AoE.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- École Arcanique -->
+            <div class="magic-school school-arcane">
+                <div class="school-header">
+                    <span class="school-icon" style="color: #c084fc;">🔮</span>
+                    <span style="color: #c084fc;">École Arcanique (Pure Magic)</span>
+                </div>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    <em>"De l'essence brute au contrôle absolu de la réalité"</em><br>
+                    Spécialisation Utility/Réalité. Manipulation temps-espace, téléportation, omnipotence.
+                </p>
+                <div class="spell-grid">
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 1 (Niv 1)</div>
+                        <div class="spell-name">Missile Magique</div>
+                        <div class="spell-cost">💠 10 Mana | ⏱️ 0.5s cooldown</div>
+                        <div class="spell-desc">Projectile guidé. 15 dmg. Ne rate jamais.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 2 (Niv 20)</div>
+                        <div class="spell-name">Téléportation</div>
+                        <div class="spell-cost">💠 35 Mana | ⏱️ 8s cooldown</div>
+                        <div class="spell-desc">TP instantané 35 blocs. Traverse murs.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 3 (Niv 45)</div>
+                        <div class="spell-name">Stase Temporelle</div>
+                        <div class="spell-cost">💠 60 Mana | ⏱️ 22s cooldown</div>
+                        <div class="spell-desc">Freeze zone 15 blocs. Ennemis: 10% speed, 10s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 4 (Niv 70)</div>
+                        <div class="spell-name">Distorsion Spatiale</div>
+                        <div class="spell-cost">💠 180 Mana | ⏱️ 55s cooldown</div>
+                        <div class="spell-desc">Poche dimensionnelle 20x20. Piège ennemis 15s.</div>
+                    </div>
+                    <div class="spell-card">
+                        <div class="spell-level">Tier 5 (Niv 90)</div>
+                        <div class="spell-name">🌌 Effondrement Dimensionnel</div>
+                        <div class="spell-cost">💠 500 Mana | ⏱️ 4min cooldown</div>
+                        <div class="spell-desc">Trou noir 40 blocs. Aspire tout. 1500 dmg au centre.</div>
+                    </div>
+                    <div class="spell-card" style="border: 3px solid #fbbf24;">
+                        <div class="spell-level" style="color: #fbbf24;">🌟 Ultime (Niv 100)</div>
+                        <div class="spell-name" style="color: #fbbf24;">Omnipotence Temporaire</div>
+                        <div class="spell-cost">💠 1000 Mana | ⏱️ 15min cooldown</div>
+                        <div class="spell-desc">30s de toute-puissance. Tous sorts = instant cast + gratuit. Dieu vivant.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-title">Synergie Multi-École (Niveau 60+)</div>
+                <div class="tip-text">
+                    Combinez vos écoles secondaires/tertiaires pour des effets dévastateurs :<br><br>
+                    
+                    <strong>Exemples Tier 4-5 :</strong><br>
+                    • Feu + Terre (70+) = <strong>Volcan</strong> : Éruption massive 50x50, lave persistante, 800 dmg<br>
+                    • Eau + Air (70+) = <strong>Blizzard</strong> : Tempête de glace géante, freeze + 600 dmg<br>
+                    • Lumière + Feu (80+) = <strong>Plasma Solaire</strong> : Rayon qui vaporise tout, 1200 dmg<br>
+                    • Ténèbres + Arcane (80+) = <strong>Vide Absolu</strong> : Annihile zone 30x30, efface de la réalité<br>
+                    • Eau + Terre (90+) = <strong>Déluge Primordial</strong> : Océan instantané, noie ennemis, restructure map<br>
+                    • Air + Arcane (90+) = <strong>Téléportation de Masse</strong> : TP toute votre team à la fois<br><br>
+                    
+                    💡 Au niveau 100, créez vos propres combos ultimes custom !
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: Items & Équipement (Étendu Niveau 100) -->
+        <div class="main-section">
+            <div class="section-title">🎁 Items & Équipement Magique (Tiers Étendus)</div>
+
+            <div class="item-showcase">
+                <div class="item-showcase-title">Bâtons & Focus Magiques (5 Tiers)</div>
+                <p style="color: #fde68a; margin-bottom: 20px;">
+                    <em>Du simple bâton de bois au Sceptre Transcendant</em>
+                </p>
+                <div class="item-grid">
+                    <div class="item-card">
+                        <div class="item-name">Bâton d'Apprenti</div>
+                        <div class="item-type">Tier 1 (Niv 1-20)</div>
+                        <div class="item-desc">
+                            +50 Mana Max | +10% vitesse cast | Craft: bâton + lapis + redstone
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Sceptre d'Adepte</div>
+                        <div class="item-type">Tier 2 (Niv 21-40)</div>
+                        <div class="item-desc">
+                            +150 Mana Max | +20% vitesse cast | -10% coût sorts | Craft: tier 1 + diamants + essence
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Bâton de Maître</div>
+                        <div class="item-type">Tier 3 (Niv 41-65)</div>
+                        <div class="item-desc">
+                            +350 Mana Max | +30% vitesse cast | -20% coût | +15% dégâts | Drop boss difficiles
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Sceptre Arcanique</div>
+                        <div class="item-type">Tier 4 (Niv 66-85)</div>
+                        <div class="item-desc">
+                            +700 Mana Max | +40% vitesse cast | -30% coût | +30% dégâts | +2 mana regen/s | Rare drop donjons légendaires
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Bâton Transcendant</div>
+                        <div class="item-type">Tier 5 (Niv 86-100)</div>
+                        <div class="item-desc">
+                            +1500 Mana Max | +60% vitesse cast | -50% coût | +50% dégâts | +5 mana regen/s | 
+                            Passif: Double-cast 20% | Ultra-rare (boss ultimes seulement)
+                        </div>
+                    </div>
+                    <div class="item-card" style="border: 3px solid #fbbf24;">
+                        <div class="item-name">⭐ Étoile des Archimages</div>
+                        <div class="item-type">Légendaire (Niv 100 uniquement)</div>
+                        <div class="item-desc">
+                            +2500 Mana Max | +100% vitesse cast | -70% coût | +100% dégâts | +10 mana regen/s | 
+                            Triple-cast 30% | Tous cooldowns -50% | Drop: Quête d'Ascension finale uniquement
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-showcase">
+                <div class="item-showcase-title">Armures Enchantées (Sets Évolutifs)</div>
+                <p style="color: #fde68a; margin-bottom: 20px;">
+                    <em>Des robes simples aux armures divines</em>
+                </p>
+                <div class="item-grid">
+                    <div class="item-card">
+                        <div class="item-name">Robe de Novice</div>
+                        <div class="item-type">Tier 1 (Niv 1-25)</div>
+                        <div class="item-desc">
+                            <strong>Armor:</strong> 8 (cuir)<br>
+                            <strong>Set Bonus:</strong> +100 Mana | +1 regen/s | -10% coût<br>
+                            <strong>Craft:</strong> Tissu + lapis
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Robe de Mage</div>
+                        <div class="item-type">Tier 2 (Niv 26-50)</div>
+                        <div class="item-desc">
+                            <strong>Armor:</strong> 14<br>
+                            <strong>Set Bonus:</strong> +300 Mana | +3 regen/s | -25% coût | +10% dégâts<br>
+                            <strong>Craft:</strong> Tissu enchanté + électrum
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Armure du Battlemage</div>
+                        <div class="item-type">Tier 3 (Niv 51-70)</div>
+                        <div class="item-desc">
+                            <strong>Armor:</strong> 18 (fer+)<br>
+                            <strong>Set Bonus:</strong> +600 Mana | +5 regen/s | -30% coût | +25% dégâts | Résistance knockback<br>
+                            <strong>Craft:</strong> Bronze + fragments titaniques
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Vestige de l'Archimage</div>
+                        <div class="item-type">Tier 4 (Niv 71-90)</div>
+                        <div class="item-desc">
+                            <strong>Armor:</strong> 22 (diamant)<br>
+                            <strong>Set Bonus:</strong> +1200 Mana | +7 regen/s | -40% coût | +40% dégâts | 
+                            Bouclier magique (absorbe 500 dmg/min)<br>
+                            <strong>Drop:</strong> Boss légendaires
+                        </div>
+                    </div>
+                    <div class="item-card" style="border: 3px solid #fbbf24;">
+                        <div class="item-name">⭐ Raiments Transcendants</div>
+                        <div class="item-type">Légendaire (Niv 90-100)</div>
+                        <div class="item-desc">
+                            <strong>Armor:</strong> 28 (netherite+)<br>
+                            <strong>Set Bonus:</strong> +2000 Mana | +10 regen/s | -60% coût | +80% dégâts | 
+                            Bouclier 1000 dmg/min | Immunité knockback | Aura magique 20 blocs (+20% dmg team)<br>
+                            <strong>Drop:</strong> Quête d'Ascension niveau 100
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-showcase">
+                <div class="item-showcase-title">Artefacts Légendaires (Niveau 70+)</div>
+                <p style="color: #fde68a; margin-bottom: 20px;">
+                    <em>Items uniques réservés aux mages de haut niveau</em>
+                </p>
+                <div class="item-grid">
+                    <div class="item-card">
+                        <div class="item-name">Anneau de Mana Infini</div>
+                        <div class="item-type">Ring (Niv 70+)</div>
+                        <div class="item-desc">
+                            +500 Mana Max permanent | +3 mana regen/s | 
+                            Passif: Tous les 100 sorts lancés = 1 sort gratuit
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Couronne de l'Archimage</div>
+                        <div class="item-type">Crown (Niv 80+)</div>
+                        <div class="item-desc">
+                            +800 Mana Max | Vision magique (voit auras) | 
+                            Passif: 15% chance double-cast gratuit sur TOUS les sorts
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Cape des Mystères Éternels</div>
+                        <div class="item-type">Cloak (Niv 75+)</div>
+                        <div class="item-desc">
+                            Vol Elytra + +400 Mana Max | 
+                            Dash aérien -75% mana | Invisibilité magique (mobs ne vous voient pas à 30+ blocs)
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Sablier Temporel Suprême</div>
+                        <div class="item-type">Trinket (Niv 85+)</div>
+                        <div class="item-desc">
+                            Activable: Rembobine temps de 15s (position, HP, mana). 
+                            Cooldown: 5min. Peut sauver d'une mort certaine.
+                        </div>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-name">Phylactère de l'Immortel</div>
+                        <div class="item-type">Charm (Niv 90+)</div>
+                        <div class="item-desc">
+                            À la mort: Respawn immédiat avec 100% stats au lieu de perdre items. 
+                            Utilisable 3x avant de se briser. Rechargeable (très coûteux).
+                        </div>
+                    </div>
+                    <div class="item-card" style="border: 3px solid #fbbf24;">
+                        <div class="item-name">⭐ Cœur d'Étoile</div>
+                        <div class="item-type">Artefact Ultime (Niv 100)</div>
+                        <div class="item-desc">
+                            +1000 Mana Max | Régénération x2 sur TOUS les équipements | 
+                            Passif: Mort = revive automatique 1x/jour avec 50% stats | 
+                            Émission d'aura légendaire visible par tous (statut symbol)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Mécaniques Avancées Niveau 100 -->
+        <div class="main-section">
+            <div class="section-title">⚡ Mécaniques Avancées (Haut Niveau)</div>
+
+            <div class="mechanic-box">
+                <div class="mechanic-title">Multi-Casting Maîtrisé (Niveau 50+)</div>
+                <div class="card-content">
+                    <p style="margin-bottom: 15px;">
+                        À partir du niveau 50, débloquez le <span class="highlight">Multi-Casting</span> :
+                    </p>
+                    <ul class="feature-list">
+                        <li><strong>Niveau 50:</strong> Dual-Cast (2 sorts simultanés) | Coût mana: x1.5 total</li>
+                        <li><strong>Niveau 70:</strong> Triple-Cast (3 sorts simultanés) | Coût mana: x2 total</li>
+                        <li><strong>Niveau 90:</strong> Quad-Cast (4 sorts simultanés) | Coût mana: x2.5 total</li>
+                        <li><strong>Niveau 100:</strong> Penta-Cast (5 sorts simultanés) | Coût mana: x3 total</li>
+                        <li>Interface GUI spéciale pour configurer les chaînes de multi-cast</li>
+                        <li>Cooldown global de 3s entre chaque multi-cast</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #6ee7b7;">
+                        💡 <strong>Exemple dévastateur (Niv 100):</strong> Penta-Cast = 
+                        Météore + Tsunami + Séisme + Nova Lumineuse + Cyclone simultanément = Armageddon
+                    </p>
+                </div>
+            </div>
+
+            <div class="mechanic-box">
+                <div class="mechanic-title">Métamagie Avancée (Niveau 60+)</div>
+                <div class="card-content">
+                    <p style="margin-bottom: 15px;">
+                        Système de <span class="highlight">Runes de Métamagie</span> étendu :
+                    </p>
+                    <ul class="feature-list">
+                        <li><strong>Rune d'Extension:</strong> Portée x2 | +30% mana</li>
+                        <li><strong>Rune de Rapidité:</strong> Cast time -50% | +40% mana</li>
+                        <li><strong>Rune de Puissance:</strong> Dégâts +50% | +50% mana</li>
+                        <li><strong>Rune de Division:</strong> Projectile x3 | Mana x2</li>
+                        <li><strong>Rune de Silence:</strong> Sort invisible | +25% mana</li>
+                        <li><strong>Rune de Persévérance:</strong> Durée effets +100% | +35% mana</li>
+                        <li><strong>Rune de Perforation (Niv 70):</strong> Traverse boucliers/armure | +60% mana</li>
+                        <li><strong>Rune de Récursion (Niv 80):</strong> Sort se répète 3x | Mana x3</li>
+                        <li><strong>Rune d'Amplification (Niv 90):</strong> TOUS les effets x2 | Mana x4</li>
+                        <li><strong>Rune Divine (Niv 100):</strong> Sort devient incounterable | Mana x5</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #a78bfa;">
+                        Niveau 80+ : Combinez jusqu'à 3 runes simultanément sur un seul sort !
+                    </p>
+                </div>
+            </div>
+
+            <div class="mechanic-box">
+                <div class="mechanic-title">Rituels Majeurs (Niveau 60+)</div>
+                <div class="card-content">
+                    <p style="margin-bottom: 15px;">
+                        Rituels avancés pour effets permanents/world-changing :
+                    </p>
+                    <ul class="feature-list">
+                        <li><strong>Rituel de Mana Éternel:</strong> Zone regen mana x10 | Dure 24h | Coût: 500 mana + cristaux rares</li>
+                        <li><strong>Rituel de Protection Divine:</strong> Dôme indestructible 50x50 | Dure 6h | Coût: 800 mana + gemmes</li>
+                        <li><strong>Rituel d'Invocation Majeure:</strong> Spawn boss légendaire custom | Permanent | Coût: items ultra-rares</li>
+                        <li><strong>Rituel de Téléportation (Niv 70):</strong> Waypoint permanent inter-dimensionnel | 1x par base | Coût: énorme</li>
+                        <li><strong>Rituel de Restauration (Niv 80):</strong> Répare zone 100x100 (terrain/structures) | Coût: 1500 mana + essence</li>
+                        <li><strong>Rituel de Transcendance (Niv 90):</strong> +50 Mana Max permanent (stackable) | Coût: 2000 mana + artefact</li>
+                        <li><strong>Rituel d'Ascension (Niv 100):</strong> Finalise Quête niveau 100 | Unique | Coût: TOUT</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #fbbf24;">
+                        ⚠️ Les rituels de haut niveau nécessitent plusieurs joueurs pour être canalisés (2-5 mages selon tier)
+                    </p>
+                </div>
+            </div>
+
+            <div class="mechanic-box">
+                <div class="mechanic-title">Création de Sorts Custom (Niveau 70+)</div>
+                <div class="card-content">
+                    <p style="margin-bottom: 15px;">
+                        Système avancé de <span class="highlight">Spell Crafting</span> :
+                    </p>
+                    <ul class="feature-list">
+                        <li><strong>Niveau 70:</strong> Créez 1 sort Tier 3 custom</li>
+                        <li><strong>Niveau 80:</strong> Créez 2 sorts Tier 4 custom</li>
+                        <li><strong>Niveau 90:</strong> Créez 3 sorts Tier 5 custom</li>
+                        <li><strong>Niveau 100:</strong> Créez votre Sort Signature (pas de limites de puissance)</li>
+                        <li>GUI avancé avec sliders pour: Type, Élément, Portée, Zone, Dégâts, Durée, Effets</li>
+                        <li>Le système équilibre auto le coût mana/cooldown selon la puissance</li>
+                        <li>Possibilité de vendre/échanger vos sorts custom via "Tomes de Sort"</li>
+                        <li>Les meilleurs sorts custom deviennent "Légendaires" et drop en loot mondialement</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #6ee7b7;">
+                        💡 Votre Sort Signature niveau 100 devient votre LEGACY. D'autres joueurs peuvent le trouver 
+                        avec votre nom dessus après votre ascension !
+                    </p>
+                </div>
+            </div>
+
+            <div class="mechanic-box">
+                <div class="mechanic-title">Forme Astrale (Niveau 85+)</div>
+                <div class="card-content">
+                    <p style="margin-bottom: 15px;">
+                        Nouvelle capacité ultime : <span class="highlight">Projection Astrale</span>
+                    </p>
+                    <ul class="feature-list">
+                        <li>Séparez votre esprit de votre corps (corps reste immobile)</li>
+                        <li>Forme astrale = intangible, vol libre, traverse murs</li>
+                        <li>Peut voir à travers terrain (X-ray vision limitée)</li>
+                        <li>Utilisable pour reconnaissance, espionnage, ou exploration</li>
+                        <li>Durée: 5 minutes max | Cooldown: 15 min</li>
+                        <li>Coût: 200 mana initial + 10 mana/s pendant utilisation</li>
+                        <li>Vulnérabilité: Corps physique sans défense pendant projection</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #fca5a5;">
+                        ⚠️ Si votre corps meurt pendant la projection astrale, vous mourez réellement !
+                    </p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <div class="warning-title">Corruption Magique Avancée</div>
+                <div class="warning-text">
+                    Le système de corruption évolue avec le niveau :<br><br>
+                    
+                    <strong>Niveau 1-50:</strong> Corruption basique (Ténèbres + Surcharge)<br>
+                    • À 100% = Transformation "Mage Corrompu" (hostile 30 min)<br><br>
+                    
+                    <strong>Niveau 51-80:</strong> Corruption amplifiée<br>
+                    • À 50%: Aura noire visible<br>
+                    • À 75%: -20% HP max permanent<br>
+                    • À 100%: Transformation "Seigneur Corrompu" (boss-like 1h, drop loot si tué)<br><br>
+                    
+                    <strong>Niveau 81-100:</strong> Corruption transcendante<br>
+                    • À 60%: Apparence démoniaque permanente<br>
+                    • À 80%: -30% HP max, mais +100% dégâts magiques<br>
+                    • À 100%: Transformation "Avatar du Néant" (2h, extrêmement puissant mais KOS par tous)<br><br>
+                    
+                    <strong>Purification:</strong> Plus difficile à haut niveau. Nécessite rituels complexes ou quêtes spéciales.<br>
+                    Certains joueurs niveau 100 EMBRASSENT la corruption pour la puissance ultime (choix moral).
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-title">Progression Optimale vers Niveau 100</div>
+                <div class="tip-text">
+                    <strong>Phase 1 (1-40) - 20-40 heures:</strong><br>
+                    Focus quêtes principales, donjons standards, apprentissage écoles. Facile et fun.<br><br>
+                    
+                    <strong>Phase 2 (41-70) - 60-100 heures:</strong><br>
+                    Donjons difficiles, spécialisation multi-écoles, farm boss. Grind modéré.<br><br>
+                    
+                    <strong>Phase 3 (71-90) - 100-200 heures:</strong><br>
+                    Raids, donjons légendaires, PvP classé, rituels. Grind intensif mais rewarding.<br><br>
+                    
+                    <strong>Phase 4 (91-99) - 150-300 heures:</strong><br>
+                    Boss ultimes répétables, défis hebdomadaires, perfectionnement build. Très long.<br><br>
+                    
+                    <strong>Phase 5 (100) - Quête unique:</strong><br>
+                    Quête des 7 Sceaux. Peut prendre 20-50 heures selon skill. Épique.<br><br>
+                    
+                    <strong>Total estimé: 350-700 heures pour atteindre Archimage Transcendant</strong><br>
+                    (Joueurs hardcore: ~300h | Joueurs casual: ~700h)<br><br>
+                    
+                    💡 <strong>Conseil:</strong> Profitez du voyage ! Niveau 100 n'est pas la fin, c'est le début de votre légende.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

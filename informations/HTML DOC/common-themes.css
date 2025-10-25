@@ -1,0 +1,212 @@
+/* ==================== ERINIUM FACTION - COMMON THEMES CSS ==================== */
+/* Système de thèmes réutilisable pour toutes les pages de documentation */
+
+/* ==================== THEME VARIABLES ==================== */
+:root[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-card: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-accent: #3b82f6;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --accent-1: #3b82f6;
+    --accent-2: #8b5cf6;
+    --accent-3: #ec4899;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    --gradient-header: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+}
+
+:root[data-theme="dark"] {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-accent: #60a5fa;
+    --border-color: #475569;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --accent-1: #60a5fa;
+    --accent-2: #a78bfa;
+    --accent-3: #f472b6;
+    --success: #34d399;
+    --warning: #fbbf24;
+    --danger: #f87171;
+    --gradient-primary: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+    --gradient-header: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+}
+
+:root[data-theme="erinium"] {
+    --bg-primary: #0f0c29;
+    --bg-secondary: #1a1f3a;
+    --bg-card: #2d1b4e;
+    --text-primary: #e9d5ff;
+    --text-secondary: #c084fc;
+    --text-accent: #00d2ff;
+    --border-color: #667eea;
+    --shadow-sm: 0 2px 8px rgba(139, 92, 246, 0.2);
+    --shadow-md: 0 4px 16px rgba(139, 92, 246, 0.3);
+    --shadow-lg: 0 8px 32px rgba(139, 92, 246, 0.4), 0 0 40px rgba(0, 210, 255, 0.2);
+    --accent-1: #667eea;
+    --accent-2: #8b5cf6;
+    --accent-3: #c084fc;
+    --success: #10b981;
+    --warning: #fbbf24;
+    --danger: #ef4444;
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #8b5cf6 50%, #c084fc 100%);
+    --gradient-header: linear-gradient(135deg, #0f0c29 0%, #1a1f3a 50%, #2d1b4e 100%);
+}
+
+/* ==================== CONTROLS BAR ==================== */
+.ef-controls-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    background: var(--bg-card);
+    border-bottom: 2px solid var(--border-color);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    z-index: 10000;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+
+.ef-controls-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ef-home-btn {
+    padding: 8px 16px;
+    background: var(--accent-2);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.ef-home-btn:hover {
+    background: var(--accent-1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.ef-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.ef-control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ef-control-label {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ef-theme-btn, .ef-lang-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.ef-theme-btn:hover, .ef-lang-btn:hover {
+    border-color: var(--accent-2);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.ef-theme-btn.active, .ef-lang-btn.active {
+    background: var(--accent-2);
+    border-color: var(--accent-2);
+    color: #ffffff;
+}
+
+/* ==================== CONTENT OFFSET ==================== */
+.ef-content-wrapper {
+    margin-top: 80px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .ef-controls-bar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+    }
+
+    .ef-controls-left,
+    .ef-controls-right {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ef-control-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .ef-content-wrapper {
+        margin-top: 160px;
+    }
+}
+
+/* ==================== SMOOTH TRANSITIONS ==================== */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* ==================== SCROLLBAR ==================== */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-2);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-1);
+}

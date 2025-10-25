@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Items Cupronickel & Électrum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            to {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3em;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+        }
+
+        .card.electrum::before {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .icon {
+            font-size: 2.5em;
+            margin-right: 15px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            color: #1f2937;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .badge.cupronickel {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+        }
+
+        .badge.electrum {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+        }
+
+        .card-content {
+            margin-top: 15px;
+        }
+
+        .card-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card-content li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #4b5563;
+        }
+
+        .card-content li::before {
+            content: '⚡';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+        .card.electrum .card-content li::before {
+            content: '✨';
+            color: #f59e0b;
+        }
+
+        .section-divider {
+            text-align: center;
+            margin: 50px 0 30px 0;
+            position: relative;
+        }
+
+        .section-divider h2 {
+            display: inline-block;
+            background: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            color: #1f2937;
+            font-size: 2em;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 1.1em;
+            }
+
+            .card-title {
+                font-size: 1.3em;
+            }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Items Cupronickel & Électrum ⚡</h1>
+        <p class="subtitle">Alliages magiques pour explorateurs et enchanteurs</p>
+
+        <div class="section-divider">
+            <h2>🌊 Items en Cupronickel</h2>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">🪖</div>
+                    <div>
+                        <div class="card-title">Casque de Plongée en Cupronickel</div>
+                        <span class="badge cupronickel">Cupronickel</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li>Respiration aquatique <span class="highlight">illimitée</span></li>
+                        <li>Vision sous-marine améliorée (pas de fog)</li>
+                        <li>Durabilité élevée</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">⚙️</div>
+                    <div>
+                        <div class="card-title">Générateur Hydro-électrique</div>
+                        <span class="badge cupronickel">Cupronickel</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li>Multi-blocs en cupronickel</li>
+                        <li>Génère de l'énergie avec courant d'eau</li>
+                        <li>Plus efficace en <span class="highlight">océan profond</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">🪟</div>
+                    <div>
+                        <div class="card-title">Vitres Anti-Pression</div>
+                        <span class="badge cupronickel">Cupronickel</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li>Vitraux renforcés cupronickel</li>
+                        <li>Résistent à la pression des profondeurs</li>
+                        <li>Plus résistants aux <span class="highlight">explosions</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <h2>✨ Items en Électrum</h2>
+        </div>
+
+        <div class="grid">
+            <div class="card electrum">
+                <div class="card-header">
+                    <div class="icon">🪄</div>
+                    <div>
+                        <div class="card-title">Baguette d'Enchanteur</div>
+                        <span class="badge electrum">Électrum</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li>Permet de <span class="highlight">transférer 1 enchantement</span> d'un item à un autre</li>
+                        <li>Se consomme après usage</li>
+                        <li>Ne fonctionne qu'avec électrum</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card electrum">
+                <div class="card-header">
+                    <div class="icon">💎</div>
+                    <div>
+                        <div class="card-title">Cristal d'Expérience</div>
+                        <span class="badge electrum">Électrum</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li>Stocke l'XP (comme les bottles mais <span class="highlight">x10 la capacité</span>)</li>
+                        <li>Clic droit = stocker XP</li>
+                        <li>Shift+Clic = récupérer XP</li>
+                        <li>Fabriqué en électrum</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card electrum">
+                <div class="card-header">
+                    <div class="icon">🔮</div>
+                    <div>
+                        <div class="card-title">Amulette de Chance</div>
+                        <span class="badge electrum">Électrum</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li>Baubles/Curios slot</li>
+                        <li><span class="highlight">+10%</span> de drop rare des mobs</li>
+                        <li>Looting passif +1</li>
+                        <li>Électrum + émeraude + lapis</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card electrum">
+                <div class="card-header">
+                    <div class="icon">📚</div>
+                    <div>
+                        <div class="card-title">Table d'Enchantement Suprême</div>
+                        <span class="badge electrum">Électrum</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li>Multi-blocs avec piliers d'électrum</li>
+                        <li>Permet niveau <span class="highlight">50+ d'enchantements</span></li>
+                        <li>Coût XP réduit de 20%</li>
+                        <li>Garantit au moins 2 enchantements par craft</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card electrum">
+                <div class="card-header">
+                    <div class="icon">🔨</div>
+                    <div>
+                        <div class="card-title">Forge Mystique</div>
+                        <span class="badge electrum">Électrum</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li>Combine 2 items enchantés <span class="highlight">sans perdre d'enchantements</span></li>
+                        <li>Alternative à l'enclume (pas de "too expensive")</li>
+                        <li>Consomme de l'électrum comme fuel</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
