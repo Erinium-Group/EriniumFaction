@@ -460,6 +460,10 @@ public class Faction {
         return f;
     }
 
+    public void addPower(double value){
+        power += value;
+    }
+
     public Rank getRank(UUID player) {
         String r = getMemberRank(player);
         if (r == null) return null;

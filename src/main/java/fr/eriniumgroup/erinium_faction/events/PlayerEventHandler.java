@@ -1,11 +1,14 @@
 package fr.eriniumgroup.erinium_faction.events;
 
+import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
+import fr.eriniumgroup.erinium_faction.core.power.PlayerPower;
+import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
@@ -71,8 +74,9 @@ public class PlayerEventHandler {
         }
 
         // TODO : POWER (rafraîchissement périodique)
-        if (_p.tickCount % 6000 == 0) {
+        if (_p.tickCount % 1200 == 0) {
             // futur: sync power périodique
+            PowerManager.get(_p).addPower(EFConfig.PLAYER_POWER_REGEN_PER_MINUTE.get());
         }
     }
 }
