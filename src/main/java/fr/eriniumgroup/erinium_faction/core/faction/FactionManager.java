@@ -206,7 +206,7 @@ public final class FactionManager {
 
     public static String getClaimOwner(ClaimKey key) {
         if (SERVER == null) return null;
-        return ClaimsSavedData.get(SERVER).getOwner(key);
+        return ClaimsSavedData.get(SERVER).getOwner(key) != null ? ClaimsSavedData.get(SERVER).getOwner(key) : "wilderness";
     }
 
     public static int countClaims(String factionId) {

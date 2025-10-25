@@ -1,6 +1,9 @@
 {
-  "erinium_faction.warzone.desc": "§cWar zone",
-  "erinium_faction.safezone.desc": "§aSafe zone",
+  "erinium_faction.warzone.title": "§4Warzone",
+  "erinium_faction.warzone.desc": "§cThe war reign",
+  "erinium_faction.safezone.title": "§2Safe Zone",
+  "erinium_faction.safezone.desc": "§aChill or be gone.",
+  "erinium_faction.wilderness.title": "§6Wilderness",
   "erinium_faction.wilderness.desc": "§eBe careful, it's wild!",
   "erinium_faction.faction.menu.resume": "§6Summary",
   "erinium_faction.faction.create.alreadyexist": "§6[§bErinium§6/§dFaction§6] §cThis name already exists",
