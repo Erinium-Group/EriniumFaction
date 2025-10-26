@@ -72,6 +72,22 @@ public class ClaimsSavedData extends SavedData {
         return true;
     }
 
+    /** Supprime tous les claims d’une faction. Renvoie le nombre d’entrées supprimées. */
+    public int unclaimAllForFaction(String factionId) {
+        if (factionId == null || factionId.isBlank()) return 0;
+        int removed = 0;
+        Iterator<Map.Entry<ClaimKey, String>> it = claims.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<ClaimKey, String> e = it.next();
+            if (Objects.equals(e.getValue(), factionId)) {
+                it.remove();
+                removed++;
+            }
+        }
+        if (removed > 0) setDirty();
+        return removed;
+    }
+
     // --- Nouveau: lister les claims dans un rectangle de chunks ---
     public List<Map.Entry<ClaimKey, String>> listInArea(String dimension, int minCx, int minCz, int maxCx, int maxCz) {
         List<Map.Entry<ClaimKey, String>> out = new ArrayList<>();

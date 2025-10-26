@@ -6,8 +6,12 @@ import fr.eriniumgroup.erinium_faction.core.claim.ClaimsSavedData;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
 import fr.eriniumgroup.erinium_faction.core.power.PlayerPower;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
 
@@ -17,23 +21,26 @@ import java.util.*;
 public final class FactionManager {
     private static MinecraftServer SERVER;
 
-    private FactionManager() {}
+    private FactionManager() {
+    }
 
     public static void load(MinecraftServer server) {
         SERVER = server;
         // force création/chargement pour log
         FactionSavedData.get(server);
-        EFC.log.info("Factions", "§aFactions chargées pour le monde");
+        EFC.log.info("§5Factions", "§aFactions chargées pour le monde");
     }
 
     public static void save(MinecraftServer server) {
         var data = FactionSavedData.get(server);
         data.setDirty();
-        EFC.log.info("Factions", "§2Factions sauvegardées");
+        EFC.log.info("§5Factions", "§2Factions sauvegardées");
     }
 
     // Query helpers ----------------------------------------------------------
-    private static Map<String, Faction> map() { return FactionSavedData.get(SERVER).getFactions(); }
+    private static Map<String, Faction> map() {
+        return FactionSavedData.get(SERVER).getFactions();
+    }
 
     public static boolean factionExists(String nameOrId) {
         if (SERVER == null) return false;
@@ -45,7 +52,9 @@ public final class FactionManager {
         return map().values();
     }
 
-    public static Faction getById(String id) { return map().get(id.toLowerCase(Locale.ROOT)); }
+    public static Faction getById(String id) {
+        return map().get(id.toLowerCase(Locale.ROOT));
+    }
 
     public static Faction getByName(String name) {
         String n = name.toLowerCase(Locale.ROOT);
@@ -84,9 +93,72 @@ public final class FactionManager {
         if (SERVER == null) return false;
         Faction f = getByName(nameOrId);
         if (f == null) return false;
+        int memberCount = f.getMembers().size();
+        // Supprimer la faction de la map en premier pour éviter ré-entrance
         boolean ok = map().remove(f.getId()) != null;
-        if (ok) FactionSavedData.get(SERVER).setDirty();
+        if (ok) {
+            // 1) Unclaim tous les chunks de cette faction (compter pour logs)
+            int removedClaims = ClaimsSavedData.get(SERVER).unclaimAllForFaction(f.getId());
+
+            // 2) Reset variables côté membres connectés, overlay wilderness
+            for (UUID m : new ArrayList<>(f.getMembers().keySet())) {
+                ServerPlayer sp = SERVER.getPlayerList().getPlayer(m);
+                if (sp != null) {
+                    var vars = sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES);
+                    vars.factionId = "";
+                    vars.factionName = "";
+                    vars.factionPower = 0;
+                    vars.factionMaxPower = 0;
+                    vars.factionLevel = 0;
+                    vars.factionXp = 0;
+                    vars.factionInChunk = ""; // force la prochaine détection à wilderness
+                    vars.syncPlayerVariables(sp);
+                    PacketDistributor.sendToPlayer(sp,
+                            new fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket(
+                                    Component.translatable("erinium_faction.wilderness.title").getString(),
+                                    Component.translatable("erinium_faction.wilderness.desc").getString(),
+                                    300, 900, 300));
+                }
+            }
+
+            // 3) Broadcast global au chat (traduisible)
+            MutableComponent bc = Component.translatable("erinium_faction.broadcast.disband", f.getName(), removedClaims, memberCount);
+            for (ServerPlayer p : SERVER.getPlayerList().getPlayers()) {
+                p.sendSystemMessage(bc);
+            }
+
+            // 4) Log admin (console) avec couleurs
+            EFC.log.info("Faction", "§cDISBAND §7: §e" + f.getName() + " §7(§6" + removedClaims + " claims§7, §b" + memberCount + " membres§7)");
+
+            // 5) Message admin aux OPs en jeu (stylé)
+            MutableComponent adminMsg = Component.literal("[Admin] ")
+                    .withStyle(ChatFormatting.DARK_RED)
+                    .append(Component.literal("DISBAND ").withStyle(ChatFormatting.RED))
+                    .append(Component.literal(f.getName()).withStyle(ChatFormatting.GOLD))
+                    .append(Component.literal(" ("))
+                    .append(Component.literal(String.valueOf(removedClaims)).withStyle(ChatFormatting.GOLD))
+                    .append(Component.literal(" claims, "))
+                    .append(Component.literal(String.valueOf(memberCount)).withStyle(ChatFormatting.AQUA))
+                    .append(Component.literal(" membres)"));
+            for (ServerPlayer p : SERVER.getPlayerList().getPlayers()) {
+                if (p.hasPermissions(2)) p.sendSystemMessage(adminMsg);
+            }
+
+            FactionSavedData.get(SERVER).setDirty();
+        }
         return ok;
+    }
+
+    /**
+     * Disband par le leader: même logique que delete, mais autorisé seulement si caller est owner.
+     */
+    public static synchronized boolean disbandByLeader(ServerPlayer caller) {
+        if (SERVER == null || caller == null) return false;
+        Faction f = getFactionOf(caller.getUUID());
+        if (f == null) return false;
+        if (!Objects.equals(f.getOwner(), caller.getUUID())) return false; // doit être leader
+        // délègue à delete avec l’id
+        return delete(f.getId());
     }
 
     // Membership -------------------------------------------------------------

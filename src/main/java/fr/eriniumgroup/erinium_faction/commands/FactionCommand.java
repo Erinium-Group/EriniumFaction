@@ -60,18 +60,36 @@ public class FactionCommand {
                     return 1;
                 })))
                 // delete <name>
-                .then(Commands.literal("delete")
-                        .requires(src -> hasServerPerm(src, "ef.faction.delete"))
-                        .then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestFactionNames).executes(ctx -> {
-                            String name = StringArgumentType.getString(ctx, "name");
-                            boolean ok = FactionManager.delete(name);
-                            if (!ok) {
-                                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
-                                return 0;
-                            }
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.delete.success"), true);
-                            return 1;
-                        })))
+                .then(Commands.literal("delete").requires(src -> hasServerPerm(src, "ef.faction.delete")).then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestFactionNames).executes(ctx -> {
+                    String name = StringArgumentType.getString(ctx, "name");
+                    boolean ok = FactionManager.delete(name);
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
+                        return 0;
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.delete.success"), true);
+                    return 1;
+                })))
+                // disband (leader uniquement)
+                .then(Commands.literal("disband").executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    if (!java.util.Objects.equals(f.getOwner(), sp.getUUID())) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.disband.not_leader"));
+                        return 0;
+                    }
+                    boolean ok = FactionManager.disbandByLeader(sp);
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.disband.fail"));
+                        return 0;
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.disband.success", f.getName()), true);
+                    return 1;
+                }))
                 // info <name>
                 .then(Commands.literal("info").then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestFactionNames).executes(ctx -> {
                     String name = StringArgumentType.getString(ctx, "name");
@@ -126,29 +144,23 @@ public class FactionCommand {
                     return 1;
                 }))
                 // addxp <name> <amount>
-                .then(Commands.literal("addxp")
-                        .requires(src -> hasServerPerm(src, "ef.faction.addxp"))
-                        .then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestFactionNames)
-                                .then(Commands.argument("amount", IntegerArgumentType.integer(1)).suggests(FactionCommand::suggestXpAmounts).executes(ctx -> {
-                                    String name = StringArgumentType.getString(ctx, "name");
-                                    int amount = IntegerArgumentType.getInteger(ctx, "amount");
-                                    Faction f = FactionManager.getByName(name);
-                                    if (f == null) {
-                                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
-                                        return 0;
-                                    }
-                                    f.addXp(amount);
-                                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.addxp.success"), true);
-                                    return 1;
-                                }))))
+                .then(Commands.literal("addxp").requires(src -> hasServerPerm(src, "ef.faction.addxp")).then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestFactionNames).then(Commands.argument("amount", IntegerArgumentType.integer(1)).suggests(FactionCommand::suggestXpAmounts).executes(ctx -> {
+                    String name = StringArgumentType.getString(ctx, "name");
+                    int amount = IntegerArgumentType.getInteger(ctx, "amount");
+                    Faction f = FactionManager.getByName(name);
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
+                        return 0;
+                    }
+                    f.addXp(amount);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.addxp.success"), true);
+                    return 1;
+                }))))
                 // setrank <player> <rankId> (placeholder)
-                .then(Commands.literal("setrank")
-                        .requires(src -> hasServerPerm(src, "ef.rank.set"))
-                        .then(Commands.argument("player", StringArgumentType.word()).suggests(FactionCommand::suggestOnlinePlayers)
-                                .then(Commands.argument("rankId", StringArgumentType.word()).suggests(FactionCommand::suggestServerRanks).executes(ctx -> {
-                                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.setrank.placeholder"), false);
-                                    return 1;
-                                }))))
+                .then(Commands.literal("setrank").requires(src -> hasServerPerm(src, "ef.rank.set")).then(Commands.argument("player", StringArgumentType.word()).suggests(FactionCommand::suggestOnlinePlayers).then(Commands.argument("rankId", StringArgumentType.word()).suggests(FactionCommand::suggestServerRanks).executes(ctx -> {
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.setrank.placeholder"), false);
+                    return 1;
+                }))))
                 // claim
                 .then(Commands.literal("claim").executes(ctx -> {
                     ServerPlayer sp = ctx.getSource().getPlayerOrException();
@@ -199,30 +211,28 @@ public class FactionCommand {
                     return 1;
                 }))
                 // mode <PUBLIC|INVITE_ONLY>
-                .then(Commands.literal("mode")
-                        .requires(src -> hasServerPerm(src, "ef.faction.mode"))
-                        .then(Commands.argument("value", StringArgumentType.word()).suggests((ctx, b) -> {
-                            b.suggest("PUBLIC");
-                            b.suggest("INVITE_ONLY");
-                            return b.buildFuture();
-                        }).executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) {
-                                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
-                                return 0;
-                            }
-                            String val = StringArgumentType.getString(ctx, "value");
-                            try {
-                                f.setMode(Mode.valueOf(val.toUpperCase()));
-                                FactionManager.markDirty();
-                                ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.mode.set", f.getMode().name()), true);
-                                return 1;
-                            } catch (Exception e) {
-                                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.mode.invalid"));
-                                return 0;
-                            }
-                        })))
+                .then(Commands.literal("mode").requires(src -> hasServerPerm(src, "ef.faction.mode")).then(Commands.argument("value", StringArgumentType.word()).suggests((ctx, b) -> {
+                    b.suggest("PUBLIC");
+                    b.suggest("INVITE_ONLY");
+                    return b.buildFuture();
+                }).executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    String val = StringArgumentType.getString(ctx, "value");
+                    try {
+                        f.setMode(Mode.valueOf(val.toUpperCase()));
+                        FactionManager.markDirty();
+                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.mode.set", f.getMode().name()), true);
+                        return 1;
+                    } catch (Exception e) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.mode.invalid"));
+                        return 0;
+                    }
+                })))
                 // flags: admin/warzone/safezone on|off
                 .then(Commands.literal("flag").requires(src -> hasServerPerm(src, "ef.faction.flag")).then(Commands.argument("name", StringArgumentType.word()).suggests((c, b) -> {
                     b.suggest("admin");
@@ -271,142 +281,169 @@ public class FactionCommand {
                     return 1;
                 })))
                 // bank deposit/withdraw <amount>
-                .then(Commands.literal("bank")
-                        .then(Commands.literal("deposit").requires(src -> hasServerPerm(src, "ef.faction.bank.deposit")).then(Commands.argument("amount", IntegerArgumentType.integer(1)).executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) {
-                                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
-                                return 0;
-                            }
-                            int a = IntegerArgumentType.getInteger(ctx, "amount");
-                            // Débiter l'argent du joueur vers la banque de faction
-                            if (!fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.withdraw(sp, a)) {
-                                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.bank.player_not_enough"));
-                                return 0;
-                            }
-                            f.deposit(a);
-                            FactionManager.markDirty();
-                            // Sync affiche client
-                            fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
-                            // mettre à jour money côté client
-                            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(sp);
-                            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.bank.deposit", a), true);
-                            return 1;
-                        })))
-                        .then(Commands.literal("withdraw").requires(src -> hasServerPerm(src, "ef.faction.bank.withdraw")).then(Commands.argument("amount", IntegerArgumentType.integer(1)).executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) {
-                                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
-                                return 0;
-                            }
-                            int a = IntegerArgumentType.getInteger(ctx, "amount");
-                            boolean ok = f.withdraw(a);
-                            if (!ok) {
-                                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.bank.not_enough"));
-                                return 0;
-                            }
-                            // Créditer l'argent au joueur
-                            fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.deposit(sp, a);
-                            FactionManager.markDirty();
-                            // Sync client variables
-                            fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
-                            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(sp);
-                            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.bank.withdraw", a), true);
-                            return 1;
-                        }))))
+                .then(Commands.literal("bank").then(Commands.literal("deposit").requires(src -> hasServerPerm(src, "ef.faction.bank.deposit")).then(Commands.argument("amount", IntegerArgumentType.integer(1)).executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    int a = IntegerArgumentType.getInteger(ctx, "amount");
+                    // Débiter l'argent du joueur vers la banque de faction
+                    if (!fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.withdraw(sp, a)) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.bank.player_not_enough"));
+                        return 0;
+                    }
+                    f.deposit(a);
+                    FactionManager.markDirty();
+                    // Sync affiche client
+                    fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
+                    // mettre à jour money côté client
+                    sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(sp);
+                    sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.bank.deposit", a), true);
+                    return 1;
+                }))).then(Commands.literal("withdraw").requires(src -> hasServerPerm(src, "ef.faction.bank.withdraw")).then(Commands.argument("amount", IntegerArgumentType.integer(1)).executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    int a = IntegerArgumentType.getInteger(ctx, "amount");
+                    boolean ok = f.withdraw(a);
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.bank.not_enough"));
+                        return 0;
+                    }
+                    // Créditer l'argent au joueur
+                    fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.deposit(sp, a);
+                    FactionManager.markDirty();
+                    // Sync client variables
+                    fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
+                    sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(sp);
+                    sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.bank.withdraw", a), true);
+                    return 1;
+                }))))
                 // home set|tp and direct tp on /home
-                .then(Commands.literal("home")
-                        .executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            if (!hasServerPerm(ctx.getSource(), "ef.faction.home.tp")) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.no_permission")); return 0; }
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                            int[] home = f.getHome();
-                            if (home == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.home.missing")); return 0; }
-                            ServerLevel lvl = sp.serverLevel();
-                            sp.teleportTo(lvl, home[0] + 0.5, home[1] + 0.1, home[2] + 0.5, sp.getYRot(), sp.getXRot());
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.home.tp.success"), false);
-                            return 1;
-                        })
-                        .then(Commands.literal("set").requires(src -> hasServerPerm(src, "ef.faction.home.set")).executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                            var pos = sp.blockPosition();
-                            var dim = sp.level().dimension().location();
-                            f.setHome(pos.getX(), pos.getY(), pos.getZ(), dim);
-                            FactionManager.markDirty();
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.home.set", pos.getX(), pos.getY(), pos.getZ()), true);
-                            return 1;
-                        }))
-                        .then(Commands.literal("tp").requires(src -> hasServerPerm(src, "ef.faction.home.tp")).executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                            int[] home = f.getHome();
-                            if (home == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.home.missing")); return 0; }
-                            ServerLevel lvl = sp.serverLevel();
-                            sp.teleportTo(lvl, home[0] + 0.5, home[1] + 0.1, home[2] + 0.5, sp.getYRot(), sp.getXRot());
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.home.tp.success"), false);
-                            return 1;
-                        })))
+                .then(Commands.literal("home").executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    if (!hasServerPerm(ctx.getSource(), "ef.faction.home.tp")) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.no_permission"));
+                        return 0;
+                    }
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    int[] home = f.getHome();
+                    if (home == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.home.missing"));
+                        return 0;
+                    }
+                    ServerLevel lvl = sp.serverLevel();
+                    sp.teleportTo(lvl, home[0] + 0.5, home[1] + 0.1, home[2] + 0.5, sp.getYRot(), sp.getXRot());
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.home.tp.success"), false);
+                    return 1;
+                }).then(Commands.literal("set").requires(src -> hasServerPerm(src, "ef.faction.home.set")).executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    var pos = sp.blockPosition();
+                    var dim = sp.level().dimension().location();
+                    f.setHome(pos.getX(), pos.getY(), pos.getZ(), dim);
+                    FactionManager.markDirty();
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.home.set", pos.getX(), pos.getY(), pos.getZ()), true);
+                    return 1;
+                })).then(Commands.literal("tp").requires(src -> hasServerPerm(src, "ef.faction.home.tp")).executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    int[] home = f.getHome();
+                    if (home == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.home.missing"));
+                        return 0;
+                    }
+                    ServerLevel lvl = sp.serverLevel();
+                    sp.teleportTo(lvl, home[0] + 0.5, home[1] + 0.1, home[2] + 0.5, sp.getYRot(), sp.getXRot());
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.home.tp.success"), false);
+                    return 1;
+                })))
                 // warp add/del/list and direct tp: /f warp <name>
-                .then(Commands.literal("warp")
-                        .then(Commands.argument("name", StringArgumentType.word())
-                                .suggests(FactionCommand::suggestWarpNames)
-                                .requires(src -> hasServerPerm(src, "ef.faction.warp.tp"))
-                                .executes(ctx -> {
-                                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                                    Faction f = FactionManager.getFactionOf(sp.getUUID());
-                                    if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                                    String nm = StringArgumentType.getString(ctx, "name");
-                                    var w = f.getWarps().get(nm.toLowerCase(java.util.Locale.ROOT));
-                                    if (w == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.warp.tp.not_found")); return 0; }
-                                    ServerLevel lvl = sp.serverLevel();
-                                    sp.teleportTo(lvl, w.x + 0.5, w.y + 0.1, w.z + 0.5, sp.getYRot(), sp.getXRot());
-                                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.tp.success", nm), false);
-                                    return 1;
-                                }))
-                        .then(Commands.literal("add").requires(src -> hasServerPerm(src, "ef.faction.warp.add")).then(Commands.argument("name", StringArgumentType.word()).executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                            String nm = StringArgumentType.getString(ctx, "name");
-                            var pos = sp.blockPosition();
-                            var dim = sp.level().dimension().location();
-                            boolean ok = f.addWarp(nm, pos.getX(), pos.getY(), pos.getZ(), dim);
-                            if (!ok) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.warp.add.fail")); return 0; }
-                            FactionManager.markDirty();
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.add.success", nm), true);
-                            return 1;
-                        })))
-                        .then(Commands.literal("del").requires(src -> hasServerPerm(src, "ef.faction.warp.del")).then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestWarpNames).executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                            String nm = StringArgumentType.getString(ctx, "name");
-                            boolean ok = f.removeWarp(nm);
-                            if (!ok) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.warp.del.fail")); return 0; }
-                            FactionManager.markDirty();
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.del.success", nm), true);
-                            return 1;
-                        })))
-                        .then(Commands.literal("list").executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                            int size = f.getWarps().size();
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.list.header", size, f.getMaxWarps()), false);
-                            for (var e : f.getWarps().entrySet()) {
-                                var w = e.getValue();
-                                ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.list.item", e.getKey(), w.x, w.y, w.z), false);
-                            }
-                            return 1;
-                        })))
+                .then(Commands.literal("warp").then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestWarpNames).requires(src -> hasServerPerm(src, "ef.faction.warp.tp")).executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    String nm = StringArgumentType.getString(ctx, "name");
+                    var w = f.getWarps().get(nm.toLowerCase(java.util.Locale.ROOT));
+                    if (w == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.warp.tp.not_found"));
+                        return 0;
+                    }
+                    ServerLevel lvl = sp.serverLevel();
+                    sp.teleportTo(lvl, w.x + 0.5, w.y + 0.1, w.z + 0.5, sp.getYRot(), sp.getXRot());
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.tp.success", nm), false);
+                    return 1;
+                })).then(Commands.literal("add").requires(src -> hasServerPerm(src, "ef.faction.warp.add")).then(Commands.argument("name", StringArgumentType.word()).executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    String nm = StringArgumentType.getString(ctx, "name");
+                    var pos = sp.blockPosition();
+                    var dim = sp.level().dimension().location();
+                    boolean ok = f.addWarp(nm, pos.getX(), pos.getY(), pos.getZ(), dim);
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.warp.add.fail"));
+                        return 0;
+                    }
+                    FactionManager.markDirty();
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.add.success", nm), true);
+                    return 1;
+                }))).then(Commands.literal("del").requires(src -> hasServerPerm(src, "ef.faction.warp.del")).then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestWarpNames).executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    String nm = StringArgumentType.getString(ctx, "name");
+                    boolean ok = f.removeWarp(nm);
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.warp.del.fail"));
+                        return 0;
+                    }
+                    FactionManager.markDirty();
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.del.success", nm), true);
+                    return 1;
+                }))).then(Commands.literal("list").executes(ctx -> {
+                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
+                    Faction f = FactionManager.getFactionOf(sp.getUUID());
+                    if (f == null) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                        return 0;
+                    }
+                    int size = f.getWarps().size();
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.list.header", size, f.getMaxWarps()), false);
+                    for (var e : f.getWarps().entrySet()) {
+                        var w = e.getValue();
+                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.warp.list.item", e.getKey(), w.x, w.y, w.z), false);
+                    }
+                    return 1;
+                })))
                 // end buildRoot
                 ;
     }
@@ -460,7 +497,8 @@ public class FactionCommand {
             if (f != null) {
                 for (String nm : f.getWarps().keySet()) builder.suggest(nm);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return builder.buildFuture();
     }
 
