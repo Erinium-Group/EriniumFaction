@@ -477,7 +477,17 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
             if (mouseX >= btnX && mouseX < btnX + btnW && mouseY >= btnY && mouseY < btnY + btnH &&
                 mouseY >= navY && mouseY < navY + navH) {
-                currentPage = navPages[i];
+
+                PageType targetPage = navPages[i];
+
+                // Vérifier si le joueur peut accéder à cette page
+                if (!canAccessPage(targetPage)) {
+                    // Afficher un message d'erreur ou jouer un son
+                    System.out.println("Access denied to page: " + targetPage.label);
+                    return true; // Consommer le clic sans changer de page
+                }
+
+                currentPage = targetPage;
                 System.out.println("Page changed to: " + currentPage.label);
                 // Mettre à jour les positions des slots (hors écran si pas Chest)
                 updateSlotPositionsWithReflection();
@@ -600,5 +610,26 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         super.resize(mc, width, height);
         recomputeLayout();
         this.init();
+    }
+
+    private boolean canAccessPage(PageType page) {
+        // Vérifier les permissions selon la page
+        switch (page) {
+            case CHEST:
+                return hasPermission("ACCESS_CHEST");
+            case SETTINGS_FACTION:
+            case SETTINGS_PERMISSIONS:
+                return hasPermission("MANAGE_FACTION");
+            case ADMINSHOP:
+                return hasPermission("USE_SHOP");
+            default:
+                return true; // Pages publiques
+        }
+    }
+
+    private boolean hasPermission(String permission) {
+        // Récupérer les permissions du joueur depuis FactionManager
+        // return FactionManager.playerHasPermission(entity.getUUID(), permission);
+        return true; // Pour l'instant, toutes les permissions sont accordées
     }
 }
