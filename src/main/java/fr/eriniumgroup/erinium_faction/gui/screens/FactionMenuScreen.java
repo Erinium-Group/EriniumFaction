@@ -1,55 +1,77 @@
 package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
-import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
-import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
-import fr.eriniumgroup.erinium_faction.common.network.packets.OpenFactionChestMessage;
-import fr.eriniumgroup.erinium_faction.common.util.EFUtils;
-import fr.eriniumgroup.erinium_faction.core.EriFont;
-import fr.eriniumgroup.erinium_faction.core.faction.Faction;
-import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
-import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
-import fr.eriniumgroup.erinium_faction.gui.widgets.FactionMenuPlayerList;
+import fr.eriniumgroup.erinium_faction.gui.screens.pages.*;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Faction Menu Screen - GUI principal pour les menus de faction
+ * Taille fixe: 720x500 pixels (pas de scaling pour garder les slots alignés)
+ *
+ * Structure:
+ * - Sidebar gauche (x=16-156): Logo, navigation, power indicator
+ * - Panel principal (x=164-704): Header + contenu de page
+ * - Chaque page a sa propre classe dans le package 'pages'
+ *
+ * Note: Les slots Minecraft ont des positions absolues définies côté serveur
+ * et ne peuvent pas être scalés dynamiquement, d'où la taille fixe du GUI.
+ */
 public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> implements EFScreens.ScreenAccessor {
     private final Level world;
     private final int x, y, z;
+    private final Player entity;
     private boolean menuStateUpdateActive = false;
-    private Player entity;
-    ImageButton fsettings;
 
-    EFVariables.PlayerVariables _vars;
-
-    private Faction faction;
-    private boolean hasFaction;
-    private String fallbackFactionName;
-    private int fallbackLevel;
-    private int fallbackXp;
-    private int fallbackPower;
-    private int fallbackMaxPower;
-
-    // Base design size
-    private static final int BASE_W = 420;
-    private static final int BASE_H = 240;
+    // Taille FIXE du GUI: 400×270 (PAS DE SCALING)
+    // Les slots Minecraft ne peuvent pas être scalés car ils ont des positions fixes
+    private static final int BASE_W = 400;
+    private static final int BASE_H = 270;
 
     private double scaleX = 1.0;
     private double scaleY = 1.0;
+
+    // Enum des pages (basées sur les SVG existants)
+    public enum PageType {
+        OVERVIEW("Overview"),
+        MEMBERS("Members"),
+        TERRITORY("Territory"),
+        ALLIANCES("Alliances"),
+        CHEST("Chest"),
+        LEVEL("Level"),
+        QUESTS("Quests"),
+        ADMINSHOP("Shop"),
+        SETTINGS_FACTION("Settings"),
+        SETTINGS_PERMISSIONS("Permissions");
+
+        final String label;
+        PageType(String label) { this.label = label; }
+    }
+
+    private PageType currentPage = PageType.OVERVIEW;
+    private final Map<PageType, FactionPage> pages = new HashMap<>();
+
+    // Navigation scroll
+    private int navScrollOffset = 0;
+    private int maxNavScroll = 0;
+    private boolean navScrollDragging = false;
+    private int navDragStartY = 0;
+    private int navScrollStartOffset = 0;
+
+    private static final int NAV_BUTTON_HEIGHT = 17; // 32 * 0.54 = 17
+    private static final int NAV_BUTTON_SPACING = 2; // 4 * 0.54 = 2
+    private static final int NAV_AREA_HEIGHT = 170; // 316 * 0.54 = 170 (y=65 à y=235)
 
     public FactionMenuScreen(FactionMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -60,29 +82,6 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         this.entity = container.entity;
         this.imageWidth = BASE_W;
         this.imageHeight = BASE_H;
-        this._vars = entity.getData(EFVariables.PLAYER_VARIABLES);
-
-        // Préférer le snapshot envoyé par le serveur
-        FactionSnapshot snap = container.snapshot;
-        if (snap != null && snap.name != null && !snap.name.isEmpty()) {
-            this.faction = container.faction; // peut être null côté client, mais pas requis
-            this.hasFaction = true;
-        } else {
-            this.faction = container.faction != null ? container.faction : FactionManager.getPlayerFactionObject(entity.getUUID());
-            if (this.faction != null) {
-                this.hasFaction = true;
-            } else {
-                // Fallback: utiliser EFVariables/nom transmis
-                this.fallbackFactionName = container.factionName != null && !container.factionName.isEmpty() ? container.factionName : (this._vars != null ? this._vars.factionName : "");
-                this.hasFaction = (this.fallbackFactionName != null && !this.fallbackFactionName.isEmpty());
-                if (this._vars != null) {
-                    this.fallbackLevel = this._vars.factionLevel;
-                    this.fallbackXp = this._vars.factionXp;
-                    this.fallbackPower = (int) Math.round(this._vars.factionPower);
-                    this.fallbackMaxPower = (int) Math.round(this._vars.factionMaxPower);
-                }
-            }
-        }
     }
 
     @Override
@@ -91,170 +90,332 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         menuStateUpdateActive = false;
     }
 
-    private static final ResourceLocation texture = ResourceLocation.parse("erinium_faction:textures/screens/faction_menu.png");
-
     private void recomputeLayout() {
-        // Adapter la taille de la GUI à la fenêtre tout en conservant le ratio BASE_W:BASE_H
-        int availW = this.width - 20;
-        int availH = this.height - 20;
-        int targetW = BASE_W;
-        int targetH = BASE_H;
+        int availW = this.width - 40;
+        int availH = this.height - 40;
+
         if (availW > 0 && availH > 0) {
             double scaleByW = availW / (double) BASE_W;
             double scaleByH = availH / (double) BASE_H;
             double scale = Math.min(scaleByW, scaleByH);
-            scale = Math.max(1.0, Math.min(scale, 2.5)); // éviter trop petit/trop grand
-            targetW = (int) Math.round(BASE_W * scale);
-            targetH = (int) Math.round(BASE_H * scale);
+            // Scale de 1.0x (400×270) à 2.0x (800×540) maximum
+            scale = Math.max(1.0, Math.min(scale, 2.0));
+
+            this.imageWidth = (int) Math.round(BASE_W * scale);
+            this.imageHeight = (int) Math.round(BASE_H * scale);
+            this.scaleX = scale;
+            this.scaleY = scale;
+        } else {
+            this.imageWidth = BASE_W;
+            this.imageHeight = BASE_H;
+            this.scaleX = 1.0;
+            this.scaleY = 1.0;
         }
-        this.imageWidth = targetW;
-        this.imageHeight = targetH;
+
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
-        this.scaleX = this.imageWidth / (double) BASE_W;
-        this.scaleY = this.imageHeight / (double) BASE_H;
+
+        // Mettre à jour les positions des slots avec réflexion
+        updateSlotPositionsWithReflection();
     }
 
-    private int sx(int base) {
-        return this.leftPos + (int) Math.round(base * this.scaleX);
+    private void updateSlotPositionsWithReflection() {
+        try {
+            // Obtenir les champs x et y via réflexion
+            java.lang.reflect.Field xField = net.minecraft.world.inventory.Slot.class.getDeclaredField("x");
+            java.lang.reflect.Field yField = net.minecraft.world.inventory.Slot.class.getDeclaredField("y");
+            xField.setAccessible(true);
+            yField.setAccessible(true);
+
+            // Si on n'est pas sur la page Chest, mettre les slots en dehors de l'écran
+            if (currentPage != PageType.CHEST) {
+                for (net.minecraft.world.inventory.Slot slot : this.menu.slots) {
+                    xField.setInt(slot, -10000);
+                    yField.setInt(slot, -10000);
+                }
+                return;
+            }
+
+            // Positions de base (identiques à FactionMenu)
+            double baseX = 156;
+            double baseChestY = 74;
+            double baseInvY = 148;
+            double baseHotbarY = 210;
+
+            // Centrage : les slots sont espacés de 18px mais rendus en 16px
+            double slotSpacing = 18;
+            double scaledBaseX = baseX * this.scaleX;
+            double scaledSpacing = slotSpacing * this.scaleX;
+            int centerOffset = (int) Math.round((scaledSpacing - 16) / 2);
+
+            int slotIndex = 0;
+
+            // Faction chest slots (27 slots)
+            double scaledChestY = baseChestY * this.scaleY;
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 9; col++) {
+                    if (slotIndex < this.menu.slots.size()) {
+                        net.minecraft.world.inventory.Slot slot = this.menu.slots.get(slotIndex);
+                        xField.setInt(slot, (int) Math.round(scaledBaseX + col * scaledSpacing) + centerOffset);
+                        yField.setInt(slot, (int) Math.round(scaledChestY + row * scaledSpacing) + centerOffset);
+                    }
+                    slotIndex++;
+                }
+            }
+
+            // Player inventory slots (27 slots)
+            double scaledInvY = baseInvY * this.scaleY;
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 9; col++) {
+                    if (slotIndex < this.menu.slots.size()) {
+                        net.minecraft.world.inventory.Slot slot = this.menu.slots.get(slotIndex);
+                        xField.setInt(slot, (int) Math.round(scaledBaseX + col * scaledSpacing) + centerOffset);
+                        yField.setInt(slot, (int) Math.round(scaledInvY + row * scaledSpacing) + centerOffset);
+                    }
+                    slotIndex++;
+                }
+            }
+
+            // Player hotbar slots (9 slots)
+            double scaledHotbarY = baseHotbarY * this.scaleY;
+            for (int col = 0; col < 9; col++) {
+                if (slotIndex < this.menu.slots.size()) {
+                    net.minecraft.world.inventory.Slot slot = this.menu.slots.get(slotIndex);
+                    xField.setInt(slot, (int) Math.round(scaledBaseX + col * scaledSpacing) + centerOffset);
+                    yField.setInt(slot, (int) Math.round(scaledHotbarY) + centerOffset);
+                }
+                slotIndex++;
+            }
+        } catch (Exception e) {
+            System.err.println("[FactionGUI] Failed to update slot positions with reflection: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    private int sy(int base) {
-        return this.topPos + (int) Math.round(base * this.scaleY);
-    }
-
-    private int sw(int base) {
-        return (int) Math.round(base * this.scaleX);
-    }
-
-    private int sh(int base) {
-        return (int) Math.round(base * this.scaleY);
-    }
+    // Helpers de positionnement avec scaling
+    private int sx(int base) { return this.leftPos + (int) Math.round(base * this.scaleX); }
+    private int sy(int base) { return this.topPos + (int) Math.round(base * this.scaleY); }
+    private int sw(int base) { return (int) Math.round(base * this.scaleX); }
+    private int sh(int base) { return (int) Math.round(base * this.scaleY); }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-
-        boolean customTooltipShown = false;
-        if (fsettings != null && fsettings.isMouseOver(mouseX, mouseY)) {
-            String hoverText = Component.translatable("erinium_faction.faction.menu.settings").getString();
-            guiGraphics.renderComponentTooltip(font, java.util.List.of(Component.literal(hoverText)), mouseX, mouseY);
-            customTooltipShown = true;
+        // Ne rendre les tooltips de slots que si on est sur la page Chest
+        if (currentPage == PageType.CHEST) {
+            this.renderTooltip(guiGraphics, mouseX, mouseY);
         }
-
-        if (!customTooltipShown) this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderSlot(GuiGraphics guiGraphics, net.minecraft.world.inventory.Slot slot) {
+        // Ne rendre les slots que si on est sur la page Chest
+        if (currentPage == PageType.CHEST) {
+            super.renderSlot(guiGraphics, slot);
+        }
+    }
+
+    @Override
+    public net.minecraft.world.inventory.Slot getSlotUnderMouse() {
+        // Ne permettre la sélection de slot que si on est sur la page Chest
+        if (currentPage == PageType.CHEST) {
+            return super.getSlotUnderMouse();
+        }
+        return null;
+    }
+
+    @Override
+    public void containerTick() {
+        super.containerTick();
+        // Tick page for animations
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            page.tick();
+        }
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics g, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        // Fond étiré au nouveau ratio
-        guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_menu_bg.png"), this.leftPos, this.topPos, this.imageWidth, this.imageHeight, 0, 0, BASE_W, BASE_H, BASE_W, BASE_H);
-
-        // Données: utiliser snapshot si dispo, sinon objet faction
-        FactionSnapshot snap = this.menu instanceof FactionMenu fm ? fm.snapshot : null;
-
-        String displayName;
-        int claimCount;
-        int maxClaims;
-        int memberCount;
-        int maxPlayers;
-        int level;
-        int xp;
-        int xpRequired;
-        int currentPower;
-        int maxPower;
-
-        if (snap != null && snap.name != null && !snap.name.isEmpty()) {
-            displayName = (snap.displayName == null || snap.displayName.isEmpty()) ? snap.name : snap.displayName;
-            claimCount = snap.claims;
-            maxClaims = snap.maxClaims;
-            memberCount = snap.membersCount;
-            maxPlayers = snap.maxPlayers;
-            level = snap.level;
-            xp = snap.xp;
-            xpRequired = snap.xpRequired;
-            currentPower = snap.currentPower;
-            maxPower = snap.maxPower;
-        } else if (hasFaction && this.faction != null) {
-            displayName = this.faction.getName();
-            int cc = FactionManager.countClaims(this.faction.getId());
-            claimCount = cc;
-            maxClaims = EFConfig.FACTION_MAX_CLAIMS.get();
-            memberCount = this.faction.getMembers().size();
-            maxPlayers = FactionManager.getMaxMembersFor(this.faction);
-            level = this.faction.getLevel();
-            xp = this.faction.getXp();
-            xpRequired = this.faction.xpNeededForNextLevel();
-            currentPower = (int) Math.round(this.faction.getPower());
-            maxPower = (int) Math.round(this.faction.getMaxPower());
-        } else if (hasFaction) {
-            // Fallback via EFVariables (client-only)
-            displayName = (this.fallbackFactionName != null && !this.fallbackFactionName.isEmpty()) ? this.fallbackFactionName : Component.translatable("erinium_faction.faction.menu.no_faction").getString();
-            claimCount = 0; // inconnu côté client sans snapshot
-            maxClaims = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_CLAIMS.get();
-            memberCount = 0; // inconnu sans snapshot
-            maxPlayers = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_MEMBERS.get();
-            level = this.fallbackLevel;
-            xp = this.fallbackXp;
-            xpRequired = level > 0 ? Math.max(100, (level + 1) * (level + 1) * 50) : 0;
-            currentPower = this.fallbackPower;
-            maxPower = this.fallbackMaxPower;
-        } else {
-            displayName = Component.translatable("erinium_faction.faction.menu.no_faction").getString();
-            claimCount = 0;
-            maxClaims = 0;
-            memberCount = 0;
-            maxPlayers = 0;
-            level = 0;
-            xp = 0;
-            xpRequired = 0;
-            currentPower = 0;
-            maxPower = 0;
-        }
-
-        // Titres et labels (positions relatives)
-        drawText(guiGraphics, displayName, EriFont::orbitronBold, 14f, -1, sy(10) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.resume").getString(), EriFont::orbitron, 10f, -1, sy(45) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.playerlist").getString(), EriFont::orbitron, 10f, sx(349) - this.leftPos, sy(45) - this.topPos, true, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.claims").getString() + claimCount + " / " + maxClaims, EriFont::exo2, 8f, sx(149) - this.leftPos, sy(89) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.membercount").getString() + memberCount + " / " + maxPlayers, EriFont::exo2, 8f, sx(149) - this.leftPos, sy(102) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.power").getString() + currentPower + " / " + Math.max(0, maxPower), EriFont::exo2, 8f, sx(149) - this.leftPos, sy(115) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-        drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.level").getString() + level, EriFont::exo2, 8f, -1, sy(128) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 255, 255));
-
-        if (xpRequired > 0) {
-            // barre de XP ajustée
-            int barX = sx(149);
-            int barY = sy(141);
-            int bw = sw(122);
-            int bh = sh(10);
-            guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), barX, barY, bw, bh, 0, 0, 122, 10, 122, 10);
-            int fillWidth = Math.min(bw, Math.max(0, (int) Math.round(bw * xp / (double) xpRequired)));
-            if (fillWidth > 0) {
-                guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), barX + sw(1), barY + sh(1), fillWidth, Math.max(1, bh - sh(2)), 0, 0, 122, 8, 122, 8);
-            }
-            drawText(guiGraphics, xp + " / " + xpRequired, EriFont::exo2, 6.5f, -1, sy(154) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
-        }
-
-        if (!hasFaction && (snap == null || snap.name == null || snap.name.isEmpty())) {
-            drawText(guiGraphics, Component.translatable("erinium_faction.faction.menu.no_faction_hint").getString(), EriFont::exo2, 8f, -1, sy(160) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 200, 200, 200));
-        }
+        renderBackground(g);
+        renderSidebar(g, mouseX, mouseY);
+        renderMainPanel(g, mouseX, mouseY);
 
         RenderSystem.disableBlend();
     }
 
-    @Override
-    public boolean keyPressed(int key, int b, int c) {
-        if (key == 256) {
-            if (this.minecraft != null && this.minecraft.player != null) this.minecraft.player.closeContainer();
-            return true;
-        }
-        return super.keyPressed(key, b, c);
+    private void renderBackground(GuiGraphics g) {
+        // Background cosmic
+        g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF0f0c29);
+
+        // Bordure cyan (scaled for 400x270)
+        int borderX = sx(4);
+        int borderY = sy(4);
+        int borderW = sw(392); // 400 - 8
+        int borderH = sh(262); // 270 - 8
+
+        // Glow (2px instead of 3)
+        g.fill(borderX, borderY, borderX + borderW, borderY + 2, 0x8000d2ff);
+        g.fill(borderX, borderY + borderH - 2, borderX + borderW, borderY + borderH, 0x8000d2ff);
+        g.fill(borderX, borderY, borderX + 2, borderY + borderH, 0x8000d2ff);
+        g.fill(borderX + borderW - 2, borderY, borderX + borderW, borderY + borderH, 0x8000d2ff);
+
+        // Line
+        g.fill(borderX, borderY, borderX + borderW, borderY + 1, 0xFF00d2ff);
+        g.fill(borderX, borderY + borderH - 1, borderX + borderW, borderY + borderH, 0xFF00d2ff);
+        g.fill(borderX, borderY, borderX + 1, borderY + borderH, 0xFF00d2ff);
+        g.fill(borderX + borderW - 1, borderY, borderX + borderW, borderY + borderH, 0xFF00d2ff);
     }
+
+    private void renderSidebar(GuiGraphics g, int mouseX, int mouseY) {
+        // Sidebar (scaled for 400x270)
+        int sbX = sx(9);
+        int sbY = sy(9);
+        int sbW = sw(77);
+        int sbH = sh(252);
+
+        g.fill(sbX, sbY, sbX + sbW, sbY + sbH, 0xF816161f);
+        g.fill(sbX, sbY, sbX + sbW, sbY + 1, 0x50667eea);
+
+        // Header
+        int hX = sx(13);
+        int hY = sy(13);
+        int hW = sw(68);
+
+        g.fill(hX, hY, hX + hW, hY + sh(43), 0xCC1a1a2e);
+        g.fill(hX, hY, hX + hW, hY + 2, 0xFF00d2ff);
+
+        // Logo
+        int logoX = sx(47);
+        int logoY = sy(28);
+        g.fill(logoX - sw(10), logoY - sh(10), logoX + sw(10), logoY + sh(10), 0xCCec4899);
+        g.drawCenteredString(font, "E", logoX, logoY - sh(3), 0xFFffffff);
+        g.drawCenteredString(font, "{{FACTION_NAME}}", logoX, sy(51), 0xFF00d2ff);
+
+        // Navigation area avec scroll
+        int navX = sx(13);
+        int navY = sy(65);
+        int navW = sw(68);
+        int navH = sh(NAV_AREA_HEIGHT);
+
+        // Enable scissor pour clipping
+        g.enableScissor(navX, navY, navX + navW, navY + navH);
+
+        PageType[] navPages = PageType.values();
+        for (int i = 0; i < navPages.length; i++) {
+            int btnX = navX;
+            int btnY = navY + (int)((i * (NAV_BUTTON_HEIGHT + NAV_BUTTON_SPACING)) * scaleY) - (int)(navScrollOffset * scaleY);
+            int btnW = navW;
+            int btnH = sh(NAV_BUTTON_HEIGHT);
+
+            // Skip si hors de la zone visible
+            if (btnY + btnH < navY || btnY > navY + navH) continue;
+
+            PageType page = navPages[i];
+            boolean isSelected = (currentPage == page);
+            boolean isHovered = mouseX >= btnX && mouseX < btnX + btnW && mouseY >= btnY && mouseY < btnY + btnH &&
+                               mouseY >= navY && mouseY < navY + navH;
+
+            if (isSelected) {
+                g.fill(btnX, btnY, btnX + btnW, btnY + btnH, 0xFF667eea);
+                g.fill(btnX, btnY, btnX + sw(20), btnY + 2, 0xFF00d2ff);
+            } else if (isHovered) {
+                g.fill(btnX, btnY, btnX + btnW, btnY + btnH, 0x802a2a3e);
+            } else {
+                g.fill(btnX, btnY, btnX + btnW, btnY + btnH, 0xCC2a2a3e);
+            }
+
+            int textColor = isSelected ? 0xFFffffff : (isHovered ? 0xFFe0e0ff : 0xFFb8b8d0);
+            g.drawString(font, page.label, btnX + sw(5), btnY + sh(6), textColor, isSelected);
+        }
+
+        g.disableScissor();
+
+        // Scrollbar pour navigation
+        if (maxNavScroll > 0) {
+            int scrollbarX = navX + navW - sw(2);
+            int scrollbarH = navH;
+
+            g.fill(scrollbarX, navY, scrollbarX + sw(2), navY + scrollbarH, 0x802a2a3e);
+
+            int thumbHeight = (int) Math.max(sh(10), ((double) navH / (navH + (int)(maxNavScroll * scaleY))) * scrollbarH);
+            int thumbY = navY + (int) ((double) navScrollOffset / maxNavScroll * (scrollbarH - thumbHeight));
+
+            boolean thumbHovered = mouseX >= scrollbarX && mouseX < scrollbarX + sw(2) &&
+                                  mouseY >= thumbY && mouseY < thumbY + thumbHeight;
+
+            int thumbColor = navScrollDragging ? 0xFF8b5cf6 : (thumbHovered ? 0xFF667eea : 0xFF4a4a5e);
+            g.fill(scrollbarX, thumbY, scrollbarX + sw(2), thumbY + thumbHeight, thumbColor);
+        }
+
+        // Power indicator
+        int pwX = sx(13);
+        int pwY = sy(235);
+        int pwW = sw(68);
+        int pwCenterX = pwX + pwW / 2;
+
+        g.fill(pwX, pwY, pwX + pwW, pwY + sh(26), 0xE61a1a2e);
+        g.drawCenteredString(font, "POWER", pwCenterX, pwY + sh(5), 0xFFa0a0c0);
+
+        // Bar
+        int barX = sx(18);
+        int barY = sy(248);
+        int barW = sw(60);
+        int barH = sh(4);
+
+        g.fill(barX, barY, barX + barW, barY + barH, 0xFF2a2a3e);
+        int powerPercent = 75;
+        g.fill(barX, barY, barX + (barW * powerPercent / 100), barY + barH, 0xFFa855f7);
+
+        g.drawCenteredString(font, "{{POWER_CURRENT}}/{{POWER_MAX}}", pwCenterX, pwY + sh(17), 0xFF00d2ff);
+    }
+
+    private void renderMainPanel(GuiGraphics g, int mouseX, int mouseY) {
+        // Main panel
+        int pX = sx(90);
+        int pY = sy(9);
+        int pW = sw(297);
+        int pH = sh(252);
+
+        g.fill(pX, pY, pX + pW, pY + pH, 0xF01e1e2e);
+
+        // Header
+        int hX = sx(95);
+        int hY = sy(13);
+        int hW = sw(289);
+
+        g.fill(hX, hY, hX + hW, hY + sh(26), 0xCC1a1a2e);
+        g.fill(hX, hY, hX + hW, hY + 2, 0xFF00d2ff);
+        g.fill(hX, hY, hX + sw(22), hY + 2, 0xFF00d2ff);
+
+        g.drawString(font, "Faction " + currentPage.label, hX + sw(7), hY + sh(11), 0xFFffffff, true);
+
+        // Close button
+        int closeX = sx(373);
+        int closeY = sy(17);
+        boolean closeHovered = mouseX >= closeX && mouseX < closeX + sw(11) && mouseY >= closeY && mouseY < closeY + sh(11);
+
+        g.fill(closeX, closeY, closeX + sw(11), closeY + sh(11), closeHovered ? 0xFFff4444 : 0xCCef4444);
+        g.drawCenteredString(font, "X", closeX + sw(5), closeY + sh(3), 0xFFffffff);
+
+        // Render page content
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            page.render(g, leftPos, topPos, scaleX, scaleY, mouseX, mouseY);
+        }
+    }
+
+//    @Override
+//    public boolean keyPressed(int key, int b, int c) {
+//        if (key == 256) {
+//            if (this.minecraft != null && this.minecraft.player != null) this.minecraft.player.closeContainer();
+//            return true;
+//        }
+//        return super.keyPressed(key, b, c);
+//    }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -265,71 +426,173 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         super.init();
         recomputeLayout();
 
-        // Construire la liste des joueurs
-        FactionSnapshot snap = this.menu instanceof FactionMenu fm ? fm.snapshot : null;
-        StringBuilder playerlist = new StringBuilder();
-        if (snap != null && snap.name != null && !snap.name.isEmpty()) {
-            for (var e : snap.membersRank.entrySet()) {
-                UUID id = e.getKey();
-                String rank = e.getValue();
-                String name = snap.memberNames.getOrDefault(id, id.toString());
-                if (playerlist.length() > 0) playerlist.append(",");
-                playerlist.append(id).append(":").append(rank).append(":").append(name);
-            }
-        } else if (hasFaction && faction != null) {
-            for (Map.Entry<UUID, Faction.Member> t : faction.getMembers().entrySet()) {
-                if (!playerlist.isEmpty()) playerlist.append(",");
-                String rankId = t.getValue().rankId;
-                String name = t.getValue().nameCached != null ? t.getValue().nameCached : t.getKey().toString();
-                playerlist.append(t.getKey()).append(":").append(rankId).append(":").append(name);
+        // Initialiser les pages (font est maintenant disponible)
+        if (pages.isEmpty()) {
+            pages.put(PageType.OVERVIEW, new OverviewPage(font));
+            pages.put(PageType.MEMBERS, new MembersPage(font));
+            pages.put(PageType.TERRITORY, new TerritoryPage(font));
+            pages.put(PageType.ALLIANCES, new AlliancesPage(font));
+            pages.put(PageType.CHEST, new ChestPage(font, this.menu));
+            pages.put(PageType.LEVEL, new LevelPage(font));
+            pages.put(PageType.QUESTS, new QuestsPage(font));
+            pages.put(PageType.ADMINSHOP, new AdminShopPage(font));
+            pages.put(PageType.SETTINGS_FACTION, new SettingsFactionPage(font));
+            pages.put(PageType.SETTINGS_PERMISSIONS, new SettingsPermissionsPage(font));
+        }
+
+        // Calculer le maxNavScroll
+        int totalNavHeight = PageType.values().length * (NAV_BUTTON_HEIGHT + NAV_BUTTON_SPACING);
+        maxNavScroll = Math.max(0, totalNavHeight - NAV_AREA_HEIGHT);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
+
+        // Navigation scrollbar
+        int navX = sx(13);
+        int navY = sy(65);
+        int navW = sw(68);
+        int navH = sh(NAV_AREA_HEIGHT);
+        int scrollbarX = navX + navW - sw(2);
+
+        if (maxNavScroll > 0 && mouseX >= scrollbarX && mouseX < scrollbarX + sw(2) &&
+            mouseY >= navY && mouseY < navY + navH) {
+            navScrollDragging = true;
+            navDragStartY = (int) mouseY;
+            navScrollStartOffset = navScrollOffset;
+            return true;
+        }
+
+        // Navigation buttons
+        PageType[] navPages = PageType.values();
+        for (int i = 0; i < navPages.length; i++) {
+            int btnX = navX;
+            int btnY = navY + (int)((i * (NAV_BUTTON_HEIGHT + NAV_BUTTON_SPACING)) * scaleY) - (int)(navScrollOffset * scaleY);
+            int btnW = navW - sw(8); // Exclure scrollbar
+            int btnH = sh(NAV_BUTTON_HEIGHT);
+
+            // Skip si hors zone visible
+            if (btnY + btnH < navY || btnY > navY + navH) continue;
+
+            if (mouseX >= btnX && mouseX < btnX + btnW && mouseY >= btnY && mouseY < btnY + btnH &&
+                mouseY >= navY && mouseY < navY + navH) {
+                currentPage = navPages[i];
+                System.out.println("Page changed to: " + currentPage.label);
+                // Mettre à jour les positions des slots (hors écran si pas Chest)
+                updateSlotPositionsWithReflection();
+                return true;
             }
         }
-        // Liste scrollable à droite, dimension en fonction de la fenêtre
-        FactionMenuPlayerList scrollableList = new FactionMenuPlayerList(this.minecraft, sx(BASE_W - 130), sy(54), 120, Math.max(60, this.imageHeight - sh(95)), playerlist.toString(), world != null ? world.getServer() : null);
-        this.addRenderableWidget(scrollableList);
 
-        // Bouton settings réintroduit si le joueur a une faction
-        if (hasFaction) {
-            int btnSize = Math.max(32, Math.min(72, sw(64)));
-            int bx = sx(20);
-            int by = this.topPos + this.imageHeight - btnSize - sh(20);
-
-            // Bouton Settings
-            fsettings = new ImageButton(bx, by, btnSize, btnSize, new WidgetSprites(ResourceLocation.parse("erinium_faction:textures/screens/faction_settings.png"), ResourceLocation.parse("erinium_faction:textures/screens/faction_settings_hover.png")), e -> {
-                int px = FactionMenuScreen.this.x;
-                int py = FactionMenuScreen.this.y;
-                int pz = FactionMenuScreen.this.z;
-                PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(1, px, py, pz));
-            }) {
-                @Override
-                public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-                    guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
-                }
-            };
-            this.addRenderableWidget(fsettings);
-
-            // Bouton Coffre (à droite du bouton settings)
-            int chestBtnX = bx + btnSize + sw(10);
-            ImageButton chestButton = new ImageButton(chestBtnX, by, btnSize, btnSize,
-                new WidgetSprites(
-                    ResourceLocation.parse("erinium_faction:textures/screens/faction_chest.png"),
-                    ResourceLocation.parse("erinium_faction:textures/screens/faction_chest_open.png")
-                ),
-                e -> {
-                    // Envoyer le paquet pour ouvrir le coffre
-                    PacketDistributor.sendToServer(new OpenFactionChestMessage());
-                }) {
-                @Override
-                public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-                    guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
-                }
-            };
-            chestButton.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
-                net.minecraft.network.chat.Component.literal("§6Coffre de Faction\n§7Cliquez pour ouvrir")));
-            this.addRenderableWidget(chestButton);
-        } else {
-            fsettings = null;
+        // Close button
+        int closeX = sx(373);
+        int closeY = sy(17);
+        if (mouseX >= closeX && mouseX < closeX + sw(11) && mouseY >= closeY && mouseY < closeY + sh(11)) {
+            if (this.minecraft != null && this.minecraft.player != null) {
+                this.minecraft.player.closeContainer();
+            }
+            return true;
         }
+
+        // Delegate to page first
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            boolean handled = page.mouseClicked(mouseX, mouseY, button, leftPos, topPos, scaleX, scaleY);
+            if (handled) return true;
+        }
+
+        // Let parent handle slot clicks
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0 && navScrollDragging) {
+            navScrollDragging = false;
+            return true;
+        }
+
+        // Delegate to page
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            boolean handled = page.mouseReleased(mouseX, mouseY, button, leftPos, topPos, scaleX, scaleY);
+            if (handled) return true;
+        }
+
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (navScrollDragging && maxNavScroll > 0) {
+            int navY = sy(65);
+            int navH = sh(NAV_AREA_HEIGHT);
+            int deltaY = (int) mouseY - navDragStartY;
+            int thumbHeight = (int) Math.max(sh(10), ((double) navH / (navH + (int)(maxNavScroll * scaleY))) * navH);
+
+            double scrollRatio = (double) deltaY / (navH - thumbHeight);
+            navScrollOffset = (int) (navScrollStartOffset + scrollRatio * maxNavScroll);
+            navScrollOffset = Math.max(0, Math.min(maxNavScroll, navScrollOffset));
+            return true;
+        }
+
+        // Delegate to page
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            boolean handled = page.mouseDragged(mouseX, mouseY, button, dragX, dragY, leftPos, topPos, scaleX, scaleY);
+            if (handled) return true;
+        }
+
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        // Scroll navigation sidebar
+        int navX = sx(13);
+        int navY = sy(65);
+        int navW = sw(68);
+        int navH = sh(NAV_AREA_HEIGHT);
+
+        if (mouseX >= navX && mouseX < navX + navW && mouseY >= navY && mouseY < navY + navH && maxNavScroll > 0) {
+            navScrollOffset -= (int) (scrollY * 20);
+            navScrollOffset = Math.max(0, Math.min(maxNavScroll, navScrollOffset));
+            return true;
+        }
+
+        // Delegate to page
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            boolean handled = page.mouseScrolled(mouseX, mouseY, scrollX, scrollY, leftPos, topPos, scaleX, scaleY);
+            if (handled) return true;
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // Delegate to page
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            boolean handled = page.keyPressed(keyCode, scanCode, modifiers, leftPos, topPos, scaleX, scaleY);
+            if (handled) return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
+        // Delegate to page
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            boolean handled = page.charTyped(codePoint, modifiers, leftPos, topPos, scaleX, scaleY);
+            if (handled) return true;
+        }
+
+        return super.charTyped(codePoint, modifiers);
     }
 
     @Override
@@ -338,36 +601,4 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         recomputeLayout();
         this.init();
     }
-
-    private void drawText(GuiGraphics guiGraphics, String text, EriFont.EriFontAccess fontAccess, float fontSize, float x, float y, boolean isXCentered, boolean hasShadow, int color) {
-        float textScale = fontSize / 8f;
-        if (text == null) text = "";
-        Component comp = fontAccess.get(text);
-
-        int tw = this.minecraft.font.width(comp);
-        float totalTextWidth = tw * textScale;
-
-        float xPos;
-        if (isXCentered) {
-            xPos = x - (totalTextWidth / 2f);
-        } else if (x == -1f) {
-            xPos = (this.imageWidth - totalTextWidth) / 2f;
-        } else {
-            xPos = x;
-        }
-
-        float xFinal = this.leftPos + xPos;
-        float yFinal = this.topPos + y;
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(textScale, textScale, 1f);
-
-        float xDraw = xFinal / textScale;
-        float yDraw = yFinal / textScale;
-
-        guiGraphics.drawString(this.font, comp, (int) xDraw, (int) yDraw, color, hasShadow);
-
-        guiGraphics.pose().popPose();
-    }
 }
-
