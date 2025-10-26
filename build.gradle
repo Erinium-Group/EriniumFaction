@@ -272,3 +272,155 @@ task uploadToSFTP {
         }
     }
 }
+
+tasks.register('injectJavadoc') {
+    group = 'formatting'
+    description = 'Insère des JavaDoc sur toutes les classes et méthodes avec attribution auteur (git blame).'
+    doLast {
+        def root = file('src/main/java')
+        if (!root.exists()) { println "No src/main/java"; return }
+
+        def gitUserName = ("git --no-pager config user.name").execute(null, project.projectDir).text.trim()
+        def gitUserEmail = ("git --no-pager config user.email").execute(null, project.projectDir).text.trim()
+
+        int filesChanged = 0
+        root.eachFileRecurse { f ->
+            if (!f.name.endsWith('.java')) return
+            def relPath = root.toPath().relativize(f.toPath()).toString().replace('\\','/')
+
+            // Read content
+            def content = f.getText('UTF-8')
+            def lines = content.readLines()
+            if (lines.isEmpty()) return
+
+            // git blame per file (line aligned)
+            def blameProc = new ProcessBuilder(['git','--no-pager','blame','-e','--',f.absolutePath])
+                    .directory(project.projectDir)
+                    .redirectErrorStream(true)
+                    .start()
+            blameProc.waitFor()
+            def blameOut = blameProc.inputStream.getText('UTF-8')
+            def blameLines = blameOut.readLines()
+            // Build author by line idx (1-based)
+            def authorByLine = [:]
+            for (int i=0; i<Math.min(lines.size(), blameLines.size()); i++) {
+                def bl = blameLines[i]
+                def m = (bl =~ /\(([^<\)]+)?<([^>]+)>\s+\d{4}-\d{2}-\d{2}.*\)/)
+                String name = null
+                String email = null
+                if (m.find()) {
+                    name = (m.group(1) ?: '').trim()
+                    email = m.group(2)?.trim()
+                } else {
+                    // not committed yet
+                    name = gitUserName
+                    email = gitUserEmail
+                }
+                authorByLine[i+1] = [name:name, email:email]
+            }
+
+            // Helper to detect if a block before index already has Javadoc
+            def hasJavadocAbove = { int idx ->
+                for (int i=idx-1; i>=0 && i>=idx-5; i--) {
+                    if (i<0) break
+                    def l = lines[i].trim()
+                    if (l.isEmpty()) continue
+                    if (l.startsWith('/**')) return true
+                    if (l.startsWith('/*') || l.startsWith('//')) return false
+                    break
+                }
+                return false
+            }
+
+            def sb = new StringBuilder()
+            boolean modified = false
+
+            // First pass: add class/interface/enum JavaDoc if missing
+            int classLineIdx = -1
+            for (int i=0; i<lines.size(); i++) {
+                def l = lines[i]
+                if (l =~ /\b(class|interface|enum)\b/ && l =~ /\b(public|final|abstract|sealed|non-sealed|record)?\s*(class|interface|enum)\b/) {
+                    classLineIdx = i
+                    break
+                }
+            }
+            if (classLineIdx > 0 && !hasJavadocAbove(classLineIdx)) {
+                def author = authorByLine.get(classLineIdx+1) ?: [name:gitUserName, email:gitUserEmail]
+                def classDoc = new StringBuilder()
+                classDoc.append('/**\n')
+                classDoc.append(' * Classe auto-documentée.\n')
+                classDoc.append(" * \n")
+                classDoc.append(" * @author ")
+                if (author.name) classDoc.append(author.name).append(' ')
+                if (author.email) classDoc.append('<').append(author.email).append('>')
+                classDoc.append('\n')
+                classDoc.append(' */\n')
+                lines.add(classLineIdx, classDoc.toString())
+                modified = true
+                // rebuild authorByLine shift not needed further
+            }
+
+            // Re-scan for method declarations and add JavaDoc stubs
+            // Simple regex: visibility/modifiers returnType name(params) {  OR end with ; for interface/abstract
+            def methodPattern = ~/^\s*(public|protected|private)?\s*(static\s+|final\s+|synchronized\s+|default\s+|abstract\s+)*[\w\<\>\[\]\.,\s]+\s+([a-zA-Z_$][\w$]*)\s*\(([^)]*)\)\s*(throws\s+[\w\.,\s]+)?\s*(\{|;).*/
+
+            for (int i=0; i<lines.size(); i++) {
+                def l = lines[i]
+                if (!(l ==~ methodPattern)) continue
+                if (hasJavadocAbove(i)) continue
+
+                // Extract method name and params
+                def m = (l =~ methodPattern)
+                if (!m.matches()) continue
+                def methodName = m.group(3)
+                def params = m.group(4) ?: ''
+                // Extract return type by heuristic: take part before name and last token before name not modifier
+                String before = l.substring(0, l.indexOf(methodName)).trim()
+                // Cleanup generics to avoid confusion
+                def retType = 'void'
+                try {
+                    def tokens = before.split(/\s+/).toList()
+                    // remove modifiers
+                    def mods = ['public','protected','private','static','final','synchronized','default','abstract'] as Set
+                    def filtered = tokens.findAll { !(it in mods) }
+                    if (!filtered.isEmpty()) retType = filtered.last()
+                } catch (ignored) {}
+
+                def author = authorByLine.get(Math.min(i+1, authorByLine.size())) ?: [name:gitUserName, email:gitUserEmail]
+                def doc = new StringBuilder()
+                doc.append('/**\n')
+                doc.append(' * Documentation automatique.\n')
+                if (params.trim()) {
+                    // Split params by comma and document last token as name
+                    params.split(',').each { p ->
+                        def ptrim = p.trim()
+                        if (ptrim.isEmpty()) return
+                        // Remove annotations
+                        ptrim = ptrim.replaceAll(/@[\w.]+\s*/, '')
+                        def ptoks = ptrim.split(/\s+/)
+                        def pname = ptoks[-1]
+                        doc.append(' * @param ').append(pname).append(' ').append('paramètre').append('\n')
+                    }
+                }
+                if (!retType.equals('void')) {
+                    doc.append(' * @return résultat\n')
+                }
+                doc.append(' * @author ')
+                if (author.name) doc.append(author.name).append(' ')
+                if (author.email) doc.append('<').append(author.email).append('>')
+                doc.append('\n')
+                doc.append(' */')
+                lines.add(i, doc.toString())
+                modified = true
+                i++ // skip inserted block
+            }
+
+            if (modified) {
+                f.setText(lines.join(System.lineSeparator()), 'UTF-8')
+                filesChanged++
+                println "JavaDoc inserted: ${relPath}"
+            }
+        }
+        println "injectJavadoc: ${filesChanged} file(s) updated."
+    }
+}
