@@ -38,26 +38,32 @@ public class MembersPage extends FactionPage {
         if (memberScrollList == null) {
             // Hauteur augmentée pour que tout soit visible (30 au lieu de 16)
             memberScrollList = new ScrollList<>(font, this::renderMemberItem, sh(30, scaleY));
-
-            // Ajouter des membres d'exemple
-            List<MemberInfo> members = new ArrayList<>();
-            members.add(new MemberInfo("{{MEMBER_1_NAME}}", "{{MEMBER_1_RANK}}", 100, true));
-            members.add(new MemberInfo("{{MEMBER_2_NAME}}", "{{MEMBER_2_RANK}}", 85, true));
-            members.add(new MemberInfo("{{MEMBER_3_NAME}}", "{{MEMBER_3_RANK}}", 92, false));
-            members.add(new MemberInfo("{{MEMBER_4_NAME}}", "{{MEMBER_4_RANK}}", 78, true));
-            members.add(new MemberInfo("{{MEMBER_5_NAME}}", "{{MEMBER_5_RANK}}", 88, false));
-            // Exemples supplémentaires pour montrer le scroll
-            members.add(new MemberInfo("PlayerExample1", "Member", 75, true));
-            members.add(new MemberInfo("PlayerExample2", "Officer", 82, true));
-            members.add(new MemberInfo("PlayerExample3", "Recruit", 45, false));
-            members.add(new MemberInfo("PlayerExample4", "Member", 70, true));
-            members.add(new MemberInfo("PlayerExample5", "Member", 65, false));
-
-            memberScrollList.setItems(members);
             memberScrollList.setOnItemClick(member -> {
                 System.out.println("MembersPage: Clicked on member " + member.name);
             });
         }
+
+        // Mettre à jour la liste avec les vraies données
+        var data = getFactionData();
+        List<MemberInfo> members = new ArrayList<>();
+
+        if (data != null && data.memberNames != null) {
+            for (var entry : data.memberNames.entrySet()) {
+                String name = entry.getValue();
+                String rank = data.membersRank.getOrDefault(entry.getKey(), "Member");
+                // Power et online status ne sont pas disponibles dans FactionSnapshot
+                int power = 100; // Valeur par défaut
+                boolean online = false; // Valeur par défaut
+                members.add(new MemberInfo(name, rank, power, online));
+            }
+        }
+
+        if (members.isEmpty()) {
+            // Ajouter un message si aucun membre
+            members.add(new MemberInfo("No members found", "N/A", 0, false));
+        }
+
+        memberScrollList.setItems(members);
 
         // Update positions
         int x = sx(CONTENT_X, leftPos, scaleX);
@@ -122,8 +128,9 @@ public class MembersPage extends FactionPage {
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
         g.drawString(font, "FACTION MEMBERS", x + sw(5, scaleX), y + sh(5, scaleY), 0xFFffffff, true);
 
-        // Stats
-        String statsText = "{{MEMBERS_ONLINE}}/{{MEMBER_COUNT}} Online";
+        // Stats avec vraies données
+        var data = getFactionData();
+        String statsText = data != null ? data.membersCount + " Members" : "0 Members";
         g.drawString(font, statsText, x + w - font.width(statsText) - sw(5, scaleX), y + sh(5, scaleY), 0xFF00d2ff, false);
 
         // Member list

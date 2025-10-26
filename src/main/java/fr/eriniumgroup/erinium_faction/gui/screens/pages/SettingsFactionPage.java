@@ -32,24 +32,28 @@ public class SettingsFactionPage extends FactionPage {
             int inputWidth = sw(200, scaleX);  // Réduit pour rentrer dans 275px
             int inputHeight = sh(15, scaleY);
 
-            // Text fields (réduits et mieux espacés)
+            // Récupérer les données de faction
+            var data = getFactionData();
+
+            // Text fields (réduits et mieux espacés) avec vraies données
             nameField = new StyledTextField(font);
-            nameField.setPlaceholder("{{FACTION_NAME}}");
-            nameField.setText("Example Faction");
+            nameField.setPlaceholder("Faction Name");
+            nameField.setText(data != null ? data.displayName : "");
             nameField.setBounds(x + sw(70, scaleX), y + sh(27, scaleY), inputWidth, inputHeight);
 
             descriptionField = new StyledTextField(font);
-            descriptionField.setPlaceholder("{{FACTION_DESCRIPTION}}");
-            descriptionField.setText("A powerful faction");
+            descriptionField.setPlaceholder("Faction Description");
+            descriptionField.setText(data != null && data.description != null ? data.description : "");
             descriptionField.setBounds(x + sw(70, scaleX), y + sh(54, scaleY), inputWidth, inputHeight);
 
             motdField = new StyledTextField(font);
-            motdField.setPlaceholder("{{FACTION_MOTD}}");
-            motdField.setText("Welcome to our faction!");
+            motdField.setPlaceholder("Message of the Day");
+            motdField.setText(""); // MOTD n'est pas dans FactionSnapshot
             motdField.setBounds(x + sw(70, scaleX), y + sh(81, scaleY), inputWidth, inputHeight);
 
-            // Toggle (un seul: Open to Join)
-            openToJoinToggle = new StyledToggle(font, "Open to Join", true, state -> {
+            // Toggle basé sur le mode de faction
+            boolean isOpen = data != null && "OPEN".equalsIgnoreCase(data.mode);
+            openToJoinToggle = new StyledToggle(font, "Open to Join", isOpen, state -> {
                 System.out.println("SettingsFactionPage: Open to Join set to " + state);
             });
             openToJoinToggle.setBounds(x + sw(4, scaleX), y + sh(108, scaleY));
@@ -70,10 +74,11 @@ public class SettingsFactionPage extends FactionPage {
 
             StyledButton resetBtn = new StyledButton(font, "Reset", () -> {
                 System.out.println("SettingsFactionPage: Resetting to defaults");
-                nameField.setText("{{FACTION_NAME}}");
-                descriptionField.setText("{{FACTION_DESCRIPTION}}");
-                motdField.setText("{{FACTION_MOTD}}");
-                openToJoinToggle.setState(false);
+                var resetData = getFactionData();
+                nameField.setText(resetData != null ? resetData.displayName : "");
+                descriptionField.setText(resetData != null && resetData.description != null ? resetData.description : "");
+                motdField.setText("");
+                openToJoinToggle.setState(resetData != null && "OPEN".equalsIgnoreCase(resetData.mode));
             });
             resetBtn.setBounds(x + sw(95, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));
             actionButtons.add(resetBtn);

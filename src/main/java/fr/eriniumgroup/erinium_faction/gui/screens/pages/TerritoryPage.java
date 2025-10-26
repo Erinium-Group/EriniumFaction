@@ -69,10 +69,15 @@ public class TerritoryPage extends FactionPage {
         int x = sx(CONTENT_X, leftPos, scaleX);
         int y = sy(CONTENT_Y, topPos, scaleY);
 
-        // Stats
-        renderStatCard(g, x, y, "CHUNKS", "{{CLAIM_COUNT}}", 0xFFa855f7, scaleX, scaleY);
-        renderStatCard(g, x + sw(97, scaleX), y, "MAX", "{{MAX_CLAIMS}}", 0xFF00d2ff, scaleX, scaleY);
-        renderStatCard(g, x + sw(194, scaleX), y, "POWER", "{{CLAIM_VALUE}}", 0xFF10b981, scaleX, scaleY);
+        // Stats avec vraies données
+        var data = getFactionData();
+        String claimsText = data != null ? String.valueOf(data.claims) : "0";
+        String maxClaimsText = data != null ? String.valueOf(data.maxClaims) : "0";
+        String powerText = data != null ? String.valueOf(data.currentPower) : "0";
+
+        renderStatCard(g, x, y, "CHUNKS", claimsText, 0xFFa855f7, scaleX, scaleY);
+        renderStatCard(g, x + sw(97, scaleX), y, "MAX", maxClaimsText, 0xFF00d2ff, scaleX, scaleY);
+        renderStatCard(g, x + sw(194, scaleX), y, "POWER", powerText, 0xFF10b981, scaleX, scaleY);
 
         // List
         claimScrollList.render(g, mouseX, mouseY);

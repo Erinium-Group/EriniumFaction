@@ -115,8 +115,9 @@ public class AdminShopPage extends FactionPage {
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
         g.drawString(font, "FACTION SHOP", x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
 
-        // Balance display
-        String balanceText = "Balance: ${{FACTION_BALANCE}}";
+        // Balance display avec vraies données
+        var data = getFactionData();
+        String balanceText = data != null ? "Balance: $" + data.bank : "Balance: $0";
         g.drawString(font, balanceText, x + w - font.width(balanceText) - sw(9, scaleX), y + sh(9, scaleY), 0xFFfbbf24, false);
 
         shopScrollList.render(g, mouseX, mouseY);
