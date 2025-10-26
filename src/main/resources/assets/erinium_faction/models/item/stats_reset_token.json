@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "erinium_faction:item/stats_reset_token"
+  }
+}
+

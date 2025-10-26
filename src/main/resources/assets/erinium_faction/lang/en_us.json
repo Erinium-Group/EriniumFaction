@@ -154,5 +154,58 @@
   "erinium_faction.chat.ally_format": "§3[§eAlly§3] §r%s: %s",
   "erinium_faction.chat.global_format": "%s§r %s§r §f%s:§r %s",
 
-  "erinium_faction.client.resized.message": "§eFenêtre redimensionnée à la taille minimale requise : §a%s §ex §a%s"
+  "erinium_faction.client.resized.message": "§eWindow resized to minimum required size: §a%s §ex §a%s",
+
+  "player_level.title": "§6§lPlayer Statistics",
+  "player_level.level": "§eLevel",
+  "player_level.xp": "§eXP",
+  "player_level.points_available": "§eAvailable Points",
+  "player_level.level_up": "§6§l✦ §eYou reached level §6%s§e!",
+  "player_level.points_gained": "§a+%s §eattribute point(s) available",
+  "player_level.hearts_gained": "§c❤ §c+§e%s §cpermanent heart(s)!",
+  "player_level.no_points": "§cYou don't have any attribute points available!",
+  "player_level.attributes_reset": "§eYour attributes have been reset!",
+
+  "player_level.attribute.health": "Health",
+  "player_level.attribute.armor": "Armor",
+  "player_level.attribute.speed": "Speed",
+  "player_level.attribute.intelligence": "Intelligence",
+  "player_level.attribute.strength": "Strength",
+  "player_level.attribute.luck": "Luck",
+
+  "player_level.button.health": "+ Health",
+  "player_level.button.armor": "+ Armor",
+  "player_level.button.speed": "+ Speed",
+  "player_level.button.intelligence": "+ Intelligence",
+  "player_level.button.strength": "+ Strength",
+  "player_level.button.luck": "+ Luck",
+  "player_level.button.reset": "§cReset",
+  "player_level.button.stats": "§6⚔ §eStats",
+
+  "player_level.command.info.title": "§6§l=== Level Information ===",
+  "player_level.command.info.player": "§ePlayer: §f%s",
+  "player_level.command.info.level": "§eLevel: §6%s §7/ §6%s",
+  "player_level.command.info.xp": "§eExperience: §a%s §7/ §a%s",
+  "player_level.command.info.progress": "§eProgress: §b%s%%",
+  "player_level.command.info.points": "§eAvailable points: §d%s",
+  "player_level.command.info.attributes": "§6§l=== Attributes ===",
+  "player_level.command.info.health_value": "§cHealth: §f%s",
+  "player_level.command.info.armor_value": "§7Armor: §f%s",
+  "player_level.command.info.speed_value": "§bSpeed: §f%s",
+  "player_level.command.info.intelligence_value": "§dIntelligence: §f%s",
+  "player_level.command.info.strength_value": "§4Strength: §f%s",
+  "player_level.command.info.luck_value": "§aLuck: §f%s",
+
+  "player_level.command.addxp.success": "§a+%s XP added to %s",
+  "player_level.command.setlevel.success": "§eLevel of %s set to §6%s",
+  "player_level.command.reset.success": "§eAttributes of %s reset!",
+  "player_level.command.distribute.invalid": "§cInvalid attribute! Use: health, armor, speed, intelligence, strength, luck",
+  "player_level.command.distribute.success": "§a+1 §e%s",
+
+  "player_level.reset.need_token": "§cYou need a §6Stats Reset Token §cto reset your attributes!",
+
+  "item.erinium_faction.stats_reset_token": "Stats Reset Token",
+  "item.erinium_faction.stats_reset_token.tooltip": "§7Use this item to reset your attribute points",
+
+  "itemGroup.erinium_faction": "Erinium Faction"
 }

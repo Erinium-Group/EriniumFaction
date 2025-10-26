@@ -9,6 +9,7 @@ import fr.eriniumgroup.erinium_faction.common.network.PacketHandler;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.logger.EFCC;
+import fr.eriniumgroup.erinium_faction.init.EFCreativeTabs;
 import fr.eriniumgroup.erinium_faction.protection.ClaimProtection;
 import fr.eriniumgroup.erinium_faction.protection.PvpProtection;
 import net.neoforged.bus.api.IEventBus;
@@ -22,6 +23,7 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import fr.eriniumgroup.erinium_faction.init.EFMenus;
 import fr.eriniumgroup.erinium_faction.init.EFItems;
+import fr.eriniumgroup.erinium_faction.init.EFCreativeTabs;
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
 import fr.eriniumgroup.erinium_faction.init.EFArgumentTypes;
 import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
@@ -30,6 +32,9 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
 import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
+import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelAttachments;
+import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelConfig;
+import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelCommand;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -43,15 +48,19 @@ public class EriniumFaction {
         // Configuration
         modContainer.registerConfig(ModConfig.Type.SERVER, EFConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.CLIENT, EFClientConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.SERVER, PlayerLevelConfig.SPEC, "erinium_faction-player_level.toml");
 
         // Register DeferredRegisters (must be before client screen registrations)
         EFMenus.REGISTER.register(modEventBus);
         EFItems.REGISTER.register(modEventBus);
+        EFCreativeTabs.REGISTER.register(modEventBus);
         EFVariables.ATTACHMENT_TYPES.register(modEventBus);
         EFArgumentTypes.REGISTER.register(modEventBus);
         PowerManager.ATTACHMENTS.register(modEventBus);
-        // Enregistrer l’économie (players.dat)
+        // Enregistrer l'économie (players.dat)
         fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.ATTACHMENTS.register(modEventBus);
+        // Système de niveau des joueurs
+        PlayerLevelAttachments.ATTACHMENTS.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
@@ -96,6 +105,8 @@ public class EriniumFaction {
         EconomyCommand.register(event.getDispatcher());
         // Commande ef (perm per-player)
         fr.eriniumgroup.erinium_faction.commands.EFCommand.register(event.getDispatcher());
+        // Commande système de niveau
+        PlayerLevelCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
     }
