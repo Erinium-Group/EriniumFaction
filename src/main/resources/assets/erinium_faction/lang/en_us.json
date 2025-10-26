@@ -160,6 +160,7 @@
   "player_level.level": "§eLevel",
   "player_level.xp": "§eXP",
   "player_level.points_available": "§eAvailable Points",
+  "player_level.section.invest": "Invest your points",
   "player_level.level_up": "§6§l✦ §eYou reached level §6%s§e!",
   "player_level.points_gained": "§a+%s §eattribute point(s) available",
   "player_level.hearts_gained": "§c❤ §c+§e%s §cpermanent heart(s)!",
@@ -181,6 +182,13 @@
   "player_level.button.luck": "+ Luck",
   "player_level.button.reset": "§cReset",
   "player_level.button.stats": "§6⚔ §eStats",
+
+  "player_level.tooltip.health": "§eIncrease your maximum health points",
+  "player_level.tooltip.armor": "§eImprove your damage resistance",
+  "player_level.tooltip.speed": "§eIncrease your movement speed",
+  "player_level.tooltip.intelligence": "§eIncrease your magic power",
+  "player_level.tooltip.strength": "§eIncrease your attack damage",
+  "player_level.tooltip.luck": "§eIncrease your loot and critical hit chances",
 
   "player_level.command.info.title": "§6§l=== Level Information ===",
   "player_level.command.info.player": "§ePlayer: §f%s",
