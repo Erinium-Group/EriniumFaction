@@ -232,10 +232,10 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             int barY = sy(141);
             int bw = sw(122);
             int bh = sh(10);
-            guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), barX, barY, 0, 0, bw, bh, 122, 10);
+            guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar.png"), barX, barY, bw, bh, 0, 0, 122, 10, 122, 10);
             int fillWidth = Math.min(bw, Math.max(0, (int) Math.round(bw * xp / (double) xpRequired)));
             if (fillWidth > 0) {
-                guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), barX + sw(1), barY + sh(1), 0, 0, fillWidth, Math.max(1, bh - sh(2)), 122, 8);
+                guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/faction_xp_bar_fill.png"), barX + sw(1), barY + sh(1), fillWidth, Math.max(1, bh - sh(2)), 0, 0, 122, 8, 122, 8);
             }
             drawText(guiGraphics, xp + " / " + xpRequired, EriFont::exo2, 6.5f, -1, sy(154) - this.topPos, false, true, EFUtils.Color.ARGBToInt(255, 255, 215, 0));
         }

@@ -1,0 +1,320 @@
+<svg width="768" height="512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients Cyber-Astral -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0c29;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1347;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#24243e;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="mainPanelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1e2e;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#2a2a3e;stop-opacity:0.95" />
+    </linearGradient>
+
+    <linearGradient id="sidebarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#16161f;stop-opacity:0.98" />
+      <stop offset="100%" style="stop-color:#1e1e2a;stop-opacity:0.98" />
+    </linearGradient>
+
+    <linearGradient id="buttonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d2ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3a47d5;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="cosmicGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#ec4899;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.6" />
+    </linearGradient>
+
+    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Filters pour les effets -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="strongGlow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Pattern pour le background tech -->
+    <pattern id="circuitPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="20" x2="40" y2="20" stroke="#667eea" stroke-width="0.5" opacity="0.1"/>
+      <line x1="20" y1="0" x2="20" y2="40" stroke="#667eea" stroke-width="0.5" opacity="0.1"/>
+      <circle cx="20" cy="20" r="2" fill="#00d2ff" opacity="0.2"/>
+    </pattern>
+
+    <!-- Pattern étoiles -->
+    <pattern id="starsPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="15" r="0.8" fill="#ffffff" opacity="0.6"/>
+      <circle cx="45" cy="30" r="1" fill="#00d2ff" opacity="0.8"/>
+      <circle cx="75" cy="60" r="0.6" fill="#a855f7" opacity="0.7"/>
+      <circle cx="30" cy="80" r="0.9" fill="#ffffff" opacity="0.5"/>
+      <circle cx="85" cy="20" r="0.7" fill="#ec4899" opacity="0.6"/>
+      <circle cx="60" cy="90" r="1.1" fill="#3b82f6" opacity="0.7"/>
+    </pattern>
+  </defs>
+
+  <!-- Background principal -->
+  <rect width="768" height="512" fill="url(#bgGradient)"/>
+  <rect width="768" height="512" fill="url(#starsPattern)" opacity="0.3"/>
+  <rect width="768" height="512" fill="url(#circuitPattern)" opacity="0.5"/>
+
+  <!-- Bordure extérieure cyan avec glow -->
+  <rect x="8" y="8" width="752" height="496" rx="12" fill="none" stroke="url(#accentGradient)" stroke-width="3" filter="url(#strongGlow)"/>
+  <rect x="8" y="8" width="752" height="496" rx="12" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.5"/>
+
+  <!-- Sidebar gauche -->
+  <g id="sidebar">
+    <!-- Background sidebar -->
+    <rect x="16" y="16" width="140" height="480" rx="8" fill="url(#sidebarGradient)"/>
+    <rect x="16" y="16" width="140" height="480" rx="8" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+
+    <!-- Header sidebar avec logo -->
+    <rect x="24" y="24" width="124" height="80" rx="6" fill="#1a1a2e" opacity="0.8"/>
+    <rect x="24" y="24" width="124" height="80" rx="6" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+
+    <!-- Logo/Icon faction placeholder -->
+    <circle cx="86" cy="52" r="20" fill="url(#cosmicGlow)" filter="url(#glow)"/>
+    <circle cx="86" cy="52" r="18" fill="none" stroke="#00d2ff" stroke-width="2"/>
+    <text x="86" y="58" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">E</text>
+
+    <text x="86" y="94" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff" text-anchor="middle">ERINIUM</text>
+
+    <!-- Navigation buttons -->
+    <g id="navButton1">
+      <rect x="24" y="120" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="120" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="143" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🏠 Overview</text>
+    </g>
+
+    <g id="navButton2">
+      <rect x="24" y="164" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="164" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="187" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">👥 Members</text>
+    </g>
+
+    <g id="navButton3">
+      <rect x="24" y="208" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="208" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="231" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🗺️ Territory</text>
+    </g>
+
+    <g id="navButton4">
+      <rect x="24" y="252" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="252" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="275" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">⚔️ Wars</text>
+    </g>
+
+    <g id="navButton5">
+      <rect x="24" y="296" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="296" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="319" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🤝 Alliances</text>
+    </g>
+
+    <g id="navButton6">
+      <rect x="24" y="340" width="124" height="36" rx="4" fill="url(#buttonGradient)" filter="url(#glow)"/>
+      <rect x="24" y="340" width="124" height="36" rx="4" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.6"/>
+      <line x1="28" y1="340" x2="48" y2="340" stroke="#00d2ff" stroke-width="2"/>
+      <text x="34" y="363" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#ffffff">⚙️ Settings</text>
+    </g>
+
+    <!-- Power indicator en bas -->
+    <rect x="24" y="440" width="124" height="48" rx="6" fill="#1a1a2e" opacity="0.9"/>
+    <rect x="24" y="440" width="124" height="48" rx="6" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/>
+
+    <text x="86" y="458" font-family="Arial, sans-serif" font-size="10" fill="#a0a0c0" text-anchor="middle">FACTION POWER</text>
+
+    <!-- Power bar -->
+    <rect x="32" y="464" width="108" height="8" rx="4" fill="#2a2a3e"/>
+    <rect x="32" y="464" width="81" height="8" rx="4" fill="url(#cosmicGlow)" filter="url(#glow)"/>
+
+    <text x="86" y="481" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff" text-anchor="middle">75 / 100</text>
+  </g>
+
+  <!-- Main content panel -->
+  <g id="mainPanel">
+    <!-- Background -->
+    <rect x="164" y="16" width="588" height="480" rx="8" fill="url(#mainPanelGradient)"/>
+    <rect x="164" y="16" width="588" height="480" rx="8" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+
+    <!-- Header bar -->
+    <rect x="172" y="24" width="572" height="48" rx="6" fill="#1a1a2e" opacity="0.8"/>
+    <rect x="172" y="24" width="572" height="48" rx="6" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+    <line x1="176" y1="24" x2="216" y2="24" stroke="#00d2ff" stroke-width="3" filter="url(#glow)"/>
+
+    <text x="184" y="52" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff">Rank Permissions</text>
+
+    <!-- Close button -->
+    <g id="closeButton">
+      <rect x="716" y="32" width="20" height="20" rx="3" fill="#ef4444" opacity="0.8"/>
+      <rect x="716" y="32" width="20" height="20" rx="3" fill="none" stroke="#ff6b6b" stroke-width="1"/>
+      <line x1="720" y1="36" x2="732" y2="48" stroke="#ffffff" stroke-width="2"/>
+      <line x1="732" y1="36" x2="720" y2="48" stroke="#ffffff" stroke-width="2"/>
+    </g>
+
+    <!-- Permission Table Header -->
+    <rect x="180" y="88" width="530" height="32" rx="4" fill="#2a2a3e" opacity="0.8"/>
+    <line x1="184" y1="88" x2="212" y2="88" stroke="url(#accentGradient)" stroke-width="2"/>
+
+    <text x="196" y="110" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff">PERMISSION</text>
+    <text x="430" y="110" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6" text-anchor="middle">OFFICER</text>
+    <text x="530" y="110" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#10b981" text-anchor="middle">MEMBER</text>
+    <text x="630" y="110" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#9ca3af" text-anchor="middle">RECRUIT</text>
+
+    <!-- Permission rows -->
+    <!-- Row 1: Claim Territory -->
+    <rect x="180" y="128" width="530" height="36" rx="4" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="128" width="530" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="151" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">🗺️ Claim Territory</text>
+
+    <!-- Officer checkbox (checked) -->
+    <rect x="418" y="136" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="418" y="136" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="428" y="151" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <!-- Member checkbox (checked) -->
+    <rect x="518" y="136" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="518" y="136" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="528" y="151" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <!-- Recruit checkbox (unchecked) -->
+    <rect x="618" y="136" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
+    <rect x="618" y="136" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+
+    <!-- Row 2: Unclaim Territory -->
+    <rect x="180" y="172" width="530" height="36" rx="4" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="172" width="530" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="195" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">❌ Unclaim Territory</text>
+
+    <rect x="418" y="180" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="418" y="180" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="428" y="195" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="518" y="180" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
+    <rect x="518" y="180" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+
+    <rect x="618" y="180" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
+    <rect x="618" y="180" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+
+    <!-- Row 3: Invite Members -->
+    <rect x="180" y="216" width="530" height="36" rx="4" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="216" width="530" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="239" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">👥 Invite Members</text>
+
+    <rect x="418" y="224" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="418" y="224" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="428" y="239" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="518" y="224" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="518" y="224" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="528" y="239" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="618" y="224" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
+    <rect x="618" y="224" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+
+    <!-- Row 4: Kick Members -->
+    <rect x="180" y="260" width="530" height="36" rx="4" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="260" width="530" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="283" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">🚪 Kick Members</text>
+
+    <rect x="418" y="268" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="418" y="268" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="428" y="283" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="518" y="268" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
+    <rect x="518" y="268" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+
+    <rect x="618" y="268" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
+    <rect x="618" y="268" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+
+    <!-- Row 5: Manage Alliances -->
+    <rect x="180" y="304" width="530" height="36" rx="4" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="304" width="530" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="327" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">🤝 Manage Alliances</text>
+
+    <rect x="418" y="312" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="418" y="312" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="428" y="327" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="518" y="312" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
+    <rect x="518" y="312" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+
+    <rect x="618" y="312" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
+    <rect x="618" y="312" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+
+    <!-- Row 6: Access Chest -->
+    <rect x="180" y="348" width="530" height="36" rx="4" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="348" width="530" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="371" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">📦 Access Faction Chest</text>
+
+    <rect x="418" y="356" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="418" y="356" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="428" y="371" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="518" y="356" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="518" y="356" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="528" y="371" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="618" y="356" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="618" y="356" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="628" y="371" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <!-- Row 7: Build in Territory -->
+    <rect x="180" y="392" width="530" height="36" rx="4" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="392" width="530" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="415" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">🏗️ Build in Territory</text>
+
+    <rect x="418" y="400" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="418" y="400" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="428" y="415" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="518" y="400" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="518" y="400" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="528" y="415" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <rect x="618" y="400" width="20" height="20" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <rect x="618" y="400" width="20" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
+    <text x="628" y="415" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">✓</text>
+
+    <!-- Info box -->
+    <rect x="180" y="436" width="530" height="52" rx="6" fill="#1a1a2e" opacity="0.9"/>
+    <rect x="180" y="436" width="530" height="52" rx="6" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="456" font-family="Arial, sans-serif" font-size="10" fill="#a0a0c0">Note: Leader has all permissions. Click checkboxes to toggle permissions.</text>
+    <text x="196" y="472" font-family="Arial, sans-serif" font-size="10" fill="#00d2ff">Changes are saved automatically.</text>
+  </g>
+
+  <!-- Animated particles -->
+  <circle cx="400" cy="50" r="1.5" fill="#00d2ff" opacity="0.8">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="650" cy="100" r="1" fill="#a855f7" opacity="0.6">
+    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite"/>
+  </circle>
+</svg>

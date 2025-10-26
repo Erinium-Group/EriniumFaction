@@ -1,0 +1,14 @@
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="20" height="20" rx="3" fill="#3a3a52" opacity="0.9"/>
+  <rect x="0" y="0" width="20" height="20" rx="3" fill="none" stroke="#00d2ff" stroke-width="1" filter="url(#glow)"/>
+</svg>

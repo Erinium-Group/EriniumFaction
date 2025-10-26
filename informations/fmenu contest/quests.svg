@@ -1,0 +1,282 @@
+<svg width="768" height="512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients Cyber-Astral -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0c29;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1347;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#24243e;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="mainPanelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1e2e;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#2a2a3e;stop-opacity:0.95" />
+    </linearGradient>
+
+    <linearGradient id="sidebarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#16161f;stop-opacity:0.98" />
+      <stop offset="100%" style="stop-color:#1e1e2a;stop-opacity:0.98" />
+    </linearGradient>
+
+    <linearGradient id="buttonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d2ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3a47d5;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="cosmicGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#ec4899;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.6" />
+    </linearGradient>
+
+    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Filters pour les effets -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="strongGlow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Pattern pour le background tech -->
+    <pattern id="circuitPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="20" x2="40" y2="20" stroke="#667eea" stroke-width="0.5" opacity="0.1"/>
+      <line x1="20" y1="0" x2="20" y2="40" stroke="#667eea" stroke-width="0.5" opacity="0.1"/>
+      <circle cx="20" cy="20" r="2" fill="#00d2ff" opacity="0.2"/>
+    </pattern>
+
+    <!-- Pattern étoiles -->
+    <pattern id="starsPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="15" r="0.8" fill="#ffffff" opacity="0.6"/>
+      <circle cx="45" cy="30" r="1" fill="#00d2ff" opacity="0.8"/>
+      <circle cx="75" cy="60" r="0.6" fill="#a855f7" opacity="0.7"/>
+      <circle cx="30" cy="80" r="0.9" fill="#ffffff" opacity="0.5"/>
+      <circle cx="85" cy="20" r="0.7" fill="#ec4899" opacity="0.6"/>
+      <circle cx="60" cy="90" r="1.1" fill="#3b82f6" opacity="0.7"/>
+    </pattern>
+  </defs>
+
+  <!-- Background principal -->
+  <rect width="768" height="512" fill="url(#bgGradient)"/>
+  <rect width="768" height="512" fill="url(#starsPattern)" opacity="0.3"/>
+  <rect width="768" height="512" fill="url(#circuitPattern)" opacity="0.5"/>
+
+  <!-- Bordure extérieure cyan avec glow -->
+  <rect x="8" y="8" width="752" height="496" rx="12" fill="none" stroke="url(#accentGradient)" stroke-width="3" filter="url(#strongGlow)"/>
+  <rect x="8" y="8" width="752" height="496" rx="12" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.5"/>
+
+  <!-- Sidebar gauche -->
+  <g id="sidebar">
+    <!-- Background sidebar -->
+    <rect x="16" y="16" width="140" height="480" rx="8" fill="url(#sidebarGradient)"/>
+    <rect x="16" y="16" width="140" height="480" rx="8" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+
+    <!-- Header sidebar avec logo -->
+    <rect x="24" y="24" width="124" height="80" rx="6" fill="#1a1a2e" opacity="0.8"/>
+    <rect x="24" y="24" width="124" height="80" rx="6" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+
+    <!-- Logo/Icon faction placeholder -->
+    <circle cx="86" cy="52" r="20" fill="url(#cosmicGlow)" filter="url(#glow)"/>
+    <circle cx="86" cy="52" r="18" fill="none" stroke="#00d2ff" stroke-width="2"/>
+    <text x="86" y="58" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">E</text>
+
+    <text x="86" y="94" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff" text-anchor="middle">ERINIUM</text>
+
+    <!-- Navigation buttons -->
+    <g id="navButton1">
+      <rect x="24" y="120" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="120" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="143" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🏠 Overview</text>
+    </g>
+
+    <g id="navButton2">
+      <rect x="24" y="164" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="164" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="187" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">👥 Members</text>
+    </g>
+
+    <g id="navButton3">
+      <rect x="24" y="208" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="208" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="231" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🗺️ Territory</text>
+    </g>
+
+    <g id="navButton4">
+      <rect x="24" y="252" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="252" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="275" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">⚔️ Wars</text>
+    </g>
+
+    <g id="navButton5">
+      <rect x="24" y="296" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="296" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="319" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🤝 Alliances</text>
+    </g>
+
+    <g id="navButton6">
+      <rect x="24" y="340" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="340" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="363" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">⚙️ Settings</text>
+    </g>
+
+    <!-- Power indicator en bas -->
+    <rect x="24" y="440" width="124" height="48" rx="6" fill="#1a1a2e" opacity="0.9"/>
+    <rect x="24" y="440" width="124" height="48" rx="6" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/>
+
+    <text x="86" y="458" font-family="Arial, sans-serif" font-size="10" fill="#a0a0c0" text-anchor="middle">FACTION POWER</text>
+
+    <!-- Power bar -->
+    <rect x="32" y="464" width="108" height="8" rx="4" fill="#2a2a3e"/>
+    <rect x="32" y="464" width="81" height="8" rx="4" fill="url(#cosmicGlow)" filter="url(#glow)"/>
+
+    <text x="86" y="481" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff" text-anchor="middle">75 / 100</text>
+  </g>
+
+  <!-- Main content panel -->
+  <g id="mainPanel">
+    <!-- Background -->
+    <rect x="164" y="16" width="588" height="480" rx="8" fill="url(#mainPanelGradient)"/>
+    <rect x="164" y="16" width="588" height="480" rx="8" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+
+    <!-- Header bar -->
+    <rect x="172" y="24" width="572" height="48" rx="6" fill="#1a1a2e" opacity="0.8"/>
+    <rect x="172" y="24" width="572" height="48" rx="6" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+    <line x1="176" y1="24" x2="216" y2="24" stroke="#00d2ff" stroke-width="3" filter="url(#glow)"/>
+
+    <text x="184" y="52" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff">Faction Quests</text>
+
+    <!-- Close button -->
+    <g id="closeButton">
+      <rect x="716" y="32" width="20" height="20" rx="3" fill="#ef4444" opacity="0.8"/>
+      <rect x="716" y="32" width="20" height="20" rx="3" fill="none" stroke="#ff6b6b" stroke-width="1"/>
+      <line x1="720" y1="36" x2="732" y2="48" stroke="#ffffff" stroke-width="2"/>
+      <line x1="732" y1="36" x2="720" y2="48" stroke="#ffffff" stroke-width="2"/>
+    </g>
+
+    <!-- Daily Quests Section -->
+    <rect x="180" y="88" width="530" height="28" rx="4" fill="#2a2a3e" opacity="0.8"/>
+    <line x1="184" y1="88" x2="212" y2="88" stroke="url(#accentGradient)" stroke-width="2"/>
+    <text x="188" y="108" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">DAILY QUESTS (Resets in 18h 45m)</text>
+
+    <!-- Daily Quest 1 -->
+    <rect x="180" y="124" width="258" height="70" rx="6" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="124" width="258" height="70" rx="6" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+
+    <text x="196" y="142" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">⚔️ Kill 50 Mobs</text>
+    <text x="196" y="158" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">Progress: 32 / 50</text>
+
+    <rect x="196" y="164" width="226" height="6" rx="3" fill="#2a2a3e"/>
+    <rect x="196" y="164" width="145" height="6" rx="3" fill="#3b82f6" filter="url(#glow)"/>
+
+    <text x="196" y="184" font-family="Arial, sans-serif" font-size="9" fill="#fbbf24">Reward: +100 XP, $500</text>
+
+    <!-- Daily Quest 2 -->
+    <rect x="452" y="124" width="258" height="70" rx="6" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="452" y="124" width="258" height="70" rx="6" fill="none" stroke="#10b981" stroke-width="1" opacity="0.6"/>
+
+    <text x="468" y="142" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">🗺️ Claim 5 Territories</text>
+    <text x="468" y="158" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">Progress: 5 / 5 ✓ Complete</text>
+
+    <rect x="468" y="164" width="226" height="6" rx="3" fill="#2a2a3e"/>
+    <rect x="468" y="164" width="226" height="6" rx="3" fill="#10b981" filter="url(#glow)"/>
+
+    <text x="468" y="184" font-family="Arial, sans-serif" font-size="9" fill="#fbbf24">Reward: +100 XP, $750</text>
+    <rect x="640" y="176" width="60" height="18" rx="3" fill="url(#greenGradient)" opacity="0.8"/>
+    <text x="670" y="188" font-family="Arial, sans-serif" font-size="9" fill="#ffffff" text-anchor="middle">Claim</text>
+
+    <!-- Daily Quest 3 -->
+    <rect x="180" y="202" width="258" height="70" rx="6" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="202" width="258" height="70" rx="6" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.6"/>
+
+    <text x="196" y="220" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">💎 Mine 100 Ores</text>
+    <text x="196" y="236" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">Progress: 67 / 100</text>
+
+    <rect x="196" y="242" width="226" height="6" rx="3" fill="#2a2a3e"/>
+    <rect x="196" y="242" width="151" height="6" rx="3" fill="#a855f7" filter="url(#glow)"/>
+
+    <text x="196" y="262" font-family="Arial, sans-serif" font-size="9" fill="#fbbf24">Reward: +100 XP, $600</text>
+
+    <!-- Daily Quest 4 -->
+    <rect x="452" y="202" width="258" height="70" rx="6" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="452" y="202" width="258" height="70" rx="6" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+
+    <text x="468" y="220" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">🎯 Win 3 PvP Battles</text>
+    <text x="468" y="236" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">Progress: 0 / 3</text>
+
+    <rect x="468" y="242" width="226" height="6" rx="3" fill="#2a2a3e"/>
+
+    <text x="468" y="262" font-family="Arial, sans-serif" font-size="9" fill="#fbbf24">Reward: +150 XP, $1000</text>
+
+    <!-- Daily Quest 5 -->
+    <rect x="180" y="280" width="258" height="70" rx="6" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="280" width="258" height="70" rx="6" fill="none" stroke="#14b8a6" stroke-width="1" opacity="0.6"/>
+
+    <text x="196" y="298" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">🌾 Harvest 200 Crops</text>
+    <text x="196" y="314" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">Progress: 145 / 200</text>
+
+    <rect x="196" y="320" width="226" height="6" rx="3" fill="#2a2a3e"/>
+    <rect x="196" y="320" width="164" height="6" rx="3" fill="#14b8a6" filter="url(#glow)"/>
+
+    <text x="196" y="340" font-family="Arial, sans-serif" font-size="9" fill="#fbbf24">Reward: +100 XP, $400</text>
+
+    <!-- Daily Quest 6 -->
+    <rect x="452" y="280" width="258" height="70" rx="6" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="452" y="280" width="258" height="70" rx="6" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.6"/>
+
+    <text x="468" y="298" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">🏹 Deal 5000 Damage</text>
+    <text x="468" y="314" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">Progress: 2340 / 5000</text>
+
+    <rect x="468" y="320" width="226" height="6" rx="3" fill="#2a2a3e"/>
+    <rect x="468" y="320" width="106" height="6" rx="3" fill="#f59e0b" filter="url(#glow)"/>
+
+    <text x="468" y="340" font-family="Arial, sans-serif" font-size="9" fill="#fbbf24">Reward: +120 XP, $800</text>
+
+    <!-- Weekly Quest Section -->
+    <rect x="180" y="360" width="530" height="28" rx="4" fill="#2a2a3e" opacity="0.8"/>
+    <line x1="184" y1="360" x2="212" y2="360" stroke="url(#goldGradient)" stroke-width="2"/>
+    <text x="188" y="380" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#fbbf24">WEEKLY QUEST (Resets in 4d 12h)</text>
+
+    <!-- Weekly Quest -->
+    <rect x="180" y="396" width="530" height="92" rx="6" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="396" width="530" height="92" rx="6" fill="none" stroke="url(#goldGradient)" stroke-width="2" filter="url(#glow)"/>
+
+    <text x="196" y="418" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fbbf24">👑 Faction Domination</text>
+    <text x="196" y="436" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">Objectives: Claim 20 territories • Win 5 wars • Recruit 10 members</text>
+    <text x="196" y="452" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">Progress: 14/20 territories, 2/5 wars, 7/10 recruits</text>
+
+    <rect x="196" y="460" width="490" height="8" rx="4" fill="#2a2a3e"/>
+    <rect x="196" y="460" width="235" height="8" rx="4" fill="url(#goldGradient)" filter="url(#glow)"/>
+
+    <text x="196" y="481" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#fbbf24">Reward: +1000 XP, $10,000, Legendary Faction Banner</text>
+  </g>
+
+  <!-- Animated particles -->
+  <circle cx="400" cy="50" r="1.5" fill="#00d2ff" opacity="0.8">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="650" cy="100" r="1" fill="#a855f7" opacity="0.6">
+    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite"/>
+  </circle>
+</svg>

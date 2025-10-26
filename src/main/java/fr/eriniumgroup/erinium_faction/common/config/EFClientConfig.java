@@ -24,6 +24,8 @@ public final class EFClientConfig {
     public static final ModConfigSpec.BooleanValue MAP_BUTTON_TOOLTIP;
     public static final ModConfigSpec.BooleanValue MAP_BUTTON_HIDE_IN_DEBUG;
 
+    public static final ModConfigSpec.BooleanValue AUTO_SCREEN_RESIZE;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
         b.push("keybinds");
@@ -48,6 +50,10 @@ public final class EFClientConfig {
         MAP_BUTTON_TOOLTIP = b.comment("Afficher un tooltip au survol du bouton HUD").define("buttonTooltip", true);
         MAP_BUTTON_HIDE_IN_DEBUG = b.comment("Masquer le bouton HUD lorsque l’overlay F3 est actif")
                 .define("hideInDebug", true);
+        b.pop();
+
+        b.push("Client Screen");
+        AUTO_SCREEN_RESIZE = b.comment("Auto resize to 800x600 if you want to put under set false but you may have problem with GUI").define("enabled", true);
         b.pop();
 
         SPEC = b.build();

@@ -150,5 +150,7 @@
 
   "erinium_faction.chat.faction_format": "§6[§aFaction§6] §r%s: %s",
   "erinium_faction.chat.ally_format": "§3[§eAllié§3] §r%s: %s",
-  "erinium_faction.chat.global_format": "%s§r %s§r §f%s:§r %s"
+  "erinium_faction.chat.global_format": "%s§r %s§r §f%s:§r %s",
+
+  "erinium_faction.client.resized.message": "§eÉcran mis à la taille: §a%s §ex §a%s"
 }

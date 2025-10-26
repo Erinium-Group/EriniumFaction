@@ -1,0 +1,333 @@
+<svg width="768" height="512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients Cyber-Astral -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0c29;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1347;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#24243e;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="mainPanelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1e2e;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#2a2a3e;stop-opacity:0.95" />
+    </linearGradient>
+
+    <linearGradient id="sidebarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#16161f;stop-opacity:0.98" />
+      <stop offset="100%" style="stop-color:#1e1e2a;stop-opacity:0.98" />
+    </linearGradient>
+
+    <linearGradient id="buttonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d2ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3a47d5;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="cosmicGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#ec4899;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.6" />
+    </linearGradient>
+
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Filters pour les effets -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="strongGlow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Pattern pour le background tech -->
+    <pattern id="circuitPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="20" x2="40" y2="20" stroke="#667eea" stroke-width="0.5" opacity="0.1"/>
+      <line x1="20" y1="0" x2="20" y2="40" stroke="#667eea" stroke-width="0.5" opacity="0.1"/>
+      <circle cx="20" cy="20" r="2" fill="#00d2ff" opacity="0.2"/>
+    </pattern>
+
+    <!-- Pattern étoiles -->
+    <pattern id="starsPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="15" r="0.8" fill="#ffffff" opacity="0.6"/>
+      <circle cx="45" cy="30" r="1" fill="#00d2ff" opacity="0.8"/>
+      <circle cx="75" cy="60" r="0.6" fill="#a855f7" opacity="0.7"/>
+      <circle cx="30" cy="80" r="0.9" fill="#ffffff" opacity="0.5"/>
+      <circle cx="85" cy="20" r="0.7" fill="#ec4899" opacity="0.6"/>
+      <circle cx="60" cy="90" r="1.1" fill="#3b82f6" opacity="0.7"/>
+    </pattern>
+  </defs>
+
+  <!-- Background principal -->
+  <rect width="768" height="512" fill="url(#bgGradient)"/>
+  <rect width="768" height="512" fill="url(#starsPattern)" opacity="0.3"/>
+  <rect width="768" height="512" fill="url(#circuitPattern)" opacity="0.5"/>
+
+  <!-- Bordure extérieure cyan avec glow -->
+  <rect x="8" y="8" width="752" height="496" rx="12" fill="none" stroke="url(#accentGradient)" stroke-width="3" filter="url(#strongGlow)"/>
+  <rect x="8" y="8" width="752" height="496" rx="12" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.5"/>
+
+  <!-- Sidebar gauche -->
+  <g id="sidebar">
+    <!-- Background sidebar -->
+    <rect x="16" y="16" width="140" height="480" rx="8" fill="url(#sidebarGradient)"/>
+    <rect x="16" y="16" width="140" height="480" rx="8" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+
+    <!-- Header sidebar avec logo -->
+    <rect x="24" y="24" width="124" height="80" rx="6" fill="#1a1a2e" opacity="0.8"/>
+    <rect x="24" y="24" width="124" height="80" rx="6" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+
+    <!-- Logo/Icon faction placeholder -->
+    <circle cx="86" cy="52" r="20" fill="url(#cosmicGlow)" filter="url(#glow)"/>
+    <circle cx="86" cy="52" r="18" fill="none" stroke="#00d2ff" stroke-width="2"/>
+    <text x="86" y="58" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">E</text>
+
+    <text x="86" y="94" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff" text-anchor="middle">ERINIUM</text>
+
+    <!-- Navigation buttons -->
+    <g id="navButton1">
+      <rect x="24" y="120" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="120" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="143" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🏠 Overview</text>
+    </g>
+
+    <g id="navButton2">
+      <rect x="24" y="164" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="164" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="187" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">👥 Members</text>
+    </g>
+
+    <g id="navButton3">
+      <rect x="24" y="208" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="208" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="231" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🗺️ Territory</text>
+    </g>
+
+    <g id="navButton4">
+      <rect x="24" y="252" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="252" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="275" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">⚔️ Wars</text>
+    </g>
+
+    <g id="navButton5">
+      <rect x="24" y="296" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="296" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="319" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🤝 Alliances</text>
+    </g>
+
+    <g id="navButton6">
+      <rect x="24" y="340" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
+      <rect x="24" y="340" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+      <text x="34" y="363" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">⚙️ Settings</text>
+    </g>
+
+    <!-- Power indicator en bas -->
+    <rect x="24" y="440" width="124" height="48" rx="6" fill="#1a1a2e" opacity="0.9"/>
+    <rect x="24" y="440" width="124" height="48" rx="6" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/>
+
+    <text x="86" y="458" font-family="Arial, sans-serif" font-size="10" fill="#a0a0c0" text-anchor="middle">FACTION POWER</text>
+
+    <!-- Power bar -->
+    <rect x="32" y="464" width="108" height="8" rx="4" fill="#2a2a3e"/>
+    <rect x="32" y="464" width="81" height="8" rx="4" fill="url(#cosmicGlow)" filter="url(#glow)"/>
+
+    <text x="86" y="481" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff" text-anchor="middle">75 / 100</text>
+  </g>
+
+  <!-- Main content panel -->
+  <g id="mainPanel">
+    <!-- Background -->
+    <rect x="164" y="16" width="588" height="480" rx="8" fill="url(#mainPanelGradient)"/>
+    <rect x="164" y="16" width="588" height="480" rx="8" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+
+    <!-- Header bar -->
+    <rect x="172" y="24" width="572" height="48" rx="6" fill="#1a1a2e" opacity="0.8"/>
+    <rect x="172" y="24" width="572" height="48" rx="6" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+    <line x1="176" y1="24" x2="216" y2="24" stroke="#00d2ff" stroke-width="3" filter="url(#glow)"/>
+
+    <text x="184" y="52" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff">Faction Chest</text>
+
+    <!-- Close button -->
+    <g id="closeButton">
+      <rect x="716" y="32" width="20" height="20" rx="3" fill="#ef4444" opacity="0.8"/>
+      <rect x="716" y="32" width="20" height="20" rx="3" fill="none" stroke="#ff6b6b" stroke-width="1"/>
+      <line x1="720" y1="36" x2="732" y2="48" stroke="#ffffff" stroke-width="2"/>
+      <line x1="732" y1="36" x2="720" y2="48" stroke="#ffffff" stroke-width="2"/>
+    </g>
+
+    <!-- Chest inventory grid (9x4 comme un double chest) -->
+    <g id="chestGrid">
+      <!-- Ligne 1 -->
+      <rect x="180" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="180" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="188" y="96" width="38" height="38" rx="3" fill="#ef4444" opacity="0.3"/>
+      <text x="207" y="123" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">💎</text>
+
+      <rect x="242" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="242" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="250" y="96" width="38" height="38" rx="3" fill="#fbbf24" opacity="0.3"/>
+      <text x="269" y="123" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">🪙</text>
+
+      <rect x="304" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="304" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="312" y="96" width="38" height="38" rx="3" fill="#a855f7" opacity="0.3"/>
+      <text x="331" y="123" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">⚔️</text>
+
+      <rect x="366" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="366" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="428" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="428" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="436" y="96" width="38" height="38" rx="3" fill="#10b981" opacity="0.3"/>
+      <text x="455" y="123" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">🛡️</text>
+
+      <rect x="490" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="490" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="552" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="552" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="560" y="96" width="38" height="38" rx="3" fill="#3b82f6" opacity="0.3"/>
+      <text x="579" y="123" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">📦</text>
+
+      <rect x="614" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="614" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="676" y="88" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="676" y="88" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <!-- Ligne 2 -->
+      <rect x="180" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="180" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="188" y="158" width="38" height="38" rx="3" fill="#8b5cf6" opacity="0.3"/>
+      <text x="207" y="185" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">🔮</text>
+
+      <rect x="242" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="242" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="304" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="304" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="312" y="158" width="38" height="38" rx="3" fill="#ec4899" opacity="0.3"/>
+      <text x="331" y="185" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">🏹</text>
+
+      <rect x="366" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="366" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="428" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="428" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="490" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="490" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="498" y="158" width="38" height="38" rx="3" fill="#14b8a6" opacity="0.3"/>
+      <text x="517" y="185" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">🧪</text>
+
+      <rect x="552" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="552" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="614" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="614" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="676" y="150" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="676" y="150" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <!-- Ligne 3 -->
+      <rect x="180" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="180" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="242" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="242" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+      <rect x="250" y="220" width="38" height="38" rx="3" fill="#f59e0b" opacity="0.3"/>
+      <text x="269" y="247" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">🍖</text>
+
+      <rect x="304" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="304" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="366" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="366" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="428" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="428" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="490" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="490" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="552" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="552" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="614" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="614" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="676" y="212" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="676" y="212" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <!-- Ligne 4 -->
+      <rect x="180" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="180" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="242" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="242" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="304" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="304" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="366" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="366" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="428" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="428" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="490" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="490" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="552" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="552" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="614" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="614" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+      <rect x="676" y="274" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
+      <rect x="676" y="274" width="54" height="54" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+    </g>
+
+    <!-- Stats du coffre -->
+    <rect x="180" y="344" width="530" height="64" rx="6" fill="#1a1a2e" opacity="0.9"/>
+    <rect x="180" y="344" width="530" height="64" rx="6" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <text x="196" y="364" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff">CHEST INFORMATION</text>
+    <text x="196" y="381" font-family="Arial, sans-serif" font-size="10" fill="#b8b8d0">Storage: 9 / 36 slots used</text>
+    <text x="196" y="396" font-family="Arial, sans-serif" font-size="10" fill="#b8b8d0">Only members with chest permissions can access items</text>
+
+    <!-- Recent activity log -->
+    <rect x="180" y="420" width="530" height="68" rx="6" fill="#1e1e2e" opacity="0.9"/>
+    <rect x="180" y="420" width="530" height="68" rx="6" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+    <rect x="188" y="428" width="514" height="24" rx="4" fill="#2a2a3e" opacity="0.8"/>
+    <line x1="192" y1="428" x2="220" y2="428" stroke="url(#accentGradient)" stroke-width="2"/>
+    <text x="196" y="445" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff">RECENT ACTIVITY</text>
+
+    <text x="196" y="465" font-family="Arial, sans-serif" font-size="9" fill="#00d2ff">• CyberNinja deposited 64x Diamond</text>
+    <text x="196" y="478" font-family="Arial, sans-serif" font-size="9" fill="#ef4444">• AstralCommander withdrew 32x Gold Ingot</text>
+  </g>
+
+  <!-- Animated particles -->
+  <circle cx="400" cy="50" r="1.5" fill="#00d2ff" opacity="0.8">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="650" cy="100" r="1" fill="#a855f7" opacity="0.6">
+    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite"/>
+  </circle>
+</svg>

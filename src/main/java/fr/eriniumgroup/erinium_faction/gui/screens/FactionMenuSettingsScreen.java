@@ -38,8 +38,8 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
     private List<RankData> ranks = new ArrayList<>();
 
     // Dimensions de base et scaling
-    private static final int BASE_W = 500;
-    private static final int BASE_H = 320;
+    private static final int BASE_W = 420;
+    private static final int BASE_H = 240;
     private double scaleX = 1.0, scaleY = 1.0;
 
     // Onglets
@@ -300,7 +300,7 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
         // Fond principal (ne pas afficher si popup ouverte)
         if (editingRank == null) {
             guiGraphics.blit(ResourceLocation.parse("erinium_faction:textures/screens/empty.png"),
-                this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, BASE_W, BASE_H);
+                this.leftPos, this.topPos, this.imageWidth, this.imageHeight, 0, 0, BASE_W, BASE_H, BASE_W, BASE_H);
         } else {
             // Fond sombre pour popup
             guiGraphics.fill(0, 0, this.width, this.height, 0x99000000);
@@ -311,57 +311,63 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
 
     @Override
     public boolean keyPressed(int key, int b, int c) {
-        // Vérifier si un EditBox a le focus
-        boolean editBoxFocused = (displayNameBox != null && displayNameBox.isFocused()) ||
-                                 (descriptionBox != null && descriptionBox.isFocused());
-
-        // Si un EditBox a le focus
-        if (editBoxFocused) {
-            // ESC pour retirer le focus, pas pour fermer le GUI
+        // Vérifier quel EditBox a le focus et lui transmettre l'événement
+        if (displayNameBox != null && displayNameBox.isFocused()) {
+            // Si ESC, retirer le focus et envoyer la valeur au serveur
             if (key == 256) {
-                if (displayNameBox != null && displayNameBox.isFocused()) {
-                    displayNameBox.setFocused(false);
-                }
-                if (descriptionBox != null && descriptionBox.isFocused()) {
-                    descriptionBox.setFocused(false);
-                }
+                PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(10, this.x, this.y, this.z, displayNameBox.getValue()));
+                displayNameBox.setFocused(false);
+                setFocused(null);
                 return true;
             }
-
-            // Bloquer la touche E (69) et la touche d'inventaire
+            // Si Entrée, valider et retirer le focus
+            if (key == 257) { // Enter key
+                PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(10, this.x, this.y, this.z, displayNameBox.getValue()));
+                displayNameBox.setFocused(false);
+                setFocused(null);
+                return true;
+            }
+            // Transmettre toutes les autres touches à l'EditBox
+            if (displayNameBox.keyPressed(key, b, c)) {
+                return true;
+            }
+            // Bloquer E pour éviter la fermeture
             if (key == 69) {
-                // Laisser passer le caractère 'e' vers l'EditBox mais bloquer la fermeture
-                if (displayNameBox != null && displayNameBox.isFocused()) {
-                    return displayNameBox.keyPressed(key, b, c);
-                }
-                if (descriptionBox != null && descriptionBox.isFocused()) {
-                    return descriptionBox.keyPressed(key, b, c);
-                }
                 return true;
-            }
-
-            // Laisser l'EditBox gérer toutes les autres touches
-            if (displayNameBox != null && displayNameBox.isFocused()) {
-                return displayNameBox.keyPressed(key, b, c);
-            }
-            if (descriptionBox != null && descriptionBox.isFocused()) {
-                return descriptionBox.keyPressed(key, b, c);
             }
         }
 
-        // ESC pour fermer (seulement si aucun EditBox n'a le focus)
+        if (descriptionBox != null && descriptionBox.isFocused()) {
+            // Si ESC, retirer le focus et envoyer la valeur au serveur
+            if (key == 256) {
+                PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(11, this.x, this.y, this.z, descriptionBox.getValue()));
+                descriptionBox.setFocused(false);
+                setFocused(null);
+                return true;
+            }
+            // Si Entrée, valider et retirer le focus
+            if (key == 257) { // Enter key
+                PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(11, this.x, this.y, this.z, descriptionBox.getValue()));
+                descriptionBox.setFocused(false);
+                setFocused(null);
+                return true;
+            }
+            // Transmettre toutes les autres touches à l'EditBox
+            if (descriptionBox.keyPressed(key, b, c)) {
+                return true;
+            }
+            // Bloquer E pour éviter la fermeture
+            if (key == 69) {
+                return true;
+            }
+        }
+
+        // Gérer ESC pour fermer la popup ou l'interface
         if (key == 256) {
-            // Si popup ouverte, la fermer d'abord
             if (editingRank != null) {
                 closePermissionsPopup();
                 return true;
             }
-
-            // Sinon fermer le GUI
-            if (this.minecraft != null && this.minecraft.player != null) {
-                this.minecraft.player.closeContainer();
-            }
-            return true;
         }
 
         return super.keyPressed(key, b, c);
@@ -369,11 +375,11 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        // Empêcher la fermeture de l'inventaire avec E si un champ a le focus
-        if (keyCode == 69) { // E key
+        // Bloquer E si un EditBox a le focus
+        if (keyCode == 69) {
             if ((displayNameBox != null && displayNameBox.isFocused()) ||
                 (descriptionBox != null && descriptionBox.isFocused())) {
-                return true; // Bloquer complètement
+                return true;
             }
         }
         return super.keyReleased(keyCode, scanCode, modifiers);
@@ -381,13 +387,12 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
 
     @Override
     public boolean isPauseScreen() {
-        // Ne pas mettre le jeu en pause quand ce GUI est ouvert
         return false;
     }
 
     @Override
     public boolean shouldCloseOnEsc() {
-        // Si un champ a le focus, ne pas fermer avec ESC (on gère ça manuellement)
+        // Ne pas fermer avec ESC si un EditBox a le focus
         if ((displayNameBox != null && displayNameBox.isFocused()) ||
             (descriptionBox != null && descriptionBox.isFocused())) {
             return false;
@@ -397,7 +402,7 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
 
     @Override
     public boolean charTyped(char chr, int modifiers) {
-        // Gérer la saisie de caractères dans les EditBox
+        // Transmettre les caractères aux EditBox focusés
         if (displayNameBox != null && displayNameBox.isFocused()) {
             return displayNameBox.charTyped(chr, modifiers);
         }
@@ -405,6 +410,58 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
             return descriptionBox.charTyped(chr, modifiers);
         }
         return super.charTyped(chr, modifiers);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // Priorité absolue aux EditBox pour éviter que AbstractContainerScreen interfère
+        if (currentTab == Tab.GENERAL) {
+            if (displayNameBox != null && displayNameBox.isMouseOver(mouseX, mouseY)) {
+                // Sauvegarder et envoyer la valeur de l'autre champ s'il perd le focus
+                if (descriptionBox != null && descriptionBox.isFocused()) {
+                    PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(11, this.x, this.y, this.z, descriptionBox.getValue()));
+                    descriptionBox.setFocused(false);
+                }
+                displayNameBox.setFocused(true);
+                setFocused(displayNameBox);
+                displayNameBox.mouseClicked(mouseX, mouseY, button);
+                return true;
+            }
+
+            if (descriptionBox != null && descriptionBox.isMouseOver(mouseX, mouseY)) {
+                // Sauvegarder et envoyer la valeur de l'autre champ s'il perd le focus
+                if (displayNameBox != null && displayNameBox.isFocused()) {
+                    PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(10, this.x, this.y, this.z, displayNameBox.getValue()));
+                    displayNameBox.setFocused(false);
+                }
+                descriptionBox.setFocused(true);
+                setFocused(descriptionBox);
+                descriptionBox.mouseClicked(mouseX, mouseY, button);
+                return true;
+            }
+        }
+
+        // Retirer le focus et envoyer les valeurs au serveur si on clique ailleurs
+        if (displayNameBox != null && displayNameBox.isFocused()) {
+            PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(10, this.x, this.y, this.z, displayNameBox.getValue()));
+            displayNameBox.setFocused(false);
+        }
+        if (descriptionBox != null && descriptionBox.isFocused()) {
+            PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(11, this.x, this.y, this.z, descriptionBox.getValue()));
+            descriptionBox.setFocused(false);
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    protected void slotClicked(net.minecraft.world.inventory.Slot slot, int slotId, int mouseButton, net.minecraft.world.inventory.ClickType type) {
+        // Empêcher le clic sur les slots si un EditBox a le focus
+        if ((displayNameBox != null && displayNameBox.isFocused()) ||
+            (descriptionBox != null && descriptionBox.isFocused())) {
+            return;
+        }
+        super.slotClicked(slot, slotId, mouseButton, type);
     }
 
     @Override
@@ -479,7 +536,7 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
         int contentX = sx(15);
         int contentY = sy(45);
         int labelW = sw(120);
-        int fieldW = sw(300);
+        int fieldW = sw(250);
         int fieldH = sh(20);
         int spacing = sh(30);
         int toggleW = sw(100);
@@ -495,9 +552,12 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
         displayNameBox = new EditBox(this.font, contentX + labelW, y, fieldW, fieldH, Component.empty());
         displayNameBox.setMaxLength(32);
         displayNameBox.setValue(factionDisplayName);
+        displayNameBox.setCanLoseFocus(true);
+        displayNameBox.setEditable(true);
+        displayNameBox.setBordered(true);
+        // Mettre à jour localement mais ne pas envoyer à chaque caractère
         displayNameBox.setResponder(s -> {
             factionDisplayName = s;
-            PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(10, this.x, this.y, this.z, s));
         });
         addRenderableWidget(displayNameBox);
         y += spacing;
@@ -512,9 +572,12 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
         descriptionBox = new EditBox(this.font, contentX + labelW, y, fieldW, fieldH * 2, Component.empty());
         descriptionBox.setMaxLength(256);
         descriptionBox.setValue(factionDescription);
+        descriptionBox.setCanLoseFocus(true);
+        descriptionBox.setEditable(true);
+        descriptionBox.setBordered(true);
+        // Mettre à jour localement mais ne pas envoyer à chaque caractère
         descriptionBox.setResponder(s -> {
             factionDescription = s;
-            PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(11, this.x, this.y, this.z, s));
         });
         addRenderableWidget(descriptionBox);
         y += spacing + sh(20);
@@ -582,8 +645,8 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
 
             // Fond de rang
             addRenderableOnly((g, mx, my, pt) -> {
-                g.fill(contentX, finalY, contentX + sw(460), finalY + rankH - 2, 0x44000000);
-                g.fill(contentX, finalY + rankH - 2, contentX + sw(460), finalY + rankH, 0x222ECC71);
+                g.fill(contentX, finalY, contentX + sw(400), finalY + rankH - 2, 0x44000000);
+                g.fill(contentX, finalY + rankH - 2, contentX + sw(400), finalY + rankH, 0x222ECC71);
             });
 
             // Nom du rang (non éditable)
@@ -742,6 +805,19 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
 
     public static void onSettingsState(fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage msg) {
         if (net.minecraft.client.Minecraft.getInstance().screen instanceof FactionMenuSettingsScreen s) {
+            // Sauvegarder l'état du focus avant de mettre à jour
+            boolean displayNameFocused = s.displayNameBox != null && s.displayNameBox.isFocused();
+            boolean descriptionFocused = s.descriptionBox != null && s.descriptionBox.isFocused();
+            String displayNameCursorPos = "";
+            String descriptionCursorPos = "";
+
+            if (displayNameFocused && s.displayNameBox != null) {
+                displayNameCursorPos = s.displayNameBox.getValue();
+            }
+            if (descriptionFocused && s.descriptionBox != null) {
+                descriptionCursorPos = s.descriptionBox.getValue();
+            }
+
             s.toggleOpenState = msg.isOpen();
             s.toggleModePublic = msg.isPublicMode();
             s.toggleSafezoneState = msg.isSafezone();
@@ -758,9 +834,32 @@ public class FactionMenuSettingsScreen extends AbstractContainerScreen<FactionMe
                 }
             }
 
-            // Re-init pour refléter visuellement les états
-            s.rebuildWidgets();
+            // Ne reconstruire que si aucun EditBox n'a le focus
+            // Cela évite de perdre le focus pendant la saisie
+            if (!displayNameFocused && !descriptionFocused) {
+                s.rebuildWidgets();
+            } else {
+                // Si un champ a le focus, juste mettre à jour les valeurs sans reconstruire
+                if (s.displayNameBox != null && !displayNameFocused) {
+                    s.displayNameBox.setValue(s.factionDisplayName);
+                }
+                if (s.descriptionBox != null && !descriptionFocused) {
+                    s.descriptionBox.setValue(s.factionDescription);
+                }
+            }
         }
+    }
+
+    @Override
+    public void removed() {
+        // Envoyer les valeurs au serveur avant de fermer si un champ a le focus
+        if (displayNameBox != null && displayNameBox.isFocused()) {
+            PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(10, this.x, this.y, this.z, displayNameBox.getValue()));
+        }
+        if (descriptionBox != null && descriptionBox.isFocused()) {
+            PacketDistributor.sendToServer(new FactionMenuSettingsButtonMessage(11, this.x, this.y, this.z, descriptionBox.getValue()));
+        }
+        super.removed();
     }
 
     @Override
