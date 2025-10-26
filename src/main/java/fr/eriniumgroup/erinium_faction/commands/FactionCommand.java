@@ -9,7 +9,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
-import fr.eriniumgroup.erinium_faction.core.faction.Faction.Mode;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
@@ -57,17 +56,6 @@ public class FactionCommand {
                     FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
                     sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
                     ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.create.success", f.getName()), true);
-                    return 1;
-                })))
-                // delete <name>
-                .then(Commands.literal("delete").requires(src -> hasServerPerm(src, "ef.faction.delete")).then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestFactionNames).executes(ctx -> {
-                    String name = StringArgumentType.getString(ctx, "name");
-                    boolean ok = FactionManager.delete(name);
-                    if (!ok) {
-                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
-                        return 0;
-                    }
-                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.delete.success"), true);
                     return 1;
                 })))
                 // disband (leader uniquement)
@@ -143,24 +131,6 @@ public class FactionCommand {
                     ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.leave.success"), true);
                     return 1;
                 }))
-                // addxp <name> <amount>
-                .then(Commands.literal("addxp").requires(src -> hasServerPerm(src, "ef.faction.addxp")).then(Commands.argument("name", StringArgumentType.word()).suggests(FactionCommand::suggestFactionNames).then(Commands.argument("amount", IntegerArgumentType.integer(1)).suggests(FactionCommand::suggestXpAmounts).executes(ctx -> {
-                    String name = StringArgumentType.getString(ctx, "name");
-                    int amount = IntegerArgumentType.getInteger(ctx, "amount");
-                    Faction f = FactionManager.getByName(name);
-                    if (f == null) {
-                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
-                        return 0;
-                    }
-                    f.addXp(amount);
-                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.addxp.success"), true);
-                    return 1;
-                }))))
-                // setrank <player> <rankId> (placeholder)
-                .then(Commands.literal("setrank").requires(src -> hasServerPerm(src, "ef.rank.set")).then(Commands.argument("player", StringArgumentType.word()).suggests(FactionCommand::suggestOnlinePlayers).then(Commands.argument("rankId", StringArgumentType.word()).suggests(FactionCommand::suggestServerRanks).executes(ctx -> {
-                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.setrank.placeholder"), false);
-                    return 1;
-                }))))
                 // claim
                 .then(Commands.literal("claim").executes(ctx -> {
                     ServerPlayer sp = ctx.getSource().getPlayerOrException();
@@ -210,62 +180,6 @@ public class FactionCommand {
                     ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.unclaim.success"), true);
                     return 1;
                 }))
-                // mode <PUBLIC|INVITE_ONLY>
-                .then(Commands.literal("mode").requires(src -> hasServerPerm(src, "ef.faction.mode")).then(Commands.argument("value", StringArgumentType.word()).suggests((ctx, b) -> {
-                    b.suggest("PUBLIC");
-                    b.suggest("INVITE_ONLY");
-                    return b.buildFuture();
-                }).executes(ctx -> {
-                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                    Faction f = FactionManager.getFactionOf(sp.getUUID());
-                    if (f == null) {
-                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
-                        return 0;
-                    }
-                    String val = StringArgumentType.getString(ctx, "value");
-                    try {
-                        f.setMode(Mode.valueOf(val.toUpperCase()));
-                        FactionManager.markDirty();
-                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.mode.set", f.getMode().name()), true);
-                        return 1;
-                    } catch (Exception e) {
-                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.mode.invalid"));
-                        return 0;
-                    }
-                })))
-                // flags: admin/warzone/safezone on|off
-                .then(Commands.literal("flag").requires(src -> hasServerPerm(src, "ef.faction.flag")).then(Commands.argument("name", StringArgumentType.word()).suggests((c, b) -> {
-                    b.suggest("admin");
-                    b.suggest("warzone");
-                    b.suggest("safezone");
-                    return b.buildFuture();
-                }).then(Commands.argument("value", StringArgumentType.word()).suggests((c, b) -> {
-                    b.suggest("on");
-                    b.suggest("off");
-                    return b.buildFuture();
-                }).executes(ctx -> {
-                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                    Faction f = FactionManager.getFactionOf(sp.getUUID());
-                    if (f == null) {
-                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
-                        return 0;
-                    }
-                    String name = StringArgumentType.getString(ctx, "name");
-                    String v = StringArgumentType.getString(ctx, "value");
-                    boolean on = v.equalsIgnoreCase("on");
-                    switch (name.toLowerCase()) {
-                        case "admin" -> f.setAdminFaction(on);
-                        case "warzone" -> f.setWarzone(on);
-                        case "safezone" -> f.setSafezone(on);
-                        default -> {
-                            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.flag.invalid"));
-                            return 0;
-                        }
-                    }
-                    FactionManager.markDirty();
-                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.flag.set", name, on ? "on" : "off"), true);
-                    return 1;
-                }))))
                 // desc <text>
                 .then(Commands.literal("desc").requires(src -> hasServerPerm(src, "ef.faction.desc")).then(Commands.argument("text", StringArgumentType.greedyString()).executes(ctx -> {
                     ServerPlayer sp = ctx.getSource().getPlayerOrException();
@@ -467,28 +381,6 @@ public class FactionCommand {
         return builder.buildFuture();
     }
 
-    private static CompletableFuture<Suggestions> suggestXpAmounts(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
-        builder.suggest("10");
-        builder.suggest("50");
-        builder.suggest("100");
-        builder.suggest("250");
-        builder.suggest("1000");
-        return builder.buildFuture();
-    }
-
-    private static CompletableFuture<Suggestions> suggestOnlinePlayers(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
-        var server = ctx.getSource().getServer();
-        if (server != null) {
-            for (var p : server.getPlayerList().getPlayers()) builder.suggest(p.getGameProfile().getName());
-        }
-        return builder.buildFuture();
-    }
-
-    private static CompletableFuture<Suggestions> suggestServerRanks(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
-        var mgr = fr.eriniumgroup.erinium_faction.core.rank.EFRManager.get();
-        for (var r : mgr.listRanksSorted()) builder.suggest(r.id);
-        return builder.buildFuture();
-    }
 
     private static CompletableFuture<Suggestions> suggestWarpNames(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
         try {

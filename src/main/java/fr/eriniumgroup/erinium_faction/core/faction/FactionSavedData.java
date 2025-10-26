@@ -39,7 +39,7 @@ public class FactionSavedData extends SavedData {
         var list = nbt.getList("factions", 10);
         for (int i = 0; i < list.size(); i++) {
             var t = list.getCompound(i);
-            Faction f = Faction.load(t);
+            Faction f = Faction.load(t, provider);
             data.factions.put(f.getId(), f);
         }
         return data;
@@ -49,7 +49,7 @@ public class FactionSavedData extends SavedData {
     public CompoundTag save(CompoundTag nbt, HolderLookup.Provider provider) {
         ListTag list = new ListTag();
         for (Faction f : factions.values()) {
-            list.add(f.save());
+            list.add(f.save(provider));
         }
         nbt.put("factions", list);
         return nbt;

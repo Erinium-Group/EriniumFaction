@@ -49,6 +49,9 @@
   "erinium_faction.cmd.faction.create.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de créer la faction.",
   "erinium_faction.cmd.faction.create.success": "§6[§bErinium§6/§dFaction§6] §aFaction créée : §b%s§r",
   "erinium_faction.cmd.faction.delete.success": "§6[§bErinium§6/§dFaction§6] §aFaction supprimée.",
+  "erinium_faction.cmd.faction.disband.not_leader": "§6[§bErinium§6/§dFaction§6] §cSeul le leader peut dissoudre la faction.",
+  "erinium_faction.cmd.faction.disband.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de dissoudre la faction.",
+  "erinium_faction.cmd.faction.disband.success": "§6[§bErinium§6/§dFaction§6] §aFaction §b%s§a dissoute.",
   "erinium_faction.cmd.faction.not_found": "§6[§bErinium§6/§dFaction§6] §cFaction introuvable.",
   "erinium_faction.cmd.faction.info": "§6[§bErinium§6/§dFaction§6] §7Faction §b%s§7 | §6Puissance : §e%s§6/§e%s§6 | §6Niveau : §e%s§6 (§e%s§6)",
   "erinium_faction.cmd.faction.join.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de rejoindre.",
@@ -99,6 +102,9 @@
   "erinium_faction.tp.cooldown": "§6[§bErinium§6/§dFaction§6] §cEncore §e%s§cs de cooldown.",
   "erinium_faction.tp.crossdim_denied": "§6[§bErinium§6/§dFaction§6] §cTéléportation inter-dimensionnelle désactivée.",
 
+  "erinium_faction.chest.title": "§6Coffre de %s",
+  "erinium_faction.chest.no_permission": "§6[§bErinium§6/§dFaction§6] §cVous n'avez pas la permission d'accéder au coffre de faction.",
+
   "erinium_faction.faction.menu.settings.toggle_mode": "Basculer le mode (PUBLIC / INVITE_ONLY)",
   "erinium_faction.faction.menu.settings.toggle_safezone": "Basculer SAFEZONE",
   "erinium_faction.faction.map.title": "Carte des claims",
@@ -110,6 +116,21 @@
   "erinium_faction.settings.tooltip.open": "Autoriser tout le monde à rejoindre la faction",
   "erinium_faction.settings.tooltip.mode": "PUBLIC: tout le monde peut rejoindre | INVITE: sur invitation",
   "erinium_faction.settings.tooltip.safezone": "Activer la Safezone pour la faction",
+
+  "erinium_faction.settings.tab.general": "Général",
+  "erinium_faction.settings.tab.ranks": "Rangs",
+  "erinium_faction.settings.tab.permissions": "Permissions",
+
+  "erinium_faction.settings.display_name": "Nom d'affichage",
+  "erinium_faction.settings.description": "Description",
+  "erinium_faction.settings.mode": "Mode",
+  "erinium_faction.settings.open": "Ouverture",
+  "erinium_faction.settings.safezone": "Safezone",
+
+  "erinium_faction.settings.ranks.title": "Gestion des rangs de faction",
+  "erinium_faction.settings.ranks.manage_perms": "Permissions",
+
+  "erinium_faction.settings.perms.info": "Permissions disponibles :",
 
   "erinium_faction.cmd.faction.bank.player_not_enough": "§6[§bErinium§6/§dFaction§6] §cVous n’avez pas assez d’argent.",
 

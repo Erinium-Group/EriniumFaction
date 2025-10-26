@@ -3,6 +3,7 @@ package fr.eriniumgroup.erinium_faction.common.network;
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables.PlayerVariablesSyncMessage;
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
 import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
+import fr.eriniumgroup.erinium_faction.common.network.packets.OpenFactionChestMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.features.block_hp.BlockHpSyncMessage;
 import fr.eriniumgroup.erinium_faction.gui.widgets.FactionGuiNetwork;
@@ -36,6 +37,7 @@ public class PacketHandler {
         // Paquet GUI -> Serveur (clics, actions)
         registrar.playToServer(FactionGuiNetwork.TYPE, FactionGuiNetwork.STREAM_CODEC, FactionGuiNetwork::handleData);
         registrar.playToServer(FactionMenuSettingsButtonMessage.TYPE, FactionMenuSettingsButtonMessage.STREAM_CODEC, FactionMenuSettingsButtonMessage::handleData);
+        registrar.playToServer(OpenFactionChestMessage.TYPE, OpenFactionChestMessage.STREAM_CODEC, OpenFactionChestMessage::handleData);
 
         // Serveur -> Client (sync affichage HP de bloc)
         registrar.playToClient(BlockHpSyncMessage.TYPE, BlockHpSyncMessage.STREAM_CODEC, BlockHpSyncMessage::handleData);

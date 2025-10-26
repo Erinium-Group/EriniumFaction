@@ -49,6 +49,9 @@
   "erinium_faction.cmd.faction.create.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to create the faction.",
   "erinium_faction.cmd.faction.create.success": "§6[§bErinium§6/§dFaction§6] §aFaction created: §b%s§r",
   "erinium_faction.cmd.faction.delete.success": "§6[§bErinium§6/§dFaction§6] §aFaction deleted.",
+  "erinium_faction.cmd.faction.disband.not_leader": "§6[§bErinium§6/§dFaction§6] §cOnly the leader can disband the faction.",
+  "erinium_faction.cmd.faction.disband.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to disband the faction.",
+  "erinium_faction.cmd.faction.disband.success": "§6[§bErinium§6/§dFaction§6] §aFaction §b%s§a disbanded.",
   "erinium_faction.cmd.faction.not_found": "§6[§bErinium§6/§dFaction§6] §cFaction not found.",
   "erinium_faction.cmd.faction.info": "§6[§bErinium§6/§dFaction§6] §7Faction §b%s§7 | §6Power: §e%s§6/§e%s§6 | §6Level: §e%s§6 (§e%s§6)",
   "erinium_faction.cmd.faction.join.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to join.",
@@ -100,6 +103,9 @@
   "erinium_faction.tp.cooldown": "§6[§bErinium§6/§dFaction§6] §cCooldown remaining: §e%s§cs.",
   "erinium_faction.tp.crossdim_denied": "§6[§bErinium§6/§dFaction§6] §cCross-dimension teleport disabled.",
 
+  "erinium_faction.chest.title": "§6%s's Chest",
+  "erinium_faction.chest.no_permission": "§6[§bErinium§6/§dFaction§6] §cYou don't have permission to access the faction chest.",
+
   "erinium_faction.faction.menu.settings.toggle_mode": "Toggle mode (PUBLIC / INVITE_ONLY)",
   "erinium_faction.faction.menu.settings.toggle_safezone": "Toggle SAFEZONE",
   "erinium_faction.faction.map.title": "Claims Map",
@@ -112,6 +118,21 @@
   "erinium_faction.settings.tooltip.open": "Allow anyone to join the faction",
   "erinium_faction.settings.tooltip.mode": "PUBLIC: anyone can join | INVITE: by invitation",
   "erinium_faction.settings.tooltip.safezone": "Enable Safezone for the faction",
+
+  "erinium_faction.settings.tab.general": "General",
+  "erinium_faction.settings.tab.ranks": "Ranks",
+  "erinium_faction.settings.tab.permissions": "Permissions",
+
+  "erinium_faction.settings.display_name": "Display Name",
+  "erinium_faction.settings.description": "Description",
+  "erinium_faction.settings.mode": "Mode",
+  "erinium_faction.settings.open": "Open",
+  "erinium_faction.settings.safezone": "Safezone",
+
+  "erinium_faction.settings.ranks.title": "Faction Ranks Management",
+  "erinium_faction.settings.ranks.manage_perms": "Permissions",
+
+  "erinium_faction.settings.perms.info": "Available permissions:",
 
   "erinium_faction.cmd.faction.bank.player_not_enough": "§6[§bErinium§6/§dFaction§6] §cYou don't have enough money.",
 

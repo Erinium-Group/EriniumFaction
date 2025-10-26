@@ -118,7 +118,7 @@ public class FactionMenuPlayerList extends AbstractSelectionList<FactionMenuPlay
                 if (parts.length < 2) return; // format: uuid:rank[:name]
                 UUID playerUUID = UUID.fromString(parts[0]);
                 String rank = parts[1];
-                ResourceLocation ranktexture = ResourceLocation.parse("erinium_faction:textures/screens/" + rank + ".png");
+                ResourceLocation ranktexture = ResourceLocation.parse("erinium_faction:textures/screens/faction_" + rank + ".png");
                 String playerName = (parts.length >= 3 && parts[2] != null && !parts[2].isEmpty()) ? parts[2] : playerUUID.toString();
 
                 int headX = x + 1;

@@ -20,7 +20,7 @@ import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
 import net.minecraft.server.level.ServerPlayer;
 
-public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z) implements CustomPacketPayload {
+public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z, String textData) implements CustomPacketPayload {
 
 	public static final Type<FactionMenuSettingsButtonMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(EFC.MODID, "faction_menu_settings_buttons"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, FactionMenuSettingsButtonMessage> STREAM_CODEC = StreamCodec.of((RegistryFriendlyByteBuf buffer, FactionMenuSettingsButtonMessage message) -> {
@@ -28,7 +28,13 @@ public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z
 		buffer.writeInt(message.x);
 		buffer.writeInt(message.y);
 		buffer.writeInt(message.z);
-	}, (RegistryFriendlyByteBuf buffer) -> new FactionMenuSettingsButtonMessage(buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt()));
+		buffer.writeUtf(message.textData != null ? message.textData : "");
+	}, (RegistryFriendlyByteBuf buffer) -> new FactionMenuSettingsButtonMessage(buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readUtf()));
+
+	// Constructeur de commodité sans textData
+	public FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z) {
+		this(buttonID, x, y, z, "");
+	}
 
 	@Override
 	public Type<FactionMenuSettingsButtonMessage> type() {
@@ -44,7 +50,17 @@ public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z
 				boolean isOpen = f.isOpenFaction();
 				boolean isPublic = (f.getMode() == Faction.Mode.PUBLIC);
 				boolean isSafe = f.isSafezone();
-				sp.connection.send(new net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket(new FactionSettingsStateMessage(isOpen, isPublic, isSafe)));
+				String displayName = f.getName();
+				String description = f.getDescription();
+
+				// Conversion des rangs
+				java.util.List<FactionSettingsStateMessage.RankInfo> ranks = new java.util.ArrayList<>();
+				for (Faction.RankDef rd : f.getRanks().values()) {
+					ranks.add(new FactionSettingsStateMessage.RankInfo(rd.id, rd.display, rd.priority, rd.perms));
+				}
+
+				sp.connection.send(new net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket(
+					new FactionSettingsStateMessage(isOpen, isPublic, isSafe, displayName, description, ranks)));
 			}
 		}
 	}
@@ -54,7 +70,7 @@ public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z
 	 */
 	public static void handleData(final FactionMenuSettingsButtonMessage message, final IPayloadContext context) {
 		if (context.flow() == PacketFlow.SERVERBOUND) {
-			context.enqueueWork(() -> handleButtonAction(context.player(), message.buttonID(), message.x(), message.y(), message.z())).exceptionally(e -> {
+			context.enqueueWork(() -> handleButtonAction(context.player(), message.buttonID(), message.x(), message.y(), message.z(), message.textData())).exceptionally(e -> {
 				context.connection().disconnect(Component.literal(e.getMessage()));
 				return null;
 			});
@@ -64,7 +80,7 @@ public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z
 	/**
 	 * Logique serveur: actions liées aux boutons du menu Faction.
 	 */
-	public static void handleButtonAction(Player entity, int buttonID, int x, int y, int z) {
+	public static void handleButtonAction(Player entity, int buttonID, int x, int y, int z, String textData) {
 		Level world = entity.level();
 		// Sécurité: ne pas générer de chunk arbitrairement
 		if (!world.isLoaded(new BlockPos(x, y, z)))
@@ -122,6 +138,76 @@ public record FactionMenuSettingsButtonMessage(int buttonID, int x, int y, int z
 				Faction f = FactionManager.getFaction(fid);
 				if (f != null) {
 					f.setSafezone(!f.isSafezone());
+					FactionManager.markDirty();
+					syncSettingsTo(sp);
+				}
+			}
+		} else if (buttonID == 10) {
+			// Modifier le display name
+			if (sp != null && !EFPerms.has(sp, "ef.faction.settings.displayname")) {
+				entity.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
+				syncSettingsTo(sp);
+				return;
+			}
+			String fid = FactionManager.getPlayerFaction(entity.getUUID());
+			if (fid != null) {
+				Faction f = FactionManager.getFaction(fid);
+				if (f != null && textData != null && !textData.isEmpty()) {
+					f.setName(textData);
+					FactionManager.markDirty();
+					syncSettingsTo(sp);
+				}
+			}
+		} else if (buttonID == 11) {
+			// Modifier la description
+			if (sp != null && !EFPerms.has(sp, "ef.faction.settings.description")) {
+				entity.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
+				syncSettingsTo(sp);
+				return;
+			}
+			String fid = FactionManager.getPlayerFaction(entity.getUUID());
+			if (fid != null) {
+				Faction f = FactionManager.getFaction(fid);
+				if (f != null) {
+					f.setDescription(textData != null ? textData : "");
+					FactionManager.markDirty();
+					syncSettingsTo(sp);
+				}
+			}
+		} else if (buttonID == 20) {
+			// Ajouter une permission à un rang
+			if (sp != null && !EFPerms.has(sp, "ef.faction.settings.permissions")) {
+				entity.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
+				syncSettingsTo(sp);
+				return;
+			}
+			String fid = FactionManager.getPlayerFaction(entity.getUUID());
+			if (fid != null && textData != null && textData.contains(":")) {
+				Faction f = FactionManager.getFaction(fid);
+				if (f != null) {
+					String[] parts = textData.split(":", 2);
+					String rankId = parts[0];
+					String perm = parts[1];
+					f.addRankPerm(rankId, perm);
+					FactionManager.markDirty();
+					syncSettingsTo(sp);
+				}
+			}
+		} else if (buttonID == 21) {
+			// Retirer une permission d'un rang
+			if (sp != null && !EFPerms.has(sp, "ef.faction.settings.permissions")) {
+				entity.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
+				syncSettingsTo(sp);
+				return;
+			}
+			String fid = FactionManager.getPlayerFaction(entity.getUUID());
+			if (fid != null && textData != null && textData.contains(":")) {
+				Faction f = FactionManager.getFaction(fid);
+				if (f != null) {
+					String[] parts = textData.split(":", 2);
+					String rankId = parts[0];
+					String perm = parts[1];
+					f.removeRankPerm(rankId, perm);
 					FactionManager.markDirty();
 					syncSettingsTo(sp);
 				}

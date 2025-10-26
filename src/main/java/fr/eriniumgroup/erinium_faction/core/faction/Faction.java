@@ -266,6 +266,9 @@ public class Faction {
     public static class Warp { public int x, y, z; public ResourceLocation dim; }
     private final Map<String, Warp> warps = new LinkedHashMap<>();
 
+    // Coffre de faction - Stockage d'items
+    private final net.minecraft.world.item.ItemStack[] chestItems = new net.minecraft.world.item.ItemStack[27]; // Max 3 lignes de 9 slots
+
     // Alliances & invitations (placeholders simples)
     private final Set<String> allies = new HashSet<>();
     private final Set<UUID> invitedPlayers = new HashSet<>();
@@ -316,8 +319,40 @@ public class Faction {
     public Set<String> getAllies() { return allies; }
     public Set<UUID> getInvitedPlayers() { return invitedPlayers; }
 
+    // Coffre de faction
+    public int getChestSize() {
+        // Progression par lignes complètes de 9 slots
+        // Niveau 1-8 : 1 ligne (9 slots)
+        // Niveau 9-17 : 2 lignes (18 slots)
+        // Niveau 18+ : 3 lignes (27 slots) - coffre normal
+        if (level >= 18) {
+            return 27; // 3 lignes - coffre normal
+        } else if (level >= 9) {
+            return 18; // 2 lignes
+        } else {
+            return 9; // 1 ligne
+        }
+    }
+
+    public net.minecraft.world.item.ItemStack[] getChestItems() { return chestItems; }
+
+    public net.minecraft.world.item.ItemStack getChestItem(int slot) {
+        if (slot < 0 || slot >= chestItems.length) return net.minecraft.world.item.ItemStack.EMPTY;
+        return chestItems[slot] == null ? net.minecraft.world.item.ItemStack.EMPTY : chestItems[slot];
+    }
+
+    public void setChestItem(int slot, net.minecraft.world.item.ItemStack stack) {
+        if (slot >= 0 && slot < chestItems.length) {
+            chestItems[slot] = stack;
+        }
+    }
+
     // NBT serialization ------------------------------------------------------
     public CompoundTag save() {
+        return save(net.minecraft.core.RegistryAccess.EMPTY);
+    }
+
+    public CompoundTag save(net.minecraft.core.HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", id);
         tag.putString("name", name);
@@ -375,6 +410,20 @@ public class Faction {
             warpsList.add(wt);
         }
         tag.put("warps", warpsList);
+
+        // Coffre de faction - Items avec TOUS les composants (enchantements, NBT, etc.)
+        ListTag chestList = new ListTag();
+        for (int i = 0; i < chestItems.length; i++) {
+            if (chestItems[i] != null && !chestItems[i].isEmpty()) {
+                CompoundTag itemTag = new CompoundTag();
+                itemTag.putInt("Slot", i);
+                // Sauvegarder l'item COMPLET avec tous ses composants
+                itemTag.put("Item", chestItems[i].save(registries));
+                chestList.add(itemTag);
+            }
+        }
+        tag.put("ChestItems", chestList);
+
         // allies
         ListTag alliesList = new ListTag();
         for (String a : allies) alliesList.add(StringTag.valueOf(a));
@@ -387,6 +436,10 @@ public class Faction {
     }
 
     public static Faction load(CompoundTag tag) {
+        return load(tag, net.minecraft.core.RegistryAccess.EMPTY);
+    }
+
+    public static Faction load(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         Faction f = new Faction();
         f.id = tag.getString("id");
         f.name = tag.getString("name");
@@ -457,6 +510,24 @@ public class Faction {
         f.invitedPlayers.clear();
         ListTag invList = tag.getList("invited", 8);
         for (int i=0;i<invList.size();i++) { try { f.invitedPlayers.add(UUID.fromString(invList.getString(i))); } catch (Exception ignored) {} }
+
+        // Coffre de faction - Items
+        for (int i = 0; i < f.chestItems.length; i++) {
+            f.chestItems[i] = net.minecraft.world.item.ItemStack.EMPTY;
+        }
+        if (tag.contains("ChestItems")) {
+            ListTag chestList = tag.getList("ChestItems", 10);
+            var registryAccess = net.minecraft.core.RegistryAccess.EMPTY;
+            for (int i = 0; i < chestList.size(); i++) {
+                CompoundTag itemTag = chestList.getCompound(i);
+                int slot = itemTag.getInt("Slot");
+                if (slot >= 0 && slot < f.chestItems.length && itemTag.contains("Item")) {
+                    CompoundTag stackTag = itemTag.getCompound("Item");
+                    f.chestItems[slot] = net.minecraft.world.item.ItemStack.parseOptional(registryAccess, stackTag);
+                }
+            }
+        }
+
         return f;
     }
 
