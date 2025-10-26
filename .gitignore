@@ -93,3 +93,4 @@ Thumbs.db
 /.idea/**
 /build/**
 *.log
+.claude/settings.local.json
