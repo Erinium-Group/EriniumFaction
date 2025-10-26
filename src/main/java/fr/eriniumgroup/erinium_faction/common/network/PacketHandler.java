@@ -58,6 +58,13 @@ public class PacketHandler {
         // Nouveau paquet clientbound: afficher un titre overlay
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound)");
+        // Paquets système de niveau joueur
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.player.level.network.OpenStatsMenuPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.OpenStatsMenuPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleOpenStatsMenu);
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.player.level.network.DistributePointPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.DistributePointPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleDistributePoint);
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.player.level.network.ResetAttributesPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.ResetAttributesPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleResetAttributes);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.player.level.network.SyncPlayerLevelPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.SyncPlayerLevelPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleSyncPlayerLevel);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.player.level.network.SyncResetTokenPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.SyncResetTokenPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleSyncResetToken);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), PlayerLevel (open/distribute/reset/sync/token)");
     }
 }
