@@ -1,5 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
+import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
+import fr.eriniumgroup.erinium_faction.gui.screens.FactionClientData;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -26,6 +28,14 @@ public abstract class FactionPage {
 
     public FactionPage(Font font) {
         this.font = font;
+    }
+
+    /**
+     * Récupère les données de faction depuis le stockage client
+     * @return FactionSnapshot ou null si aucune donnée disponible
+     */
+    protected FactionSnapshot getFactionData() {
+        return FactionClientData.getFactionData();
     }
 
     /**

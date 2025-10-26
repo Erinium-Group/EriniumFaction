@@ -38,22 +38,28 @@ public class OverviewPage extends FactionPage {
         if (infoScrollList == null) {
             // Créer scroll list pour infos
             infoScrollList = new ScrollList<>(font, this::renderInfoItem, sh(13, scaleY));
+        }
 
-            // Ajouter des items d'exemple
-            List<InfoItem> items = new ArrayList<>();
-            items.add(new InfoItem("Name:", "{{FACTION_NAME}}", 0xFF00d2ff));
-            items.add(new InfoItem("Leader:", "{{LEADER_NAME}}", 0xFFa855f7));
-            items.add(new InfoItem("Created:", "{{CREATION_DATE}}", 0xFFffffff));
-            items.add(new InfoItem("Members:", "{{MEMBER_COUNT}}", 0xFF3b82f6));
-            items.add(new InfoItem("Claims:", "{{CLAIM_COUNT}}", 0xFFa855f7));
-            items.add(new InfoItem("Kills:", "{{KILL_COUNT}}", 0xFFef4444));
-            items.add(new InfoItem("Description:", "{{FACTION_DESCRIPTION}}", 0xFFb8b8d0));
-            items.add(new InfoItem("Recent Activity:", "{{RECENT_ACTIVITY_TEXT}}", 0xFF00d2ff));
+        // Mettre à jour les items avec les vraies données
+        var data = getFactionData();
+        List<InfoItem> items = new ArrayList<>();
 
-            infoScrollList.setItems(items);
+        if (data != null) {
+            items.add(new InfoItem("Name:", data.displayName, 0xFF00d2ff));
+            items.add(new InfoItem("Level:", String.valueOf(data.level), 0xFFfbbf24));
+            items.add(new InfoItem("Mode:", data.mode, 0xFFa855f7));
+            items.add(new InfoItem("Members:", data.membersCount + " / " + data.maxPlayers, 0xFF3b82f6));
+            items.add(new InfoItem("Claims:", data.claims + " / " + data.maxClaims, 0xFFa855f7));
+            items.add(new InfoItem("Warps:", data.warpsCount + " / " + data.maxWarps, 0xFF8b5cf6));
+            items.add(new InfoItem("Bank:", data.bank + " coins", 0xFF10b981));
+            items.add(new InfoItem("Description:", data.description != null && !data.description.isEmpty() ? data.description : "No description", 0xFFb8b8d0));
+        } else {
+            items.add(new InfoItem("Status:", "No faction data", 0xFFef4444));
+        }
 
-            // Créer boutons d'action
-            actionButtons.clear();
+        infoScrollList.setItems(items);
+
+        if (actionButtons.isEmpty()) {
 
             StyledButton inviteBtn = new StyledButton(font, "Invite", () -> {
                 System.out.println("OverviewPage: Invite button clicked");
@@ -113,10 +119,15 @@ public class OverviewPage extends FactionPage {
         int y = sy(CONTENT_Y, topPos, scaleY);
         int w = sw(CONTENT_W, scaleX);
 
-        // Stats cards (3 cards: Members, Claims, Kills) - scaled for 400x270
-        renderStatCard(g, x, y, "MEMBERS", "{{MEMBER_COUNT}}", 0xFF3b82f6, scaleX, scaleY);
-        renderStatCard(g, x + sw(92, scaleX), y, "CLAIMS", "{{CLAIM_COUNT}}", 0xFFa855f7, scaleX, scaleY);
-        renderStatCard(g, x + sw(184, scaleX), y, "KILLS", "{{KILL_COUNT}}", 0xFFef4444, scaleX, scaleY);
+        // Stats cards avec données réelles
+        var data = getFactionData();
+        String membersText = data != null ? data.membersCount + "/" + data.maxPlayers : "0/0";
+        String claimsText = data != null ? data.claims + "/" + data.maxClaims : "0/0";
+        String levelText = data != null ? String.valueOf(data.level) : "1";
+
+        renderStatCard(g, x, y, "MEMBERS", membersText, 0xFF3b82f6, scaleX, scaleY);
+        renderStatCard(g, x + sw(92, scaleX), y, "CLAIMS", claimsText, 0xFFa855f7, scaleX, scaleY);
+        renderStatCard(g, x + sw(184, scaleX), y, "LEVEL", levelText, 0xFFfbbf24, scaleX, scaleY);
 
         // Info scroll list
         infoScrollList.render(g, mouseX, mouseY);

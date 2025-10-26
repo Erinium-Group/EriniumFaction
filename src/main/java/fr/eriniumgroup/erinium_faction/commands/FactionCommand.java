@@ -408,6 +408,10 @@ public class FactionCommand {
             buf.writeVarInt(1);
             FactionSnapshot.write(snapshot, buf);
         });
+
+        // Envoyer aussi le packet pour permettre les mises à jour dynamiques
+        fr.eriniumgroup.erinium_faction.common.network.packets.FactionDataPacketHandler.sendFactionDataToPlayer(sp);
+
         return 1;
     }
 }

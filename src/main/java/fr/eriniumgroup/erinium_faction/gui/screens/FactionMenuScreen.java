@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.screens.pages.*;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
@@ -82,6 +83,11 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         this.entity = container.entity;
         this.imageWidth = BASE_W;
         this.imageHeight = BASE_H;
+
+        // Initialiser les données de faction depuis le snapshot du menu
+        if (container.snapshot != null) {
+            FactionClientData.setFactionData(container.snapshot);
+        }
     }
 
     @Override
@@ -292,8 +298,14 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         int logoX = sx(47);
         int logoY = sy(28);
         g.fill(logoX - sw(10), logoY - sh(10), logoX + sw(10), logoY + sh(10), 0xCCec4899);
-        g.drawCenteredString(font, "E", logoX, logoY - sh(3), 0xFFffffff);
-        g.drawCenteredString(font, "{{FACTION_NAME}}", logoX, sy(51), 0xFF00d2ff);
+
+        // Récupérer les données de faction
+        FactionSnapshot factionData = FactionClientData.getFactionData();
+        String factionName = factionData != null ? factionData.displayName : "No Faction";
+        String factionInitial = factionName.isEmpty() ? "?" : factionName.substring(0, 1).toUpperCase();
+
+        g.drawCenteredString(font, factionInitial, logoX, logoY - sh(3), 0xFFffffff);
+        g.drawCenteredString(font, factionName, logoX, sy(51), 0xFF00d2ff);
 
         // Navigation area avec scroll
         int navX = sx(13);
@@ -360,17 +372,21 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         g.fill(pwX, pwY, pwX + pwW, pwY + sh(26), 0xE61a1a2e);
         g.drawCenteredString(font, "POWER", pwCenterX, pwY + sh(5), 0xFFa0a0c0);
 
-        // Bar
+        // Bar avec données réelles
         int barX = sx(18);
         int barY = sy(248);
         int barW = sw(60);
         int barH = sh(4);
 
+        int currentPower = factionData != null ? factionData.currentPower : 0;
+        int maxPower = factionData != null && factionData.maxPower > 0 ? factionData.maxPower : 100;
+        int powerPercent = maxPower > 0 ? (currentPower * 100 / maxPower) : 0;
+
         g.fill(barX, barY, barX + barW, barY + barH, 0xFF2a2a3e);
-        int powerPercent = 75;
         g.fill(barX, barY, barX + (barW * powerPercent / 100), barY + barH, 0xFFa855f7);
 
-        g.drawCenteredString(font, "{{POWER_CURRENT}}/{{POWER_MAX}}", pwCenterX, pwY + sh(17), 0xFF00d2ff);
+        String powerText = currentPower + "/" + maxPower;
+        g.drawCenteredString(font, powerText, pwCenterX, pwY + sh(17), 0xFF00d2ff);
     }
 
     private void renderMainPanel(GuiGraphics g, int mouseX, int mouseY) {
@@ -443,6 +459,21 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         // Calculer le maxNavScroll
         int totalNavHeight = PageType.values().length * (NAV_BUTTON_HEIGHT + NAV_BUTTON_SPACING);
         maxNavScroll = Math.max(0, totalNavHeight - NAV_AREA_HEIGHT);
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+        // Nettoyer les données quand le GUI est fermé
+        FactionClientData.clear();
+    }
+
+    /**
+     * Méthode appelée pour mettre à jour les données de faction
+     * Appelée quand un FactionDataPacket est reçu
+     */
+    public void updateFactionData(FactionSnapshot snapshot) {
+        FactionClientData.setFactionData(snapshot);
     }
 
     @Override
