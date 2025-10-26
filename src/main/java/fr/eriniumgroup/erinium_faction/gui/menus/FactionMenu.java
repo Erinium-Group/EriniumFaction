@@ -26,9 +26,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAccessor {
-    // Chest slots configuration
-    public static final int FACTION_CHEST_ROWS = 3;
-    public static final int FACTION_CHEST_SLOTS = FACTION_CHEST_ROWS * 9; // 27 slots
     public final Map<String, Object> menuState = new HashMap<>() {
         @Override
         public Object put(String key, Object value) {
@@ -50,11 +47,14 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
     private Entity boundEntity = null;
     private BlockEntity boundBlockEntity = null;
 
+    // Chest slots configuration
+    public static int FACTION_CHEST_ROWS;
+    public static int FACTION_CHEST_SLOTS; // 27 slots
+
     public FactionMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         super(EFMenus.FACTION_MENU.get(), id);
         this.entity = inv.player;
         this.world = inv.player.level();
-        this.internal = new ItemStackHandler(FACTION_CHEST_SLOTS);
         BlockPos pos;
         if (extraData != null) {
             pos = extraData.readBlockPos();
@@ -84,6 +84,21 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         } else {
             this.faction = null; // côté client, on se fie au snapshot/EFVariables
         }
+
+        // Calcul des rows basé sur le level (1 row + 1 row tous les 10 niveaux, max 3 rows à level 20)
+        int factionLevel = 1; // default
+        if (this.world.isClientSide()) {
+            // Client: utiliser le snapshot
+            factionLevel = (this.snapshot != null) ? this.snapshot.level : 1;
+        } else {
+            // Server: utiliser la faction
+            factionLevel = (this.faction != null) ? this.faction.getLevel() : 1;
+        }
+        FACTION_CHEST_ROWS = Math.min(1 + (factionLevel / 10), 3);
+        FACTION_CHEST_SLOTS = FACTION_CHEST_ROWS * 9;
+
+        // Initialiser l'ItemStackHandler avec la bonne taille
+        this.internal = new ItemStackHandler(FACTION_CHEST_SLOTS);
 
         // Positions de base pour la ChestPage (scaled for 400x270)
         // CONTENT_X = 99, CONTENT_Y = 47, CONTENT_W = 275 (FactionPage constants)
