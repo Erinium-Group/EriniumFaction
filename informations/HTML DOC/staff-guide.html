@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="page-title">Guide Administrateur - Erinium Faction</title>
+    <link rel="stylesheet" href="common-themes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--gradient-header);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 15px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 20px var(--accent-1));
+            }
+            to {
+                filter: drop-shadow(0 0 40px var(--accent-3));
+            }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.4em;
+            margin-bottom: 60px;
+            font-style: italic;
+        }
+
+        .warning-banner {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .warning-banner h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-color);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2em;
+            color: var(--accent-2);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            font-size: 1.3em;
+            filter: drop-shadow(0 0 10px var(--accent-2));
+        }
+
+        .command-category {
+            margin: 30px 0;
+        }
+
+        .category-title {
+            font-size: 1.4em;
+            color: var(--accent-1);
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .command-item {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .command-item:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .command-syntax {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: var(--accent-1);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .command-desc {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .command-example {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            margin-top: 10px;
+            color: var(--text-accent);
+        }
+
+        .permission-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--warning);
+            color: #000000;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            border-color: var(--accent-2);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--accent-2);
+            margin-bottom: 15px;
+        }
+
+        .info-card-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
+            border-left: 5px solid var(--success);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .tip-title {
+            font-weight: 700;
+            font-size: 1.2em;
+            color: var(--success);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .config-table th,
+        .config-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .config-table th {
+            background: var(--accent-2);
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .config-table tr:hover {
+            background: var(--bg-primary);
+        }
+
+        .config-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-2);
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 25px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .config-table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🛠️ <span data-i18n="title">Guide Administrateur</span></h1>
+        <p class="subtitle" data-i18n="subtitle">Documentation complète pour la gestion du serveur Erinium Faction</p>
+
+        <!-- Warning Banner -->
+        <div class="warning-banner">
+            <h2>⚠️ <span data-i18n="warning-title">ACCÈS ADMINISTRATEUR REQUIS</span></h2>
+            <p data-i18n="warning-text">
+                Ce guide contient des commandes puissantes réservées aux administrateurs.
+                L'utilisation inappropriée peut affecter l'équilibre du serveur et l'expérience des joueurs.
+            </p>
+        </div>
+
+        <!-- Section 1: Admin Commands -->
+        <div class="section">
+            <div class="section-title">
+                <span class="section-icon">⌨️</span>
+                <span data-i18n="admin-commands-title">Commandes Administrateur</span>
+            </div>
+
+            <!-- Faction Management -->
+            <div class="command-category">
+                <h3 class="category-title" data-i18n="cat-faction-mgmt">Gestion des Factions</h3>
+
+                <div class="command-item">
+                    <div class="command-syntax">/faction delete &lt;nom&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-faction-delete">
+                        Supprime définitivement une faction et libère tous ses claims.
+                    </div>
+                    <div class="command-example">Exemple: /faction delete BadFaction</div>
+                    <span class="permission-badge">ef.admin.faction.delete</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/faction setpower &lt;faction&gt; &lt;montant&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-faction-setpower">
+                        Définit la power d'une faction (0-999999).
+                    </div>
+                    <div class="command-example">Exemple: /faction setpower MyFaction 500</div>
+                    <span class="permission-badge">ef.admin.faction.power</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/faction setlevel &lt;faction&gt; &lt;niveau&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-faction-setlevel">
+                        Définit le niveau d'une faction (1-100).
+                    </div>
+                    <div class="command-example">Exemple: /faction setlevel MyFaction 25</div>
+                    <span class="permission-badge">ef.admin.faction.level</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/faction addmember &lt;faction&gt; &lt;joueur&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-faction-addmember">
+                        Force l'ajout d'un joueur à une faction (bypass invitations).
+                    </div>
+                    <div class="command-example">Exemple: /faction addmember Elite PlayerName</div>
+                    <span class="permission-badge">ef.admin.faction.members</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/faction removemember &lt;faction&gt; &lt;joueur&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-faction-removemember">
+                        Retire un joueur d'une faction (fonctionne même pour les owners).
+                    </div>
+                    <div class="command-example">Exemple: /faction removemember Elite BadPlayer</div>
+                    <span class="permission-badge">ef.admin.faction.members</span>
+                </div>
+            </div>
+
+            <!-- Economy Management -->
+            <div class="command-category">
+                <h3 class="category-title" data-i18n="cat-economy-mgmt">Gestion de l'Économie</h3>
+
+                <div class="command-item">
+                    <div class="command-syntax">/money set &lt;joueur&gt; &lt;montant&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-money-set">
+                        Définit la balance d'un joueur à un montant exact.
+                    </div>
+                    <div class="command-example">Exemple: /money set PlayerName 10000</div>
+                    <span class="permission-badge">ef.admin.economy.set</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/money give &lt;joueur&gt; &lt;montant&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-money-give">
+                        Ajoute de l'argent à la balance d'un joueur.
+                    </div>
+                    <div class="command-example">Exemple: /money give PlayerName 5000</div>
+                    <span class="permission-badge">ef.admin.economy.give</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/money take &lt;joueur&gt; &lt;montant&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-money-take">
+                        Retire de l'argent de la balance d'un joueur.
+                    </div>
+                    <div class="command-example">Exemple: /money take PlayerName 1000</div>
+                    <span class="permission-badge">ef.admin.economy.take</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/money reset &lt;joueur&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-money-reset">
+                        Réinitialise la balance d'un joueur à 0.
+                    </div>
+                    <div class="command-example">Exemple: /money reset PlayerName</div>
+                    <span class="permission-badge">ef.admin.economy.reset</span>
+                </div>
+            </div>
+
+            <!-- Permission Management -->
+            <div class="command-category">
+                <h3 class="category-title" data-i18n="cat-perms-mgmt">Gestion des Permissions</h3>
+
+                <div class="command-item">
+                    <div class="command-syntax">/rank create &lt;id&gt; &lt;display&gt; &lt;priority&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-rank-create">
+                        Crée un nouveau rang serveur avec ID, nom d'affichage et priorité.
+                    </div>
+                    <div class="command-example">Exemple: /rank create vip VIP 10</div>
+                    <span class="permission-badge">ef.admin.rank.create</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/rank setperm &lt;rank&gt; &lt;permission&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-rank-setperm">
+                        Ajoute une permission à un rang (supporte wildcards *).
+                    </div>
+                    <div class="command-example">Exemple: /rank setperm vip ef.teleport.*</div>
+                    <span class="permission-badge">ef.admin.rank.permissions</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/rank removeperm &lt;rank&gt; &lt;permission&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-rank-removeperm">
+                        Retire une permission d'un rang.
+                    </div>
+                    <div class="command-example">Exemple: /rank removeperm vip ef.fly</div>
+                    <span class="permission-badge">ef.admin.rank.permissions</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/rank set &lt;joueur&gt; &lt;rank&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-rank-set">
+                        Assigne un rang à un joueur.
+                    </div>
+                    <div class="command-example">Exemple: /rank set PlayerName moderator</div>
+                    <span class="permission-badge">ef.admin.rank.assign</span>
+                </div>
+            </div>
+
+            <!-- Claims Management -->
+            <div class="command-category">
+                <h3 class="category-title" data-i18n="cat-claims-mgmt">Gestion des Claims</h3>
+
+                <div class="command-item">
+                    <div class="command-syntax">/claim admin &lt;faction&gt;</div>
+                    <div class="command-desc" data-i18n="cmd-claim-admin">
+                        Claim le chunk actuel pour une faction (bypass power requirements).
+                    </div>
+                    <div class="command-example">Exemple: /claim admin MyFaction</div>
+                    <span class="permission-badge">ef.admin.claim.force</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/claim remove &lt;x&gt; &lt;z&gt; [dimension]</div>
+                    <div class="command-desc" data-i18n="cmd-claim-remove">
+                        Supprime un claim à des coordonnées spécifiques.
+                    </div>
+                    <div class="command-example">Exemple: /claim remove 100 200 minecraft:overworld</div>
+                    <span class="permission-badge">ef.admin.claim.remove</span>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-syntax">/claim listall [faction]</div>
+                    <div class="command-desc" data-i18n="cmd-claim-listall">
+                        Liste tous les claims d'une faction ou du serveur entier.
+                    </div>
+                    <div class="command-example">Exemple: /claim listall MyFaction</div>
+                    <span class="permission-badge">ef.admin.claim.list</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Configuration -->
+        <div class="section">
+            <div class="section-title">
+                <span class="section-icon">⚙️</span>
+                <span data-i18n="config-title">Configuration Serveur</span>
+            </div>
+
+            <p data-i18n="config-intro" style="color: var(--text-secondary); margin-bottom: 30px;">
+                Fichier de configuration principal : <code>config/erinium_faction-server.toml</code>
+            </p>
+
+            <table class="config-table">
+                <thead>
+                    <tr>
+                        <th data-i18n="table-setting">Paramètre</th>
+                        <th data-i18n="table-default">Défaut</th>
+                        <th data-i18n="table-description">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>maxMembers</code></td>
+                        <td>30</td>
+                        <td data-i18n="config-maxmembers">Nombre maximum de membres par faction</td>
+                    </tr>
+                    <tr>
+                        <td><code>baseMaxPower</code></td>
+                        <td>10.0</td>
+                        <td data-i18n="config-basemaxpower">Power maximale de départ pour les factions</td>
+                    </tr>
+                    <tr>
+                        <td><code>powerRegenPerMinute</code></td>
+                        <td>0.2</td>
+                        <td data-i18n="config-powerregen">Régénération de power par minute</td>
+                    </tr>
+                    <tr>
+                        <td><code>powerLossOnDeath</code></td>
+                        <td>1.5</td>
+                        <td data-i18n="config-powerloss">Power perdue à la mort d'un membre</td>
+                    </tr>
+                    <tr>
+                        <td><code>maxClaims</code></td>
+                        <td>100</td>
+                        <td data-i18n="config-maxclaims">Nombre maximum de chunks claimables</td>
+                    </tr>
+                    <tr>
+                        <td><code>tpWarmupSeconds</code></td>
+                        <td>3</td>
+                        <td data-i18n="config-tpwarmup">Délai avant téléportation (secondes)</td>
+                    </tr>
+                    <tr>
+                        <td><code>tpCooldownSeconds</code></td>
+                        <td>15</td>
+                        <td data-i18n="config-tpcooldown">Cooldown entre téléportations (secondes)</td>
+                    </tr>
+                    <tr>
+                        <td><code>friendlyFire</code></td>
+                        <td>false</td>
+                        <td data-i18n="config-friendlyfire">Autoriser les dégâts entre membres de faction</td>
+                    </tr>
+                    <tr>
+                        <td><code>xpPerKill</code></td>
+                        <td>10</td>
+                        <td data-i18n="config-xpperkill">XP de faction gagnée par kill</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box">
+                <div class="tip-title">
+                    <span>💡</span>
+                    <span data-i18n="config-tip-title">Conseil de Configuration</span>
+                </div>
+                <p style="color: var(--text-secondary);" data-i18n="config-tip">
+                    Après modification du fichier de configuration, utilisez <code>/ef reload</code> pour
+                    recharger sans redémarrer le serveur. Les changements affectent uniquement les nouvelles
+                    actions, pas les données existantes.
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 3: Best Practices -->
+        <div class="section">
+            <div class="section-title">
+                <span class="section-icon">✅</span>
+                <span data-i18n="practices-title">Bonnes Pratiques</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="practice1-title">Sauvegardes Régulières</div>
+                    <div class="info-card-content" data-i18n="practice1-content">
+                        Effectuez des backups quotidiens des dossiers world/data/ qui contiennent
+                        les SavedData de factions, claims et économie. En cas de rollback, seules
+                        ces données sont critiques.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="practice2-title">Monitoring Performances</div>
+                    <div class="info-card-content" data-i18n="practice2-content">
+                        Surveillez les TPS avec /tps et les logs pour détecter les lags. Le système
+                        anti-cheat adaptatif réduit automatiquement les checks si TPS < 18.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="practice3-title">Gestion des Conflits</div>
+                    <div class="info-card-content" data-i18n="practice3-content">
+                        En cas de dispute faction, utilisez /faction info pour vérifier les logs
+                        d'actions. Évitez les interventions directes sauf abus flagrants.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="practice4-title">Économie Équilibrée</div>
+                    <div class="info-card-content" data-i18n="practice4-content">
+                        Surveillez le leaderboard /money top régulièrement. Une inflation excessive
+                        indique un besoin d'ajuster les rewards ou ajouter des money sinks.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="practice5-title">Permissions Graduées</div>
+                    <div class="info-card-content" data-i18n="practice5-content">
+                        Créez une hiérarchie de rangs claire (Joueur > VIP > Modérateur > Admin)
+                        avec permissions incrémentales. Évitez de donner ef.admin.* aux non-admins.
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="practice6-title">Anti-Cheat Tuning</div>
+                    <div class="info-card-content" data-i18n="practice6-content">
+                        Ajustez les seuils dans MAC.java selon votre serveur. Networks instables
+                        nécessitent des seuils plus permissifs pour éviter les faux positifs.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Troubleshooting -->
+        <div class="section">
+            <div class="section-title">
+                <span class="section-icon">🔧</span>
+                <span data-i18n="troubleshooting-title">Résolution de Problèmes</span>
+            </div>
+
+            <div class="command-category">
+                <h3 class="category-title" data-i18n="issue1-title">Faction ne peut pas claim</h3>
+                <ul>
+                    <li data-i18n="issue1-sol1">Vérifier power faction : <code>/faction info &lt;nom&gt;</code></li>
+                    <li data-i18n="issue1-sol2">Vérifier limite claims : config maxClaims</li>
+                    <li data-i18n="issue1-sol3">Vérifier si chunk déjà claim : <code>/claim info</code></li>
+                    <li data-i18n="issue1-sol4">Solution admin : <code>/claim admin &lt;faction&gt;</code></li>
+                </ul>
+            </div>
+
+            <div class="command-category">
+                <h3 class="category-title" data-i18n="issue2-title">Téléportation ne fonctionne pas</h3>
+                <ul>
+                    <li data-i18n="issue2-sol1">Vérifier cooldown restant du joueur</li>
+                    <li data-i18n="issue2-sol2">Vérifier si home faction est défini : <code>/f sethome</code></li>
+                    <li data-i18n="issue2-sol3">Vérifier permissions : <code>ef.teleport.home</code></li>
+                    <li data-i18n="issue2-sol4">Vérifier si mouvement pendant warmup (annulation)</li>
+                </ul>
+            </div>
+
+            <div class="command-category">
+                <h3 class="category-title" data-i18n="issue3-title">Permissions ne s'appliquent pas</h3>
+                <ul>
+                    <li data-i18n="issue3-sol1">Recharger permissions : <code>/rank reload</code></li>
+                    <li data-i18n="issue3-sol2">Vérifier rang joueur : <code>/rank get &lt;joueur&gt;</code></li>
+                    <li data-i18n="issue3-sol3">Vérifier syntaxe permission (sensible à la casse)</li>
+                    <li data-i18n="issue3-sol4">Redémarrer serveur si problème persiste</li>
+                </ul>
+            </div>
+
+            <div class="command-category">
+                <h3 class="category-title" data-i18n="issue4-title">Lag / Performances dégradées</h3>
+                <ul>
+                    <li data-i18n="issue4-sol1">Checker TPS : <code>/tps</code> (normal = 20)</li>
+                    <li data-i18n="issue4-sol2">Réduire sampling anti-cheat dans MAC.java (30% → 15%)</li>
+                    <li data-i18n="issue4-sol3">Vérifier nombre de claims totaux (limite recommandée : 10000)</li>
+                    <li data-i18n="issue4-sol4">Profiler avec Spark pour identifier bottlenecks</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 5: Maintenance -->
+        <div class="section">
+            <div class="section-title">
+                <span class="section-icon">🔄</span>
+                <span data-i18n="maintenance-title">Maintenance & Mise à Jour</span>
+            </div>
+
+            <p style="color: var(--text-secondary); margin-bottom: 25px;" data-i18n="maintenance-intro">
+                Procédures recommandées pour maintenir un serveur Erinium Faction en bonne santé.
+            </p>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="maint1-title">Backup Quotidien</div>
+                    <div class="info-card-content">
+                        <ul>
+                            <li>Dossier <code>world/data/</code> (SavedData)</li>
+                            <li>Fichier <code>config/erinium_faction-server.toml</code></li>
+                            <li>Dossier <code>logs/</code> si audit nécessaire</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="maint2-title">Nettoyage Hebdomadaire</div>
+                    <div class="info-card-content">
+                        <ul>
+                            <li>Supprimer factions inactives (>30 jours)</li>
+                            <li>Libérer claims orphelins</li>
+                            <li>Purger logs anciens (>7 jours)</li>
+                            <li>Optimiser base de données SavedData</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title" data-i18n="maint3-title">Mise à Jour Mod</div>
+                    <div class="info-card-content">
+                        <ul>
+                            <li>TOUJOURS backup avant update</li>
+                            <li>Tester sur serveur de dev d'abord</li>
+                            <li>Lire changelog pour breaking changes</li>
+                            <li>Annoncer maintenance aux joueurs 24h avant</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box" style="margin-top: 30px;">
+                <div class="tip-title">
+                    <span>⚠️</span>
+                    <span data-i18n="maint-warning-title">Important</span>
+                </div>
+                <p style="color: var(--text-secondary);" data-i18n="maint-warning">
+                    Ne modifiez JAMAIS directement les fichiers SavedData (.dat) dans world/data/.
+                    Utilisez uniquement les commandes in-game pour éviter la corruption de données.
+                    En cas de corruption, restaurez depuis backup - aucune réparation manuelle possible.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="common-i18n.js"></script>
+    <script>
+        // Page-specific translations (English version)
+        const translations = {
+            fr: {
+                'page-title': 'Guide Administrateur - Erinium Faction',
+                'title': 'Guide Administrateur',
+                'subtitle': 'Documentation complète pour la gestion du serveur Erinium Faction',
+                'warning-title': 'ACCÈS ADMINISTRATEUR REQUIS',
+                'warning-text': 'Ce guide contient des commandes puissantes réservées aux administrateurs. L\'utilisation inappropriée peut affecter l\'équilibre du serveur et l\'expérience des joueurs.',
+                'admin-commands-title': 'Commandes Administrateur',
+                'cat-faction-mgmt': 'Gestion des Factions',
+                'cmd-faction-delete': 'Supprime définitivement une faction et libère tous ses claims.',
+                'cmd-faction-setpower': 'Définit la power d\'une faction (0-999999).',
+                'cmd-faction-setlevel': 'Définit le niveau d\'une faction (1-100).',
+                'cmd-faction-addmember': 'Force l\'ajout d\'un joueur à une faction (bypass invitations).',
+                'cmd-faction-removemember': 'Retire un joueur d\'une faction (fonctionne même pour les owners).',
+                'cat-economy-mgmt': 'Gestion de l\'Économie',
+                'cmd-money-set': 'Définit la balance d\'un joueur à un montant exact.',
+                'cmd-money-give': 'Ajoute de l\'argent à la balance d\'un joueur.',
+                'cmd-money-take': 'Retire de l\'argent de la balance d\'un joueur.',
+                'cmd-money-reset': 'Réinitialise la balance d\'un joueur à 0.',
+                'cat-perms-mgmt': 'Gestion des Permissions',
+                'cmd-rank-create': 'Crée un nouveau rang serveur avec ID, nom d\'affichage et priorité.',
+                'cmd-rank-setperm': 'Ajoute une permission à un rang (supporte wildcards *).',
+                'cmd-rank-removeperm': 'Retire une permission d\'un rang.',
+                'cmd-rank-set': 'Assigne un rang à un joueur.',
+                'cat-claims-mgmt': 'Gestion des Claims',
+                'cmd-claim-admin': 'Claim le chunk actuel pour une faction (bypass power requirements).',
+                'cmd-claim-remove': 'Supprime un claim à des coordonnées spécifiques.',
+                'cmd-claim-listall': 'Liste tous les claims d\'une faction ou du serveur entier.',
+                'config-title': 'Configuration Serveur',
+                'config-intro': 'Fichier de configuration principal :',
+                'table-setting': 'Paramètre',
+                'table-default': 'Défaut',
+                'table-description': 'Description',
+                'config-maxmembers': 'Nombre maximum de membres par faction',
+                'config-basemaxpower': 'Power maximale de départ pour les factions',
+                'config-powerregen': 'Régénération de power par minute',
+                'config-powerloss': 'Power perdue à la mort d\'un membre',
+                'config-maxclaims': 'Nombre maximum de chunks claimables',
+                'config-tpwarmup': 'Délai avant téléportation (secondes)',
+                'config-tpcooldown': 'Cooldown entre téléportations (secondes)',
+                'config-friendlyfire': 'Autoriser les dégâts entre membres de faction',
+                'config-xpperkill': 'XP de faction gagnée par kill',
+                'config-tip-title': 'Conseil de Configuration',
+                'config-tip': 'Après modification du fichier de configuration, utilisez /ef reload pour recharger sans redémarrer le serveur. Les changements affectent uniquement les nouvelles actions, pas les données existantes.',
+                'practices-title': 'Bonnes Pratiques',
+                'practice1-title': 'Sauvegardes Régulières',
+                'practice1-content': 'Effectuez des backups quotidiens des dossiers world/data/ qui contiennent les SavedData de factions, claims et économie. En cas de rollback, seules ces données sont critiques.',
+                'practice2-title': 'Monitoring Performances',
+                'practice2-content': 'Surveillez les TPS avec /tps et les logs pour détecter les lags. Le système anti-cheat adaptatif réduit automatiquement les checks si TPS < 18.',
+                'practice3-title': 'Gestion des Conflits',
+                'practice3-content': 'En cas de dispute faction, utilisez /faction info pour vérifier les logs d\'actions. Évitez les interventions directes sauf abus flagrants.',
+                'practice4-title': 'Économie Équilibrée',
+                'practice4-content': 'Surveillez le leaderboard /money top régulièrement. Une inflation excessive indique un besoin d\'ajuster les rewards ou ajouter des money sinks.',
+                'practice5-title': 'Permissions Graduées',
+                'practice5-content': 'Créez une hiérarchie de rangs claire (Joueur > VIP > Modérateur > Admin) avec permissions incrémentales. Évitez de donner ef.admin.* aux non-admins.',
+                'practice6-title': 'Anti-Cheat Tuning',
+                'practice6-content': 'Ajustez les seuils dans MAC.java selon votre serveur. Networks instables nécessitent des seuils plus permissifs pour éviter les faux positifs.',
+                'troubleshooting-title': 'Résolution de Problèmes',
+                'issue1-title': 'Faction ne peut pas claim',
+                'issue1-sol1': 'Vérifier power faction : /faction info <nom>',
+                'issue1-sol2': 'Vérifier limite claims : config maxClaims',
+                'issue1-sol3': 'Vérifier si chunk déjà claim : /claim info',
+                'issue1-sol4': 'Solution admin : /claim admin <faction>',
+                'issue2-title': 'Téléportation ne fonctionne pas',
+                'issue2-sol1': 'Vérifier cooldown restant du joueur',
+                'issue2-sol2': 'Vérifier si home faction est défini : /f sethome',
+                'issue2-sol3': 'Vérifier permissions : ef.teleport.home',
+                'issue2-sol4': 'Vérifier si mouvement pendant warmup (annulation)',
+                'issue3-title': 'Permissions ne s\'appliquent pas',
+                'issue3-sol1': 'Recharger permissions : /rank reload',
+                'issue3-sol2': 'Vérifier rang joueur : /rank get <joueur>',
+                'issue3-sol3': 'Vérifier syntaxe permission (sensible à la casse)',
+                'issue3-sol4': 'Redémarrer serveur si problème persiste',
+                'issue4-title': 'Lag / Performances dégradées',
+                'issue4-sol1': 'Checker TPS : /tps (normal = 20)',
+                'issue4-sol2': 'Réduire sampling anti-cheat dans MAC.java (30% → 15%)',
+                'issue4-sol3': 'Vérifier nombre de claims totaux (limite recommandée : 10000)',
+                'issue4-sol4': 'Profiler avec Spark pour identifier bottlenecks',
+                'maintenance-title': 'Maintenance & Mise à Jour',
+                'maintenance-intro': 'Procédures recommandées pour maintenir un serveur Erinium Faction en bonne santé.',
+                'maint1-title': 'Backup Quotidien',
+                'maint2-title': 'Nettoyage Hebdomadaire',
+                'maint3-title': 'Mise à Jour Mod',
+                'maint-warning-title': 'Important',
+                'maint-warning': 'Ne modifiez JAMAIS directement les fichiers SavedData (.dat) dans world/data/. Utilisez uniquement les commandes in-game pour éviter la corruption de données. En cas de corruption, restaurez depuis backup - aucune réparation manuelle possible.'
+            },
+            en: {
+                'page-title': 'Administrator Guide - Erinium Faction',
+                'title': 'Administrator Guide',
+                'subtitle': 'Complete documentation for Erinium Faction server management',
+                'warning-title': 'ADMINISTRATOR ACCESS REQUIRED',
+                'warning-text': 'This guide contains powerful commands reserved for administrators. Inappropriate use can affect server balance and player experience.',
+                'admin-commands-title': 'Administrator Commands',
+                'cat-faction-mgmt': 'Faction Management',
+                'cmd-faction-delete': 'Permanently deletes a faction and frees all its claims.',
+                'cmd-faction-setpower': 'Sets a faction\'s power (0-999999).',
+                'cmd-faction-setlevel': 'Sets a faction\'s level (1-100).',
+                'cmd-faction-addmember': 'Forces adding a player to a faction (bypasses invitations).',
+                'cmd-faction-removemember': 'Removes a player from a faction (works even for owners).',
+                'cat-economy-mgmt': 'Economy Management',
+                'cmd-money-set': 'Sets a player\'s balance to an exact amount.',
+                'cmd-money-give': 'Adds money to a player\'s balance.',
+                'cmd-money-take': 'Removes money from a player\'s balance.',
+                'cmd-money-reset': 'Resets a player\'s balance to 0.',
+                'cat-perms-mgmt': 'Permission Management',
+                'cmd-rank-create': 'Creates a new server rank with ID, display name and priority.',
+                'cmd-rank-setperm': 'Adds a permission to a rank (supports wildcards *).',
+                'cmd-rank-removeperm': 'Removes a permission from a rank.',
+                'cmd-rank-set': 'Assigns a rank to a player.',
+                'cat-claims-mgmt': 'Claims Management',
+                'cmd-claim-admin': 'Claims current chunk for a faction (bypasses power requirements).',
+                'cmd-claim-remove': 'Removes a claim at specific coordinates.',
+                'cmd-claim-listall': 'Lists all claims of a faction or entire server.',
+                'config-title': 'Server Configuration',
+                'config-intro': 'Main configuration file:',
+                'table-setting': 'Setting',
+                'table-default': 'Default',
+                'table-description': 'Description',
+                'config-maxmembers': 'Maximum number of members per faction',
+                'config-basemaxpower': 'Starting maximum power for factions',
+                'config-powerregen': 'Power regeneration per minute',
+                'config-powerloss': 'Power lost on member death',
+                'config-maxclaims': 'Maximum number of claimable chunks',
+                'config-tpwarmup': 'Delay before teleportation (seconds)',
+                'config-tpcooldown': 'Cooldown between teleportations (seconds)',
+                'config-friendlyfire': 'Allow damage between faction members',
+                'config-xpperkill': 'Faction XP gained per kill',
+                'config-tip-title': 'Configuration Tip',
+                'config-tip': 'After modifying the configuration file, use /ef reload to reload without restarting the server. Changes only affect new actions, not existing data.',
+                'practices-title': 'Best Practices',
+                'practice1-title': 'Regular Backups',
+                'practice1-content': 'Perform daily backups of world/data/ folders containing SavedData for factions, claims and economy. In case of rollback, only this data is critical.',
+                'practice2-title': 'Performance Monitoring',
+                'practice2-content': 'Monitor TPS with /tps and logs to detect lags. The adaptive anti-cheat system automatically reduces checks if TPS < 18.',
+                'practice3-title': 'Conflict Management',
+                'practice3-content': 'In case of faction dispute, use /faction info to check action logs. Avoid direct interventions except for flagrant abuse.',
+                'practice4-title': 'Balanced Economy',
+                'practice4-content': 'Monitor the /money top leaderboard regularly. Excessive inflation indicates a need to adjust rewards or add money sinks.',
+                'practice5-title': 'Graduated Permissions',
+                'practice5-content': 'Create a clear rank hierarchy (Player > VIP > Moderator > Admin) with incremental permissions. Avoid giving ef.admin.* to non-admins.',
+                'practice6-title': 'Anti-Cheat Tuning',
+                'practice6-content': 'Adjust thresholds in MAC.java according to your server. Unstable networks require more permissive thresholds to avoid false positives.',
+                'troubleshooting-title': 'Troubleshooting',
+                'issue1-title': 'Faction cannot claim',
+                'issue1-sol1': 'Check faction power: /faction info <name>',
+                'issue1-sol2': 'Check claims limit: config maxClaims',
+                'issue1-sol3': 'Check if chunk already claimed: /claim info',
+                'issue1-sol4': 'Admin solution: /claim admin <faction>',
+                'issue2-title': 'Teleportation not working',
+                'issue2-sol1': 'Check player\'s remaining cooldown',
+                'issue2-sol2': 'Check if faction home is set: /f sethome',
+                'issue2-sol3': 'Check permissions: ef.teleport.home',
+                'issue2-sol4': 'Check if movement during warmup (cancellation)',
+                'issue3-title': 'Permissions not applying',
+                'issue3-sol1': 'Reload permissions: /rank reload',
+                'issue3-sol2': 'Check player rank: /rank get <player>',
+                'issue3-sol3': 'Check permission syntax (case sensitive)',
+                'issue3-sol4': 'Restart server if problem persists',
+                'issue4-title': 'Lag / Degraded Performance',
+                'issue4-sol1': 'Check TPS: /tps (normal = 20)',
+                'issue4-sol2': 'Reduce anti-cheat sampling in MAC.java (30% → 15%)',
+                'issue4-sol3': 'Check total claims number (recommended limit: 10000)',
+                'issue4-sol4': 'Profile with Spark to identify bottlenecks',
+                'maintenance-title': 'Maintenance & Updates',
+                'maintenance-intro': 'Recommended procedures to maintain a healthy Erinium Faction server.',
+                'maint1-title': 'Daily Backup',
+                'maint2-title': 'Weekly Cleanup',
+                'maint3-title': 'Mod Update',
+                'maint-warning-title': 'Important',
+                'maint-warning': 'NEVER directly modify SavedData files (.dat) in world/data/. Use only in-game commands to avoid data corruption. In case of corruption, restore from backup - no manual repair possible.'
+            }
+        };
+
+        // Initialize Erinium Faction system
+        EriniumFaction.init(translations);
+    </script>
+
+</body>
+</html>

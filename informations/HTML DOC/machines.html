@@ -3,550 +3,601 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Machines Faction - Documentation</title>
+    <title data-i18n="page-title">Machines de Faction - Erinium Faction</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Common Theme CSS -->
+    <link rel="stylesheet" href="common-themes.css">
+
     <style>
-        * {
+        body {
+            font-family: 'Exo 2', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
-            color: #333;
-            line-height: 1.6;
-            padding: 30px 20px;
             min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        .container {
+        .ef-content-wrapper {
+            padding: 40px 20px;
+        }
+
+        .ef-container {
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        h1 {
+        .ef-hero {
             text-align: center;
-            color: white;
-            font-size: 3.5em;
-            margin-bottom: 15px;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from {
-                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
-            }
-            to {
-                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.6);
-            }
-        }
-
-        .subtitle {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.4em;
-            margin-bottom: 50px;
-            font-style: italic;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: white;
+            margin-bottom: 60px;
+            padding: 40px 20px;
+            background: var(--bg-card);
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--accent-1);
+        }
+
+        .ef-hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5em;
+            margin: 0 0 15px 0;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .ef-subtitle {
+            font-size: 1.3em;
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .ef-section-divider {
+            text-align: center;
+            margin: 70px 0 50px 0;
+            position: relative;
+        }
+
+        .ef-section-divider h2 {
+            display: inline-block;
+            background: var(--bg-card);
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2em;
+            color: var(--text-primary);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--accent-2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .ef-section-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
+        }
+
+        .ef-machines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 35px;
+            margin-bottom: 50px;
+        }
+
+        .ef-machine-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
-        .card::before {
+        .ef-machine-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 6px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
         }
 
-        .card.combat::before {
+        .ef-machine-card.combat::before {
             background: linear-gradient(90deg, #ef4444, #dc2626);
         }
 
-        .card.defense::before {
+        .ef-machine-card.defense::before {
             background: linear-gradient(90deg, #3b82f6, #2563eb);
         }
 
-        .card.utility::before {
-            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
-        }
-
-        .card.production::before {
+        .ef-machine-card.production::before {
             background: linear-gradient(90deg, #f59e0b, #d97706);
         }
 
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
+        .ef-machine-card.utility::before {
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+        }
+
+        .ef-machine-card:hover {
+            transform: translateY(-8px) scale(1.02);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
-        .card-header {
+        .ef-machine-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding-bottom: 20px;
-            border-bottom: 3px solid #e5e7eb;
+            border-bottom: 2px solid var(--border-color);
         }
 
-        .icon {
-            font-size: 3.5em;
+        .ef-machine-icon {
+            font-size: 4em;
             margin-right: 20px;
-            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(2px 2px 6px rgba(0, 0, 0, 0.3));
         }
 
-        .card-title {
-            font-size: 1.8em;
-            color: #1f2937;
-            font-weight: bold;
-            line-height: 1.2;
+        .ef-machine-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.9em;
+            color: var(--text-primary);
+            font-weight: 700;
+            margin: 0;
         }
 
-        .badge {
+        .ef-badge {
             display: inline-block;
-            padding: 6px 14px;
+            padding: 6px 16px;
             border-radius: 25px;
-            font-size: 0.85em;
-            font-weight: bold;
-            margin-top: 8px;
+            font-size: 0.8em;
+            font-weight: 700;
+            margin-top: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
-        .badge.combat {
+        .ef-badge.combat {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
         }
 
-        .badge.defense {
+        .ef-badge.defense {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
         }
 
-        .badge.utility {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            color: white;
-        }
-
-        .badge.production {
+        .ef-badge.production {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
         }
 
-        .section {
+        .ef-badge.utility {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .ef-section {
             margin-top: 25px;
         }
 
-        .section-title {
-            font-size: 1.3em;
-            color: #374151;
-            font-weight: bold;
-            margin-bottom: 12px;
+        .ef-section-title {
+            font-size: 1.4em;
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
+            font-family: 'Orbitron', sans-serif;
         }
 
-        .section-title::before {
+        .ef-section-title::before {
             content: '';
-            width: 4px;
-            height: 20px;
-            background: linear-gradient(180deg, #3b82f6, #8b5cf6);
-            margin-right: 10px;
-            border-radius: 2px;
+            width: 5px;
+            height: 25px;
+            background: linear-gradient(180deg, var(--accent-1), var(--accent-2));
+            margin-right: 12px;
+            border-radius: 3px;
         }
 
-        .feature-list {
+        .ef-feature-list {
             list-style: none;
-            padding-left: 0;
+            padding: 0;
+            margin: 0;
         }
 
-        .feature-list li {
-            padding: 10px 0 10px 30px;
+        .ef-feature-list li {
+            padding: 12px 0 12px 35px;
             position: relative;
-            color: #4b5563;
+            color: var(--text-secondary);
             font-size: 1.05em;
+            line-height: 1.6;
         }
 
-        .feature-list li::before {
+        .ef-feature-list li::before {
             content: '▸';
             position: absolute;
-            left: 8px;
-            color: #3b82f6;
+            left: 10px;
+            color: var(--accent-1);
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .ef-highlight {
+            background: linear-gradient(120deg, var(--accent-1), var(--accent-2));
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .ef-tier-box {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .ef-tier-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .ef-tier-item {
+            padding: 10px 0;
+            color: var(--text-secondary);
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .ef-tier-item::before {
+            content: '●';
+            position: absolute;
+            left: 5px;
+            color: var(--accent-2);
             font-weight: bold;
             font-size: 1.2em;
         }
 
-        .highlight {
-            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-weight: bold;
-            color: #92400e;
+        .ef-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        .tier-box {
-            background: #f3f4f6;
-            border-radius: 12px;
+        .ef-stat-box {
+            background: var(--bg-secondary);
             padding: 15px;
-            margin-top: 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-1);
         }
 
-        .tier-title {
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 8px;
+        .ef-stat-label {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .ef-stat-value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .ef-info-box {
+            background: var(--bg-secondary);
+            border-left: 5px solid #3b82f6;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .ef-info-title {
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
             font-size: 1.1em;
         }
 
-        .tier-item {
-            padding: 8px 0;
-            color: #6b7280;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .tier-item::before {
-            content: '•';
-            position: absolute;
-            left: 5px;
-            color: #3b82f6;
-            font-weight: bold;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .stat-box {
-            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-            padding: 12px;
-            border-radius: 10px;
-            border-left: 4px solid #3b82f6;
-        }
-
-        .stat-label {
-            font-size: 0.85em;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #1f2937;
-            margin-top: 4px;
-        }
-
-        .warning-box {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-            border-left: 5px solid #ef4444;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
-
-        .warning-title {
-            font-weight: bold;
-            color: #991b1b;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-        }
-
-        .warning-title::before {
-            content: '⚠️';
-            margin-right: 8px;
-        }
-
-        .info-box {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border-left: 5px solid #3b82f6;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
-
-        .info-title {
-            font-weight: bold;
-            color: #1e40af;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-        }
-
-        .info-title::before {
+        .ef-info-title::before {
             content: 'ℹ️';
-            margin-right: 8px;
+            margin-right: 10px;
         }
 
-        .success-box {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border-left: 5px solid #22c55e;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
+        .ef-info-box p {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
         }
 
-        .success-title {
-            font-weight: bold;
-            color: #166534;
-            margin-bottom: 8px;
+        .ef-warning-box {
+            background: var(--bg-secondary);
+            border-left: 5px solid #ef4444;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .ef-warning-title {
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
+            font-size: 1.1em;
         }
 
-        .success-title::before {
+        .ef-warning-title::before {
+            content: '⚠️';
+            margin-right: 10px;
+        }
+
+        .ef-warning-box p {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .ef-success-box {
+            background: var(--bg-secondary);
+            border-left: 5px solid #22c55e;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .ef-success-title {
+            font-weight: 700;
+            color: #22c55e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+
+        .ef-success-title::before {
             content: '✓';
-            margin-right: 8px;
+            margin-right: 10px;
+            font-size: 1.3em;
         }
 
-        .section-divider {
-            text-align: center;
-            margin: 60px 0 40px 0;
-            position: relative;
-        }
-
-        .section-divider h2 {
-            display: inline-block;
-            background: white;
-            padding: 15px 40px;
-            border-radius: 50px;
-            color: #1f2937;
-            font-size: 2.2em;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            position: relative;
-            z-index: 1;
-        }
-
-        .section-divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+        .ef-success-box p {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
         }
 
         @media (max-width: 1024px) {
-            .grid {
+            .ef-machines-grid {
                 grid-template-columns: 1fr;
             }
 
-            h1 {
+            .ef-hero h1 {
                 font-size: 2.5em;
             }
 
-            .card-title {
-                font-size: 1.5em;
+            .ef-machine-title {
+                font-size: 1.6em;
+            }
+
+            .ef-stats-grid {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .icon {
-                font-size: 2.5em;
-            }
-
-            h1 {
+            .ef-hero h1 {
                 font-size: 2em;
             }
 
-            .subtitle {
+            .ef-subtitle {
                 font-size: 1.1em;
+            }
+
+            .ef-machine-icon {
+                font-size: 3em;
+            }
+
+            .ef-section-divider h2 {
+                font-size: 1.6em;
+                padding: 15px 30px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>⚙️ Machines de Faction ⚙️</h1>
-        <p class="subtitle">Systèmes avancés pour dominer et protéger votre territoire</p>
-
-        <div class="section-divider">
-            <h2>⚔️ Combat & Défense</h2>
+    <div class="ef-container">
+        <div class="ef-hero">
+            <h1 data-i18n="hero-title">⚙️ Machines de Faction ⚙️</h1>
+            <p class="ef-subtitle" data-i18n="hero-subtitle">Systèmes avancés pour dominer et protéger votre territoire</p>
         </div>
 
-        <div class="grid">
-            <!-- Tourelle Automatique -->
-            <div class="card combat">
-                <div class="card-header">
-                    <div class="icon">🎯</div>
+        <!-- Combat & Defense Section -->
+        <div class="ef-section-divider">
+            <h2 data-i18n="section-combat">⚔️ Combat & Défense</h2>
+        </div>
+
+        <div class="ef-machines-grid">
+            <!-- Automatic Turret -->
+            <div class="ef-machine-card combat">
+                <div class="ef-machine-header">
+                    <div class="ef-machine-icon">🎯</div>
                     <div>
-                        <div class="card-title">Tourelle Automatique</div>
-                        <span class="badge combat">Combat</span>
+                        <h3 class="ef-machine-title" data-i18n="turret-title">Tourelle Automatique</h3>
+                        <span class="ef-badge combat" data-i18n="badge-combat">Combat</span>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">📋 Description</div>
-                    <p style="color: #6b7280; padding-left: 10px;">
-                        Système de défense automatisé qui cible et tire sur les joueurs ennemis entrant dans votre territoire. 
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-desc">📋 Description</div>
+                    <p style="padding-left: 10px; color: var(--text-secondary);" data-i18n="turret-desc">
+                        Système de défense automatisé qui cible et tire sur les joueurs ennemis entrant dans votre territoire.
                         Utilise un système d'identification par faction pour éviter les tirs amis.
                     </p>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">✨ Fonctionnalités</div>
-                    <ul class="feature-list">
-                        <li>Détection automatique des <span class="highlight">joueurs ennemis</span></li>
-                        <li>Portée configurable selon le tier (15-50 blocs)</li>
-                        <li>Types de munitions : flèches, potions, projectiles explosifs</li>
-                        <li>Rotation 360° avec priorisation des cibles</li>
-                        <li>Mode veille pour économiser l'énergie</li>
-                        <li>Désactivable par redstone ou switch manuel</li>
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-features">✨ Fonctionnalités</div>
+                    <ul class="ef-feature-list">
+                        <li data-i18n="turret-feat1">Détection automatique des <span class="ef-highlight">joueurs ennemis</span></li>
+                        <li data-i18n="turret-feat2" data-i18n-html="true">Portée configurable selon le tier (15-50 blocs)</li>
+                        <li data-i18n="turret-feat3">Types de munitions : flèches, potions, projectiles explosifs</li>
+                        <li data-i18n="turret-feat4">Rotation 360° avec priorisation des cibles</li>
+                        <li data-i18n="turret-feat5">Mode veille pour économiser l'énergie</li>
+                        <li data-i18n="turret-feat6">Désactivable par redstone ou switch manuel</li>
                     </ul>
                 </div>
 
-                <div class="tier-box">
-                    <div class="tier-title">🔧 Tiers de Tourelle</div>
-                    <div class="tier-item"><strong>Tier 1 :</strong> Portée 15 blocs, flèches normales, 1 tir/2s</div>
-                    <div class="tier-item"><strong>Tier 2 :</strong> Portée 30 blocs, flèches + potions, 2 tirs/s</div>
-                    <div class="tier-item"><strong>Tier 3 :</strong> Portée 50 blocs, toutes munitions, 3 tirs/s, double cible</div>
+                <div class="ef-tier-box">
+                    <div class="ef-tier-title" data-i18n="turret-tiers-title">🔧 Tiers de Tourelle</div>
+                    <div class="ef-tier-item" data-i18n="turret-tier1"><strong>Tier 1 :</strong> Portée 15 blocs, flèches normales, 1 tir/2s</div>
+                    <div class="ef-tier-item" data-i18n="turret-tier2"><strong>Tier 2 :</strong> Portée 30 blocs, flèches + potions, 2 tirs/s</div>
+                    <div class="ef-tier-item" data-i18n="turret-tier3"><strong>Tier 3 :</strong> Portée 50 blocs, toutes munitions, 3 tirs/s, double cible</div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Consommation</div>
-                        <div class="stat-value">50-200 RF/tir</div>
+                <div class="ef-stats-grid">
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-consumption">Consommation</div>
+                        <div class="ef-stat-value">50-200 RF/tir</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Capacité Munitions</div>
-                        <div class="stat-value">128-512 items</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-ammo-capacity">Capacité Munitions</div>
+                        <div class="ef-stat-value">128-512</div>
                     </div>
                 </div>
 
-                <div class="warning-box">
-                    <div class="warning-title">Limitations</div>
-                    <p style="color: #991b1b; font-size: 0.95em;">
-                        Ne peut pas tirer à travers les blocs solides. Vulnérable aux TNT et aux attaques à distance. 
+                <div class="ef-warning-box">
+                    <div class="ef-warning-title" data-i18n="warning-limitations">Limitations</div>
+                    <p data-i18n="turret-warning">
+                        Ne peut pas tirer à travers les blocs solides. Vulnérable aux TNT et aux attaques à distance.
                         Peut être hackée par des joueurs avec des items spéciaux.
                     </p>
                 </div>
             </div>
 
-            <!-- Beacon Amélioré de Faction -->
-            <div class="card defense">
-                <div class="card-header">
-                    <div class="icon">🗼</div>
+            <!-- Improved Faction Beacon -->
+            <div class="ef-machine-card defense">
+                <div class="ef-machine-header">
+                    <div class="ef-machine-icon">🗼</div>
                     <div>
-                        <div class="card-title">Beacon Amélioré de Faction</div>
-                        <span class="badge defense">Défense</span>
+                        <h3 class="ef-machine-title" data-i18n="beacon-title">Beacon Amélioré de Faction</h3>
+                        <span class="ef-badge defense" data-i18n="badge-defense">Défense</span>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">📋 Description</div>
-                    <p style="color: #6b7280; padding-left: 10px;">
-                        Version améliorée du beacon vanilla qui applique des effets de buffs puissants uniquement aux membres 
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-desc">📋 Description</div>
+                    <p style="padding-left: 10px; color: var(--text-secondary);" data-i18n="beacon-desc">
+                        Version améliorée du beacon vanilla qui applique des effets de buffs puissants uniquement aux membres
                         de votre faction dans un rayon étendu. Parfait pour fortifier une zone de guerre.
                     </p>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">✨ Fonctionnalités</div>
-                    <ul class="feature-list">
-                        <li>Effets <span class="highlight">réservés aux membres</span> de la faction</li>
-                        <li>Portée étendue : 100-300 blocs selon tier</li>
-                        <li>Buffs stackables avec plusieurs beacons</li>
-                        <li>Effets custom : Résistance aux explosions, Régénération améliorée</li>
-                        <li>Indicateur visuel de la zone d'effet (particules)</li>
-                        <li>Activation/désactivation via GUI</li>
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-features">✨ Fonctionnalités</div>
+                    <ul class="ef-feature-list">
+                        <li data-i18n="beacon-feat1" data-i18n-html="true">Effets <span class="ef-highlight">réservés aux membres</span> de la faction</li>
+                        <li data-i18n="beacon-feat2">Portée étendue : 100-300 blocs selon tier</li>
+                        <li data-i18n="beacon-feat3">Buffs stackables avec plusieurs beacons</li>
+                        <li data-i18n="beacon-feat4">Effets custom : Résistance aux explosions, Régénération améliorée</li>
+                        <li data-i18n="beacon-feat5">Indicateur visuel de la zone d'effet (particules)</li>
+                        <li data-i18n="beacon-feat6">Activation/désactivation via GUI</li>
                     </ul>
                 </div>
 
-                <div class="tier-box">
-                    <div class="tier-title">🔧 Tiers de Beacon</div>
-                    <div class="tier-item"><strong>Tier 1 :</strong> 100 blocs, 2 effets simultanés, niveau I</div>
-                    <div class="tier-item"><strong>Tier 2 :</strong> 200 blocs, 3 effets simultanés, niveau II</div>
-                    <div class="tier-item"><strong>Tier 3 :</strong> 300 blocs, 5 effets simultanés, niveau III</div>
+                <div class="ef-tier-box">
+                    <div class="ef-tier-title" data-i18n="beacon-tiers-title">🔧 Tiers de Beacon</div>
+                    <div class="ef-tier-item" data-i18n="beacon-tier1"><strong>Tier 1 :</strong> 100 blocs, 2 effets simultanés, niveau I</div>
+                    <div class="ef-tier-item" data-i18n="beacon-tier2"><strong>Tier 2 :</strong> 200 blocs, 3 effets simultanés, niveau II</div>
+                    <div class="ef-tier-item" data-i18n="beacon-tier3"><strong>Tier 3 :</strong> 300 blocs, 5 effets simultanés, niveau III</div>
                 </div>
 
-                <div class="info-box">
-                    <div class="info-title">Effets Disponibles</div>
-                    <p style="color: #1e40af; font-size: 0.95em;">
-                        Speed, Strength, Resistance, Regeneration, Jump Boost, Fire Resistance, Absorption, 
+                <div class="ef-info-box">
+                    <div class="ef-info-title" data-i18n="beacon-effects-title">Effets Disponibles</div>
+                    <p data-i18n="beacon-effects">
+                        Speed, Strength, Resistance, Regeneration, Jump Boost, Fire Resistance, Absorption,
                         + Effets custom : Blast Resistance (réduit dégâts explosion 30%), Combat Focus (+15% dégâts critiques)
                     </p>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Consommation</div>
-                        <div class="stat-value">500 RF/s</div>
+                <div class="ef-stats-grid">
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-consumption">Consommation</div>
+                        <div class="ef-stat-value">500 RF/s</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Coût Activation</div>
-                        <div class="stat-value">Nether Star</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-activation-cost">Coût Activation</div>
+                        <div class="ef-stat-value">Nether Star</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Détecteur de Mouvement -->
-            <div class="card defense">
-                <div class="card-header">
-                    <div class="icon">📡</div>
+            <!-- Motion Detector -->
+            <div class="ef-machine-card defense">
+                <div class="ef-machine-header">
+                    <div class="ef-machine-icon">📡</div>
                     <div>
-                        <div class="card-title">Détecteur de Mouvement</div>
-                        <span class="badge defense">Sécurité</span>
+                        <h3 class="ef-machine-title" data-i18n="detector-title">Détecteur de Mouvement</h3>
+                        <span class="ef-badge defense" data-i18n="badge-security">Sécurité</span>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">📋 Description</div>
-                    <p style="color: #6b7280; padding-left: 10px;">
-                        Système de surveillance avancé qui détecte tout mouvement dans votre base et envoie des alertes 
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-desc">📋 Description</div>
+                    <p style="padding-left: 10px; color: var(--text-secondary);" data-i18n="detector-desc">
+                        Système de surveillance avancé qui détecte tout mouvement dans votre base et envoie des alertes
                         en temps réel sur Discord via webhook. Parfait pour surveiller votre territoire même offline.
                     </p>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">✨ Fonctionnalités</div>
-                    <ul class="feature-list">
-                        <li>Détection des <span class="highlight">joueurs ennemis uniquement</span></li>
-                        <li>Envoi automatique sur Discord webhook</li>
-                        <li>Informations : pseudo, coordonnées, timestamp, screenshot (optionnel)</li>
-                        <li>Rayon de détection : 20-100 blocs selon tier</li>
-                        <li>Filtres configurables (membres, alliés, tous)</li>
-                        <li>Mode furtif (pas de particules visibles)</li>
-                        <li>Logs internes sauvegardés</li>
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-features">✨ Fonctionnalités</div>
+                    <ul class="ef-feature-list">
+                        <li data-i18n="detector-feat1" data-i18n-html="true">Détection des <span class="ef-highlight">joueurs ennemis uniquement</span></li>
+                        <li data-i18n="detector-feat2">Envoi automatique sur Discord webhook</li>
+                        <li data-i18n="detector-feat3">Informations : pseudo, coordonnées, timestamp, screenshot (optionnel)</li>
+                        <li data-i18n="detector-feat4">Rayon de détection : 20-100 blocs selon tier</li>
+                        <li data-i18n="detector-feat5">Filtres configurables (membres, alliés, tous)</li>
+                        <li data-i18n="detector-feat6">Mode furtif (pas de particules visibles)</li>
+                        <li data-i18n="detector-feat7">Logs internes sauvegardés</li>
                     </ul>
                 </div>
 
-                <div class="tier-box">
-                    <div class="tier-title">🔧 Tiers de Détecteur</div>
-                    <div class="tier-item"><strong>Tier 1 :</strong> 20 blocs, alerte texte simple</div>
-                    <div class="tier-item"><strong>Tier 2 :</strong> 50 blocs, embed Discord avec coordonnées</div>
-                    <div class="tier-item"><strong>Tier 3 :</strong> 100 blocs, embed + screenshot + historique</div>
+                <div class="ef-tier-box">
+                    <div class="ef-tier-title" data-i18n="detector-tiers-title">🔧 Tiers de Détecteur</div>
+                    <div class="ef-tier-item" data-i18n="detector-tier1"><strong>Tier 1 :</strong> 20 blocs, alerte texte simple</div>
+                    <div class="ef-tier-item" data-i18n="detector-tier2"><strong>Tier 2 :</strong> 50 blocs, embed Discord avec coordonnées</div>
+                    <div class="ef-tier-item" data-i18n="detector-tier3"><strong>Tier 3 :</strong> 100 blocs, embed + screenshot + historique</div>
                 </div>
 
-                <div class="success-box">
-                    <div class="success-title">Format Message Discord</div>
-                    <p style="color: #166534; font-size: 0.95em; font-family: monospace;">
+                <div class="ef-success-box">
+                    <div class="ef-success-title" data-i18n="detector-discord-format">Format Message Discord</div>
+                    <p data-i18n="detector-discord-example" data-i18n-html="true" style="font-family: monospace;">
                         🚨 <strong>INTRUSION DÉTECTÉE</strong><br>
                         👤 Joueur: EnemyPlayer<br>
                         📍 Position: X:1234 Y:64 Z:5678<br>
@@ -555,398 +606,400 @@
                     </p>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Cooldown Alerte</div>
-                        <div class="stat-value">30s - 5s</div>
+                <div class="ef-stats-grid">
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-alert-cooldown">Cooldown Alerte</div>
+                        <div class="ef-stat-value">30s - 5s</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Consommation</div>
-                        <div class="stat-value">10 RF/s</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-consumption">Consommation</div>
+                        <div class="ef-stat-value">10 RF/s</div>
                     </div>
                 </div>
 
-                <div class="info-box">
-                    <div class="info-title">Configuration Webhook</div>
-                    <p style="color: #1e40af; font-size: 0.95em;">
-                        Configurez l'URL du webhook Discord dans le GUI de la machine. Testez la connexion avec le bouton "Test Alert". 
+                <div class="ef-info-box">
+                    <div class="ef-info-title" data-i18n="detector-webhook-config">Configuration Webhook</div>
+                    <p data-i18n="detector-webhook-info">
+                        Configurez l'URL du webhook Discord dans le GUI de la machine. Testez la connexion avec le bouton "Test Alert".
                         Permissions requises : Grade Officier minimum dans la faction.
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="section-divider">
-            <h2>🏭 Production & Ressources</h2>
+        <!-- Production & Resources Section -->
+        <div class="ef-section-divider">
+            <h2 data-i18n="section-production">🏭 Production & Ressources</h2>
         </div>
 
-        <div class="grid">
-            <!-- Raffinerie de Minerais -->
-            <div class="card production">
-                <div class="card-header">
-                    <div class="icon">⛏️</div>
+        <div class="ef-machines-grid">
+            <!-- Ore Refinery -->
+            <div class="ef-machine-card production">
+                <div class="ef-machine-header">
+                    <div class="ef-machine-icon">⛏️</div>
                     <div>
-                        <div class="card-title">Raffinerie de Minerais</div>
-                        <span class="badge production">Production</span>
+                        <h3 class="ef-machine-title" data-i18n="refinery-title">Raffinerie de Minerais</h3>
+                        <span class="ef-badge production" data-i18n="badge-production">Production</span>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">📋 Description</div>
-                    <p style="color: #6b7280; padding-left: 10px;">
-                        Machine de traitement avancée qui multiplie vos rendements de minerais bruts. Plus vous investissez 
-                        d'énergie, plus vous obtenez de ressources en retour. Essential pour l'économie de faction.
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-desc">📋 Description</div>
+                    <p style="padding-left: 10px; color: var(--text-secondary);" data-i18n="refinery-desc">
+                        Machine de traitement avancée qui multiplie vos rendements de minerais bruts. Plus vous investissez
+                        d'énergie, plus vous obtenez de ressources en retour. Essentiel pour l'économie de faction.
                     </p>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">✨ Fonctionnalités</div>
-                    <ul class="feature-list">
-                        <li>Multiplication des minerais : <span class="highlight">x2 à x4</span> selon tier</li>
-                        <li>Bonus aléatoire de minerais rares (5-15% de chance)</li>
-                        <li>Processus par étapes : broyage → lavage → raffinage</li>
-                        <li>Interface multibloc avec animations visuelles</li>
-                        <li>Compatible avec tous les minerais (vanilla + modded)</li>
-                        <li>Système de file d'attente automatique</li>
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-features">✨ Fonctionnalités</div>
+                    <ul class="ef-feature-list">
+                        <li data-i18n="refinery-feat1" data-i18n-html="true">Multiplication des minerais : <span class="ef-highlight">x2 à x4</span> selon tier</li>
+                        <li data-i18n="refinery-feat2">Bonus aléatoire de minerais rares (5-15% de chance)</li>
+                        <li data-i18n="refinery-feat3">Processus par étapes : broyage → lavage → raffinage</li>
+                        <li data-i18n="refinery-feat4">Interface multibloc avec animations visuelles</li>
+                        <li data-i18n="refinery-feat5">Compatible avec tous les minerais (vanilla + modded)</li>
+                        <li data-i18n="refinery-feat6">Système de file d'attente automatique</li>
                     </ul>
                 </div>
 
-                <div class="tier-box">
-                    <div class="tier-title">🔧 Tiers de Raffinerie</div>
-                    <div class="tier-item"><strong>Tier 1 :</strong> x2 minerais, 100 RF/opération, 10s/minerai</div>
-                    <div class="tier-item"><strong>Tier 2 :</strong> x3 minerais, 250 RF/opération, 7s/minerai, 5% bonus rare</div>
-                    <div class="tier-item"><strong>Tier 3 :</strong> x4 minerais, 500 RF/opération, 5s/minerai, 15% bonus rare</div>
+                <div class="ef-tier-box">
+                    <div class="ef-tier-title" data-i18n="refinery-tiers-title">🔧 Tiers de Raffinerie</div>
+                    <div class="ef-tier-item" data-i18n="refinery-tier1"><strong>Tier 1 :</strong> x2 minerais, 100 RF/opération, 10s/minerai</div>
+                    <div class="ef-tier-item" data-i18n="refinery-tier2"><strong>Tier 2 :</strong> x3 minerais, 250 RF/opération, 7s/minerai, 5% bonus rare</div>
+                    <div class="ef-tier-item" data-i18n="refinery-tier3"><strong>Tier 3 :</strong> x4 minerais, 500 RF/opération, 5s/minerai, 15% bonus rare</div>
                 </div>
 
-                <div class="success-box">
-                    <div class="success-title">Bonus Rares</div>
-                    <p style="color: #166534; font-size: 0.95em;">
-                        Lors du raffinage de fer → chance de diamant | Or → chance d'émeraude | 
+                <div class="ef-success-box">
+                    <div class="ef-success-title" data-i18n="refinery-bonus-title">Bonus Rares</div>
+                    <p data-i18n="refinery-bonus-desc">
+                        Lors du raffinage de fer → chance de diamant | Or → chance d'émeraude |
                         Cuivre → chance de redstone | Diamant → chance de netherite scrap
                     </p>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Capacité Input</div>
-                        <div class="stat-value">64 stacks</div>
+                <div class="ef-stats-grid">
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-input-capacity">Capacité Input</div>
+                        <div class="ef-stat-value">64 stacks</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Capacité Output</div>
-                        <div class="stat-value">128 stacks</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-output-capacity">Capacité Output</div>
+                        <div class="ef-stat-value">128 stacks</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Vitesse Max</div>
-                        <div class="stat-value">12 items/s</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-max-speed">Vitesse Max</div>
+                        <div class="ef-stat-value">12 items/s</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Buffer Énergie</div>
-                        <div class="stat-value">100k RF</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-energy-buffer">Buffer Énergie</div>
+                        <div class="ef-stat-value">100k RF</div>
                     </div>
                 </div>
 
-                <div class="info-box">
-                    <div class="info-title">Structure Multibloc</div>
-                    <p style="color: #1e40af; font-size: 0.95em;">
-                        3x3x4 blocs. Base en acier renforcé, parois en verre industriel, cœur de traitement en électrum. 
+                <div class="ef-info-box">
+                    <div class="ef-info-title" data-i18n="refinery-multiblock-title">Structure Multibloc</div>
+                    <p data-i18n="refinery-multiblock-desc">
+                        3x3x4 blocs. Base en acier renforcé, parois en verre industriel, cœur de traitement en électrum.
                         Utilisez le Guide du Constructeur (item) pour voir la structure exacte en jeu.
                     </p>
                 </div>
             </div>
 
-            <!-- Fonderie d'Alliages -->
-            <div class="card production">
-                <div class="card-header">
-                    <div class="icon">🔥</div>
+            <!-- Alloy Foundry -->
+            <div class="ef-machine-card production">
+                <div class="ef-machine-header">
+                    <div class="ef-machine-icon">🔥</div>
                     <div>
-                        <div class="card-title">Fonderie d'Alliages</div>
-                        <span class="badge production">Production</span>
+                        <h3 class="ef-machine-title" data-i18n="foundry-title">Fonderie d'Alliages</h3>
+                        <span class="ef-badge production" data-i18n="badge-production">Production</span>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">📋 Description</div>
-                    <p style="color: #6b7280; padding-left: 10px;">
-                        Four haute température permettant de créer des alliages avancés en combinant différents métaux. 
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-desc">📋 Description</div>
+                    <p style="padding-left: 10px; color: var(--text-secondary);" data-i18n="foundry-desc">
+                        Four haute température permettant de créer des alliages avancés en combinant différents métaux.
                         Contrôlez la température et le temps de fusion pour des résultats optimaux.
                     </p>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">✨ Fonctionnalités</div>
-                    <ul class="feature-list">
-                        <li>Création d'alliages : <span class="highlight">Bronze, Électrum, Cupronickel</span>, etc.</li>
-                        <li>Système de température (500°C - 2000°C)</li>
-                        <li>Recettes avec ratios précis (90/10, 70/30, etc.)</li>
-                        <li>Visualisation du processus de fonte (liquide animé)</li>
-                        <li>Mode automatique avec hoppers</li>
-                        <li>Chance de production bonus (qualité supérieure)</li>
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-features">✨ Fonctionnalités</div>
+                    <ul class="ef-feature-list">
+                        <li data-i18n="foundry-feat1" data-i18n-html="true">Création d'alliages : <span class="ef-highlight">Bronze, Électrum, Cupronickel</span>, etc.</li>
+                        <li data-i18n="foundry-feat2">Système de température (500°C - 2000°C)</li>
+                        <li data-i18n="foundry-feat3">Recettes avec ratios précis (90/10, 70/30, etc.)</li>
+                        <li data-i18n="foundry-feat4">Visualisation du processus de fonte (liquide animé)</li>
+                        <li data-i18n="foundry-feat5">Mode automatique avec hoppers</li>
+                        <li data-i18n="foundry-feat6">Chance de production bonus (qualité supérieure)</li>
                     </ul>
                 </div>
 
-                <div class="tier-box">
-                    <div class="tier-title">🔧 Recettes d'Alliages</div>
-                    <div class="tier-item"><strong>Bronze :</strong> 90% Cuivre + 10% Étain → 800°C, 20s</div>
-                    <div class="tier-item"><strong>Électrum :</strong> 50% Or + 50% Cuivre → 1200°C, 30s</div>
-                    <div class="tier-item"><strong>Cupronickel :</strong> 75% Cuivre + 25% Nickel → 1400°C, 25s</div>
-                    <div class="tier-item"><strong>Acier :</strong> 98% Fer + 2% Charbon → 1500°C, 40s</div>
+                <div class="ef-tier-box">
+                    <div class="ef-tier-title" data-i18n="foundry-recipes-title">🔧 Recettes d'Alliages</div>
+                    <div class="ef-tier-item" data-i18n="foundry-recipe-bronze"><strong>Bronze :</strong> 90% Cuivre + 10% Étain → 800°C, 20s</div>
+                    <div class="ef-tier-item" data-i18n="foundry-recipe-electrum"><strong>Électrum :</strong> 50% Or + 50% Cuivre → 1200°C, 30s</div>
+                    <div class="ef-tier-item" data-i18n="foundry-recipe-cupronickel"><strong>Cupronickel :</strong> 75% Cuivre + 25% Nickel → 1400°C, 25s</div>
+                    <div class="ef-tier-item" data-i18n="foundry-recipe-steel"><strong>Acier :</strong> 98% Fer + 2% Charbon → 1500°C, 40s</div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Consommation</div>
-                        <div class="stat-value">150-400 RF/s</div>
+                <div class="ef-stats-grid">
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-consumption">Consommation</div>
+                        <div class="ef-stat-value">150-400 RF/s</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Capacité Creuset</div>
-                        <div class="stat-value">16 ingots</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-crucible-capacity">Capacité Creuset</div>
+                        <div class="ef-stat-value">16 ingots</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Temps Chauffe</div>
-                        <div class="stat-value">5-45s</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-heating-time">Temps Chauffe</div>
+                        <div class="ef-stat-value">5-45s</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Rendement</div>
-                        <div class="stat-value">100-110%</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-yield">Rendement</div>
+                        <div class="ef-stat-value">100-110%</div>
                     </div>
                 </div>
 
-                <div class="warning-box">
-                    <div class="warning-title">Attention</div>
-                    <p style="color: #991b1b; font-size: 0.95em;">
-                        Une température incorrecte peut ruiner le lot ! Bronze trop chaud = perte de matériaux. 
+                <div class="ef-warning-box">
+                    <div class="ef-warning-title" data-i18n="warning-attention">Attention</div>
+                    <p data-i18n="foundry-warning">
+                        Une température incorrecte peut ruiner le lot ! Bronze trop chaud = perte de matériaux.
                         Surveillez la jauge de température et suivez les recettes avec précision.
                     </p>
                 </div>
 
-                <div class="info-box">
-                    <div class="info-title">Interface GUI</div>
-                    <p style="color: #1e40af; font-size: 0.95em;">
-                        Slots Input (2x) pour les métaux, jauge de température avec indicateurs de zones optimales, 
+                <div class="ef-info-box">
+                    <div class="ef-info-title" data-i18n="foundry-gui-title">Interface GUI</div>
+                    <p data-i18n="foundry-gui-desc">
+                        Slots Input (2x) pour les métaux, jauge de température avec indicateurs de zones optimales,
                         timer de fusion, slot output pour l'alliage produit. Mode auto activable via toggle.
                     </p>
                 </div>
             </div>
 
-            <!-- Assembleur Automatique -->
-            <div class="card production">
-                <div class="card-header">
-                    <div class="icon">🤖</div>
+            <!-- Automatic Assembler -->
+            <div class="ef-machine-card production">
+                <div class="ef-machine-header">
+                    <div class="ef-machine-icon">🤖</div>
                     <div>
-                        <div class="card-title">Assembleur Automatique</div>
-                        <span class="badge production">Automatisation</span>
+                        <h3 class="ef-machine-title" data-i18n="assembler-title">Assembleur Automatique</h3>
+                        <span class="ef-badge production" data-i18n="badge-automation">Automatisation</span>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">📋 Description</div>
-                    <p style="color: #6b7280; padding-left: 10px;">
-                        Machine d'auto-crafting intelligente qui automatise la production d'items complexes. 
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-desc">📋 Description</div>
+                    <p style="padding-left: 10px; color: var(--text-secondary);" data-i18n="assembler-desc">
+                        Machine d'auto-crafting intelligente qui automatise la production d'items complexes.
                         Programmez vos recettes favorites et laissez la machine travailler en continu.
                     </p>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">✨ Fonctionnalités</div>
-                    <ul class="feature-list">
-                        <li>Auto-craft de <span class="highlight">toutes les recettes</span> vanilla et modded</li>
-                        <li>File d'attente de production (jusqu'à 10 recettes)</li>
-                        <li>Sauvegarde de 20 recettes préférées</li>
-                        <li>Importation automatique depuis coffres connectés</li>
-                        <li>Vitesse de craft ajustable (1-10 items/s)</li>
-                        <li>Interface utilisateur intuitive avec recherche</li>
-                        <li>Mode bulk (craft 64x d'un coup)</li>
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-features">✨ Fonctionnalités</div>
+                    <ul class="ef-feature-list">
+                        <li data-i18n="assembler-feat1" data-i18n-html="true">Auto-craft de <span class="ef-highlight">toutes les recettes</span> vanilla et modded</li>
+                        <li data-i18n="assembler-feat2">File d'attente de production (jusqu'à 10 recettes)</li>
+                        <li data-i18n="assembler-feat3">Sauvegarde de 20 recettes préférées</li>
+                        <li data-i18n="assembler-feat4">Importation automatique depuis coffres connectés</li>
+                        <li data-i18n="assembler-feat5">Vitesse de craft ajustable (1-10 items/s)</li>
+                        <li data-i18n="assembler-feat6">Interface utilisateur intuitive avec recherche</li>
+                        <li data-i18n="assembler-feat7">Mode bulk (craft 64x d'un coup)</li>
                     </ul>
                 </div>
 
-                <div class="tier-box">
-                    <div class="tier-title">🔧 Tiers d'Assembleur</div>
-                    <div class="tier-item"><strong>Tier 1 :</strong> 1 craft/s, 5 recettes sauvegardées, 50 RF/craft</div>
-                    <div class="tier-item"><strong>Tier 2 :</strong> 5 crafts/s, 10 recettes sauvegardées, 30 RF/craft</div>
-                    <div class="tier-item"><strong>Tier 3 :</strong> 10 crafts/s, 20 recettes sauvegardées, 20 RF/craft, priorités</div>
+                <div class="ef-tier-box">
+                    <div class="ef-tier-title" data-i18n="assembler-tiers-title">🔧 Tiers d'Assembleur</div>
+                    <div class="ef-tier-item" data-i18n="assembler-tier1"><strong>Tier 1 :</strong> 1 craft/s, 5 recettes sauvegardées, 50 RF/craft</div>
+                    <div class="ef-tier-item" data-i18n="assembler-tier2"><strong>Tier 2 :</strong> 5 crafts/s, 10 recettes sauvegardées, 30 RF/craft</div>
+                    <div class="ef-tier-item" data-i18n="assembler-tier3"><strong>Tier 3 :</strong> 10 crafts/s, 20 recettes sauvegardées, 20 RF/craft, priorités</div>
                 </div>
 
-                <div class="success-box">
-                    <div class="success-title">Exemples d'Utilisation</div>
-                    <p style="color: #166534; font-size: 0.95em;">
-                        Production de masse d'armures pour faction wars | Craft automatique de potions de combat | 
+                <div class="ef-success-box">
+                    <div class="ef-success-title" data-i18n="assembler-examples-title">Exemples d'Utilisation</div>
+                    <p data-i18n="assembler-examples">
+                        Production de masse d'armures pour faction wars | Craft automatique de potions de combat |
                         Fabrication continue d'outils pour les membres | Assembly d'items complexes (pistons, dispensers)
                     </p>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Slots Input</div>
-                        <div class="stat-value">27 (1 chest)</div>
+                <div class="ef-stats-grid">
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-input-slots">Slots Input</div>
+                        <div class="ef-stat-value">27 (1 chest)</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Slots Output</div>
-                        <div class="stat-value">54 (2 chests)</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-output-slots">Slots Output</div>
+                        <div class="ef-stat-value">54 (2 chests)</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Buffer Craft</div>
-                        <div class="stat-value">256 items</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-craft-buffer">Buffer Craft</div>
+                        <div class="ef-stat-value">256 items</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Vitesse Max</div>
-                        <div class="stat-value">10 items/s</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-max-speed">Vitesse Max</div>
+                        <div class="ef-stat-value">10 items/s</div>
                     </div>
                 </div>
 
-                <div class="info-box">
-                    <div class="info-title">Gestion des Recettes</div>
-                    <p style="color: #1e40af; font-size: 0.95em;">
-                        Cliquez sur "Apprendre Recette" en tenant un item crafté pour l'enregistrer. 
-                        Organisez vos recettes par catégories (Combat, Construction, Redstone). 
+                <div class="ef-info-box">
+                    <div class="ef-info-title" data-i18n="assembler-recipes-management">Gestion des Recettes</div>
+                    <p data-i18n="assembler-recipes-desc">
+                        Cliquez sur "Apprendre Recette" en tenant un item crafté pour l'enregistrer.
+                        Organisez vos recettes par catégories (Combat, Construction, Redstone).
                         Export/Import de profils de recettes via items "Pattern Card".
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="section-divider">
-            <h2>🔧 Utilitaires</h2>
+        <!-- Utilities Section -->
+        <div class="ef-section-divider">
+            <h2 data-i18n="section-utilities">🔧 Utilitaires</h2>
         </div>
 
-        <div class="grid">
-            <!-- Station de Réparation -->
-            <div class="card utility">
-                <div class="card-header">
-                    <div class="icon">🔨</div>
+        <div class="ef-machines-grid">
+            <!-- Repair Station -->
+            <div class="ef-machine-card utility">
+                <div class="ef-machine-header">
+                    <div class="ef-machine-icon">🔨</div>
                     <div>
-                        <div class="card-title">Station de Réparation de Faction</div>
-                        <span class="badge utility">Support</span>
+                        <h3 class="ef-machine-title" data-i18n="repair-title">Station de Réparation de Faction</h3>
+                        <span class="ef-badge utility" data-i18n="badge-support">Support</span>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">📋 Description</div>
-                    <p style="color: #6b7280; padding-left: 10px;">
-                        Système de réparation électrique qui répare automatiquement les items équipés et dans l'inventaire 
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-desc">📋 Description</div>
+                    <p style="padding-left: 10px; color: var(--text-secondary);" data-i18n="repair-desc">
+                        Système de réparation électrique qui répare automatiquement les items équipés et dans l'inventaire
                         des joueurs de la faction dans un rayon configurable. Fini les items cassés en pleine bataille !
                     </p>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">✨ Fonctionnalités</div>
-                    <ul class="feature-list">
-                        <li>Réparation automatique en <span class="highlight">temps réel</span></li>
-                        <li>Affecte tous les membres dans le rayon</li>
-                        <li>Répare armures, outils, armes, et items modded</li>
-                        <li>Bonus de durabilité (+10-30% selon tier)</li>
-                        <li>Priorité aux items équipés puis inventaire</li>
-                        <li>Indicateur de progression au-dessus de la tête</li>
-                        <li>Désactivation manuelle possible par joueur</li>
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-features">✨ Fonctionnalités</div>
+                    <ul class="ef-feature-list">
+                        <li data-i18n="repair-feat1" data-i18n-html="true">Réparation automatique en <span class="ef-highlight">temps réel</span></li>
+                        <li data-i18n="repair-feat2">Affecte tous les membres dans le rayon</li>
+                        <li data-i18n="repair-feat3">Répare armures, outils, armes, et items modded</li>
+                        <li data-i18n="repair-feat4">Bonus de durabilité (+10-30% selon tier)</li>
+                        <li data-i18n="repair-feat5">Priorité aux items équipés puis inventaire</li>
+                        <li data-i18n="repair-feat6">Indicateur de progression au-dessus de la tête</li>
+                        <li data-i18n="repair-feat7">Désactivation manuelle possible par joueur</li>
                     </ul>
                 </div>
 
-                <div class="tier-box">
-                    <div class="tier-title">🔧 Tiers de Station</div>
-                    <div class="tier-item"><strong>Tier 1 :</strong> 10 blocs, 1 durabilité/s, 100 RF/durabilité</div>
-                    <div class="tier-item"><strong>Tier 2 :</strong> 25 blocs, 5 durabilité/s, 50 RF/durabilité, +10% bonus</div>
-                    <div class="tier-item"><strong>Tier 3 :</strong> 50 blocs, 15 durabilité/s, 25 RF/durabilité, +30% bonus</div>
+                <div class="ef-tier-box">
+                    <div class="ef-tier-title" data-i18n="repair-tiers-title">🔧 Tiers de Station</div>
+                    <div class="ef-tier-item" data-i18n="repair-tier1"><strong>Tier 1 :</strong> 10 blocs, 1 durabilité/s, 100 RF/durabilité</div>
+                    <div class="ef-tier-item" data-i18n="repair-tier2"><strong>Tier 2 :</strong> 25 blocs, 5 durabilité/s, 50 RF/durabilité, +10% bonus</div>
+                    <div class="ef-tier-item" data-i18n="repair-tier3"><strong>Tier 3 :</strong> 50 blocs, 15 durabilité/s, 25 RF/durabilité, +30% bonus</div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Rayon Max</div>
-                        <div class="stat-value">50 blocs</div>
+                <div class="ef-stats-grid">
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-max-radius">Rayon Max</div>
+                        <div class="ef-stat-value">50 blocs</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Joueurs Simultanés</div>
-                        <div class="stat-value">10 max</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-simultaneous-players">Joueurs Simultanés</div>
+                        <div class="ef-stat-value">10 max</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Vitesse Réparation</div>
-                        <div class="stat-value">15 dur/s</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-repair-speed">Vitesse Réparation</div>
+                        <div class="ef-stat-value">15 dur/s</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Buffer Énergie</div>
-                        <div class="stat-value">500k RF</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-energy-buffer">Buffer Énergie</div>
+                        <div class="ef-stat-value">500k RF</div>
                     </div>
                 </div>
 
-                <div class="success-box">
-                    <div class="success-title">Effets Visuels</div>
-                    <p style="color: #166534; font-size: 0.95em;">
-                        Particules vertes en spirale autour du joueur pendant la réparation. 
-                        Barre de progression au-dessus de la tête montrant l'item en cours de réparation. 
+                <div class="ef-success-box">
+                    <div class="ef-success-title" data-i18n="repair-visual-title">Effets Visuels</div>
+                    <p data-i18n="repair-visual-desc">
+                        Particules vertes en spirale autour du joueur pendant la réparation.
+                        Barre de progression au-dessus de la tête montrant l'item en cours de réparation.
                         Son de cliquetis métallique apaisant.
                     </p>
                 </div>
 
-                <div class="info-box">
-                    <div class="info-title">Optimisations</div>
-                    <p style="color: #1e40af; font-size: 0.95em;">
-                        Mode "Urgence" : répare uniquement les items à moins de 20% de durabilité pour économiser l'énergie. 
-                        Mode "Passif" : réparation lente mais continue (parfait pour les bases). 
+                <div class="ef-info-box">
+                    <div class="ef-info-title" data-i18n="repair-optimization-title">Optimisations</div>
+                    <p data-i18n="repair-optimization-desc">
+                        Mode "Urgence" : répare uniquement les items à moins de 20% de durabilité pour économiser l'énergie.
+                        Mode "Passif" : réparation lente mais continue (parfait pour les bases).
                         Whitelist/blacklist d'items configurables.
                     </p>
                 </div>
 
-                <div class="warning-box">
-                    <div class="warning-title">Limitations</div>
-                    <p style="color: #991b1b; font-size: 0.95em;">
-                        Ne peut pas réparer les items avec durabilité infinie. Les items maudits (curse of vanishing/binding) 
+                <div class="ef-warning-box">
+                    <div class="ef-warning-title" data-i18n="warning-limitations">Limitations</div>
+                    <p data-i18n="repair-warning">
+                        Ne peut pas réparer les items avec durabilité infinie. Les items maudits (curse of vanishing/binding)
                         nécessitent 3x plus d'énergie. La réparation s'arrête si le buffer d'énergie tombe sous 10%.
                     </p>
                 </div>
             </div>
 
-            <!-- Block Miné -->
-            <div class="card utility">
-                <div class="card-header">
-                    <div class="icon">💣</div>
+            <!-- Trapped Block -->
+            <div class="ef-machine-card utility">
+                <div class="ef-machine-header">
+                    <div class="ef-machine-icon">💣</div>
                     <div>
-                        <div class="card-title">Block Miné</div>
-                        <span class="badge utility">Piège</span>
+                        <h3 class="ef-machine-title" data-i18n="trap-title">Block Miné</h3>
+                        <span class="ef-badge utility" data-i18n="badge-trap">Piège</span>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">📋 Description</div>
-                    <p style="color: #6b7280; padding-left: 10px;">
-                        Alternative discrète à la plaque de pression. Ce bloc se déclenche lorsqu'un joueur ennemi 
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-desc">📋 Description</div>
+                    <p style="padding-left: 10px; color: var(--text-secondary);" data-i18n="trap-desc">
+                        Alternative discrète à la plaque de pression. Ce bloc se déclenche lorsqu'un joueur ennemi
                         le mine, permettant des pièges créatifs et défenses surprises dans votre base.
                     </p>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">✨ Fonctionnalités</div>
-                    <ul class="feature-list">
-                        <li>Se déclenche uniquement au <span class="highlight">minage</span>, pas au passage</li>
-                        <li>Détection faction : ne se déclenche que pour les ennemis</li>
-                        <li>Apparence configurable (imite d'autres blocs)</li>
-                        <li>Actions : explosion, signal redstone, alert Discord, TP, poison</li>
-                        <li>Durabilité configurable avant explosion (1-10 hits)</li>
-                        <li>Mode "Réarmement auto" après 5 minutes</li>
-                        <li>Compatible avec redstone pour chaînes de pièges</li>
+                <div class="ef-section">
+                    <div class="ef-section-title" data-i18n="section-features">✨ Fonctionnalités</div>
+                    <ul class="ef-feature-list">
+                        <li data-i18n="trap-feat1" data-i18n-html="true">Se déclenche uniquement au <span class="ef-highlight">minage</span>, pas au passage</li>
+                        <li data-i18n="trap-feat2">Détection faction : ne se déclenche que pour les ennemis</li>
+                        <li data-i18n="trap-feat3">Apparence configurable (imite d'autres blocs)</li>
+                        <li data-i18n="trap-feat4">Actions : explosion, signal redstone, alert Discord, TP, poison</li>
+                        <li data-i18n="trap-feat5">Durabilité configurable avant explosion (1-10 hits)</li>
+                        <li data-i18n="trap-feat6">Mode "Réarmement auto" après 5 minutes</li>
+                        <li data-i18n="trap-feat7">Compatible avec redstone pour chaînes de pièges</li>
                     </ul>
                 </div>
 
-                <div class="tier-box">
-                    <div class="tier-title">🔧 Types d'Actions</div>
-                    <div class="tier-item"><strong>Explosion :</strong> TNT, Creeper, ou custom (force 1-4)</div>
-                    <div class="tier-item"><strong>Effets :</strong> Poison, Blindness, Slowness, Wither (10-30s)</div>
-                    <div class="tier-item"><strong>Redstone :</strong> Signal 1-15, durée 1-10s</div>
-                    <div class="tier-item"><strong>Alerte :</strong> Message faction + optionnel Discord webhook</div>
-                    <div class="tier-item"><strong>TP Piège :</strong> Téléporte l'ennemi dans une cellule</div>
+                <div class="ef-tier-box">
+                    <div class="ef-tier-title" data-i18n="trap-actions-title">🔧 Types d'Actions</div>
+                    <div class="ef-tier-item" data-i18n="trap-action-explosion"><strong>Explosion :</strong> TNT, Creeper, ou custom (force 1-4)</div>
+                    <div class="ef-tier-item" data-i18n="trap-action-effects"><strong>Effets :</strong> Poison, Blindness, Slowness, Wither (10-30s)</div>
+                    <div class="ef-tier-item" data-i18n="trap-action-redstone"><strong>Redstone :</strong> Signal 1-15, durée 1-10s</div>
+                    <div class="ef-tier-item" data-i18n="trap-action-alert"><strong>Alerte :</strong> Message faction + optionnel Discord webhook</div>
+                    <div class="ef-tier-item" data-i18n="trap-action-tp"><strong>TP Piège :</strong> Téléporte l'ennemi dans une cellule</div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Déguisements</div>
-                        <div class="stat-value">50+ blocs</div>
+                <div class="ef-stats-grid">
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-disguises">Déguisements</div>
+                        <div class="ef-stat-value">50+ blocs</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Cooldown Réarm</div>
-                        <div class="stat-value">5 min</div>
+                    <div class="ef-stat-box">
+                        <div class="ef-stat-label" data-i18n="stat-rearm-cooldown">Cooldown Réarm</div>
+                        <div class="ef-stat-value">5 min</div>
                     </div>
                 </div>
 
-                <div class="success-box">
-                    <div class="success-title">Stratégies d'Utilisation</div>
-                    <p style="color: #166534; font-size: 0.95em;">
+                <div class="ef-success-box">
+                    <div class="ef-success-title" data-i18n="trap-strategies-title">Stratégies d'Utilisation</div>
+                    <p data-i18n="trap-strategies" data-i18n-html="true">
                         <strong>Faux Minerais :</strong> Déguisez en diamant ore dans votre mine<br>
                         <strong>Murs Piégés :</strong> Intégrez dans les murs de votre base<br>
                         <strong>Coffres Explosifs :</strong> Placez sous des coffres appâts<br>
@@ -954,25 +1007,421 @@
                     </p>
                 </div>
 
-                <div class="warning-box">
-                    <div class="warning-title">Attention</div>
-                    <p style="color: #991b1b; font-size: 0.95em;">
-                        Peut affecter les membres de votre faction si mal configuré ! Toujours tester en créatif. 
+                <div class="ef-warning-box">
+                    <div class="ef-warning-title" data-i18n="warning-attention">Attention</div>
+                    <p data-i18n="trap-warning">
+                        Peut affecter les membres de votre faction si mal configuré ! Toujours tester en créatif.
                         Les explosions peuvent endommager votre propre base. Utilisez avec précaution près de vos valuables.
                     </p>
                 </div>
 
-                <div class="info-box">
-                    <div class="info-title">Configuration Avancée</div>
-                    <p style="color: #1e40af; font-size: 0.95em;">
-                        Clic droit avec wrench pour ouvrir le GUI. Sélectionnez le déguisement, l'action, l'intensité. 
-                        Possibilité de créer des "Profils" de pièges pour déploiement rapide. 
+                <div class="ef-info-box">
+                    <div class="ef-info-title" data-i18n="trap-config-title">Configuration Avancée</div>
+                    <p data-i18n="trap-config-desc">
+                        Clic droit avec wrench pour ouvrir le GUI. Sélectionnez le déguisement, l'action, l'intensité.
+                        Possibilité de créer des "Profils" de pièges pour déploiement rapide.
                         Shift+clic droit pour copier/coller la config entre blocks.
                     </p>
                 </div>
             </div>
         </div>
-
     </div>
+
+    <!-- Common i18n JS -->
+    <script src="common-i18n.js"></script>
+    <script>
+        // Machine-specific translations
+        const machineTranslations = {
+            fr: {
+                'page-title': 'Machines de Faction - Erinium Faction',
+                'hero-title': '⚙️ Machines de Faction ⚙️',
+                'hero-subtitle': 'Systèmes avancés pour dominer et protéger votre territoire',
+
+                // Sections
+                'section-combat': '⚔️ Combat & Défense',
+                'section-production': '🏭 Production & Ressources',
+                'section-utilities': '🔧 Utilitaires',
+                'section-desc': '📋 Description',
+                'section-features': '✨ Fonctionnalités',
+
+                // Badges
+                'badge-combat': 'Combat',
+                'badge-defense': 'Défense',
+                'badge-security': 'Sécurité',
+                'badge-production': 'Production',
+                'badge-automation': 'Automatisation',
+                'badge-support': 'Support',
+                'badge-trap': 'Piège',
+
+                // Turret
+                'turret-title': 'Tourelle Automatique',
+                'turret-desc': 'Système de défense automatisé qui cible et tire sur les joueurs ennemis entrant dans votre territoire. Utilise un système d\'identification par faction pour éviter les tirs amis.',
+                'turret-feat1': 'Détection automatique des <span class="ef-highlight">joueurs ennemis</span>',
+                'turret-feat2': 'Portée configurable selon le tier (15-50 blocs)',
+                'turret-feat3': 'Types de munitions : flèches, potions, projectiles explosifs',
+                'turret-feat4': 'Rotation 360° avec priorisation des cibles',
+                'turret-feat5': 'Mode veille pour économiser l\'énergie',
+                'turret-feat6': 'Désactivable par redstone ou switch manuel',
+                'turret-tiers-title': '🔧 Tiers de Tourelle',
+                'turret-tier1': '<strong>Tier 1 :</strong> Portée 15 blocs, flèches normales, 1 tir/2s',
+                'turret-tier2': '<strong>Tier 2 :</strong> Portée 30 blocs, flèches + potions, 2 tirs/s',
+                'turret-tier3': '<strong>Tier 3 :</strong> Portée 50 blocs, toutes munitions, 3 tirs/s, double cible',
+                'turret-warning': 'Ne peut pas tirer à travers les blocs solides. Vulnérable aux TNT et aux attaques à distance. Peut être hackée par des joueurs avec des items spéciaux.',
+
+                // Beacon
+                'beacon-title': 'Beacon Amélioré de Faction',
+                'beacon-desc': 'Version améliorée du beacon vanilla qui applique des effets de buffs puissants uniquement aux membres de votre faction dans un rayon étendu. Parfait pour fortifier une zone de guerre.',
+                'beacon-feat1': 'Effets <span class="ef-highlight">réservés aux membres</span> de la faction',
+                'beacon-feat2': 'Portée étendue : 100-300 blocs selon tier',
+                'beacon-feat3': 'Buffs stackables avec plusieurs beacons',
+                'beacon-feat4': 'Effets custom : Résistance aux explosions, Régénération améliorée',
+                'beacon-feat5': 'Indicateur visuel de la zone d\'effet (particules)',
+                'beacon-feat6': 'Activation/désactivation via GUI',
+                'beacon-tiers-title': '🔧 Tiers de Beacon',
+                'beacon-tier1': '<strong>Tier 1 :</strong> 100 blocs, 2 effets simultanés, niveau I',
+                'beacon-tier2': '<strong>Tier 2 :</strong> 200 blocs, 3 effets simultanés, niveau II',
+                'beacon-tier3': '<strong>Tier 3 :</strong> 300 blocs, 5 effets simultanés, niveau III',
+                'beacon-effects-title': 'Effets Disponibles',
+                'beacon-effects': 'Speed, Strength, Resistance, Regeneration, Jump Boost, Fire Resistance, Absorption, + Effets custom : Blast Resistance (réduit dégâts explosion 30%), Combat Focus (+15% dégâts critiques)',
+
+                // Detector
+                'detector-title': 'Détecteur de Mouvement',
+                'detector-desc': 'Système de surveillance avancé qui détecte tout mouvement dans votre base et envoie des alertes en temps réel sur Discord via webhook. Parfait pour surveiller votre territoire même offline.',
+                'detector-feat1': 'Détection des <span class="ef-highlight">joueurs ennemis uniquement</span>',
+                'detector-feat2': 'Envoi automatique sur Discord webhook',
+                'detector-feat3': 'Informations : pseudo, coordonnées, timestamp, screenshot (optionnel)',
+                'detector-feat4': 'Rayon de détection : 20-100 blocs selon tier',
+                'detector-feat5': 'Filtres configurables (membres, alliés, tous)',
+                'detector-feat6': 'Mode furtif (pas de particules visibles)',
+                'detector-feat7': 'Logs internes sauvegardés',
+                'detector-tiers-title': '🔧 Tiers de Détecteur',
+                'detector-tier1': '<strong>Tier 1 :</strong> 20 blocs, alerte texte simple',
+                'detector-tier2': '<strong>Tier 2 :</strong> 50 blocs, embed Discord avec coordonnées',
+                'detector-tier3': '<strong>Tier 3 :</strong> 100 blocs, embed + screenshot + historique',
+                'detector-discord-format': 'Format Message Discord',
+                'detector-discord-example': '🚨 <strong>INTRUSION DÉTECTÉE</strong><br>👤 Joueur: EnemyPlayer<br>📍 Position: X:1234 Y:64 Z:5678<br>🕐 Heure: 14:32:15<br>🏴 Faction: EnnemiFaction',
+                'detector-webhook-config': 'Configuration Webhook',
+                'detector-webhook-info': 'Configurez l\'URL du webhook Discord dans le GUI de la machine. Testez la connexion avec le bouton "Test Alert". Permissions requises : Grade Officier minimum dans la faction.',
+
+                // Refinery
+                'refinery-title': 'Raffinerie de Minerais',
+                'refinery-desc': 'Machine de traitement avancée qui multiplie vos rendements de minerais bruts. Plus vous investissez d\'énergie, plus vous obtenez de ressources en retour. Essentiel pour l\'économie de faction.',
+                'refinery-feat1': 'Multiplication des minerais : <span class="ef-highlight">x2 à x4</span> selon tier',
+                'refinery-feat2': 'Bonus aléatoire de minerais rares (5-15% de chance)',
+                'refinery-feat3': 'Processus par étapes : broyage → lavage → raffinage',
+                'refinery-feat4': 'Interface multibloc avec animations visuelles',
+                'refinery-feat5': 'Compatible avec tous les minerais (vanilla + modded)',
+                'refinery-feat6': 'Système de file d\'attente automatique',
+                'refinery-tiers-title': '🔧 Tiers de Raffinerie',
+                'refinery-tier1': '<strong>Tier 1 :</strong> x2 minerais, 100 RF/opération, 10s/minerai',
+                'refinery-tier2': '<strong>Tier 2 :</strong> x3 minerais, 250 RF/opération, 7s/minerai, 5% bonus rare',
+                'refinery-tier3': '<strong>Tier 3 :</strong> x4 minerais, 500 RF/opération, 5s/minerai, 15% bonus rare',
+                'refinery-bonus-title': 'Bonus Rares',
+                'refinery-bonus-desc': 'Lors du raffinage de fer → chance de diamant | Or → chance d\'émeraude | Cuivre → chance de redstone | Diamant → chance de netherite scrap',
+                'refinery-multiblock-title': 'Structure Multibloc',
+                'refinery-multiblock-desc': '3x3x4 blocs. Base en acier renforcé, parois en verre industriel, cœur de traitement en électrum. Utilisez le Guide du Constructeur (item) pour voir la structure exacte en jeu.',
+
+                // Foundry
+                'foundry-title': 'Fonderie d\'Alliages',
+                'foundry-desc': 'Four haute température permettant de créer des alliages avancés en combinant différents métaux. Contrôlez la température et le temps de fusion pour des résultats optimaux.',
+                'foundry-feat1': 'Création d\'alliages : <span class="ef-highlight">Bronze, Électrum, Cupronickel</span>, etc.',
+                'foundry-feat2': 'Système de température (500°C - 2000°C)',
+                'foundry-feat3': 'Recettes avec ratios précis (90/10, 70/30, etc.)',
+                'foundry-feat4': 'Visualisation du processus de fonte (liquide animé)',
+                'foundry-feat5': 'Mode automatique avec hoppers',
+                'foundry-feat6': 'Chance de production bonus (qualité supérieure)',
+                'foundry-recipes-title': '🔧 Recettes d\'Alliages',
+                'foundry-recipe-bronze': '<strong>Bronze :</strong> 90% Cuivre + 10% Étain → 800°C, 20s',
+                'foundry-recipe-electrum': '<strong>Électrum :</strong> 50% Or + 50% Cuivre → 1200°C, 30s',
+                'foundry-recipe-cupronickel': '<strong>Cupronickel :</strong> 75% Cuivre + 25% Nickel → 1400°C, 25s',
+                'foundry-recipe-steel': '<strong>Acier :</strong> 98% Fer + 2% Charbon → 1500°C, 40s',
+                'foundry-warning': 'Une température incorrecte peut ruiner le lot ! Bronze trop chaud = perte de matériaux. Surveillez la jauge de température et suivez les recettes avec précision.',
+                'foundry-gui-title': 'Interface GUI',
+                'foundry-gui-desc': 'Slots Input (2x) pour les métaux, jauge de température avec indicateurs de zones optimales, timer de fusion, slot output pour l\'alliage produit. Mode auto activable via toggle.',
+
+                // Assembler
+                'assembler-title': 'Assembleur Automatique',
+                'assembler-desc': 'Machine d\'auto-crafting intelligente qui automatise la production d\'items complexes. Programmez vos recettes favorites et laissez la machine travailler en continu.',
+                'assembler-feat1': 'Auto-craft de <span class="ef-highlight">toutes les recettes</span> vanilla et modded',
+                'assembler-feat2': 'File d\'attente de production (jusqu\'à 10 recettes)',
+                'assembler-feat3': 'Sauvegarde de 20 recettes préférées',
+                'assembler-feat4': 'Importation automatique depuis coffres connectés',
+                'assembler-feat5': 'Vitesse de craft ajustable (1-10 items/s)',
+                'assembler-feat6': 'Interface utilisateur intuitive avec recherche',
+                'assembler-feat7': 'Mode bulk (craft 64x d\'un coup)',
+                'assembler-tiers-title': '🔧 Tiers d\'Assembleur',
+                'assembler-tier1': '<strong>Tier 1 :</strong> 1 craft/s, 5 recettes sauvegardées, 50 RF/craft',
+                'assembler-tier2': '<strong>Tier 2 :</strong> 5 crafts/s, 10 recettes sauvegardées, 30 RF/craft',
+                'assembler-tier3': '<strong>Tier 3 :</strong> 10 crafts/s, 20 recettes sauvegardées, 20 RF/craft, priorités',
+                'assembler-examples-title': 'Exemples d\'Utilisation',
+                'assembler-examples': 'Production de masse d\'armures pour faction wars | Craft automatique de potions de combat | Fabrication continue d\'outils pour les membres | Assembly d\'items complexes (pistons, dispensers)',
+                'assembler-recipes-management': 'Gestion des Recettes',
+                'assembler-recipes-desc': 'Cliquez sur "Apprendre Recette" en tenant un item crafté pour l\'enregistrer. Organisez vos recettes par catégories (Combat, Construction, Redstone). Export/Import de profils de recettes via items "Pattern Card".',
+
+                // Repair Station
+                'repair-title': 'Station de Réparation de Faction',
+                'repair-desc': 'Système de réparation électrique qui répare automatiquement les items équipés et dans l\'inventaire des joueurs de la faction dans un rayon configurable. Fini les items cassés en pleine bataille !',
+                'repair-feat1': 'Réparation automatique en <span class="ef-highlight">temps réel</span>',
+                'repair-feat2': 'Affecte tous les membres dans le rayon',
+                'repair-feat3': 'Répare armures, outils, armes, et items modded',
+                'repair-feat4': 'Bonus de durabilité (+10-30% selon tier)',
+                'repair-feat5': 'Priorité aux items équipés puis inventaire',
+                'repair-feat6': 'Indicateur de progression au-dessus de la tête',
+                'repair-feat7': 'Désactivation manuelle possible par joueur',
+                'repair-tiers-title': '🔧 Tiers de Station',
+                'repair-tier1': '<strong>Tier 1 :</strong> 10 blocs, 1 durabilité/s, 100 RF/durabilité',
+                'repair-tier2': '<strong>Tier 2 :</strong> 25 blocs, 5 durabilité/s, 50 RF/durabilité, +10% bonus',
+                'repair-tier3': '<strong>Tier 3 :</strong> 50 blocs, 15 durabilité/s, 25 RF/durabilité, +30% bonus',
+                'repair-visual-title': 'Effets Visuels',
+                'repair-visual-desc': 'Particules vertes en spirale autour du joueur pendant la réparation. Barre de progression au-dessus de la tête montrant l\'item en cours de réparation. Son de cliquetis métallique apaisant.',
+                'repair-optimization-title': 'Optimisations',
+                'repair-optimization-desc': 'Mode "Urgence" : répare uniquement les items à moins de 20% de durabilité pour économiser l\'énergie. Mode "Passif" : réparation lente mais continue (parfait pour les bases). Whitelist/blacklist d\'items configurables.',
+                'repair-warning': 'Ne peut pas réparer les items avec durabilité infinie. Les items maudits (curse of vanishing/binding) nécessitent 3x plus d\'énergie. La réparation s\'arrête si le buffer d\'énergie tombe sous 10%.',
+
+                // Trapped Block
+                'trap-title': 'Block Miné',
+                'trap-desc': 'Alternative discrète à la plaque de pression. Ce bloc se déclenche lorsqu\'un joueur ennemi le mine, permettant des pièges créatifs et défenses surprises dans votre base.',
+                'trap-feat1': 'Se déclenche uniquement au <span class="ef-highlight">minage</span>, pas au passage',
+                'trap-feat2': 'Détection faction : ne se déclenche que pour les ennemis',
+                'trap-feat3': 'Apparence configurable (imite d\'autres blocs)',
+                'trap-feat4': 'Actions : explosion, signal redstone, alert Discord, TP, poison',
+                'trap-feat5': 'Durabilité configurable avant explosion (1-10 hits)',
+                'trap-feat6': 'Mode "Réarmement auto" après 5 minutes',
+                'trap-feat7': 'Compatible avec redstone pour chaînes de pièges',
+                'trap-actions-title': '🔧 Types d\'Actions',
+                'trap-action-explosion': '<strong>Explosion :</strong> TNT, Creeper, ou custom (force 1-4)',
+                'trap-action-effects': '<strong>Effets :</strong> Poison, Blindness, Slowness, Wither (10-30s)',
+                'trap-action-redstone': '<strong>Redstone :</strong> Signal 1-15, durée 1-10s',
+                'trap-action-alert': '<strong>Alerte :</strong> Message faction + optionnel Discord webhook',
+                'trap-action-tp': '<strong>TP Piège :</strong> Téléporte l\'ennemi dans une cellule',
+                'trap-strategies-title': 'Stratégies d\'Utilisation',
+                'trap-strategies': '<strong>Faux Minerais :</strong> Déguisez en diamant ore dans votre mine<br><strong>Murs Piégés :</strong> Intégrez dans les murs de votre base<br><strong>Coffres Explosifs :</strong> Placez sous des coffres appâts<br><strong>Chaîne de Pièges :</strong> Connectez plusieurs blocs en cascade',
+                'trap-warning': 'Peut affecter les membres de votre faction si mal configuré ! Toujours tester en créatif. Les explosions peuvent endommager votre propre base. Utilisez avec précaution près de vos valuables.',
+                'trap-config-title': 'Configuration Avancée',
+                'trap-config-desc': 'Clic droit avec wrench pour ouvrir le GUI. Sélectionnez le déguisement, l\'action, l\'intensité. Possibilité de créer des "Profils" de pièges pour déploiement rapide. Shift+clic droit pour copier/coller la config entre blocks.',
+
+                // Stats
+                'stat-consumption': 'Consommation',
+                'stat-ammo-capacity': 'Capacité Munitions',
+                'stat-activation-cost': 'Coût Activation',
+                'stat-alert-cooldown': 'Cooldown Alerte',
+                'stat-input-capacity': 'Capacité Input',
+                'stat-output-capacity': 'Capacité Output',
+                'stat-max-speed': 'Vitesse Max',
+                'stat-energy-buffer': 'Buffer Énergie',
+                'stat-crucible-capacity': 'Capacité Creuset',
+                'stat-heating-time': 'Temps Chauffe',
+                'stat-yield': 'Rendement',
+                'stat-input-slots': 'Slots Input',
+                'stat-output-slots': 'Slots Output',
+                'stat-craft-buffer': 'Buffer Craft',
+                'stat-max-radius': 'Rayon Max',
+                'stat-simultaneous-players': 'Joueurs Simultanés',
+                'stat-repair-speed': 'Vitesse Réparation',
+                'stat-disguises': 'Déguisements',
+                'stat-rearm-cooldown': 'Cooldown Réarm',
+
+                // Warnings
+                'warning-limitations': 'Limitations',
+                'warning-attention': 'Attention'
+            },
+            en: {
+                'page-title': 'Faction Machines - Erinium Faction',
+                'hero-title': '⚙️ Faction Machines ⚙️',
+                'hero-subtitle': 'Advanced systems to dominate and protect your territory',
+
+                // Sections
+                'section-combat': '⚔️ Combat & Defense',
+                'section-production': '🏭 Production & Resources',
+                'section-utilities': '🔧 Utilities',
+                'section-desc': '📋 Description',
+                'section-features': '✨ Features',
+
+                // Badges
+                'badge-combat': 'Combat',
+                'badge-defense': 'Defense',
+                'badge-security': 'Security',
+                'badge-production': 'Production',
+                'badge-automation': 'Automation',
+                'badge-support': 'Support',
+                'badge-trap': 'Trap',
+
+                // Turret
+                'turret-title': 'Automatic Turret',
+                'turret-desc': 'Automated defense system that targets and shoots enemy players entering your territory. Uses faction identification system to avoid friendly fire.',
+                'turret-feat1': 'Automatic detection of <span class="ef-highlight">enemy players</span>',
+                'turret-feat2': 'Configurable range by tier (15-50 blocks)',
+                'turret-feat3': 'Ammo types: arrows, potions, explosive projectiles',
+                'turret-feat4': '360° rotation with target prioritization',
+                'turret-feat5': 'Standby mode to save energy',
+                'turret-feat6': 'Disableable by redstone or manual switch',
+                'turret-tiers-title': '🔧 Turret Tiers',
+                'turret-tier1': '<strong>Tier 1:</strong> 15 block range, normal arrows, 1 shot/2s',
+                'turret-tier2': '<strong>Tier 2:</strong> 30 block range, arrows + potions, 2 shots/s',
+                'turret-tier3': '<strong>Tier 3:</strong> 50 block range, all ammo, 3 shots/s, dual target',
+                'turret-warning': 'Cannot shoot through solid blocks. Vulnerable to TNT and ranged attacks. Can be hacked by players with special items.',
+
+                // Beacon
+                'beacon-title': 'Improved Faction Beacon',
+                'beacon-desc': 'Improved version of vanilla beacon that applies powerful buff effects only to your faction members in an extended radius. Perfect for fortifying a war zone.',
+                'beacon-feat1': 'Effects <span class="ef-highlight">reserved for faction members</span>',
+                'beacon-feat2': 'Extended range: 100-300 blocks by tier',
+                'beacon-feat3': 'Stackable buffs with multiple beacons',
+                'beacon-feat4': 'Custom effects: Blast Resistance, Enhanced Regeneration',
+                'beacon-feat5': 'Visual indicator of effect zone (particles)',
+                'beacon-feat6': 'Activation/deactivation via GUI',
+                'beacon-tiers-title': '🔧 Beacon Tiers',
+                'beacon-tier1': '<strong>Tier 1:</strong> 100 blocks, 2 simultaneous effects, level I',
+                'beacon-tier2': '<strong>Tier 2:</strong> 200 blocks, 3 simultaneous effects, level II',
+                'beacon-tier3': '<strong>Tier 3:</strong> 300 blocks, 5 simultaneous effects, level III',
+                'beacon-effects-title': 'Available Effects',
+                'beacon-effects': 'Speed, Strength, Resistance, Regeneration, Jump Boost, Fire Resistance, Absorption, + Custom effects: Blast Resistance (reduces explosion damage 30%), Combat Focus (+15% critical damage)',
+
+                // Detector
+                'detector-title': 'Motion Detector',
+                'detector-desc': 'Advanced surveillance system that detects any movement in your base and sends real-time alerts to Discord via webhook. Perfect for monitoring your territory even offline.',
+                'detector-feat1': 'Detection of <span class="ef-highlight">enemy players only</span>',
+                'detector-feat2': 'Automatic sending to Discord webhook',
+                'detector-feat3': 'Information: username, coordinates, timestamp, screenshot (optional)',
+                'detector-feat4': 'Detection radius: 20-100 blocks by tier',
+                'detector-feat5': 'Configurable filters (members, allies, all)',
+                'detector-feat6': 'Stealth mode (no visible particles)',
+                'detector-feat7': 'Internal saved logs',
+                'detector-tiers-title': '🔧 Detector Tiers',
+                'detector-tier1': '<strong>Tier 1:</strong> 20 blocks, simple text alert',
+                'detector-tier2': '<strong>Tier 2:</strong> 50 blocks, Discord embed with coordinates',
+                'detector-tier3': '<strong>Tier 3:</strong> 100 blocks, embed + screenshot + history',
+                'detector-discord-format': 'Discord Message Format',
+                'detector-discord-example': '🚨 <strong>INTRUSION DETECTED</strong><br>👤 Player: EnemyPlayer<br>📍 Position: X:1234 Y:64 Z:5678<br>🕐 Time: 14:32:15<br>🏴 Faction: EnemyFaction',
+                'detector-webhook-config': 'Webhook Configuration',
+                'detector-webhook-info': 'Configure the Discord webhook URL in the machine GUI. Test the connection with the "Test Alert" button. Required permissions: Officer rank minimum in the faction.',
+
+                // Refinery
+                'refinery-title': 'Ore Refinery',
+                'refinery-desc': 'Advanced processing machine that multiplies your raw ore yields. The more energy you invest, the more resources you get in return. Essential for faction economy.',
+                'refinery-feat1': 'Ore multiplication: <span class="ef-highlight">x2 to x4</span> by tier',
+                'refinery-feat2': 'Random rare ore bonus (5-15% chance)',
+                'refinery-feat3': 'Step-by-step process: crushing → washing → refining',
+                'refinery-feat4': 'Multiblock interface with visual animations',
+                'refinery-feat5': 'Compatible with all ores (vanilla + modded)',
+                'refinery-feat6': 'Automatic queue system',
+                'refinery-tiers-title': '🔧 Refinery Tiers',
+                'refinery-tier1': '<strong>Tier 1:</strong> x2 ores, 100 RF/operation, 10s/ore',
+                'refinery-tier2': '<strong>Tier 2:</strong> x3 ores, 250 RF/operation, 7s/ore, 5% rare bonus',
+                'refinery-tier3': '<strong>Tier 3:</strong> x4 ores, 500 RF/operation, 5s/ore, 15% rare bonus',
+                'refinery-bonus-title': 'Rare Bonuses',
+                'refinery-bonus-desc': 'When refining iron → diamond chance | Gold → emerald chance | Copper → redstone chance | Diamond → netherite scrap chance',
+                'refinery-multiblock-title': 'Multiblock Structure',
+                'refinery-multiblock-desc': '3x3x4 blocks. Reinforced steel base, industrial glass walls, electrum processing core. Use the Builder\'s Guide (item) to see the exact in-game structure.',
+
+                // Foundry
+                'foundry-title': 'Alloy Foundry',
+                'foundry-desc': 'High temperature furnace allowing creation of advanced alloys by combining different metals. Control temperature and melting time for optimal results.',
+                'foundry-feat1': 'Alloy creation: <span class="ef-highlight">Bronze, Electrum, Cupronickel</span>, etc.',
+                'foundry-feat2': 'Temperature system (500°C - 2000°C)',
+                'foundry-feat3': 'Recipes with precise ratios (90/10, 70/30, etc.)',
+                'foundry-feat4': 'Visualization of melting process (animated liquid)',
+                'foundry-feat5': 'Automatic mode with hoppers',
+                'foundry-feat6': 'Chance for bonus production (superior quality)',
+                'foundry-recipes-title': '🔧 Alloy Recipes',
+                'foundry-recipe-bronze': '<strong>Bronze:</strong> 90% Copper + 10% Tin → 800°C, 20s',
+                'foundry-recipe-electrum': '<strong>Electrum:</strong> 50% Gold + 50% Copper → 1200°C, 30s',
+                'foundry-recipe-cupronickel': '<strong>Cupronickel:</strong> 75% Copper + 25% Nickel → 1400°C, 25s',
+                'foundry-recipe-steel': '<strong>Steel:</strong> 98% Iron + 2% Coal → 1500°C, 40s',
+                'foundry-warning': 'Incorrect temperature can ruin the batch! Bronze too hot = material loss. Monitor the temperature gauge and follow recipes precisely.',
+                'foundry-gui-title': 'GUI Interface',
+                'foundry-gui-desc': 'Input slots (2x) for metals, temperature gauge with optimal zone indicators, melting timer, output slot for produced alloy. Auto mode activatable via toggle.',
+
+                // Assembler
+                'assembler-title': 'Automatic Assembler',
+                'assembler-desc': 'Intelligent auto-crafting machine that automates complex item production. Program your favorite recipes and let the machine work continuously.',
+                'assembler-feat1': 'Auto-craft of <span class="ef-highlight">all recipes</span> vanilla and modded',
+                'assembler-feat2': 'Production queue (up to 10 recipes)',
+                'assembler-feat3': 'Save 20 favorite recipes',
+                'assembler-feat4': 'Automatic import from connected chests',
+                'assembler-feat5': 'Adjustable craft speed (1-10 items/s)',
+                'assembler-feat6': 'Intuitive user interface with search',
+                'assembler-feat7': 'Bulk mode (craft 64x at once)',
+                'assembler-tiers-title': '🔧 Assembler Tiers',
+                'assembler-tier1': '<strong>Tier 1:</strong> 1 craft/s, 5 saved recipes, 50 RF/craft',
+                'assembler-tier2': '<strong>Tier 2:</strong> 5 crafts/s, 10 saved recipes, 30 RF/craft',
+                'assembler-tier3': '<strong>Tier 3:</strong> 10 crafts/s, 20 saved recipes, 20 RF/craft, priorities',
+                'assembler-examples-title': 'Usage Examples',
+                'assembler-examples': 'Mass production of armor for faction wars | Automatic crafting of combat potions | Continuous tool fabrication for members | Assembly of complex items (pistons, dispensers)',
+                'assembler-recipes-management': 'Recipe Management',
+                'assembler-recipes-desc': 'Click "Learn Recipe" while holding a crafted item to register it. Organize your recipes by categories (Combat, Construction, Redstone). Export/Import recipe profiles via "Pattern Card" items.',
+
+                // Repair Station
+                'repair-title': 'Faction Repair Station',
+                'repair-desc': 'Electric repair system that automatically repairs equipped items and inventory items of faction players in a configurable radius. No more broken items in the middle of battle!',
+                'repair-feat1': 'Automatic repair in <span class="ef-highlight">real time</span>',
+                'repair-feat2': 'Affects all members in radius',
+                'repair-feat3': 'Repairs armor, tools, weapons, and modded items',
+                'repair-feat4': 'Durability bonus (+10-30% by tier)',
+                'repair-feat5': 'Priority for equipped items then inventory',
+                'repair-feat6': 'Progress indicator above head',
+                'repair-feat7': 'Manual disable possible per player',
+                'repair-tiers-title': '🔧 Station Tiers',
+                'repair-tier1': '<strong>Tier 1:</strong> 10 blocks, 1 durability/s, 100 RF/durability',
+                'repair-tier2': '<strong>Tier 2:</strong> 25 blocks, 5 durability/s, 50 RF/durability, +10% bonus',
+                'repair-tier3': '<strong>Tier 3:</strong> 50 blocks, 15 durability/s, 25 RF/durability, +30% bonus',
+                'repair-visual-title': 'Visual Effects',
+                'repair-visual-desc': 'Green spiral particles around the player during repair. Progress bar above head showing item being repaired. Soothing metallic clicking sound.',
+                'repair-optimization-title': 'Optimizations',
+                'repair-optimization-desc': '"Emergency" mode: only repairs items below 20% durability to save energy. "Passive" mode: slow but continuous repair (perfect for bases). Configurable item whitelist/blacklist.',
+                'repair-warning': 'Cannot repair items with infinite durability. Cursed items (curse of vanishing/binding) require 3x more energy. Repair stops if energy buffer falls below 10%.',
+
+                // Trapped Block
+                'trap-title': 'Mined Block',
+                'trap-desc': 'Discreet alternative to pressure plates. This block triggers when an enemy player mines it, allowing creative traps and surprise defenses in your base.',
+                'trap-feat1': 'Triggers only on <span class="ef-highlight">mining</span>, not walking',
+                'trap-feat2': 'Faction detection: only triggers for enemies',
+                'trap-feat3': 'Configurable appearance (mimics other blocks)',
+                'trap-feat4': 'Actions: explosion, redstone signal, Discord alert, TP, poison',
+                'trap-feat5': 'Configurable durability before explosion (1-10 hits)',
+                'trap-feat6': '"Auto-rearm" mode after 5 minutes',
+                'trap-feat7': 'Compatible with redstone for trap chains',
+                'trap-actions-title': '🔧 Action Types',
+                'trap-action-explosion': '<strong>Explosion:</strong> TNT, Creeper, or custom (strength 1-4)',
+                'trap-action-effects': '<strong>Effects:</strong> Poison, Blindness, Slowness, Wither (10-30s)',
+                'trap-action-redstone': '<strong>Redstone:</strong> Signal 1-15, duration 1-10s',
+                'trap-action-alert': '<strong>Alert:</strong> Faction message + optional Discord webhook',
+                'trap-action-tp': '<strong>TP Trap:</strong> Teleports enemy to a cell',
+                'trap-strategies-title': 'Usage Strategies',
+                'trap-strategies': '<strong>Fake Ores:</strong> Disguise as diamond ore in your mine<br><strong>Trapped Walls:</strong> Integrate into your base walls<br><strong>Explosive Chests:</strong> Place under bait chests<br><strong>Trap Chain:</strong> Connect multiple blocks in cascade',
+                'trap-warning': 'Can affect your faction members if misconfigured! Always test in creative. Explosions can damage your own base. Use with caution near your valuables.',
+                'trap-config-title': 'Advanced Configuration',
+                'trap-config-desc': 'Right-click with wrench to open GUI. Select disguise, action, intensity. Possibility to create trap "Profiles" for quick deployment. Shift+right-click to copy/paste config between blocks.',
+
+                // Stats
+                'stat-consumption': 'Consumption',
+                'stat-ammo-capacity': 'Ammo Capacity',
+                'stat-activation-cost': 'Activation Cost',
+                'stat-alert-cooldown': 'Alert Cooldown',
+                'stat-input-capacity': 'Input Capacity',
+                'stat-output-capacity': 'Output Capacity',
+                'stat-max-speed': 'Max Speed',
+                'stat-energy-buffer': 'Energy Buffer',
+                'stat-crucible-capacity': 'Crucible Capacity',
+                'stat-heating-time': 'Heating Time',
+                'stat-yield': 'Yield',
+                'stat-input-slots': 'Input Slots',
+                'stat-output-slots': 'Output Slots',
+                'stat-craft-buffer': 'Craft Buffer',
+                'stat-max-radius': 'Max Radius',
+                'stat-simultaneous-players': 'Simultaneous Players',
+                'stat-repair-speed': 'Repair Speed',
+                'stat-disguises': 'Disguises',
+                'stat-rearm-cooldown': 'Rearm Cooldown',
+
+                // Warnings
+                'warning-limitations': 'Limitations',
+                'warning-attention': 'Warning'
+            }
+        };
+
+        // Initialize with machine translations
+        EriniumFaction.init(machineTranslations);
+    </script>
 </body>
 </html>

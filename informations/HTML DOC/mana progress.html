@@ -3,74 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Système de Progression XP Magique - Guide Complet</title>
+    <title data-i18n="page-title">Système de Progression Magique - Erinium Faction</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Common Theme CSS -->
+    <link rel="stylesheet" href="common-themes.css">
+
     <style>
-        * {
+        body {
+            font-family: 'Exo 2', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b4e 100%);
-            color: #333;
-            line-height: 1.6;
-            padding: 30px 20px;
             min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        .container {
-            max-width: 1800px;
+        .ef-content-wrapper {
+            padding: 40px 20px;
+        }
+
+        .ef-container {
+            max-width: 1600px;
             margin: 0 auto;
         }
 
-        h1 {
+        .ef-hero {
             text-align: center;
-            color: #c084fc;
-            font-size: 4em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(192, 132, 252, 0.8), 0 0 40px rgba(168, 85, 247, 0.6);
+            margin-bottom: 60px;
+            padding: 60px 20px;
+            background: var(--bg-card);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid var(--accent-1);
+        }
+
+        .ef-hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5em;
+            margin: 0 0 20px 0;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            text-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
             animation: magicGlow 3s ease-in-out infinite alternate;
         }
 
         @keyframes magicGlow {
-            from {
-                text-shadow: 0 0 20px rgba(192, 132, 252, 0.8), 0 0 40px rgba(168, 85, 247, 0.6);
-            }
-            to {
-                text-shadow: 0 0 30px rgba(192, 132, 252, 1), 0 0 60px rgba(168, 85, 247, 0.8);
-            }
+            from { filter: brightness(1); }
+            to { filter: brightness(1.3); }
         }
 
-        .subtitle {
-            text-align: center;
-            color: #a78bfa;
+        .ef-subtitle {
             font-size: 1.6em;
-            margin-bottom: 60px;
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 300;
             font-style: italic;
-            text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
         }
 
-        .main-section {
-            background: linear-gradient(135deg, rgba(30, 27, 75, 0.95) 0%, rgba(45, 27, 78, 0.95) 100%);
-            border-radius: 30px;
-            padding: 50px;
-            margin-bottom: 50px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.3);
-            border: 3px solid rgba(192, 132, 252, 0.4);
+        .ef-section {
+            background: var(--bg-card);
+            border-radius: 25px;
+            padding: 45px;
+            margin-bottom: 45px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--border-color);
             position: relative;
             overflow: hidden;
         }
 
-        .main-section::before {
+        .ef-section::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, #8b5cf6, #c084fc, #a78bfa, #8b5cf6);
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
             background-size: 200% 100%;
             animation: shimmer 3s linear infinite;
         }
@@ -80,17 +95,17 @@
             100% { background-position: 200% 0%; }
         }
 
-        .section-title {
-            font-size: 2.8em;
-            color: #c084fc;
-            font-weight: bold;
+        .ef-section-title {
+            font-size: 2.5em;
+            color: var(--text-primary);
+            font-weight: 900;
             margin-bottom: 30px;
-            text-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
+            font-family: 'Orbitron', sans-serif;
             display: flex;
             align-items: center;
         }
 
-        .section-title::before {
+        .ef-section-title::before {
             content: '✨';
             margin-right: 20px;
             font-size: 1.2em;
@@ -102,341 +117,396 @@
             50% { opacity: 0.6; transform: scale(1.2); }
         }
 
-        .xp-table {
-            width: 100%;
-            border-collapse: collapse;
+        .ef-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
             margin: 30px 0;
-            background: rgba(15, 14, 40, 0.6);
-            border-radius: 15px;
-            overflow: hidden;
         }
 
-        .xp-table thead {
-            background: linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%);
-        }
-
-        .xp-table th {
-            padding: 20px;
-            text-align: left;
-            color: white;
-            font-weight: bold;
-            font-size: 1.1em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .xp-table td {
-            padding: 15px 20px;
-            color: #cbd5e1;
-            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-        }
-
-        .xp-table tbody tr:hover {
-            background: rgba(139, 92, 246, 0.2);
+        .ef-stat-card {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            border: 2px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
-        .xp-table tbody tr:last-child td {
+        .ef-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+            border-color: var(--accent-1);
+        }
+
+        .ef-stat-label {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .ef-stat-value {
+            color: var(--accent-2);
+            font-size: 2.8em;
+            font-weight: 900;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 15px rgba(192, 132, 252, 0.5);
+        }
+
+        .ef-formula-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(96, 165, 250, 0.2) 100%);
+            border: 3px solid rgba(59, 130, 246, 0.5);
+            border-radius: 18px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .ef-formula-title {
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .ef-formula-content {
+            color: var(--text-secondary);
+            font-size: 1.05em;
+            line-height: 2;
+        }
+
+        .ef-tier-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 35px 0;
+        }
+
+        .ef-tier-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 35px;
+            border: 3px solid var(--border-color);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .ef-tier-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .ef-tier-card.tier-novice { border-top-color: #94a3b8; }
+        .ef-tier-card.tier-apprenti { border-top-color: #10b981; }
+        .ef-tier-card.tier-adepte { border-top-color: #3b82f6; }
+        .ef-tier-card.tier-expert { border-top-color: #a855f7; }
+        .ef-tier-card.tier-maitre { border-top-color: #f97316; }
+        .ef-tier-card.tier-archimage { border-top-color: #fbbf24; }
+
+        .ef-tier-header {
+            font-size: 2em;
+            font-weight: 900;
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .ef-tier-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .badge-novice { background: linear-gradient(135deg, #94a3b8, #64748b); color: white; }
+        .badge-apprenti { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .badge-adepte { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        .badge-expert { background: linear-gradient(135deg, #a855f7, #9333ea); color: white; }
+        .badge-maitre { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
+        .badge-archimage { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
+
+        .ef-tier-info {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        .ef-tier-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .ef-tier-detail:last-child {
             border-bottom: none;
         }
 
-        .tier-novice { border-left: 5px solid #94a3b8; }
-        .tier-apprenti { border-left: 5px solid #10b981; }
-        .tier-adepte { border-left: 5px solid #3b82f6; }
-        .tier-expert { border-left: 5px solid #a855f7; }
-        .tier-maitre { border-left: 5px solid #f97316; }
-        .tier-archimage { border-left: 5px solid #fbbf24; }
+        .ef-tier-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
 
-        .xp-source-grid {
+        .ef-tier-value {
+            color: var(--accent-2);
+            font-weight: 700;
+        }
+
+        .ef-xp-sources {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 25px;
             margin: 30px 0;
         }
 
-        .xp-source-card {
-            background: rgba(15, 14, 40, 0.7);
-            border-radius: 20px;
+        .ef-xp-card {
+            background: var(--bg-secondary);
+            border-radius: 18px;
             padding: 30px;
-            border: 2px solid rgba(192, 132, 252, 0.3);
+            border: 2px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
-        .xp-source-card:hover {
+        .ef-xp-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(192, 132, 252, 0.6);
+            border-color: var(--accent-1);
             box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
         }
 
-        .source-header {
+        .ef-xp-header {
             font-size: 1.6em;
-            color: #c084fc;
-            font-weight: bold;
+            color: var(--accent-2);
+            font-weight: 700;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
+            font-family: 'Orbitron', sans-serif;
         }
 
-        .source-icon {
+        .ef-xp-icon {
             margin-right: 15px;
-            font-size: 1.4em;
+            font-size: 1.5em;
             filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.6));
         }
 
-        .source-details {
-            color: #cbd5e1;
+        .ef-xp-details {
+            color: var(--text-secondary);
             font-size: 1.05em;
             line-height: 1.8;
         }
 
-        .xp-value {
+        .ef-xp-value {
             color: #fbbf24;
-            font-weight: bold;
-            font-size: 1.1em;
+            font-weight: 700;
+            font-size: 1.15em;
         }
 
-        .time-estimate {
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
-            border: 2px solid rgba(251, 191, 36, 0.5);
+        .ef-tip-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+            border-left: 6px solid #10b981;
             border-radius: 15px;
             padding: 25px;
-            margin: 25px 0;
+            margin: 30px 0;
         }
 
-        .time-title {
-            font-size: 1.5em;
+        .ef-tip-title {
+            color: #6ee7b7;
+            font-weight: 700;
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ef-tip-title::before {
+            content: '💡';
+            margin-right: 12px;
+            font-size: 1.3em;
+        }
+
+        .ef-tip-text {
+            color: #d1fae5;
+            line-height: 1.7;
+        }
+
+        .ef-warning-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+            border-left: 6px solid #ef4444;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .ef-warning-title {
+            color: #fca5a5;
+            font-weight: 700;
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ef-warning-title::before {
+            content: '⚠️';
+            margin-right: 12px;
+            font-size: 1.3em;
+        }
+
+        .ef-warning-text {
+            color: #fecaca;
+            line-height: 1.7;
+        }
+
+        .ef-highlight {
+            background: linear-gradient(120deg, var(--accent-1), var(--accent-2));
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .ef-time-estimate {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            border: 3px solid rgba(251, 191, 36, 0.5);
+            border-radius: 18px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .ef-time-title {
+            font-size: 1.6em;
             color: #fbbf24;
-            font-weight: bold;
-            margin-bottom: 15px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            font-family: 'Orbitron', sans-serif;
         }
 
-        .time-content {
+        .ef-time-content {
             color: #fde68a;
             font-size: 1.05em;
             line-height: 1.8;
         }
 
-        .stat-box {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(192, 132, 252, 0.3) 100%);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border: 2px solid rgba(192, 132, 252, 0.4);
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .stat-item {
-            background: rgba(15, 14, 40, 0.6);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid rgba(167, 139, 250, 0.3);
-        }
-
-        .stat-label {
-            color: #a78bfa;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            color: #c084fc;
-            font-size: 2em;
-            font-weight: bold;
-        }
-
-        .tip-box {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
-            border-left: 5px solid #10b981;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
-        }
-
-        .tip-title {
-            color: #6ee7b7;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .tip-title::before {
-            content: '💡';
-            margin-right: 10px;
-        }
-
-        .tip-text {
-            color: #d1fae5;
-            font-size: 0.95em;
-        }
-
-        .warning-box {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
-            border-left: 5px solid #ef4444;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
-        }
-
-        .warning-title {
-            color: #fca5a5;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .warning-title::before {
-            content: '⚠️';
-            margin-right: 10px;
-        }
-
-        .warning-text {
-            color: #fecaca;
-            font-size: 0.95em;
-        }
-
-        .formula-box {
-            background: rgba(59, 130, 246, 0.2);
-            border: 2px solid rgba(59, 130, 246, 0.4);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 25px 0;
-            font-family: 'Courier New', monospace;
-        }
-
-        .formula-title {
-            color: #60a5fa;
-            font-weight: bold;
-            font-size: 1.3em;
-            margin-bottom: 15px;
-        }
-
-        .formula-content {
-            color: #bfdbfe;
-            font-size: 1.1em;
-            line-height: 2;
-        }
-
-        .highlight {
-            background: linear-gradient(120deg, #8b5cf6 0%, #c084fc 100%);
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 2px 10px rgba(139, 92, 246, 0.5);
-        }
-
-        .progress-chart {
-            background: rgba(15, 14, 40, 0.7);
-            border-radius: 20px;
-            padding: 30px;
+        .ef-progress-table {
+            width: 100%;
+            border-collapse: collapse;
             margin: 30px 0;
-            border: 2px solid rgba(192, 132, 252, 0.3);
-        }
-
-        .chart-bar {
-            background: rgba(139, 92, 246, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            position: relative;
+            background: var(--bg-secondary);
+            border-radius: 15px;
             overflow: hidden;
         }
 
-        .chart-bar-fill {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            background: linear-gradient(90deg, #8b5cf6, #c084fc);
-            border-radius: 10px;
-            transition: width 0.5s ease;
+        .ef-progress-table thead {
+            background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
         }
 
-        .chart-label {
-            position: relative;
-            z-index: 1;
-            color: #cbd5e1;
-            font-weight: bold;
+        .ef-progress-table th {
+            padding: 18px;
+            text-align: left;
+            color: white;
+            font-weight: 700;
+            font-size: 1.05em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ef-progress-table td {
+            padding: 16px 18px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .ef-progress-table tbody tr:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .ef-progress-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 1200px) {
+            .ef-tier-cards {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            h1 {
+            .ef-hero h1 {
                 font-size: 2.5em;
             }
 
-            .section-title {
-                font-size: 2em;
+            .ef-subtitle {
+                font-size: 1.2em;
             }
 
-            .main-section {
-                padding: 30px 20px;
+            .ef-section-title {
+                font-size: 1.8em;
             }
 
-            .xp-source-grid {
+            .ef-xp-sources {
                 grid-template-columns: 1fr;
             }
 
-            .xp-table {
-                font-size: 0.9em;
+            .ef-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .ef-progress-table {
+                font-size: 0.85em;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>⚡ Système de Progression XP ⚡</h1>
-        <p class="subtitle">Guide Complet : Du Novice à l'Archimage Transcendant</p>
+    <div class="ef-container">
+        <div class="ef-hero">
+            <h1 data-i18n="hero-title">⚡ Système de Progression Magique ⚡</h1>
+            <p class="ef-subtitle" data-i18n="hero-subtitle">Guide Complet : Du Novice à l'Archimage Transcendant (Niveaux 1-100)</p>
+        </div>
 
-        <!-- SECTION 1: Vue d'ensemble -->
-        <div class="main-section">
-            <div class="section-title">📊 Vue d'Ensemble du Système</div>
+        <!-- OVERVIEW SECTION -->
+        <div class="ef-section">
+            <div class="ef-section-title" data-i18n="section-overview">📊 Vue d'Ensemble du Système</div>
 
-            <div class="stat-box">
-                <h3 style="color: #c084fc; font-size: 1.5em; margin-bottom: 15px;">Statistiques Globales</h3>
-                <div class="stat-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">Niveau Maximum</div>
-                        <div class="stat-value">100</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">XP Totale Requise</div>
-                        <div class="stat-value">28.5M</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Temps Moyen (Casual)</div>
-                        <div class="stat-value">600h</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Temps Moyen (Hardcore)</div>
-                        <div class="stat-value">350h</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Paliers Majeurs</div>
-                        <div class="stat-value">6</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Sources d'XP</div>
-                        <div class="stat-value">15+</div>
-                    </div>
+            <div class="ef-stats-grid">
+                <div class="ef-stat-card">
+                    <div class="ef-stat-label" data-i18n="stat-max-level">Niveau Maximum</div>
+                    <div class="ef-stat-value">100</div>
+                </div>
+                <div class="ef-stat-card">
+                    <div class="ef-stat-label" data-i18n="stat-total-xp">XP Totale Requise</div>
+                    <div class="ef-stat-value">28.5M</div>
+                </div>
+                <div class="ef-stat-card">
+                    <div class="ef-stat-label" data-i18n="stat-time-casual">Temps Moyen (Casual)</div>
+                    <div class="ef-stat-value">600h</div>
+                </div>
+                <div class="ef-stat-card">
+                    <div class="ef-stat-label" data-i18n="stat-time-hardcore">Temps Moyen (Hardcore)</div>
+                    <div class="ef-stat-value">350h</div>
+                </div>
+                <div class="ef-stat-card">
+                    <div class="ef-stat-label" data-i18n="stat-tiers">Paliers Majeurs</div>
+                    <div class="ef-stat-value">6</div>
+                </div>
+                <div class="ef-stat-card">
+                    <div class="ef-stat-label" data-i18n="stat-xp-sources">Sources d'XP</div>
+                    <div class="ef-stat-value">15+</div>
                 </div>
             </div>
 
-            <div class="formula-box">
-                <div class="formula-title">📐 Formule de Progression XP</div>
-                <div class="formula-content">
+            <div class="ef-formula-box">
+                <div class="ef-formula-title" data-i18n="formula-title">📐 Formules de Progression XP</div>
+                <div class="ef-formula-content" data-i18n="formula-content" data-i18n-html="true">
                     <strong>Niveaux 1-20 (Novice):</strong><br>
                     XP = 100 × niveau²<br>
                     Exemple: Niveau 10 = 10,000 XP<br><br>
@@ -454,849 +524,823 @@
                     Exemple: Niveau 95 = 3,760,000 XP<br><br>
 
                     <strong>Niveau 100 (Archimage):</strong><br>
-                    XP = Quête spéciale (pas de grind XP)<br>
+                    XP = Quête spéciale (pas de grind XP)
                 </div>
             </div>
 
-            <div class="warning-box">
-                <div class="warning-title">Important : Courbe Exponentielle</div>
-                <div class="warning-text">
+            <div class="ef-warning-box">
+                <div class="ef-warning-title" data-i18n="warning-curve-title">Important : Courbe Exponentielle</div>
+                <div class="ef-warning-text" data-i18n="warning-curve-text" data-i18n-html="true">
                     La progression est conçue pour être <strong>exponentielle</strong> :<br>
                     • Niveaux 1-40 = 20% de l'XP totale (facile, rapide)<br>
                     • Niveaux 41-70 = 30% de l'XP totale (moyen, grind modéré)<br>
                     • Niveaux 71-99 = 50% de l'XP totale (difficile, grind intensif)<br>
                     • Niveau 100 = Quête épique unique<br><br>
-                    
-                    Cette courbe garantit que les hauts niveaux restent <strong>prestigieux</strong> et que atteindre 100 
-                    est un <strong>accomplissement majeur</strong> qui prend des centaines d'heures.
+
+                    Cette courbe garantit que les hauts niveaux restent <strong>prestigieux</strong> et que atteindre 100
+                    est un <strong>accomplissement majeur</strong> nécessitant des centaines d'heures.
                 </div>
             </div>
         </div>
 
-        <!-- SECTION 2: Tableau Détaillé Par Niveau -->
-        <div class="main-section">
-            <div class="section-title">📈 Tableau de Progression Détaillé</div>
+        <!-- TIERS SECTION -->
+        <div class="ef-section">
+            <div class="ef-section-title" data-i18n="section-tiers">🎖️ Les 6 Paliers de Puissance</div>
 
-            <p style="color: #cbd5e1; margin-bottom: 30px; font-size: 1.1em;">
-                Voici le détail complet de l'XP requise pour chaque niveau, l'XP cumulée, et le temps de jeu estimé.
-            </p>
+            <div class="ef-tier-cards">
+                <!-- Tier 1: Novice -->
+                <div class="ef-tier-card tier-novice">
+                    <span class="ef-tier-badge badge-novice" data-i18n="tier1-badge">Palier I - Novice</span>
+                    <div class="ef-tier-header" data-i18n="tier1-name">🌟 Novice</div>
+                    <div class="ef-tier-info" data-i18n="tier1-desc">
+                        Les premiers pas dans l'art magique. Apprentissage des sorts basiques et des concepts fondamentaux de la magie.
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-levels">Niveaux</span>
+                            <span class="ef-tier-value">1 - 20</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-total-xp">XP Totale</span>
+                            <span class="ef-tier-value">~28,000</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-time">Temps Estimé</span>
+                            <span class="ef-tier-value">15-25h</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-spells">Sorts Disponibles</span>
+                            <span class="ef-tier-value">Tier 1 (basique)</span>
+                        </div>
+                    </div>
+                </div>
 
-            <table class="xp-table">
+                <!-- Tier 2: Apprenti -->
+                <div class="ef-tier-card tier-apprenti">
+                    <span class="ef-tier-badge badge-apprenti" data-i18n="tier2-badge">Palier II - Apprenti</span>
+                    <div class="ef-tier-header" data-i18n="tier2-name">🔰 Apprenti</div>
+                    <div class="ef-tier-info" data-i18n="tier2-desc">
+                        Maîtrise des fondamentaux et début de spécialisation. Accès aux sorts de puissance intermédiaire.
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-levels">Niveaux</span>
+                            <span class="ef-tier-value">21 - 40</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-total-xp">XP Totale</span>
+                            <span class="ef-tier-value">~350,000</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-time">Temps Estimé</span>
+                            <span class="ef-tier-value">45-75h</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-spells">Sorts Disponibles</span>
+                            <span class="ef-tier-value">Tier 1-2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 3: Adepte -->
+                <div class="ef-tier-card tier-adepte">
+                    <span class="ef-tier-badge badge-adepte" data-i18n="tier3-badge">Palier III - Adepte</span>
+                    <div class="ef-tier-header" data-i18n="tier3-name">⚡ Adepte</div>
+                    <div class="ef-tier-info" data-i18n="tier3-desc">
+                        Compétence avancée dans une école magique. Capacité à lancer des sorts puissants avec cohérence.
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-levels">Niveaux</span>
+                            <span class="ef-tier-value">41 - 60</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-total-xp">XP Totale</span>
+                            <span class="ef-tier-value">~1,100,000</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-time">Temps Estimé</span>
+                            <span class="ef-tier-value">90-150h</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-spells">Sorts Disponibles</span>
+                            <span class="ef-tier-value">Tier 1-3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 4: Expert -->
+                <div class="ef-tier-card tier-expert">
+                    <span class="ef-tier-badge badge-expert" data-i18n="tier4-badge">Palier IV - Expert</span>
+                    <div class="ef-tier-header" data-i18n="tier4-name">🔮 Expert</div>
+                    <div class="ef-tier-info" data-i18n="tier4-desc">
+                        Maîtrise exceptionnelle de plusieurs écoles. Capable de lancer des sorts de haute complexité.
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-levels">Niveaux</span>
+                            <span class="ef-tier-value">61 - 80</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-total-xp">XP Totale</span>
+                            <span class="ef-tier-value">~3,800,000</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-time">Temps Estimé</span>
+                            <span class="ef-tier-value">180-300h</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-spells">Sorts Disponibles</span>
+                            <span class="ef-tier-value">Tier 1-4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 5: Maître -->
+                <div class="ef-tier-card tier-maitre">
+                    <span class="ef-tier-badge badge-maitre" data-i18n="tier5-badge">Palier V - Maître</span>
+                    <div class="ef-tier-header" data-i18n="tier5-name">💫 Maître Arcanique</div>
+                    <div class="ef-tier-info" data-i18n="tier5-desc">
+                        Puissance proche de la perfection. Accès aux sorts les plus destructeurs et complexes de la magie.
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-levels">Niveaux</span>
+                            <span class="ef-tier-value">81 - 99</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-total-xp">XP Totale</span>
+                            <span class="ef-tier-value">~14,200,000</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-time">Temps Estimé</span>
+                            <span class="ef-tier-value">350-550h</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-spells">Sorts Disponibles</span>
+                            <span class="ef-tier-value">Tier 1-5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 6: Archimage -->
+                <div class="ef-tier-card tier-archimage">
+                    <span class="ef-tier-badge badge-archimage" data-i18n="tier6-badge">Palier VI - Archimage</span>
+                    <div class="ef-tier-header" data-i18n="tier6-name">👑 Archimage Transcendant</div>
+                    <div class="ef-tier-info" data-i18n="tier6-desc">
+                        Le sommet ultime de la magie. Pouvoir divin et maîtrise absolue de toutes les écoles magiques.
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-levels">Niveau</span>
+                            <span class="ef-tier-value">100</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-unlock">Débloquage</span>
+                            <span class="ef-tier-value">Quête Épique</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-time">Temps Total</span>
+                            <span class="ef-tier-value">600h+</span>
+                        </div>
+                        <div class="ef-tier-detail">
+                            <span class="ef-tier-label" data-i18n="tier-spells">Sorts Disponibles</span>
+                            <span class="ef-tier-value">Tier 1-5 + Ultimate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ef-tip-box">
+                <div class="ef-tip-title" data-i18n="tip-progression-title">Conseils de Progression</div>
+                <div class="ef-tip-text" data-i18n="tip-progression-text" data-i18n-html="true">
+                    • <strong>Spécialisez-vous tôt :</strong> Choisissez 2-3 écoles magiques dès le niveau 20<br>
+                    • <strong>Farming efficace :</strong> Donjons > Mobs normaux pour l'XP magique<br>
+                    • <strong>Quêtes quotidiennes :</strong> Completez les quêtes PNJ pour des bonus d'XP massifs<br>
+                    • <strong>Évènements spéciaux :</strong> Participez aux évènements serveur (x2 XP)<br>
+                    • <strong>Progression équilibrée :</strong> Ne rush pas, profitez de chaque palier
+                </div>
+            </div>
+        </div>
+
+        <!-- XP SOURCES SECTION -->
+        <div class="ef-section">
+            <div class="ef-section-title" data-i18n="section-xp-sources">💎 Sources d'Expérience Magique</div>
+
+            <div class="ef-xp-sources">
+                <!-- Source 1: Combat -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">⚔️</span>
+                        <span data-i18n="xp-combat-title">Combat Magique</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-combat-desc" data-i18n-html="true">
+                        Tuer des ennemis avec des sorts magiques.<br>
+                        <span class="ef-xp-value">+50-500 XP</span> par kill<br>
+                        Bonus si l'ennemi est de niveau supérieur.
+                    </div>
+                </div>
+
+                <!-- Source 2: Dungeons -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">🏰</span>
+                        <span data-i18n="xp-dungeon-title">Donjons Magiques</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-dungeon-desc" data-i18n-html="true">
+                        Compléter des donjons épiques.<br>
+                        <span class="ef-xp-value">+5,000-50,000 XP</span> par donjon<br>
+                        La meilleure source d'XP en mid/late game.
+                    </div>
+                </div>
+
+                <!-- Source 3: Boss -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">👑</span>
+                        <span data-i18n="xp-boss-title">Boss Légendaires</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-boss-desc" data-i18n-html="true">
+                        Vaincre des boss de monde.<br>
+                        <span class="ef-xp-value">+10,000-100,000 XP</span> par boss<br>
+                        XP énorme mais difficile.
+                    </div>
+                </div>
+
+                <!-- Source 4: Quests -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">📜</span>
+                        <span data-i18n="xp-quest-title">Quêtes Magiques</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-quest-desc" data-i18n-html="true">
+                        Compléter des quêtes de PNJ mages.<br>
+                        <span class="ef-xp-value">+1,000-20,000 XP</span> par quête<br>
+                        Quêtes journalières et hebdomadaires disponibles.
+                    </div>
+                </div>
+
+                <!-- Source 5: Crafting -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">⚗️</span>
+                        <span data-i18n="xp-craft-title">Alchimie & Enchantement</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-craft-desc" data-i18n-html="true">
+                        Créer des potions et enchanter des items.<br>
+                        <span class="ef-xp-value">+100-5,000 XP</span> par craft<br>
+                        Progression passive très efficace.
+                    </div>
+                </div>
+
+                <!-- Source 6: Exploration -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">🗺️</span>
+                        <span data-i18n="xp-explore-title">Découverte Magique</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-explore-desc" data-i18n-html="true">
+                        Découvrir des lieux magiques secrets.<br>
+                        <span class="ef-xp-value">+2,000-15,000 XP</span> par découverte<br>
+                        Temples, sanctuaires, portails anciens.
+                    </div>
+                </div>
+
+                <!-- Source 7: Rituals -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">🔯</span>
+                        <span data-i18n="xp-ritual-title">Rituels Arcanes</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-ritual-desc" data-i18n-html="true">
+                        Effectuer des rituels magiques complexes.<br>
+                        <span class="ef-xp-value">+8,000-40,000 XP</span> par rituel<br>
+                        Nécessite des matériaux rares.
+                    </div>
+                </div>
+
+                <!-- Source 8: PvP -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">⚡</span>
+                        <span data-i18n="xp-pvp-title">Duels Magiques</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-pvp-desc" data-i18n-html="true">
+                        Combattre d'autres mages en PvP.<br>
+                        <span class="ef-xp-value">+500-10,000 XP</span> par victoire<br>
+                        Bonus basé sur le niveau de l'adversaire.
+                    </div>
+                </div>
+
+                <!-- Source 9: Events -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">🎉</span>
+                        <span data-i18n="xp-event-title">Évènements Spéciaux</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-event-desc" data-i18n-html="true">
+                        Participer aux évènements serveur.<br>
+                        <span class="ef-xp-value">x2 XP</span> pendant l'évènement<br>
+                        Bonus massifs et récompenses exclusives.
+                    </div>
+                </div>
+
+                <!-- Source 10: Books -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">📚</span>
+                        <span data-i18n="xp-book-title">Livres de Sagesse</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-book-desc" data-i18n-html="true">
+                        Lire des grimoires anciens.<br>
+                        <span class="ef-xp-value">+3,000-25,000 XP</span> par livre<br>
+                        Trouvés dans les bibliothèques et donjons.
+                    </div>
+                </div>
+
+                <!-- Source 11: Teaching -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">🎓</span>
+                        <span data-i18n="xp-teach-title">Enseignement</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-teach-desc" data-i18n-html="true">
+                        Enseigner la magie aux novices.<br>
+                        <span class="ef-xp-value">+1,000-8,000 XP</span> par session<br>
+                        Bonus si l'élève progresse rapidement.
+                    </div>
+                </div>
+
+                <!-- Source 12: Meditation -->
+                <div class="ef-xp-card">
+                    <div class="ef-xp-header">
+                        <span class="ef-xp-icon">🧘</span>
+                        <span data-i18n="xp-meditation-title">Méditation Magique</span>
+                    </div>
+                    <div class="ef-xp-details" data-i18n="xp-meditation-desc" data-i18n-html="true">
+                        Méditer dans des lieux de pouvoir.<br>
+                        <span class="ef-xp-value">+200-2,000 XP/heure</span><br>
+                        Progression AFK lente mais stable.
+                    </div>
+                </div>
+            </div>
+
+            <div class="ef-time-estimate">
+                <div class="ef-time-title" data-i18n="estimate-title">⏱️ Estimations de Temps</div>
+                <div class="ef-time-content" data-i18n="estimate-content" data-i18n-html="true">
+                    <strong>Joueur Casual (2-3h/jour) :</strong><br>
+                    • Niveau 20 : ~1 semaine<br>
+                    • Niveau 40 : ~1 mois<br>
+                    • Niveau 60 : ~3 mois<br>
+                    • Niveau 80 : ~7 mois<br>
+                    • Niveau 99 : ~14 mois<br>
+                    • Niveau 100 : ~15 mois + quête finale<br><br>
+
+                    <strong>Joueur Hardcore (6-8h/jour) :</strong><br>
+                    • Niveau 20 : ~2 jours<br>
+                    • Niveau 40 : ~2 semaines<br>
+                    • Niveau 60 : ~5 semaines<br>
+                    • Niveau 80 : ~12 semaines<br>
+                    • Niveau 99 : ~6 mois<br>
+                    • Niveau 100 : ~7 mois + quête finale
+                </div>
+            </div>
+        </div>
+
+        <!-- MILESTONE LEVELS SECTION -->
+        <div class="ef-section">
+            <div class="ef-section-title" data-i18n="section-milestones">🎯 Niveaux Marquants</div>
+
+            <table class="ef-progress-table">
                 <thead>
                     <tr>
-                        <th>Niveau</th>
-                        <th>Titre</th>
-                        <th>XP pour Next Level</th>
-                        <th>XP Cumulée Totale</th>
-                        <th>Temps Casual</th>
-                        <th>Temps Hardcore</th>
+                        <th data-i18n="table-level">Niveau</th>
+                        <th data-i18n="table-title">Titre</th>
+                        <th data-i18n="table-unlock">Déblocage Principal</th>
+                        <th data-i18n="table-total-xp">XP Cumulée</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Novice (1-20) -->
-                    <tr class="tier-novice">
+                    <tr>
                         <td><strong>1</strong></td>
-                        <td>Novice Débutant</td>
-                        <td>100 XP</td>
-                        <td>0 XP</td>
-                        <td>0.1h</td>
-                        <td>0.05h</td>
+                        <td data-i18n="lvl1-title">Novice Débutant</td>
+                        <td data-i18n="lvl1-unlock">Premier sort de base</td>
+                        <td>0</td>
                     </tr>
-                    <tr class="tier-novice">
-                        <td><strong>5</strong></td>
-                        <td>Novice</td>
-                        <td>2,500 XP</td>
-                        <td>5,500 XP</td>
-                        <td>0.5h</td>
-                        <td>0.3h</td>
-                    </tr>
-                    <tr class="tier-novice">
+                    <tr>
                         <td><strong>10</strong></td>
-                        <td>Novice Avancé</td>
-                        <td>10,000 XP</td>
-                        <td>38,500 XP</td>
-                        <td>2h</td>
-                        <td>1h</td>
+                        <td data-i18n="lvl10-title">Novice Confirmé</td>
+                        <td data-i18n="lvl10-unlock">Sorts Tier 1 complets</td>
+                        <td>10,000</td>
                     </tr>
-                    <tr class="tier-novice">
-                        <td><strong>15</strong></td>
-                        <td>Novice Confirmé</td>
-                        <td>22,500 XP</td>
-                        <td>120,000 XP</td>
-                        <td>5h</td>
-                        <td>3h</td>
-                    </tr>
-                    <tr class="tier-novice">
+                    <tr>
                         <td><strong>20</strong></td>
-                        <td>Novice Maître</td>
-                        <td>40,000 XP</td>
-                        <td>287,000 XP</td>
-                        <td>12h</td>
-                        <td>7h</td>
+                        <td data-i18n="lvl20-title">Apprenti Débutant</td>
+                        <td data-i18n="lvl20-unlock">Choix de spécialisation</td>
+                        <td>28,000</td>
                     </tr>
-
-                    <!-- Apprenti (21-40) -->
-                    <tr class="tier-apprenti">
-                        <td><strong>25</strong></td>
-                        <td>Apprenti</td>
-                        <td>103,750 XP</td>
-                        <td>665,000 XP</td>
-                        <td>25h</td>
-                        <td>15h</td>
-                    </tr>
-                    <tr class="tier-apprenti">
+                    <tr>
                         <td><strong>30</strong></td>
-                        <td>Apprenti Confirmé</td>
-                        <td>145,000 XP</td>
-                        <td>1,290,000 XP</td>
-                        <td>45h</td>
-                        <td>25h</td>
+                        <td data-i18n="lvl30-title">Apprenti Avancé</td>
+                        <td data-i18n="lvl30-unlock">Sorts Tier 2</td>
+                        <td>145,000</td>
                     </tr>
-                    <tr class="tier-apprenti">
-                        <td><strong>35</strong></td>
-                        <td>Apprenti Avancé</td>
-                        <td>193,750 XP</td>
-                        <td>2,175,000 XP</td>
-                        <td>70h</td>
-                        <td>40h</td>
-                    </tr>
-                    <tr class="tier-apprenti">
+                    <tr>
                         <td><strong>40</strong></td>
-                        <td>Apprenti Maître</td>
-                        <td>250,000 XP</td>
-                        <td>3,400,000 XP</td>
-                        <td>100h</td>
-                        <td>60h</td>
+                        <td data-i18n="lvl40-title">Adepte Débutant</td>
+                        <td data-i18n="lvl40-unlock">Combo de sorts</td>
+                        <td>350,000</td>
                     </tr>
-
-                    <!-- Adepte (41-60) -->
-                    <tr class="tier-adepte">
-                        <td><strong>45</strong></td>
-                        <td>Adepte</td>
-                        <td>313,750 XP</td>
-                        <td>5,025,000 XP</td>
-                        <td>135h</td>
-                        <td>80h</td>
-                    </tr>
-                    <tr class="tier-adepte">
+                    <tr>
                         <td><strong>50</strong></td>
-                        <td>Adepte Confirmé</td>
-                        <td>385,000 XP</td>
-                        <td>7,100,000 XP</td>
-                        <td>175h</td>
-                        <td>105h</td>
+                        <td data-i18n="lvl50-title">Adepte Maître</td>
+                        <td data-i18n="lvl50-unlock">Sorts Tier 3</td>
+                        <td>685,000</td>
                     </tr>
-                    <tr class="tier-adepte">
-                        <td><strong>55</strong></td>
-                        <td>Adepte Avancé</td>
-                        <td>806,250 XP</td>
-                        <td>9,750,000 XP</td>
-                        <td>220h</td>
-                        <td>130h</td>
-                    </tr>
-                    <tr class="tier-adepte">
+                    <tr>
                         <td><strong>60</strong></td>
-                        <td>Adepte Maître</td>
-                        <td>950,000 XP</td>
-                        <td>13,100,000 XP</td>
-                        <td>270h</td>
-                        <td>160h</td>
+                        <td data-i18n="lvl60-title">Expert Débutant</td>
+                        <td data-i18n="lvl60-unlock">Sorts de zone (AoE)</td>
+                        <td>1,185,000</td>
                     </tr>
-
-                    <!-- Expert (61-80) -->
-                    <tr class="tier-expert">
-                        <td><strong>65</strong></td>
-                        <td>Expert</td>
-                        <td>1,112,500 XP</td>
-                        <td>17,150,000 XP</td>
-                        <td>325h</td>
-                        <td>190h</td>
-                    </tr>
-                    <tr class="tier-expert">
+                    <tr>
                         <td><strong>70</strong></td>
-                        <td>Expert Confirmé</td>
-                        <td>1,275,000 XP</td>
-                        <td>21,900,000 XP</td>
-                        <td>385h</td>
-                        <td>225h</td>
+                        <td data-i18n="lvl70-title">Expert Maître</td>
+                        <td data-i18n="lvl70-unlock">Sorts Tier 4</td>
+                        <td>1,960,000</td>
                     </tr>
-                    <tr class="tier-expert">
-                        <td><strong>75</strong></td>
-                        <td>Expert Avancé</td>
-                        <td>1,456,250 XP</td>
-                        <td>27,400,000 XP</td>
-                        <td>450h</td>
-                        <td>265h</td>
-                    </tr>
-                    <tr class="tier-expert">
+                    <tr>
                         <td><strong>80</strong></td>
-                        <td>Expert Maître</td>
-                        <td>1,650,000 XP</td>
-                        <td>33,750,000 XP</td>
-                        <td>520h</td>
-                        <td>305h</td>
+                        <td data-i18n="lvl80-title">Maître Arcanique</td>
+                        <td data-i18n="lvl80-unlock">Métamagie avancée</td>
+                        <td>3,210,000</td>
                     </tr>
-
-                    <!-- Maître Arcanique (81-99) -->
-                    <tr class="tier-maitre">
-                        <td><strong>85</strong></td>
-                        <td>Maître Arcanique</td>
-                        <td>3,040,000 XP</td>
-                        <td>40,850,000 XP</td>
-                        <td>595h</td>
-                        <td>350h</td>
-                    </tr>
-                    <tr class="tier-maitre">
+                    <tr>
                         <td><strong>90</strong></td>
-                        <td>Maître Arcanique Confirmé</td>
-                        <td>3,390,000 XP</td>
-                        <td>49,300,000 XP</td>
-                        <td>675h</td>
-                        <td>395h</td>
+                        <td data-i18n="lvl90-title">Maître Suprême</td>
+                        <td data-i18n="lvl90-unlock">Sorts Tier 5</td>
+                        <td>5,160,000</td>
                     </tr>
-                    <tr class="tier-maitre">
-                        <td><strong>95</strong></td>
-                        <td>Maître Arcanique Avancé</td>
-                        <td>3,760,000 XP</td>
-                        <td>59,250,000 XP</td>
-                        <td>765h</td>
-                        <td>450h</td>
-                    </tr>
-                    <tr class="tier-maitre">
+                    <tr>
                         <td><strong>99</strong></td>
-                        <td>Maître Arcanique Ultime</td>
-                        <td>4,110,000 XP</td>
-                        <td>72,500,000 XP</td>
-                        <td>860h</td>
-                        <td>505h</td>
+                        <td data-i18n="lvl99-title">Quasi-Archimage</td>
+                        <td data-i18n="lvl99-unlock">Tous les sorts maîtrisés</td>
+                        <td>8,720,000</td>
                     </tr>
-
-                    <!-- Archimage (100) -->
-                    <tr class="tier-archimage" style="background: rgba(251, 191, 36, 0.2);">
+                    <tr style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);">
                         <td><strong>100</strong></td>
-                        <td style="color: #fbbf24; font-weight: bold;">👑 Archimage Transcendant</td>
-                        <td>Quête des 7 Sceaux</td>
-                        <td>~85,000,000 XP</td>
-                        <td>900-950h</td>
-                        <td>525-575h</td>
+                        <td data-i18n="lvl100-title" style="color: #fbbf24; font-weight: 900;">Archimage Transcendant</td>
+                        <td data-i18n="lvl100-unlock" style="color: #fbbf24;">Sort Ultime</td>
+                        <td style="color: #fbbf24; font-weight: 900;">Quest Only</td>
                     </tr>
                 </tbody>
             </table>
 
-            <div class="tip-box">
-                <div class="tip-title">Lecture du Tableau</div>
-                <div class="tip-text">
-                    • <strong>"XP pour Next Level"</strong> = XP nécessaire pour passer au niveau suivant<br>
-                    • <strong>"XP Cumulée Totale"</strong> = Total d'XP acquise depuis le niveau 1<br>
-                    • <strong>"Temps Casual"</strong> = ~1000 XP/heure (farming moyen, exploration, quêtes)<br>
-                    • <strong>"Temps Hardcore"</strong> = ~1700 XP/heure (grind optimisé, boss rush, events)<br><br>
-                    
-                    Les temps sont <strong>cumulatifs depuis le niveau 1</strong>.
+            <div class="ef-warning-box">
+                <div class="ef-warning-title" data-i18n="warning-lvl100-title">⚠️ Niveau 100 - Quête Spéciale</div>
+                <div class="ef-warning-text" data-i18n="warning-lvl100-text" data-i18n-html="true">
+                    Le niveau 100 ne peut <strong>PAS</strong> être atteint par farming d'XP.<br>
+                    Une fois niveau 99, vous devez compléter la quête épique <strong>"L'Ascension de l'Archimage"</strong> :<br><br>
+
+                    • Vaincre les 7 Boss Élémentaires (un par école magique)<br>
+                    • Collecter les 7 Fragments du Bâton Primordial<br>
+                    • Compléter le Rituel d'Ascension dans le Temple Oublié<br>
+                    • Combat final contre l'Ancien Archimage corrompu<br><br>
+
+                    Récompense : <strong>Titre Archimage</strong>, <strong>Sort Ultime</strong>, <strong>Cosmétique Légendaire</strong>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION 3: Sources d'XP -->
-        <div class="main-section">
-            <div class="section-title">💎 Sources d'XP Magique</div>
+        <!-- TIPS SECTION -->
+        <div class="ef-section">
+            <div class="ef-section-title" data-i18n="section-tips">💡 Conseils Avancés</div>
 
-            <p style="color: #cbd5e1; margin-bottom: 30px; font-size: 1.1em;">
-                Voici toutes les façons d'obtenir de l'XP magique, avec les valeurs exactes et multiplicateurs.
-            </p>
-
-            <div class="xp-source-grid">
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">⚔️</span>
-                        Lancer des Sorts
-                    </div>
-                    <div class="source-details">
-                        <strong>Base:</strong><br>
-                        • Sort Tier 1: <span class="xp-value">5 XP</span><br>
-                        • Sort Tier 2: <span class="xp-value">15 XP</span><br>
-                        • Sort Tier 3: <span class="xp-value">35 XP</span><br>
-                        • Sort Tier 4: <span class="xp-value">75 XP</span><br>
-                        • Sort Tier 5: <span class="xp-value">150 XP</span><br><br>
-                        
-                        <strong>Multiplicateurs:</strong><br>
-                        • Touche une cible: <span class="xp-value">x1.5</span><br>
-                        • Tue un mob: <span class="xp-value">x2.0</span><br>
-                        • École spécialisée: <span class="xp-value">x1.3</span>
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">👹</span>
-                        Tuer des Mobs
-                    </div>
-                    <div class="source-details">
-                        <strong>Avec Magie:</strong><br>
-                        • Mob passif: <span class="xp-value">10 XP</span><br>
-                        • Mob hostile: <span class="xp-value">25 XP</span><br>
-                        • Mob rare: <span class="xp-value">75 XP</span><br>
-                        • Mini-boss: <span class="xp-value">200 XP</span><br>
-                        • Boss: <span class="xp-value">800 XP</span><br>
-                        • Boss Légendaire: <span class="xp-value">2500 XP</span><br>
-                        • Boss Ultime: <span class="xp-value">8000 XP</span><br><br>
-                        
-                        <strong>Sans magie:</strong> <span class="xp-value">Aucune XP</span>
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">🏰</span>
-                        Donjons
-                    </div>
-                    <div class="source-details">
-                        <strong>Complétion:</strong><br>
-                        • Donjon Facile: <span class="xp-value">500 XP</span><br>
-                        • Donjon Moyen: <span class="xp-value">1200 XP</span><br>
-                        • Donjon Difficile: <span class="xp-value">3000 XP</span><br>
-                        • Donjon Légendaire: <span class="xp-value">8000 XP</span><br>
-                        • Donjon Mythique: <span class="xp-value">20,000 XP</span><br><br>
-                        
-                        <strong>Bonus:</strong><br>
-                        • Première clear: <span class="xp-value">+50%</span><br>
-                        • Speedrun (<5min): <span class="xp-value">+30%</span><br>
-                        • Solo: <span class="xp-value">+20%</span>
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">📜</span>
-                        Quêtes Magiques
-                    </div>
-                    <div class="source-details">
-                        <strong>Récompenses:</strong><br>
-                        • Quête Mineure: <span class="xp-value">300 XP</span><br>
-                        • Quête Normale: <span class="xp-value">800 XP</span><br>
-                        • Quête Importante: <span class="xp-value">2000 XP</span><br>
-                        • Quête Majeure: <span class="xp-value">5000 XP</span><br>
-                        • Quête Épique: <span class="xp-value">15,000 XP</span><br>
-                        • Quête Légendaire: <span class="xp-value">50,000 XP</span><br><br>
-                        
-                        <strong>Fréquence:</strong><br>
-                        • Quotidiennes disponibles<br>
-                        • Hebdomadaires disponibles<br>
-                        • Histoire unique
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">⚗️</span>
-                        Craft Magique
-                    </div>
-                    <div class="source-details">
-                        <strong>Création:</strong><br>
-                        • Potion Magique: <span class="xp-value">50 XP</span><br>
-                        • Enchantement Custom: <span class="xp-value">150 XP</span><br>
-                        • Item Magique: <span class="xp-value">300 XP</span><br>
-                        • Artefact: <span class="xp-value">800 XP</span><br>
-                        • Sort Custom (Niv 70+): <span class="xp-value">2000 XP</span><br><br>
-                        
-                        <strong>Note:</strong> Une seule fois par craft unique
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">🌀</span>
-                        Rituels
-                    </div>
-                    <div class="source-details">
-                        <strong>Complétion:</strong><br>
-                        • Rituel Mineur: <span class="xp-value">200 XP</span><br>
-                        • Rituel Normal: <span class="xp-value">600 XP</span><br>
-                        • Rituel Majeur: <span class="xp-value">1500 XP</span><br>
-                        • Rituel Légendaire: <span class="xp-value">5000 XP</span><br><br>
-                        
-                        <strong>Multiplicateur:</strong><br>
-                        • En groupe: <span class="xp-value">x1.2 par membre</span><br>
-                        • Réussite parfaite: <span class="xp-value">+50%</span>
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">⚡</span>
-                        Événements Magiques
-                    </div>
-                    <div class="source-details">
-                        <strong>Participation:</strong><br>
-                        • Tempête Arcanique: <span class="xp-value">1000 XP</span><br>
-                        • Invasion Dimensionnelle: <span class="xp-value">2500 XP</span><br>
-                        • Convergence Magique: <span class="xp-value">5000 XP</span><br>
-                        • Éclipse Mystique: <span class="xp-value">10,000 XP</span><br><br>
-                        
-                        <strong>Fréquence:</strong> Aléatoire (1-3x par jour)
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">🎯</span>
-                        Défis Hebdomadaires
-                    </div>
-                    <div class="source-details">
-                        <strong>Récompenses:</strong><br>
-                        • Défi Bronze: <span class="xp-value">1500 XP</span><br>
-                        • Défi Argent: <span class="xp-value">3500 XP</span><br>
-                        • Défi Or: <span class="xp-value">7500 XP</span><br>
-                        • Défi Platine: <span class="xp-value">15,000 XP</span><br><br>
-                        
-                        <strong>Reset:</strong> Tous les lundis<br>
-                        <strong>Nombre:</strong> 10 défis/semaine
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">📖</span>
-                        Découvertes
-                    </div>
-                    <div class="source-details">
-                        <strong>Première fois:</strong><br>
-                        • Nouveau sort découvert: <span class="xp-value">100 XP</span><br>
-                        • Nouveau combo trouvé: <span class="xp-value">300 XP</span><br>
-                        • Lieu magique: <span class="xp-value">500 XP</span><br>
-                        • Boss caché: <span class="xp-value">2000 XP</span><br>
-                        • Secret majeur: <span class="xp-value">5000 XP</span>
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">🏆</span>
-                        PvP Magique
-                    </div>
-                    <div class="source-details">
-                        <strong>Combat:</strong><br>
-                        • Victoire Duel: <span class="xp-value">200 XP</span><br>
-                        • Victoire 2v2: <span class="xp-value">400 XP</span><br>
-                        • Victoire Battle Royale: <span class="xp-value">1500 XP</span><br>
-                        • Montée de rang: <span class="xp-value">5000 XP</span><br><br>
-                        
-                        <strong>Défaite:</strong> <span class="xp-value">50% XP</span>
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">📚</span>
-                        Items Consommables
-                    </div>
-                    <div class="source-details">
-                        <strong>Items XP:</strong><br>
-                        • Tome de Connaissance I: <span class="xp-value">+500 XP</span><br>
-                        • Tome de Connaissance II: <span class="xp-value">+2000 XP</span><br>
-                        • Tome de Connaissance III: <span class="xp-value">+8000 XP</span><br>
-                        • Parchemin d'Éveil: <span class="xp-value">+50% XP (1h)</span><br>
-                        • Élixir d'Illumination: <span class="xp-value">+100% XP (30min)</span><br><br>
-                        
-                        <strong>Rareté:</strong> Drop boss/coffres rares
-                    </div>
-                </div>
-
-                <div class="xp-source-card">
-                    <div class="source-header">
-                        <span class="source-icon">🎓</span>
-                        Mentor System
-                    </div>
-                    <div class="source-details">
-                        <strong>Bonus Mentor:</strong><br>
-                        • Aider joueur <20: <span class="xp-value">+10% XP</span><br>
-                        • Aider joueur <50: <span class="xp-value">+15% XP</span><br>
-                        • Apprenti monte niveau: <span class="xp-value">500 XP</span><br><br>
-                        
-                        <strong>Bonus Apprenti:</strong><br>
-                        • Avec mentor présent: <span class="xp-value">+25% XP</span>
-                    </div>
+            <div class="ef-tip-box">
+                <div class="ef-tip-title" data-i18n="tip1-title">Farming Efficace</div>
+                <div class="ef-tip-text" data-i18n="tip1-text" data-i18n-html="true">
+                    • <strong>Priorité Donjons :</strong> Les donjons donnent 10x plus d'XP que le farm de mobs<br>
+                    • <strong>Groupes optimaux :</strong> Farm en groupe de 3-4 pour partager l'XP équitablement<br>
+                    • <strong>Hotspots XP :</strong> Bibliothèque Interdite (niveau 40+), Sanctuaire Cristallin (niveau 70+)<br>
+                    • <strong>Combos :</strong> Utilisez des potions d'XP (+50%) pendant les sessions de farm intensif
                 </div>
             </div>
 
-            <div class="stat-box" style="margin-top: 40px;">
-                <h3 style="color: #c084fc; font-size: 1.5em; margin-bottom: 15px;">💰 Taux d'XP Moyen par Activité (par heure)</h3>
-                <div class="progress-chart">
-                    <div class="chart-bar">
-                        <div class="chart-bar-fill" style="width: 100%;"></div>
-                        <div class="chart-label">🏆 Grind Boss Optimisé : <span class="xp-value">2500 XP/h</span> (Hardcore)</div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-fill" style="width: 80%;"></div>
-                        <div class="chart-label">⚡ Événements Magiques : <span class="xp-value">2000 XP/h</span></div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-fill" style="width: 70%;"></div>
-                        <div class="chart-label">🏰 Donjons Répétables : <span class="xp-value">1750 XP/h</span></div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-fill" style="width: 60%;"></div>
-                        <div class="chart-label">🎯 Quêtes + Exploration : <span class="xp-value">1500 XP/h</span></div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-fill" style="width: 50%;"></div>
-                        <div class="chart-label">⚔️ Combat Mobs Standard : <span class="xp-value">1250 XP/h</span></div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-fill" style="width: 40%;"></div>
-                        <div class="chart-label">📜 Quêtes Solo Casual : <span class="xp-value">1000 XP/h</span></div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-fill" style="width: 30%;"></div>
-                        <div class="chart-label">🌍 Exploration Pure : <span class="xp-value">750 XP/h</span></div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-fill" style="width: 20%;"></div>
-                        <div class="chart-label">⚗️ Craft & Rituels : <span class="xp-value">500 XP/h</span></div>
-                    </div>
+            <div class="ef-tip-box">
+                <div class="ef-tip-title" data-i18n="tip2-title">Optimisation de Build</div>
+                <div class="ef-tip-text" data-i18n="tip2-text" data-i18n-html="true">
+                    • <strong>Hybride vs Pure :</strong> Spécialisation pure = plus fort, Hybride = plus versatile<br>
+                    • <strong>Meta actuelle :</strong> Feu/Arcane (DPS), Eau/Lumière (Support), Terre (Tank)<br>
+                    • <strong>Synergies :</strong> Feu+Air = Lightning Storm, Eau+Terre = Ice Wall<br>
+                    • <strong>Équipement :</strong> Priorisez Intelligence > Régénération Mana > Cooldown Reduction
+                </div>
+            </div>
+
+            <div class="ef-tip-box">
+                <div class="ef-tip-title" data-i18n="tip3-title">Économie de Ressources</div>
+                <div class="ef-tip-text" data-i18n="tip3-text" data-i18n-html="true">
+                    • <strong>Cristaux de Mana :</strong> Farmés dans les caves profondes (Y < 20)<br>
+                    • <strong>Essences Élémentaires :</strong> Drops des boss élémentaires (rare)<br>
+                    • <strong>Parchemins :</strong> Achetés chez les PNJ marchands ou craftés (papier + encre magique)<br>
+                    • <strong>Ingrédients rares :</strong> Jardins Voraces (plantes), Forge des Titans (métaux)
                 </div>
             </div>
         </div>
-
-        <!-- SECTION 4: Estimation Temps par Palier -->
-        <div class="main-section">
-            <div class="section-title">⏰ Temps de Jeu Estimé par Palier</div>
-
-            <div class="time-estimate">
-                <div class="time-title">🎮 Profil Joueur Casual (1000 XP/h moyenne)</div>
-                <div class="time-content">
-                    <strong>Définition:</strong> Joue 1-2h par session, mix quêtes/exploration/combat, pas de grind optimisé<br><br>
-                    
-                    <strong>Niveaux 1-20 (Novice):</strong> <span class="xp-value">~12 heures</span><br>
-                    → Progression très rapide, découverte du système<br>
-                    → 1-2 semaines en jouant 1h/jour<br><br>
-                    
-                    <strong>Niveaux 21-40 (Apprenti):</strong> <span class="xp-value">~88 heures (100h total)</span><br>
-                    → Progression modérée, déblocage des capacités intermédiaires<br>
-                    → 3 mois en jouant 1h/jour<br><br>
-                    
-                    <strong>Niveaux 41-60 (Adepte):</strong> <span class="xp-value">~170 heures (270h total)</span><br>
-                    → Le grind commence à se faire sentir<br>
-                    → 6 mois en jouant 1-2h/jour<br><br>
-                    
-                    <strong>Niveaux 61-80 (Expert):</strong> <span class="xp-value">~250 heures (520h total)</span><br>
-                    → Grind intensif, besoin de farm boss et donjons<br>
-                    → 10 mois en jouant 1-2h/jour<br><br>
-                    
-                    <strong>Niveaux 81-99 (Maître):</strong> <span class="xp-value">~340 heures (860h total)</span><br>
-                    → Grind TRÈS lent, niveaux prestige<br>
-                    → 15 mois en jouant 1-2h/jour<br><br>
-                    
-                    <strong>Niveau 100 (Archimage):</strong> <span class="xp-value">~40-90 heures (900-950h total)</span><br>
-                    → Quête des 7 Sceaux (skill-based, pas grind)<br>
-                    → Achievement ultime après 18-24 mois de jeu
-                </div>
-            </div>
-
-            <div class="time-estimate" style="border-color: rgba(139, 92, 246, 0.5); background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);">
-                <div class="time-title" style="color: #a78bfa;">⚡ Profil Joueur Hardcore (1700 XP/h moyenne)</div>
-                <div class="time-content" style="color: #ddd6fe;">
-                    <strong>Définition:</strong> Joue 3-6h par session, grind optimisé, farm boss rush, abuse events<br><br>
-                    
-                    <strong>Niveaux 1-20 (Novice):</strong> <span class="xp-value">~7 heures</span><br>
-                    → Speedrun le early game<br>
-                    → 2-3 jours<br><br>
-                    
-                    <strong>Niveaux 21-40 (Apprenti):</strong> <span class="xp-value">~53 heures (60h total)</span><br>
-                    → Grind efficace avec focus donjons<br>
-                    → 2-3 semaines<br><br>
-                    
-                    <strong>Niveaux 41-60 (Adepte):</strong> <span class="xp-value">~100 heures (160h total)</span><br>
-                    → Farm optimisé, events abuse<br>
-                    → 2 mois<br><br>
-                    
-                    <strong>Niveaux 61-80 (Expert):</strong> <span class="xp-value">~145 heures (305h total)</span><br>
-                    → Boss rush 24/7, défis hebdo systématiques<br>
-                    → 3-4 mois<br><br>
-                    
-                    <strong>Niveaux 81-99 (Maître):</strong> <span class="xp-value">~200 heures (505h total)</span><br>
-                    → Grind intense mais optimisé<br>
-                    → 5-6 mois<br><br>
-                    
-                    <strong>Niveau 100 (Archimage):</strong> <span class="xp-value">~20-70 heures (525-575h total)</span><br>
-                    → Quête des 7 Sceaux (skill > time)<br>
-                    → Achievement après 6-8 mois de grind hardcore
-                </div>
-            </div>
-
-            <div class="warning-box">
-                <div class="warning-title">⏳ Temps Réel vs Temps de Jeu</div>
-                <div class="warning-text">
-                    Les estimations ci-dessus sont en <strong>temps de jeu actif</strong>, pas en temps réel.<br><br>
-                    
-                    <strong>Exemples de conversion:</strong><br>
-                    • Joueur casual (1h/jour) : Niveau 100 en <strong>2-3 ans</strong><br>
-                    • Joueur régulier (2h/jour) : Niveau 100 en <strong>12-18 mois</strong><br>
-                    • Joueur hardcore (4h/jour) : Niveau 100 en <strong>6-8 mois</strong><br>
-                    • No-life (8h+/jour) : Niveau 100 en <strong>3-4 mois</strong><br><br>
-                    
-                    Le système est conçu pour que atteindre niveau 100 soit un <strong>accomplissement majeur</strong> 
-                    qui nécessite dévouement et persévérance. Seuls les plus déterminés y arriveront !
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 5: Stratégies d'Optimisation -->
-        <div class="main-section">
-            <div class="section-title">🎯 Stratégies d'Optimisation XP</div>
-
-            <div class="tip-box">
-                <div class="tip-title">Niveaux 1-20 : Speedrun</div>
-                <div class="tip-text">
-                    <strong>Objectif:</strong> Monter le plus vite possible, pas de perte de temps<br><br>
-                    
-                    <strong>Route optimale:</strong><br>
-                    1. Faire toutes les quêtes tutorielles (2000 XP)<br>
-                    2. Farm mobs hostiles avec sorts Tier 1 spam (500 XP/h)<br>
-                    3. Premier donjon facile à niveau 5 (500 XP)<br>
-                    4. Choisir école principale à niveau 10<br>
-                    5. Grind jusqu'à 15 avec donjons faciles répétables<br>
-                    6. Unlock école secondaire et rush niveau 20<br><br>
-                    
-                    <strong>Temps estimé:</strong> 7-12 heures selon expérience<br>
-                    <strong>Items recommandés:</strong> Bâton d'Apprenti, Robe basique, Potions mana
-                </div>
-            </div>
-
-            <div class="tip-box">
-                <div class="tip-title">Niveaux 21-40 : Donjons Focus</div>
-                <div class="tip-text">
-                    <strong>Objectif:</strong> Équilibre XP/Équipement pour mid-game<br><br>
-                    
-                    <strong>Route optimale:</strong><br>
-                    1. Farm donjons moyens (1200 XP chacun, ~15min)<br>
-                    2. Faire toutes les quêtes mineures disponibles<br>
-                    3. Participer aux événements magiques (2000 XP/h)<br>
-                    4. Unlock métamagie à niveau 35<br>
-                    5. Craft items magiques pour bonus XP<br>
-                    6. Préparer build pour Expert tier<br><br>
-                    
-                    <strong>XP/h optimale:</strong> 1500-1800 XP/h<br>
-                    <strong>Focus:</strong> Drop équipement Tier 2 pendant le farm
-                </div>
-            </div>
-
-            <div class="tip-box">
-                <div class="tip-title">Niveaux 41-60 : Boss Rush</div>
-                <div class="tip-text">
-                    <strong>Objectif:</strong> Maximiser XP via boss farming<br><br>
-                    
-                    <strong>Route optimale:</strong><br>
-                    1. Identifier les boss à respawn rapide (800 XP/kill, 5-10min)<br>
-                    2. Former un groupe de farm (bonus XP x1.2 par membre)<br>
-                    3. Abuse des événements (Tempête Arcanique = 1000 XP)<br>
-                    4. Compléter défis hebdomadaires (15k XP/semaine)<br>
-                    5. Farm donjons légendaires pour XP + artefacts<br>
-                    6. Unlock sorts Tier 4 et rituels<br><br>
-                    
-                    <strong>XP/h optimale:</strong> 1800-2200 XP/h en groupe<br>
-                    <strong>Milestone:</strong> Niveau 60 débloque école tertiaire
-                </div>
-            </div>
-
-            <div class="tip-box">
-                <div class="tip-title">Niveaux 61-80 : Grind Marathon</div>
-                <div class="tip-text">
-                    <strong>Objectif:</strong> Tenir mentalement, grind devient long<br><br>
-                    
-                    <strong>Route optimale:</strong><br>
-                    1. Établir une routine de farm (2-3h/session)<br>
-                    2. Alterner boss rush et donjons mythiques<br>
-                    3. Ne JAMAIS rater les événements magiques<br>
-                    4. Utiliser Tomes de Connaissance sur boss ultimes<br>
-                    5. Farm avec mentor system (+25% XP apprentis)<br>
-                    6. Créer sorts custom à 70 (2000 XP/craft)<br><br>
-                    
-                    <strong>XP/h optimale:</strong> 2000-2500 XP/h avec buffs<br>
-                    <strong>Mental:</strong> C'est le palier le plus long, stay focused !
-                </div>
-            </div>
-
-            <div class="tip-box">
-                <div class="tip-title">Niveaux 81-99 : Endgame Grind</div>
-                <div class="tip-text">
-                    <strong>Objectif:</strong> Perfection, optimisation ultime<br><br>
-                    
-                    <strong>Route optimale:</strong><br>
-                    1. Farm UNIQUEMENT boss ultimes (8000 XP/kill)<br>
-                    2. Compléter quêtes légendaires (50k XP chacune)<br>
-                    3. PvP classé pour montées de rang (5000 XP/rank)<br>
-                    4. Défis Platine systématiques (15k XP/semaine)<br>
-                    5. Stack Élixirs d'Illumination (+100% XP 30min)<br>
-                    6. Farm en groupe 5-man optimisé<br><br>
-                    
-                    <strong>XP/h optimale:</strong> 2500-3000 XP/h (peak performance)<br>
-                    <strong>Récompense:</strong> Niveau 99 = Prêt pour Ascension
-                </div>
-            </div>
-
-            <div class="warning-box">
-                <div class="warning-title">⚔️ Niveau 100 : La Quête des 7 Sceaux</div>
-                <div class="warning-text">
-                    <strong>Différent de tout le reste:</strong> Niveau 100 ne se farm PAS avec XP !<br><br>
-                    
-                    <strong>Prérequis:</strong><br>
-                    • Être niveau 99<br>
-                    • Avoir vaincu au moins 5 boss légendaires différents<br>
-                    • Posséder 1 artefact de chaque école de magie<br>
-                    • Avoir complété 100 quêtes magiques<br><br>
-                    
-                    <strong>La Quête:</strong><br>
-                    1. Vaincre les 7 Boss Ultimes (un par école + arcane)<br>
-                    2. Collecter leur Sceau (drop garanti)<br>
-                    3. Accomplir le Rituel d'Ascension au Temple Éternel<br>
-                    4. Affronter l'Épreuve Finale (boss ultra-hard)<br>
-                    5. Survivre + compléter = Archimage Transcendant<br><br>
-                    
-                    <strong>Difficulté:</strong> EXTRÊME<br>
-                    <strong>Tentatives:</strong> Illimitées mais coûteuses (reset items)<br>
-                    <strong>Temps:</strong> 20-90 heures selon skill<br>
-                    <strong>Succès:</strong> ~15% des joueurs niveau 99 réussissent
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 6: Conseils & Pièges -->
-        <div class="main-section">
-            <div class="section-title">💡 Conseils & Pièges à Éviter</div>
-
-            <div class="stat-box" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%); border-color: rgba(16, 185, 129, 0.4);">
-                <h3 style="color: #6ee7b7; font-size: 1.5em; margin-bottom: 15px;">✅ À FAIRE</h3>
-                <div style="color: #d1fae5; font-size: 1.05em; line-height: 2;">
-                    ✓ Choisir une école principale dès niveau 10 pour bonus XP +30%<br>
-                    ✓ Faire les défis hebdomadaires religieusement (15k XP gratuits)<br>
-                    ✓ Participer à TOUS les événements magiques (meilleur ratio XP/temps)<br>
-                    ✓ Farmer en groupe pour multiplicateur XP<br>
-                    ✓ Utiliser Tomes de Connaissance sur boss difficiles (maximise valeur)<br>
-                    ✓ Crafter vos propres sorts custom (2000 XP + fun)<br>
-                    ✓ Devenir mentor à haut niveau (bonus XP passif)<br>
-                    ✓ Alterner types d'activités pour éviter burnout<br>
-                    ✓ Investir dans équipement +XP bonus dès que possible<br>
-                    ✓ Prendre des pauses, c'est un marathon pas un sprint
-                </div>
-            </div>
-
-            <div class="stat-box" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%); border-color: rgba(239, 68, 68, 0.4);">
-                <h3 style="color: #fca5a5; font-size: 1.5em; margin-bottom: 15px;">❌ À ÉVITER</h3>
-                <div style="color: #fecaca; font-size: 1.05em; line-height: 2;">
-                    ✗ Farmer sans école spécialisée (-30% XP perdu)<br>
-                    ✗ Ignorer les défis hebdomadaires (75k XP/mois gaspillés)<br>
-                    ✗ Farmer des mobs bas niveau (XP scaling, waste of time)<br>
-                    ✗ Tuer des mobs sans magie (0 XP, inutile)<br>
-                    ✗ Gaspiller Tomes de Connaissance sur mobs faciles<br>
-                    ✗ Solo farm quand groupe possible (-20 à -50% efficiency)<br>
-                    ✗ Rusher niveau 100 sans préparer (fail de la quête = reset)<br>
-                    ✗ Acheter XP avec real money (pas de pay-to-win dans ce mod)<br>
-                    ✗ AFK farm (anti-cheat detecte = ban)<br>
-                    ✗ Burnout à niveau 80 et abandon (so close !)<br>
-                </div>
-            </div>
-
-            <div class="tip-box">
-                <div class="tip-title">🔥 Setup Optimal "Boss Rush" (Meilleur XP/h)</div>
-                <div class="tip-text">
-                    <strong>Composition Groupe:</strong> 5 joueurs (1 tank, 1 heal, 3 DPS)<br><br>
-                    
-                    <strong>Équipement:</strong><br>
-                    • Bâton Arcanique minimum (Tier 4)<br>
-                    • Full set Robe de Mage ou Battlemage<br>
-                    • Artefact +XP si possible<br>
-                    • Stack de potions mana + health<br><br>
-                    
-                    <strong>Buffs actifs:</strong><br>
-                    • Élixir d'Illumination (+100% XP 30min) si possible<br>
-                    • Parchemin d'Éveil (+50% XP 1h) sinon<br>
-                    • Buff de groupe (mage support)<br>
-                    • Food buff (+stamina/regen)<br><br>
-                    
-                    <strong>Route:</strong><br>
-                    1. Boss Ultime #1 (8000 XP × 2.0 = 16,000 XP)<br>
-                    2. Attendre respawn (5min) ou switch zone<br>
-                    3. Boss Ultime #2 (16,000 XP)<br>
-                    4. Repeat jusqu'à épuisement buffs<br><br>
-                    
-                    <strong>Résultat:</strong> 2500-3000 XP/h avec setup parfait<br>
-                    <strong>Niveau requis:</strong> 80+ recommandé
-                </div>
-            </div>
-
-            <div class="tip-box">
-                <div class="tip-title">📅 Planning Hebdomadaire Type (Joueur Régulier)</div>
-                <div class="tip-text">
-                    <strong>Lundi:</strong> Reset défis hebdo, compléter les 10 (2h, 75k XP)<br>
-                    <strong>Mardi-Mercredi:</strong> Farm boss rush en groupe (2h/jour, 10k XP)<br>
-                    <strong>Jeudi:</strong> Donjons légendaires pour équipement (2h, 8k XP)<br>
-                    <strong>Vendredi-Samedi:</strong> Événements + PvP classé (3h/jour, 12k XP)<br>
-                    <strong>Dimanche:</strong> Repos ou quêtes narratives (1h, 5k XP)<br><br>
-                    
-                    <strong>Total hebdo:</strong> 15h de jeu, ~120,000 XP<br>
-                    <strong>Niveau 80 → 90:</strong> ~10 semaines (2.5 mois)<br>
-                    <strong>Soutenable:</strong> Oui, pas de burnout
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION FINALE: Conclusion -->
-        <div class="main-section" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%); border-color: rgba(251, 191, 36, 0.6);">
-            <div class="section-title" style="color: #fbbf24;">🏆 Conclusion : Le Chemin vers l'Ascension</div>
-
-            <div style="color: #fde68a; font-size: 1.2em; line-height: 2; text-align: center; padding: 30px;">
-                <p style="margin-bottom: 20px;">
-                    Atteindre le niveau 100 et devenir un <strong>Archimage Transcendant</strong> est l'un des 
-                    accomplissements les plus prestigieux du serveur.
-                </p>
-                
-                <p style="margin-bottom: 20px;">
-                    Avec une moyenne de <strong>600 heures de jeu</strong> pour un joueur casual ou 
-                    <strong>350 heures</strong> pour un joueur hardcore, c'est un engagement significatif 
-                    qui demande <strong>dévouement</strong>, <strong>stratégie</strong> et <strong>persévérance</strong>.
-                </p>
-
-                <p style="margin-bottom: 20px;">
-                    Mais la récompense en vaut la peine : pouvoir illimité, respect universel, 
-                    titre légendaire, et l'accès aux capacités les plus dévastatrices du jeu.
-                </p>
-
-                <div style="font-size: 1.5em; margin: 40px 0; text-shadow: 0 0 20px rgba(251, 191, 36, 0.8);">
-                    ✨ Que votre voyage vers la transcendance soit épique ! ✨
-                </div>
-
-                <p style="font-style: italic; color: #fcd34d;">
-                    "Le pouvoir absolu n'est pas donné. Il est gagné, niveau après niveau, 
-                    sort après sort, défaite après défaite. Seuls les plus déterminés 
-                    atteindront le sommet de la magie."
-                </p>
-            </div>
-
-            <div class="stat-box" style="background: rgba(251, 191, 36, 0.2); border-color: rgba(251, 191, 36, 0.5); margin-top: 40px;">
-                <h3 style="color: #fbbf24; font-size: 1.5em; margin-bottom: 15px; text-align: center;">
-                    👑 Statistiques des Archimages (Estimées)
-                </h3>
-                <div class="stat-grid">
-                    <div class="stat-item" style="background: rgba(251, 191, 36, 0.1);">
-                        <div class="stat-label">Joueurs Niveau 100</div>
-                        <div class="stat-value" style="color: #fbbf24;">~2%</div>
-                    </div>
-                    <div class="stat-item" style="background: rgba(251, 191, 36, 0.1);">
-                        <div class="stat-label">Temps Moyen</div>
-                        <div class="stat-value" style="color: #fbbf24;">475h</div>
-                    </div>
-                    <div class="stat-item" style="background: rgba(251, 191, 36, 0.1);">
-                        <div class="stat-label">Taux Abandon 90-99</div>
-                        <div class="stat-value" style="color: #fbbf24;">60%</div>
-                    </div>
-                    <div class="stat-item" style="background: rgba(251, 191, 36, 0.1);">
-                        <div class="stat-label">Record Speedrun</div>
-                        <div class="stat-value" style="color: #fbbf24;">287h</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Common i18n JS -->
+    <script src="common-i18n.js"></script>
+    <script>
+        // Mana progression translations
+        const manaTranslations = {
+            fr: {
+                'page-title': 'Système de Progression Magique - Erinium Faction',
+                'hero-title': '⚡ Système de Progression Magique ⚡',
+                'hero-subtitle': 'Guide Complet : Du Novice à l\'Archimage Transcendant (Niveaux 1-100)',
+
+                // Overview
+                'section-overview': '📊 Vue d\'Ensemble du Système',
+                'stat-max-level': 'Niveau Maximum',
+                'stat-total-xp': 'XP Totale Requise',
+                'stat-time-casual': 'Temps Moyen (Casual)',
+                'stat-time-hardcore': 'Temps Moyen (Hardcore)',
+                'stat-tiers': 'Paliers Majeurs',
+                'stat-xp-sources': 'Sources d\'XP',
+
+                'formula-title': '📐 Formules de Progression XP',
+                'formula-content': '<strong>Niveaux 1-20 (Novice):</strong><br>XP = 100 × niveau²<br>Exemple: Niveau 10 = 10,000 XP<br><br><strong>Niveaux 21-50 (Apprenti/Adepte):</strong><br>XP = 150 × niveau² + 10,000<br>Exemple: Niveau 40 = 250,000 XP<br><br><strong>Niveaux 51-80 (Expert/Maître):</strong><br>XP = 250 × niveau² + 50,000<br>Exemple: Niveau 70 = 1,275,000 XP<br><br><strong>Niveaux 81-99 (Maître Arcanique):</strong><br>XP = 400 × niveau² + 150,000<br>Exemple: Niveau 95 = 3,760,000 XP<br><br><strong>Niveau 100 (Archimage):</strong><br>XP = Quête spéciale (pas de grind XP)',
+
+                'warning-curve-title': 'Important : Courbe Exponentielle',
+                'warning-curve-text': 'La progression est conçue pour être <strong>exponentielle</strong> :<br>• Niveaux 1-40 = 20% de l\'XP totale (facile, rapide)<br>• Niveaux 41-70 = 30% de l\'XP totale (moyen, grind modéré)<br>• Niveaux 71-99 = 50% de l\'XP totale (difficile, grind intensif)<br>• Niveau 100 = Quête épique unique<br><br>Cette courbe garantit que les hauts niveaux restent <strong>prestigieux</strong> et que atteindre 100 est un <strong>accomplissement majeur</strong> nécessitant des centaines d\'heures.',
+
+                // Tiers
+                'section-tiers': '🎖️ Les 6 Paliers de Puissance',
+                'tier-levels': 'Niveaux',
+                'tier-total-xp': 'XP Totale',
+                'tier-time': 'Temps Estimé',
+                'tier-spells': 'Sorts Disponibles',
+                'tier-unlock': 'Débloquage',
+
+                'tier1-badge': 'Palier I - Novice',
+                'tier1-name': '🌟 Novice',
+                'tier1-desc': 'Les premiers pas dans l\'art magique. Apprentissage des sorts basiques et des concepts fondamentaux de la magie.',
+
+                'tier2-badge': 'Palier II - Apprenti',
+                'tier2-name': '🔰 Apprenti',
+                'tier2-desc': 'Maîtrise des fondamentaux et début de spécialisation. Accès aux sorts de puissance intermédiaire.',
+
+                'tier3-badge': 'Palier III - Adepte',
+                'tier3-name': '⚡ Adepte',
+                'tier3-desc': 'Compétence avancée dans une école magique. Capacité à lancer des sorts puissants avec cohérence.',
+
+                'tier4-badge': 'Palier IV - Expert',
+                'tier4-name': '🔮 Expert',
+                'tier4-desc': 'Maîtrise exceptionnelle de plusieurs écoles. Capable de lancer des sorts de haute complexité.',
+
+                'tier5-badge': 'Palier V - Maître',
+                'tier5-name': '💫 Maître Arcanique',
+                'tier5-desc': 'Puissance proche de la perfection. Accès aux sorts les plus destructeurs et complexes de la magie.',
+
+                'tier6-badge': 'Palier VI - Archimage',
+                'tier6-name': '👑 Archimage Transcendant',
+                'tier6-desc': 'Le sommet ultime de la magie. Pouvoir divin et maîtrise absolue de toutes les écoles magiques.',
+
+                'tip-progression-title': 'Conseils de Progression',
+                'tip-progression-text': '• <strong>Spécialisez-vous tôt :</strong> Choisissez 2-3 écoles magiques dès le niveau 20<br>• <strong>Farming efficace :</strong> Donjons > Mobs normaux pour l\'XP magique<br>• <strong>Quêtes quotidiennes :</strong> Completez les quêtes PNJ pour des bonus d\'XP massifs<br>• <strong>Évènements spéciaux :</strong> Participez aux évènements serveur (x2 XP)<br>• <strong>Progression équilibrée :</strong> Ne rush pas, profitez de chaque palier',
+
+                // XP Sources
+                'section-xp-sources': '💎 Sources d\'Expérience Magique',
+                'xp-combat-title': 'Combat Magique',
+                'xp-combat-desc': 'Tuer des ennemis avec des sorts magiques.<br><span class="ef-xp-value">+50-500 XP</span> par kill<br>Bonus si l\'ennemi est de niveau supérieur.',
+
+                'xp-dungeon-title': 'Donjons Magiques',
+                'xp-dungeon-desc': 'Compléter des donjons épiques.<br><span class="ef-xp-value">+5,000-50,000 XP</span> par donjon<br>La meilleure source d\'XP en mid/late game.',
+
+                'xp-boss-title': 'Boss Légendaires',
+                'xp-boss-desc': 'Vaincre des boss de monde.<br><span class="ef-xp-value">+10,000-100,000 XP</span> par boss<br>XP énorme mais difficile.',
+
+                'xp-quest-title': 'Quêtes Magiques',
+                'xp-quest-desc': 'Compléter des quêtes de PNJ mages.<br><span class="ef-xp-value">+1,000-20,000 XP</span> par quête<br>Quêtes journalières et hebdomadaires disponibles.',
+
+                'xp-craft-title': 'Alchimie & Enchantement',
+                'xp-craft-desc': 'Créer des potions et enchanter des items.<br><span class="ef-xp-value">+100-5,000 XP</span> par craft<br>Progression passive très efficace.',
+
+                'xp-explore-title': 'Découverte Magique',
+                'xp-explore-desc': 'Découvrir des lieux magiques secrets.<br><span class="ef-xp-value">+2,000-15,000 XP</span> par découverte<br>Temples, sanctuaires, portails anciens.',
+
+                'xp-ritual-title': 'Rituels Arcanes',
+                'xp-ritual-desc': 'Effectuer des rituels magiques complexes.<br><span class="ef-xp-value">+8,000-40,000 XP</span> par rituel<br>Nécessite des matériaux rares.',
+
+                'xp-pvp-title': 'Duels Magiques',
+                'xp-pvp-desc': 'Combattre d\'autres mages en PvP.<br><span class="ef-xp-value">+500-10,000 XP</span> par victoire<br>Bonus basé sur le niveau de l\'adversaire.',
+
+                'xp-event-title': 'Évènements Spéciaux',
+                'xp-event-desc': 'Participer aux évènements serveur.<br><span class="ef-xp-value">x2 XP</span> pendant l\'évènement<br>Bonus massifs et récompenses exclusives.',
+
+                'xp-book-title': 'Livres de Sagesse',
+                'xp-book-desc': 'Lire des grimoires anciens.<br><span class="ef-xp-value">+3,000-25,000 XP</span> par livre<br>Trouvés dans les bibliothèques et donjons.',
+
+                'xp-teach-title': 'Enseignement',
+                'xp-teach-desc': 'Enseigner la magie aux novices.<br><span class="ef-xp-value">+1,000-8,000 XP</span> par session<br>Bonus si l\'élève progresse rapidement.',
+
+                'xp-meditation-title': 'Méditation Magique',
+                'xp-meditation-desc': 'Méditer dans des lieux de pouvoir.<br><span class="ef-xp-value">+200-2,000 XP/heure</span><br>Progression AFK lente mais stable.',
+
+                'estimate-title': '⏱️ Estimations de Temps',
+                'estimate-content': '<strong>Joueur Casual (2-3h/jour) :</strong><br>• Niveau 20 : ~1 semaine<br>• Niveau 40 : ~1 mois<br>• Niveau 60 : ~3 mois<br>• Niveau 80 : ~7 mois<br>• Niveau 99 : ~14 mois<br>• Niveau 100 : ~15 mois + quête finale<br><br><strong>Joueur Hardcore (6-8h/jour) :</strong><br>• Niveau 20 : ~2 jours<br>• Niveau 40 : ~2 semaines<br>• Niveau 60 : ~5 semaines<br>• Niveau 80 : ~12 semaines<br>• Niveau 99 : ~6 mois<br>• Niveau 100 : ~7 mois + quête finale',
+
+                // Milestones
+                'section-milestones': '🎯 Niveaux Marquants',
+                'table-level': 'Niveau',
+                'table-title': 'Titre',
+                'table-unlock': 'Déblocage Principal',
+                'table-total-xp': 'XP Cumulée',
+
+                'lvl1-title': 'Novice Débutant',
+                'lvl1-unlock': 'Premier sort de base',
+                'lvl10-title': 'Novice Confirmé',
+                'lvl10-unlock': 'Sorts Tier 1 complets',
+                'lvl20-title': 'Apprenti Débutant',
+                'lvl20-unlock': 'Choix de spécialisation',
+                'lvl30-title': 'Apprenti Avancé',
+                'lvl30-unlock': 'Sorts Tier 2',
+                'lvl40-title': 'Adepte Débutant',
+                'lvl40-unlock': 'Combo de sorts',
+                'lvl50-title': 'Adepte Maître',
+                'lvl50-unlock': 'Sorts Tier 3',
+                'lvl60-title': 'Expert Débutant',
+                'lvl60-unlock': 'Sorts de zone (AoE)',
+                'lvl70-title': 'Expert Maître',
+                'lvl70-unlock': 'Sorts Tier 4',
+                'lvl80-title': 'Maître Arcanique',
+                'lvl80-unlock': 'Métamagie avancée',
+                'lvl90-title': 'Maître Suprême',
+                'lvl90-unlock': 'Sorts Tier 5',
+                'lvl99-title': 'Quasi-Archimage',
+                'lvl99-unlock': 'Tous les sorts maîtrisés',
+                'lvl100-title': 'Archimage Transcendant',
+                'lvl100-unlock': 'Sort Ultime',
+
+                'warning-lvl100-title': '⚠️ Niveau 100 - Quête Spéciale',
+                'warning-lvl100-text': 'Le niveau 100 ne peut <strong>PAS</strong> être atteint par farming d\'XP.<br>Une fois niveau 99, vous devez compléter la quête épique <strong>"L\'Ascension de l\'Archimage"</strong> :<br><br>• Vaincre les 7 Boss Élémentaires (un par école magique)<br>• Collecter les 7 Fragments du Bâton Primordial<br>• Compléter le Rituel d\'Ascension dans le Temple Oublié<br>• Combat final contre l\'Ancien Archimage corrompu<br><br>Récompense : <strong>Titre Archimage</strong>, <strong>Sort Ultime</strong>, <strong>Cosmétique Légendaire</strong>',
+
+                // Tips
+                'section-tips': '💡 Conseils Avancés',
+                'tip1-title': 'Farming Efficace',
+                'tip1-text': '• <strong>Priorité Donjons :</strong> Les donjons donnent 10x plus d\'XP que le farm de mobs<br>• <strong>Groupes optimaux :</strong> Farm en groupe de 3-4 pour partager l\'XP équitablement<br>• <strong>Hotspots XP :</strong> Bibliothèque Interdite (niveau 40+), Sanctuaire Cristallin (niveau 70+)<br>• <strong>Combos :</strong> Utilisez des potions d\'XP (+50%) pendant les sessions de farm intensif',
+
+                'tip2-title': 'Optimisation de Build',
+                'tip2-text': '• <strong>Hybride vs Pure :</strong> Spécialisation pure = plus fort, Hybride = plus versatile<br>• <strong>Meta actuelle :</strong> Feu/Arcane (DPS), Eau/Lumière (Support), Terre (Tank)<br>• <strong>Synergies :</strong> Feu+Air = Lightning Storm, Eau+Terre = Ice Wall<br>• <strong>Équipement :</strong> Priorisez Intelligence > Régénération Mana > Cooldown Reduction',
+
+                'tip3-title': 'Économie de Ressources',
+                'tip3-text': '• <strong>Cristaux de Mana :</strong> Farmés dans les caves profondes (Y < 20)<br>• <strong>Essences Élémentaires :</strong> Drops des boss élémentaires (rare)<br>• <strong>Parchemins :</strong> Achetés chez les PNJ marchands ou craftés (papier + encre magique)<br>• <strong>Ingrédients rares :</strong> Jardins Voraces (plantes), Forge des Titans (métaux)'
+            },
+            en: {
+                'page-title': 'Magic Progression System - Erinium Faction',
+                'hero-title': '⚡ Magic Progression System ⚡',
+                'hero-subtitle': 'Complete Guide: From Novice to Transcendent Archmage (Levels 1-100)',
+
+                // Overview
+                'section-overview': '📊 System Overview',
+                'stat-max-level': 'Maximum Level',
+                'stat-total-xp': 'Total XP Required',
+                'stat-time-casual': 'Average Time (Casual)',
+                'stat-time-hardcore': 'Average Time (Hardcore)',
+                'stat-tiers': 'Major Tiers',
+                'stat-xp-sources': 'XP Sources',
+
+                'formula-title': '📐 XP Progression Formulas',
+                'formula-content': '<strong>Levels 1-20 (Novice):</strong><br>XP = 100 × level²<br>Example: Level 10 = 10,000 XP<br><br><strong>Levels 21-50 (Apprentice/Adept):</strong><br>XP = 150 × level² + 10,000<br>Example: Level 40 = 250,000 XP<br><br><strong>Levels 51-80 (Expert/Master):</strong><br>XP = 250 × level² + 50,000<br>Example: Level 70 = 1,275,000 XP<br><br><strong>Levels 81-99 (Arcane Master):</strong><br>XP = 400 × level² + 150,000<br>Example: Level 95 = 3,760,000 XP<br><br><strong>Level 100 (Archmage):</strong><br>XP = Special quest (no XP grind)',
+
+                'warning-curve-title': 'Important: Exponential Curve',
+                'warning-curve-text': 'Progression is designed to be <strong>exponential</strong>:<br>• Levels 1-40 = 20% of total XP (easy, fast)<br>• Levels 41-70 = 30% of total XP (medium, moderate grind)<br>• Levels 71-99 = 50% of total XP (hard, intensive grind)<br>• Level 100 = Unique epic quest<br><br>This curve ensures high levels remain <strong>prestigious</strong> and reaching 100 is a <strong>major accomplishment</strong> requiring hundreds of hours.',
+
+                // Tiers
+                'section-tiers': '🎖️ The 6 Power Tiers',
+                'tier-levels': 'Levels',
+                'tier-total-xp': 'Total XP',
+                'tier-time': 'Estimated Time',
+                'tier-spells': 'Available Spells',
+                'tier-unlock': 'Unlock',
+
+                'tier1-badge': 'Tier I - Novice',
+                'tier1-name': '🌟 Novice',
+                'tier1-desc': 'First steps in the magical arts. Learning basic spells and fundamental magic concepts.',
+
+                'tier2-badge': 'Tier II - Apprentice',
+                'tier2-name': '🔰 Apprentice',
+                'tier2-desc': 'Mastery of fundamentals and beginning of specialization. Access to intermediate power spells.',
+
+                'tier3-badge': 'Tier III - Adept',
+                'tier3-name': '⚡ Adept',
+                'tier3-desc': 'Advanced competence in a magic school. Ability to cast powerful spells with consistency.',
+
+                'tier4-badge': 'Tier IV - Expert',
+                'tier4-name': '🔮 Expert',
+                'tier4-desc': 'Exceptional mastery of multiple schools. Capable of casting highly complex spells.',
+
+                'tier5-badge': 'Tier V - Master',
+                'tier5-name': '💫 Arcane Master',
+                'tier5-desc': 'Power close to perfection. Access to the most destructive and complex magic spells.',
+
+                'tier6-badge': 'Tier VI - Archmage',
+                'tier6-name': '👑 Transcendent Archmage',
+                'tier6-desc': 'The ultimate summit of magic. Divine power and absolute mastery of all magic schools.',
+
+                'tip-progression-title': 'Progression Tips',
+                'tip-progression-text': '• <strong>Specialize early:</strong> Choose 2-3 magic schools at level 20<br>• <strong>Efficient farming:</strong> Dungeons > Normal mobs for magic XP<br>• <strong>Daily quests:</strong> Complete NPC quests for massive XP bonuses<br>• <strong>Special events:</strong> Participate in server events (x2 XP)<br>• <strong>Balanced progression:</strong> Don\'t rush, enjoy each tier',
+
+                // XP Sources
+                'section-xp-sources': '💎 Magic Experience Sources',
+                'xp-combat-title': 'Magic Combat',
+                'xp-combat-desc': 'Kill enemies with magic spells.<br><span class="ef-xp-value">+50-500 XP</span> per kill<br>Bonus if enemy is higher level.',
+
+                'xp-dungeon-title': 'Magic Dungeons',
+                'xp-dungeon-desc': 'Complete epic dungeons.<br><span class="ef-xp-value">+5,000-50,000 XP</span> per dungeon<br>Best XP source in mid/late game.',
+
+                'xp-boss-title': 'Legendary Bosses',
+                'xp-boss-desc': 'Defeat world bosses.<br><span class="ef-xp-value">+10,000-100,000 XP</span> per boss<br>Huge XP but difficult.',
+
+                'xp-quest-title': 'Magic Quests',
+                'xp-quest-desc': 'Complete mage NPC quests.<br><span class="ef-xp-value">+1,000-20,000 XP</span> per quest<br>Daily and weekly quests available.',
+
+                'xp-craft-title': 'Alchemy & Enchanting',
+                'xp-craft-desc': 'Create potions and enchant items.<br><span class="ef-xp-value">+100-5,000 XP</span> per craft<br>Very efficient passive progression.',
+
+                'xp-explore-title': 'Magic Discovery',
+                'xp-explore-desc': 'Discover secret magic locations.<br><span class="ef-xp-value">+2,000-15,000 XP</span> per discovery<br>Temples, sanctuaries, ancient portals.',
+
+                'xp-ritual-title': 'Arcane Rituals',
+                'xp-ritual-desc': 'Perform complex magic rituals.<br><span class="ef-xp-value">+8,000-40,000 XP</span> per ritual<br>Requires rare materials.',
+
+                'xp-pvp-title': 'Magic Duels',
+                'xp-pvp-desc': 'Fight other mages in PvP.<br><span class="ef-xp-value">+500-10,000 XP</span> per victory<br>Bonus based on opponent level.',
+
+                'xp-event-title': 'Special Events',
+                'xp-event-desc': 'Participate in server events.<br><span class="ef-xp-value">x2 XP</span> during event<br>Massive bonuses and exclusive rewards.',
+
+                'xp-book-title': 'Wisdom Books',
+                'xp-book-desc': 'Read ancient grimoires.<br><span class="ef-xp-value">+3,000-25,000 XP</span> per book<br>Found in libraries and dungeons.',
+
+                'xp-teach-title': 'Teaching',
+                'xp-teach-desc': 'Teach magic to novices.<br><span class="ef-xp-value">+1,000-8,000 XP</span> per session<br>Bonus if student progresses quickly.',
+
+                'xp-meditation-title': 'Magic Meditation',
+                'xp-meditation-desc': 'Meditate in places of power.<br><span class="ef-xp-value">+200-2,000 XP/hour</span><br>Slow but stable AFK progression.',
+
+                'estimate-title': '⏱️ Time Estimates',
+                'estimate-content': '<strong>Casual Player (2-3h/day):</strong><br>• Level 20: ~1 week<br>• Level 40: ~1 month<br>• Level 60: ~3 months<br>• Level 80: ~7 months<br>• Level 99: ~14 months<br>• Level 100: ~15 months + final quest<br><br><strong>Hardcore Player (6-8h/day):</strong><br>• Level 20: ~2 days<br>• Level 40: ~2 weeks<br>• Level 60: ~5 weeks<br>• Level 80: ~12 weeks<br>• Level 99: ~6 months<br>• Level 100: ~7 months + final quest',
+
+                // Milestones
+                'section-milestones': '🎯 Milestone Levels',
+                'table-level': 'Level',
+                'table-title': 'Title',
+                'table-unlock': 'Main Unlock',
+                'table-total-xp': 'Cumulative XP',
+
+                'lvl1-title': 'Beginner Novice',
+                'lvl1-unlock': 'First basic spell',
+                'lvl10-title': 'Confirmed Novice',
+                'lvl10-unlock': 'Complete Tier 1 spells',
+                'lvl20-title': 'Beginner Apprentice',
+                'lvl20-unlock': 'Specialization choice',
+                'lvl30-title': 'Advanced Apprentice',
+                'lvl30-unlock': 'Tier 2 spells',
+                'lvl40-title': 'Beginner Adept',
+                'lvl40-unlock': 'Spell combos',
+                'lvl50-title': 'Master Adept',
+                'lvl50-unlock': 'Tier 3 spells',
+                'lvl60-title': 'Beginner Expert',
+                'lvl60-unlock': 'Area spells (AoE)',
+                'lvl70-title': 'Master Expert',
+                'lvl70-unlock': 'Tier 4 spells',
+                'lvl80-title': 'Arcane Master',
+                'lvl80-unlock': 'Advanced metamagic',
+                'lvl90-title': 'Supreme Master',
+                'lvl90-unlock': 'Tier 5 spells',
+                'lvl99-title': 'Quasi-Archmage',
+                'lvl99-unlock': 'All spells mastered',
+                'lvl100-title': 'Transcendent Archmage',
+                'lvl100-unlock': 'Ultimate Spell',
+
+                'warning-lvl100-title': '⚠️ Level 100 - Special Quest',
+                'warning-lvl100-text': 'Level 100 can <strong>NOT</strong> be reached by XP farming.<br>Once level 99, you must complete the epic quest <strong>"The Ascension of the Archmage"</strong>:<br><br>• Defeat the 7 Elemental Bosses (one per magic school)<br>• Collect the 7 Fragments of the Primordial Staff<br>• Complete the Ascension Ritual in the Forgotten Temple<br>• Final battle against the Corrupted Ancient Archmage<br><br>Reward: <strong>Archmage Title</strong>, <strong>Ultimate Spell</strong>, <strong>Legendary Cosmetic</strong>',
+
+                // Tips
+                'section-tips': '💡 Advanced Tips',
+                'tip1-title': 'Efficient Farming',
+                'tip1-text': '• <strong>Dungeon priority:</strong> Dungeons give 10x more XP than mob farming<br>• <strong>Optimal groups:</strong> Farm in groups of 3-4 to share XP evenly<br>• <strong>XP hotspots:</strong> Forbidden Library (level 40+), Crystal Sanctuary (level 70+)<br>• <strong>Combos:</strong> Use XP potions (+50%) during intensive farm sessions',
+
+                'tip2-title': 'Build Optimization',
+                'tip2-text': '• <strong>Hybrid vs Pure:</strong> Pure specialization = stronger, Hybrid = more versatile<br>• <strong>Current meta:</strong> Fire/Arcane (DPS), Water/Light (Support), Earth (Tank)<br>• <strong>Synergies:</strong> Fire+Air = Lightning Storm, Water+Earth = Ice Wall<br>• <strong>Equipment:</strong> Prioritize Intelligence > Mana Regen > Cooldown Reduction',
+
+                'tip3-title': 'Resource Economy',
+                'tip3-text': '• <strong>Mana Crystals:</strong> Farmed in deep caves (Y < 20)<br>• <strong>Elemental Essences:</strong> Elemental boss drops (rare)<br>• <strong>Scrolls:</strong> Bought from NPC merchants or crafted (paper + magic ink)<br>• <strong>Rare ingredients:</strong> Voracious Gardens (plants), Titan\'s Forge (metals)'
+            }
+        };
+
+        // Initialize with mana progression translations
+        EriniumFaction.init(manaTranslations);
+    </script>
 </body>
 </html>
