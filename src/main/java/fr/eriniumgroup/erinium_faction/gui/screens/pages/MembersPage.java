@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Page Members - Basée sur members.svg
@@ -49,11 +50,14 @@ public class MembersPage extends FactionPage {
 
         if (data != null && data.memberNames != null) {
             for (var entry : data.memberNames.entrySet()) {
+                UUID uuid = entry.getKey();
                 String name = entry.getValue();
-                String rank = data.membersRank.getOrDefault(entry.getKey(), "Member");
-                // Power et online status ne sont pas disponibles dans FactionSnapshot
-                int power = 100; // Valeur par défaut
-                boolean online = false; // Valeur par défaut
+                String rank = data.membersRank.getOrDefault(uuid, "Member");
+                // Récupérer le power et status en ligne depuis FactionSnapshot
+                double powerDouble = data.membersPower.getOrDefault(uuid, 0.0);
+                double maxPowerDouble = data.membersMaxPower.getOrDefault(uuid, 100.0);
+                int power = (int) Math.round(maxPowerDouble > 0 ? (powerDouble / maxPowerDouble) * 100 : 0);
+                boolean online = data.membersOnline.getOrDefault(uuid, false);
                 members.add(new MemberInfo(name, rank, power, online));
             }
         }

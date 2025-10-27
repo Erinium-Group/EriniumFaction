@@ -33,6 +33,9 @@ public class FactionSnapshot {
 
     public Map<UUID, String> membersRank = new HashMap<>();
     public Map<UUID, String> memberNames = new HashMap<>();
+    public Map<UUID, Double> membersPower = new HashMap<>(); // Power de chaque membre
+    public Map<UUID, Double> membersMaxPower = new HashMap<>(); // Max power de chaque membre
+    public Map<UUID, Boolean> membersOnline = new HashMap<>(); // Status en ligne de chaque membre
 
     // Player power
     public double playerPower;
@@ -141,19 +144,44 @@ public class FactionSnapshot {
             UUID uuid = e.getKey();
             s.membersRank.put(uuid, e.getValue().rankId);
             String name = e.getValue().nameCached;
+            boolean online = false;
+
             if (name == null || name.isBlank()) {
                 if (server != null) {
                     var sp = server.getPlayerList().getPlayer(uuid);
                     if (sp != null) {
                         name = sp.getGameProfile().getName();
+                        online = true;
+                        // Récupérer le power du membre
+                        var memberPower = fr.eriniumgroup.erinium_faction.core.power.PowerManager.get(sp);
+                        s.membersPower.put(uuid, memberPower.getPower());
+                        s.membersMaxPower.put(uuid, memberPower.getMaxPower());
                     } else if (profileCache != null) {
                         var opt = profileCache.get(uuid);
                         if (opt.isPresent()) name = opt.get().getName();
                     }
                 }
+            } else if (server != null) {
+                // Vérifier si le joueur est en ligne même si on a un nom en cache
+                var sp = server.getPlayerList().getPlayer(uuid);
+                if (sp != null) {
+                    online = true;
+                    // Récupérer le power du membre
+                    var memberPower = fr.eriniumgroup.erinium_faction.core.power.PowerManager.get(sp);
+                    s.membersPower.put(uuid, memberPower.getPower());
+                    s.membersMaxPower.put(uuid, memberPower.getMaxPower());
+                }
             }
+
+            // Si offline, utiliser des valeurs par défaut pour le power
+            if (!online) {
+                s.membersPower.put(uuid, 0.0);
+                s.membersMaxPower.put(uuid, 0.0);
+            }
+
             if (name == null || name.isBlank()) name = uuid.toString();
             s.memberNames.put(uuid, name);
+            s.membersOnline.put(uuid, online);
         }
         return s;
     }
@@ -180,9 +208,13 @@ public class FactionSnapshot {
         buf.writeVarInt(s.bank);
         buf.writeVarInt(s.membersRank.size());
         for (var e : s.membersRank.entrySet()) {
-            buf.writeUUID(e.getKey());
+            UUID uuid = e.getKey();
+            buf.writeUUID(uuid);
             buf.writeUtf(e.getValue());
-            buf.writeUtf(s.memberNames.getOrDefault(e.getKey(), e.getKey().toString()));
+            buf.writeUtf(s.memberNames.getOrDefault(uuid, uuid.toString()));
+            buf.writeDouble(s.membersPower.getOrDefault(uuid, 0.0));
+            buf.writeDouble(s.membersMaxPower.getOrDefault(uuid, 0.0));
+            buf.writeBoolean(s.membersOnline.getOrDefault(uuid, false));
         }
         buf.writeInt(s.factionChestSize);
 
@@ -247,8 +279,14 @@ public class FactionSnapshot {
             UUID id = buf.readUUID();
             String rank = buf.readUtf();
             String name = buf.readUtf();
+            double power = buf.readDouble();
+            double maxPower = buf.readDouble();
+            boolean online = buf.readBoolean();
             s.membersRank.put(id, rank);
             s.memberNames.put(id, name);
+            s.membersPower.put(id, power);
+            s.membersMaxPower.put(id, maxPower);
+            s.membersOnline.put(id, online);
         }
         s.factionChestSize = buf.readInt();
 

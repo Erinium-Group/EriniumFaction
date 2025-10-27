@@ -32,21 +32,28 @@ public class AlliancesPage extends FactionPage {
     private void initComponents(int leftPos, int topPos, double scaleX, double scaleY) {
         if (allianceScrollList == null) {
             allianceScrollList = new ScrollList<>(font, this::renderAllianceItem, sh(37, scaleY));
-
-            List<AllianceInfo> alliances = new ArrayList<>();
-            alliances.add(new AllianceInfo("{{ALLIANCE_1_NAME}}", 10));
-            alliances.add(new AllianceInfo("{{ALLIANCE_2_NAME}}", 8));
-            alliances.add(new AllianceInfo("{{ALLIANCE_3_NAME}}", 15));
-            // Exemples
-            for (int i = 0; i < 5; i++) {
-                alliances.add(new AllianceInfo("Alliance Example " + (i + 1), 5 + i * 2));
-            }
-
-            allianceScrollList.setItems(alliances);
             allianceScrollList.setOnItemClick(alliance -> {
                 System.out.println("AlliancesPage: Clicked on alliance " + alliance.name);
             });
         }
+
+        // Mettre à jour la liste avec les vraies données
+        var data = getFactionData();
+        List<AllianceInfo> alliances = new ArrayList<>();
+
+        if (data != null && data.allies != null && !data.allies.isEmpty()) {
+            for (String allyName : data.allies) {
+                // Le memberCount n'est pas disponible pour les allies, utiliser une valeur par défaut
+                alliances.add(new AllianceInfo(allyName, 0));
+            }
+        }
+
+        if (alliances.isEmpty()) {
+            // Message si aucune alliance
+            alliances.add(new AllianceInfo("No alliances", 0));
+        }
+
+        allianceScrollList.setItems(alliances);
 
         int x = sx(CONTENT_X, leftPos, scaleX);
         int y = sy(CONTENT_Y, topPos, scaleY);
