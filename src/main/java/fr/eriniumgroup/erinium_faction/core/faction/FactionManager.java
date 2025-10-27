@@ -315,4 +315,42 @@ public final class FactionManager {
             FactionSavedData.get(SERVER).setDirty();
         }
     }
+
+    /** --- Récupérer tous les claims d'une faction --- */
+    public static List<ClaimKey> getClaimsOfFaction(String factionId) {
+        if (SERVER == null || factionId == null || factionId.isBlank()) return Collections.emptyList();
+        return ClaimsSavedData.get(SERVER).listClaimsForFaction(factionId.toLowerCase(Locale.ROOT));
+    }
+
+    /** Variante utilitaire: par objet Faction */
+    public static List<ClaimKey> getClaimsOfFaction(Faction faction) {
+        if (faction == null) return Collections.emptyList();
+        return getClaimsOfFaction(faction.getId());
+    }
+
+    // --- Helpers claim-perms exposés aux commandes ---
+    public static Map<String, Set<String>> getClaimPerms(ClaimKey key) {
+        if (SERVER == null) return Collections.emptyMap();
+        return ClaimsSavedData.get(SERVER).getClaimPerms(key);
+    }
+
+    public static Set<String> getClaimPermsForRank(ClaimKey key, String rankId) {
+        if (SERVER == null) return Collections.emptySet();
+        return ClaimsSavedData.get(SERVER).getClaimPermsForRank(key, rankId);
+    }
+
+    public static boolean addClaimPerm(ClaimKey key, String rankId, String perm) {
+        if (SERVER == null) return false;
+        return ClaimsSavedData.get(SERVER).addClaimPerm(key, rankId, perm);
+    }
+
+    public static boolean removeClaimPerm(ClaimKey key, String rankId, String perm) {
+        if (SERVER == null) return false;
+        return ClaimsSavedData.get(SERVER).removeClaimPerm(key, rankId, perm);
+    }
+
+    public static boolean clearClaimPerms(ClaimKey key) {
+        if (SERVER == null) return false;
+        return ClaimsSavedData.get(SERVER).clearClaimPerms(key);
+    }
 }

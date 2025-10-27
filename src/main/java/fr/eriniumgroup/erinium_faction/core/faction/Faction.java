@@ -4,6 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
 
@@ -158,6 +160,21 @@ public class Faction {
 
     public void setOwner(UUID owner) {
         this.owner = owner;
+    }
+
+    // --- Utilitaires joueurs connectés ---
+    /**
+     * Renvoie la liste des membres de cette faction actuellement connectés au serveur.
+     * - Si server est null, renvoie une liste vide.
+     */
+    public List<ServerPlayer> getOnlinePlayers(MinecraftServer server) {
+        if (server == null) return Collections.emptyList();
+        List<ServerPlayer> out = new ArrayList<>();
+        for (UUID id : members.keySet()) {
+            ServerPlayer sp = server.getPlayerList().getPlayer(id);
+            if (sp != null) out.add(sp);
+        }
+        return out;
     }
 
     // Rank helpers -----------------------------------------------------------
@@ -544,5 +561,10 @@ public class Faction {
     public int getXPRequiredForNextLevel(int currentLevel) {
         int next = Math.max(1, currentLevel + 1);
         return Math.max(100, next * next * 50);
+    }
+
+    // Fournit un gestionnaire des rangs pour cette faction.
+    public RankManager ranks() {
+        return new RankManager(this);
     }
 }

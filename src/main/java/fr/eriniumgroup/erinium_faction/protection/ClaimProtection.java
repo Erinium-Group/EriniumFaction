@@ -1,7 +1,8 @@
 package fr.eriniumgroup.erinium_faction.protection;
 
-import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
+import fr.eriniumgroup.erinium_faction.core.claim.ClaimsSavedData;
+import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,7 +25,7 @@ public class ClaimProtection {
 
     private static void onBlockBreak(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
-        if (player == null || player.level().isClientSide()) return;
+        if (player.level().isClientSide()) return;
 
         // Vérification permission globale player.break
         if (player instanceof ServerPlayer sp) {
@@ -41,7 +42,7 @@ public class ClaimProtection {
             event.getPos().getZ() >> 4
         );
 
-        if (!canModifyInClaim(player, claim)) {
+        if (!canModifyInClaim(player, claim, "block.break")) {
             event.setCanceled(true);
             player.sendSystemMessage(Component.translatable("erinium_faction.claim.blocked.other_faction"));
         }
@@ -66,7 +67,7 @@ public class ClaimProtection {
             event.getPos().getZ() >> 4
         );
 
-        if (!canModifyInClaim(player, claim)) {
+        if (!canModifyInClaim(player, claim, "block.place")) {
             event.setCanceled(true);
             player.sendSystemMessage(Component.translatable("erinium_faction.claim.blocked.other_faction"));
         }
@@ -91,19 +92,34 @@ public class ClaimProtection {
             event.getPos().getZ() >> 4
         );
 
-        if (!canModifyInClaim(player, claim)) {
+        if (!canModifyInClaim(player, claim, "block.interact")) {
             event.setCanceled(true);
             player.sendSystemMessage(Component.translatable("erinium_faction.interact.blocked.other_faction"));
         }
     }
 
-    private static boolean canModifyInClaim(Player player, ClaimKey claim) {
+    private static boolean canModifyInClaim(Player player, ClaimKey claim, String actionNode) {
         if (!FactionManager.isClaimed(claim)) return true;
 
         String claimOwner = FactionManager.getClaimOwner(claim);
-        String playerFaction = FactionManager.getPlayerFactionObject(player.getUUID()).getId();
+        Faction playerFaction = FactionManager.getPlayerFactionObject(player.getUUID());
+        if (playerFaction == null) return false;
 
-        if (claimOwner != null && claimOwner.equals(playerFaction)) return true;
+        // même faction: appliquer overrides du claim si présents
+        if (claimOwner != null && claimOwner.equalsIgnoreCase(playerFaction.getId())) {
+            // Owner de la faction a tous les droits
+            if (playerFaction.getOwner() != null && playerFaction.getOwner().equals(player.getUUID())) return true;
+            String rankId = playerFaction.getMemberRank(player.getUUID());
+            if (rankId == null) return false;
+            // Permissions par claim pour ce rang
+            var data = ClaimsSavedData.get(((ServerPlayer)player).server);
+            var set = data.getClaimPermsForRank(claim, rankId);
+            if (set.isEmpty()) {
+                // fallback aux perms de rang de la faction
+                return playerFaction.hasPermission(player.getUUID(), actionNode);
+            }
+            return ClaimsSavedData.matches(set, actionNode);
+        }
 
         return false;
     }

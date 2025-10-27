@@ -212,8 +212,20 @@
 
   "player_level.reset.need_token": "§cYou need a §6Stats Reset Token §cto reset your attributes!",
 
+  "erinium_faction.broadcast.disband": "§6[§bErinium§6/§dFaction§6] §cFaction §b%s§c has been disbanded (§6%s claims§c, §b%s members§c).",
+
   "item.erinium_faction.stats_reset_token": "Stats Reset Token",
   "item.erinium_faction.stats_reset_token.tooltip": "§7Use this item to reset your attribute points",
 
-  "itemGroup.erinium_faction": "Erinium Faction"
+  "itemGroup.erinium_faction": "Erinium Faction",
+
+  "erinium_faction.cmd.faction.claimperm.header": "§6[§bErinium§6/§dFaction§6] §7Claim permissions:",
+  "erinium_faction.cmd.faction.claimperm.item": "§7 - §b%s§7: %s",
+  "erinium_faction.cmd.faction.claimperm.empty": "§6[§bErinium§6/§dFaction§6] §7No specific permission set for this claim.",
+  "erinium_faction.cmd.faction.claimperm.add.success": "§6[§bErinium§6/§dFaction§6] §aAdded for §b%s§a: §e%s",
+  "erinium_faction.cmd.faction.claimperm.add.fail": "§6[§bErinium§6/§dFaction§6] §cPermission already present or invalid.",
+  "erinium_faction.cmd.faction.claimperm.remove.success": "§6[§bErinium§6/§dFaction§6] §aRemoved for §b%s§a: §e%s",
+  "erinium_faction.cmd.faction.claimperm.remove.fail": "§6[§bErinium§6/§dFaction§6] §cPermission missing or invalid.",
+  "erinium_faction.cmd.faction.claimperm.clear.success": "§6[§bErinium§6/§dFaction§6] §aClaim permissions cleared.",
+  "erinium_faction.cmd.faction.claimperm.clear.empty": "§6[§bErinium§6/§dFaction§6] §7Nothing to clear."
 }

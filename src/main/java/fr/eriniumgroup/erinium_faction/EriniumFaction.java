@@ -89,6 +89,8 @@ public class EriniumFaction {
         FactionManager.load(event.getServer());
         // Ranks system
         EFRManager.get().load();
+        // Initialiser les permissions par défaut (SavedData .dat) et appliquer si nécessaire
+        fr.eriniumgroup.erinium_faction.core.faction.RankDefaultsSavedData.bootstrapAndApply(event.getServer());
     }
 
     private void onServerStopping(ServerStoppingEvent event) {

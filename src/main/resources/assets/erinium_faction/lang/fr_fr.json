@@ -210,8 +210,20 @@
 
   "player_level.reset.need_token": "§cVous avez besoin d'un §6Jeton de Réinitialisation §cpour réinitialiser vos attributs !",
 
+  "erinium_faction.broadcast.disband": "§6[§bErinium§6/§dFaction§6] §cLa faction §b%s§c a été dissoute (§6%s claims§c, §b%s membres§c).",
+
   "item.erinium_faction.stats_reset_token": "Jeton de Réinitialisation de Stats",
   "item.erinium_faction.stats_reset_token.tooltip": "§7Utilisez cet item pour réinitialiser vos points d'attributs",
 
-  "itemGroup.erinium_faction": "Erinium Faction"
+  "itemGroup.erinium_faction": "Erinium Faction",
+
+  "erinium_faction.cmd.faction.claimperm.header": "§6[§bErinium§6/§dFaction§6] §7Permissions du claim:",
+  "erinium_faction.cmd.faction.claimperm.item": "§7 - §b%s§7: %s",
+  "erinium_faction.cmd.faction.claimperm.empty": "§6[§bErinium§6/§dFaction§6] §7Aucune permission spécifique définie pour ce claim.",
+  "erinium_faction.cmd.faction.claimperm.add.success": "§6[§bErinium§6/§dFaction§6] §aAjouté pour §b%s§a: §e%s",
+  "erinium_faction.cmd.faction.claimperm.add.fail": "§6[§bErinium§6/§dFaction§6] §cPermission déjà présente ou invalide.",
+  "erinium_faction.cmd.faction.claimperm.remove.success": "§6[§bErinium§6/§dFaction§6] §aRetiré pour §b%s§a: §e%s",
+  "erinium_faction.cmd.faction.claimperm.remove.fail": "§6[§bErinium§6/§dFaction§6] §cPermission absente ou invalide.",
+  "erinium_faction.cmd.faction.claimperm.clear.success": "§6[§bErinium§6/§dFaction§6] §aPermissions du claim effacées.",
+  "erinium_faction.cmd.faction.claimperm.clear.empty": "§6[§bErinium§6/§dFaction§6] §7Rien à effacer."
 }

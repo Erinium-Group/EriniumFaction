@@ -17,12 +17,10 @@ public record ClaimKey(String dimension, int chunkX, int chunkZ) {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ClaimKey)) return false;
-        ClaimKey claimKey = (ClaimKey) o;
-        return chunkX == claimKey.chunkX && chunkZ == claimKey.chunkZ && Objects.equals(dimension, claimKey.dimension);
+        if (!(o instanceof ClaimKey(String dimension1, int x, int z))) return false;
+        return chunkX == x && chunkZ == z && Objects.equals(dimension, dimension1);
     }
 
-    // TODO: Voir pour changé le format de sauvegarde
     @Override
     public String toString() {
         return dimension + " [" + chunkX + ", " + chunkZ + "]";

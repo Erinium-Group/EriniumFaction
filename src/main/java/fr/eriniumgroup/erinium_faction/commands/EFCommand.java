@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction.Mode;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
@@ -26,20 +27,22 @@ import java.util.concurrent.CompletableFuture;
 public class EFCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> d) {
-        d.register(Commands.literal("ef").requires(src -> src.hasPermission(2)).then(Commands.literal("perm").then(Commands.literal("list").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).executes(ctx -> doList(ctx)))).then(Commands.literal("add").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).then(Commands.argument("permission", StringArgumentType.greedyString()).suggests(EFCommand::suggestKnownPermissions).executes(EFCommand::doAdd)))).then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).then(Commands.argument("permission", StringArgumentType.greedyString()).suggests(EFCommand::suggestPlayerPermissions).executes(EFCommand::doRemove)))))
-                // delete <name> - Supprime une faction
+        d.register(Commands.literal("ef").requires(src -> src.hasPermission(2))
+                // Gestion des permissions joueurs
+                .then(Commands.literal("perm").then(Commands.literal("list").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).executes(ctx -> doList(ctx)))).then(Commands.literal("add").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).then(Commands.argument("permission", StringArgumentType.greedyString()).suggests(EFCommand::suggestKnownPermissions).executes(EFCommand::doAdd)))).then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).then(Commands.argument("permission", StringArgumentType.greedyString()).suggests(EFCommand::suggestPlayerPermissions).executes(EFCommand::doRemove)))))
+                // Suppression de faction
                 .then(Commands.literal("delete").then(Commands.argument("name", StringArgumentType.word()).suggests(EFCommand::suggestFactionNames).executes(EFCommand::doDelete)))
-                // addxp <name> <amount> - Ajoute de l'XP à une faction
+                // Ajout d'XP à une faction
                 .then(Commands.literal("addxp").then(Commands.argument("name", StringArgumentType.word()).suggests(EFCommand::suggestFactionNames).then(Commands.argument("amount", IntegerArgumentType.integer(1)).suggests(EFCommand::suggestXpAmounts).executes(EFCommand::doAddXp))))
-                // setrank <player> <rankId> - Définit le rang d'un joueur
+                // Changement de rang
                 .then(Commands.literal("setrank").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).then(Commands.argument("rankId", StringArgumentType.word()).suggests(EFCommand::suggestServerRanks).executes(EFCommand::doSetRank))))
-                // mode <factionName> <PUBLIC|INVITE_ONLY> - Change le mode de la faction
+                // Changement de mode de faction
                 .then(Commands.literal("mode").then(Commands.argument("factionName", StringArgumentType.word()).suggests(EFCommand::suggestFactionNames).then(Commands.argument("value", StringArgumentType.word()).suggests((ctx, b) -> {
                     b.suggest("PUBLIC");
                     b.suggest("INVITE_ONLY");
                     return b.buildFuture();
                 }).executes(EFCommand::doMode))))
-                // flag <factionName> <admin|warzone|safezone> <on|off> - Modifie les flags
+                // Modification des flags de faction
                 .then(Commands.literal("flag").then(Commands.argument("factionName", StringArgumentType.word()).suggests(EFCommand::suggestFactionNames).then(Commands.argument("flagName", StringArgumentType.word()).suggests((c, b) -> {
                     b.suggest("admin");
                     b.suggest("warzone");
@@ -49,7 +52,63 @@ public class EFCommand {
                     b.suggest("on");
                     b.suggest("off");
                     return b.buildFuture();
-                }).executes(EFCommand::doFlag))))));
+                }).executes(EFCommand::doFlag)))))
+                // Gestion des permissions de claim
+                .then(Commands.literal("claimperm").then(Commands.literal("list").then(Commands.argument("dimension", StringArgumentType.word()).then(Commands.argument("cx", IntegerArgumentType.integer()).then(Commands.argument("cz", IntegerArgumentType.integer()).executes(ctx -> {
+                    String dim = StringArgumentType.getString(ctx, "dimension");
+                    int cx = IntegerArgumentType.getInteger(ctx, "cx");
+                    int cz = IntegerArgumentType.getInteger(ctx, "cz");
+                    ClaimKey key = new ClaimKey(dim, cx, cz);
+                    var perms = FactionManager.getClaimPerms(key);
+                    if (perms.isEmpty()) {
+                        ctx.getSource().sendSuccess(() -> Component.literal("<vide>"), false);
+                        return 1;
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.literal("Permissions du claim:"), false);
+                    for (var e : perms.entrySet())
+                        ctx.getSource().sendSuccess(() -> Component.literal(" - " + e.getKey() + ": " + String.join(", ", e.getValue())), false);
+                    return 1;
+                }))))).then(Commands.literal("add").then(Commands.argument("dimension", StringArgumentType.word()).then(Commands.argument("cx", IntegerArgumentType.integer()).then(Commands.argument("cz", IntegerArgumentType.integer()).then(Commands.argument("rank", StringArgumentType.word()).then(Commands.argument("perm", StringArgumentType.greedyString()).executes(ctx -> {
+                    String dim = StringArgumentType.getString(ctx, "dimension");
+                    int cx = IntegerArgumentType.getInteger(ctx, "cx");
+                    int cz = IntegerArgumentType.getInteger(ctx, "cz");
+                    ClaimKey key = new ClaimKey(dim, cx, cz);
+                    String rank = StringArgumentType.getString(ctx, "rank").toLowerCase(java.util.Locale.ROOT);
+                    String perm = StringArgumentType.getString(ctx, "perm");
+                    boolean ok = FactionManager.addClaimPerm(key, rank, perm);
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.literal("Permission déjà présente ou invalide."));
+                        return 0;
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.literal("Ajoutée pour " + rank + ": " + perm), true);
+                    return 1;
+                }))))))).then(Commands.literal("remove").then(Commands.argument("dimension", StringArgumentType.word()).then(Commands.argument("cx", IntegerArgumentType.integer()).then(Commands.argument("cz", IntegerArgumentType.integer()).then(Commands.argument("rank", StringArgumentType.word()).then(Commands.argument("perm", StringArgumentType.greedyString()).executes(ctx -> {
+                    String dim = StringArgumentType.getString(ctx, "dimension");
+                    int cx = IntegerArgumentType.getInteger(ctx, "cx");
+                    int cz = IntegerArgumentType.getInteger(ctx, "cz");
+                    ClaimKey key = new ClaimKey(dim, cx, cz);
+                    String rank = StringArgumentType.getString(ctx, "rank").toLowerCase(java.util.Locale.ROOT);
+                    String perm = StringArgumentType.getString(ctx, "perm");
+                    boolean ok = FactionManager.removeClaimPerm(key, rank, perm);
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.literal("Permission absente ou invalide."));
+                        return 0;
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.literal("Retirée pour " + rank + ": " + perm), true);
+                    return 1;
+                }))))))).then(Commands.literal("clear").then(Commands.argument("dimension", StringArgumentType.word()).then(Commands.argument("cx", IntegerArgumentType.integer()).then(Commands.argument("cz", IntegerArgumentType.integer()).executes(ctx -> {
+                    String dim = StringArgumentType.getString(ctx, "dimension");
+                    int cx = IntegerArgumentType.getInteger(ctx, "cx");
+                    int cz = IntegerArgumentType.getInteger(ctx, "cz");
+                    ClaimKey key = new ClaimKey(dim, cx, cz);
+                    boolean ok = FactionManager.clearClaimPerms(key);
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.literal("Rien à effacer."));
+                        return 0;
+                    }
+                    ctx.getSource().sendSuccess(() -> Component.literal("Permissions du claim effacées."), true);
+                    return 1;
+                })))))));
     }
 
     // Impl ---------------------------------------------------------------
@@ -219,4 +278,3 @@ public class EFCommand {
         return builder.buildFuture();
     }
 }
-

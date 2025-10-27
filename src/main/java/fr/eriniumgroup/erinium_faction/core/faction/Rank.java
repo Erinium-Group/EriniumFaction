@@ -19,9 +19,11 @@ public class Rank {
     }
 
     public boolean canManageSettings() {
-        // Autoriser si le rang possède la permission dédiée ou wildcard
-        return faction != null && (faction.hasPermission(faction.getOwner(), "*") // owner
-                || faction.getRanks().getOrDefault(id, null) != null && (faction.getRanks().get(id).perms.contains("faction.manage.*") || faction.getRanks().get(id).perms.contains("faction.manage.settings") || faction.getRanks().get(id).perms.contains("*")));
+        // Autoriser si le owner a tout (legacy) OU si le rang possède la permission via RankManager (supporte les wildcards)
+        return faction != null && (
+                faction.hasPermission(faction.getOwner(), "*") ||
+                faction.ranks().hasPermissionOnRank(id, "faction.manage.settings")
+        );
     }
 
     @Override
@@ -42,4 +44,3 @@ public class Rank {
         return id != null ? id.hashCode() : 0;
     }
 }
-
