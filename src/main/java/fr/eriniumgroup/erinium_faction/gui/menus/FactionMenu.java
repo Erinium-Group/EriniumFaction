@@ -85,20 +85,41 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
             this.faction = null; // côté client, on se fie au snapshot/EFVariables
         }
 
-        // Calcul des rows basé sur le level (1 row + 1 row tous les 10 niveaux, max 3 rows à level 20)
-        int factionChestSize = 1; // default
+        // Calcul des rows basé sur le level
+        // getChestSize() retourne 9, 18, ou 27 selon le niveau
+        int factionChestSize = 9; // default (1 row)
         if (this.world.isClientSide()) {
             // Client: utiliser le snapshot
-            factionChestSize = (this.snapshot != null) ? this.snapshot.factionChestSize : 1;
+            factionChestSize = (this.snapshot != null) ? this.snapshot.factionChestSize : 9;
         } else {
             // Server: utiliser la faction
-            factionChestSize = (this.faction != null) ? this.faction.getChestSize() : 1;
+            factionChestSize = (this.faction != null) ? this.faction.getChestSize() : 9;
         }
-        FACTION_CHEST_ROWS = Math.min(1 + (factionChestSize), 3);
-        FACTION_CHEST_SLOTS = FACTION_CHEST_ROWS * 9;
+        FACTION_CHEST_SLOTS = factionChestSize;
+        FACTION_CHEST_ROWS = factionChestSize / 9;
 
-        // Initialiser l'ItemStackHandler avec la bonne taille
-        this.internal = new ItemStackHandler(FACTION_CHEST_SLOTS);
+        // Initialiser l'ItemStackHandler avec la bonne taille et charger les items de la faction
+        this.internal = new ItemStackHandler(FACTION_CHEST_SLOTS) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                // Sauvegarder les changements dans la faction côté serveur
+                if (!world.isClientSide() && faction != null) {
+                    ItemStack stack = this.getStackInSlot(slot);
+                    faction.setChestItem(slot, stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
+                    FactionManager.markDirty();
+                }
+            }
+        };
+
+        // Charger les items depuis la faction (côté serveur uniquement)
+        if (!this.world.isClientSide() && this.faction != null) {
+            for (int i = 0; i < Math.min(FACTION_CHEST_SLOTS, 27); i++) {
+                ItemStack stored = this.faction.getChestItem(i);
+                if (!stored.isEmpty()) {
+                    ((ItemStackHandler) this.internal).setStackInSlot(i, stored.copy());
+                }
+            }
+        }
 
         // Positions de base pour la ChestPage (scaled for 400x270)
         // CONTENT_X = 99, CONTENT_Y = 47, CONTENT_W = 275 (FactionPage constants)

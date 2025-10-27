@@ -179,8 +179,12 @@ public class SettingsFactionPage extends FactionPage {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers, int leftPos, int topPos, double scaleX, double scaleY) {
         if (nameField != null) {
-            if (nameField.keyPressed(keyCode, scanCode, modifiers)) return true;
-            if (descriptionField.keyPressed(keyCode, scanCode, modifiers)) return true;
+            // Si un text field est focusé, consommer TOUTES les touches pour empêcher la fermeture du GUI
+            if (nameField.isFocused() || descriptionField.isFocused()) {
+                nameField.keyPressed(keyCode, scanCode, modifiers);
+                descriptionField.keyPressed(keyCode, scanCode, modifiers);
+                return true; // Toujours retourner true pour bloquer la fermeture
+            }
         }
         return false;
     }
@@ -188,8 +192,12 @@ public class SettingsFactionPage extends FactionPage {
     @Override
     public boolean charTyped(char codePoint, int modifiers, int leftPos, int topPos, double scaleX, double scaleY) {
         if (nameField != null) {
-            if (nameField.charTyped(codePoint, modifiers)) return true;
-            if (descriptionField.charTyped(codePoint, modifiers)) return true;
+            // Si un text field est focusé, consommer tous les caractères
+            if (nameField.isFocused() || descriptionField.isFocused()) {
+                nameField.charTyped(codePoint, modifiers);
+                descriptionField.charTyped(codePoint, modifiers);
+                return true;
+            }
         }
         return false;
     }

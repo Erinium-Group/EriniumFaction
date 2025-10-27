@@ -20,13 +20,15 @@ public class MembersPage extends FactionPage {
     private static class MemberInfo {
         String name;
         String rank;
-        int power;
+        double power;
+        double maxPower;
         boolean online;
 
-        MemberInfo(String name, String rank, int power, boolean online) {
+        MemberInfo(String name, String rank, double power, double maxPower, boolean online) {
             this.name = name;
             this.rank = rank;
             this.power = power;
+            this.maxPower = maxPower;
             this.online = online;
         }
     }
@@ -54,17 +56,16 @@ public class MembersPage extends FactionPage {
                 String name = entry.getValue();
                 String rank = data.membersRank.getOrDefault(uuid, "Member");
                 // Récupérer le power et status en ligne depuis FactionSnapshot
-                double powerDouble = data.membersPower.getOrDefault(uuid, 0.0);
-                double maxPowerDouble = data.membersMaxPower.getOrDefault(uuid, 100.0);
-                int power = (int) Math.round(maxPowerDouble > 0 ? (powerDouble / maxPowerDouble) * 100 : 0);
+                double power = data.membersPower.getOrDefault(uuid, 0.0);
+                double maxPower = data.membersMaxPower.getOrDefault(uuid, 100.0);
                 boolean online = data.membersOnline.getOrDefault(uuid, false);
-                members.add(new MemberInfo(name, rank, power, online));
+                members.add(new MemberInfo(name, rank, power, maxPower, online));
             }
         }
 
         if (members.isEmpty()) {
             // Ajouter un message si aucun membre
-            members.add(new MemberInfo("No members found", "N/A", 0, false));
+            members.add(new MemberInfo("No members found", "N/A", 0, 0, false));
         }
 
         memberScrollList.setItems(members);
@@ -103,12 +104,14 @@ public class MembersPage extends FactionPage {
         int barH = 8;
 
         g.fill(barX, barY, barX + barW, barY + barH, 0xFF2a2a3e);
-        int powerPercent = Math.min(100, member.power);
+        int powerPercent = member.maxPower > 0 ? (int) Math.round((member.power / member.maxPower) * 100) : 0;
+        powerPercent = Math.min(100, Math.max(0, powerPercent));
         g.fill(barX, barY, barX + (barW * powerPercent / 100), barY + barH, 0xFFa855f7);
 
-        // Power text (en dessous de la barre)
-        String powerText = String.valueOf(member.power);
-        g.drawString(font, powerText, barX + barW / 2 - font.width(powerText) / 2, y + 17, 0xFF00d2ff, false);
+        // Power text (en dessous de la barre) - Affiche power / maxPower
+        String powerText = String.format("%.0f/%.0f", member.power, member.maxPower);
+        int textWidth = font.width(powerText);
+        g.drawString(font, powerText, barX + barW / 2 - textWidth / 2, y + 17, 0xFF00d2ff, false);
     }
 
     private int getRankColor(String rank) {

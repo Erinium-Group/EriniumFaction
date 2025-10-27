@@ -94,8 +94,11 @@ public class FactionSnapshot {
         s.displayName = f.getName();
         // claims depuis SavedData
         s.claims = FactionManager.countClaims(f.getId());
-        s.maxClaims = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_MAX_CLAIMS.get();
-        s.membersCount = f.getMembers().size();
+        // maxClaims = nombre de membres * power max par joueur
+        int memberCount = f.getMembers().size();
+        double powerPerPlayer = fr.eriniumgroup.erinium_faction.common.config.EFConfig.PLAYER_BASE_MAX_POWER.get();
+        s.maxClaims = (int) Math.floor(memberCount * powerPerPlayer);
+        s.membersCount = memberCount;
         s.maxPlayers = FactionManager.getMaxMembersFor(f);
         s.level = f.getLevel();
         s.xp = f.getXp();
