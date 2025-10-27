@@ -76,14 +76,50 @@ public class Faction {
         this.maxPower = 100;
         this.level = 1;
         this.xp = 0;
-        // ranks par défaut
+        // ranks par défaut avec permissions complètes
         RankDef leader = new RankDef("leader", "Leader", 100);
         leader.perms.add("faction.manage.*");
-        RankDef officer = new RankDef("officer", "Officier", 80);
+        leader.perms.add("faction.invite");
+        leader.perms.add("faction.kick");
+        leader.perms.add("faction.claim");
+        leader.perms.add("faction.unclaim");
+        leader.perms.add("faction.build");
+        leader.perms.add("faction.break");
+        leader.perms.add("faction.use.doors");
+        leader.perms.add("faction.use.buttons");
+        leader.perms.add("faction.use.levers");
+        leader.perms.add("faction.use.containers");
+        leader.perms.add("faction.manage.permissions");
+        leader.perms.add("faction.manage.alliances");
+
+        RankDef officer = new RankDef("officer", "Officer", 80);
         officer.perms.add("faction.invite");
         officer.perms.add("faction.kick");
-        RankDef member = new RankDef("member", "Membre", 10);
-        RankDef recruit = new RankDef("recruit", "Recrue", 1);
+        officer.perms.add("faction.claim");
+        officer.perms.add("faction.unclaim");
+        officer.perms.add("faction.build");
+        officer.perms.add("faction.break");
+        officer.perms.add("faction.use.doors");
+        officer.perms.add("faction.use.buttons");
+        officer.perms.add("faction.use.levers");
+        officer.perms.add("faction.use.containers");
+
+        RankDef member = new RankDef("member", "Member", 10);
+        member.perms.add("faction.invite");
+        member.perms.add("faction.claim");
+        member.perms.add("faction.build");
+        member.perms.add("faction.break");
+        member.perms.add("faction.use.doors");
+        member.perms.add("faction.use.buttons");
+        member.perms.add("faction.use.levers");
+        member.perms.add("faction.use.containers");
+
+        RankDef recruit = new RankDef("recruit", "Recruit", 1);
+        recruit.perms.add("faction.build");
+        recruit.perms.add("faction.break");
+        recruit.perms.add("faction.use.doors");
+        recruit.perms.add("faction.use.containers");
+
         ranks.put(leader.id, leader);
         ranks.put(officer.id, officer);
         ranks.put(member.id, member);

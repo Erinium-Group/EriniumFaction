@@ -378,14 +378,14 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         int barW = sw(60);
         int barH = sh(4);
 
-        int currentPower = factionData != null ? factionData.currentPower : 0;
-        int maxPower = factionData != null && factionData.maxPower > 0 ? factionData.maxPower : 100;
-        int powerPercent = maxPower > 0 ? (currentPower * 100 / maxPower) : 0;
+        double currentPower = factionData != null ? factionData.currentPower : 0;
+        double maxPower = factionData != null && factionData.maxPower > 0 ? factionData.maxPower : 100;
+        int powerPercent = maxPower > 0 ? (int) ((currentPower * 100) / maxPower) : 0;
 
         g.fill(barX, barY, barX + barW, barY + barH, 0xFF2a2a3e);
         g.fill(barX, barY, barX + (barW * powerPercent / 100), barY + barH, 0xFFa855f7);
 
-        String powerText = currentPower + "/" + maxPower;
+        String powerText = String.format("%.1f/%.1f", currentPower, maxPower);
         g.drawCenteredString(font, powerText, pwCenterX, pwY + sh(17), 0xFF00d2ff);
     }
 

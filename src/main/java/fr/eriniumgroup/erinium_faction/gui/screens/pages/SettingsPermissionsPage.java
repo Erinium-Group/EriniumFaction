@@ -126,6 +126,9 @@ public class SettingsPermissionsPage extends FactionPage {
     }
 
     private void initComponents(int leftPos, int topPos, double scaleX, double scaleY) {
+        // Toujours recharger les permissions depuis le snapshot pour avoir les dernières données
+        loadRealPermissions();
+
         if (permissionScrollList == null) {
             permissionScrollList = new ScrollList<>(font, this::renderPermissionItem, sh(24, scaleY));
 
@@ -158,6 +161,7 @@ public class SettingsPermissionsPage extends FactionPage {
                 String serverPerm = convertGuiPermToServer(perm.name);
 
                 if (perms.contains(perm.name)) {
+                    // Retirer localement pour feedback immédiat
                     perms.remove(perm.name);
                     // Envoyer au serveur
                     PacketDistributor.sendToServer(new FactionActionPacket(
@@ -166,6 +170,7 @@ public class SettingsPermissionsPage extends FactionPage {
                         serverPerm
                     ));
                 } else {
+                    // Ajouter localement pour feedback immédiat
                     perms.add(perm.name);
                     // Envoyer au serveur
                     PacketDistributor.sendToServer(new FactionActionPacket(
@@ -175,9 +180,6 @@ public class SettingsPermissionsPage extends FactionPage {
                     ));
                 }
             });
-
-            // Charger les vraies permissions
-            loadRealPermissions();
 
             int x = sx(CONTENT_X, leftPos, scaleX);
             int y = sy(CONTENT_Y, topPos, scaleY);

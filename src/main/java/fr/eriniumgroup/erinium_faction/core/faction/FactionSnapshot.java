@@ -17,8 +17,8 @@ public class FactionSnapshot {
     public int level;
     public int xp;
     public int xpRequired;
-    public int currentPower;
-    public int maxPower;
+    public double currentPower;
+    public double maxPower;
 
     public boolean admin;
     public boolean warzone;
@@ -103,8 +103,9 @@ public class FactionSnapshot {
         s.level = f.getLevel();
         s.xp = f.getXp();
         s.xpRequired = f.xpNeededForNextLevel();
-        s.currentPower = (int) Math.round(f.getPower());
-        s.maxPower = (int) Math.round(f.getMaxPower());
+        // Garder les power en double pour l'affichage précis
+        s.currentPower = f.getPower();
+        s.maxPower = f.getMaxPower();
         s.admin = f.isAdminFaction();
         s.warzone = f.isWarzone();
         s.safezone = f.isSafezone();
@@ -199,8 +200,8 @@ public class FactionSnapshot {
         buf.writeVarInt(s.level);
         buf.writeVarInt(s.xp);
         buf.writeVarInt(s.xpRequired);
-        buf.writeVarInt(s.currentPower);
-        buf.writeVarInt(s.maxPower);
+        buf.writeDouble(s.currentPower);
+        buf.writeDouble(s.maxPower);
         buf.writeBoolean(s.admin);
         buf.writeBoolean(s.warzone);
         buf.writeBoolean(s.safezone);
@@ -267,8 +268,8 @@ public class FactionSnapshot {
         s.level = buf.readVarInt();
         s.xp = buf.readVarInt();
         s.xpRequired = buf.readVarInt();
-        s.currentPower = buf.readVarInt();
-        s.maxPower = buf.readVarInt();
+        s.currentPower = buf.readDouble();
+        s.maxPower = buf.readDouble();
         s.admin = buf.readBoolean();
         s.warzone = buf.readBoolean();
         s.safezone = buf.readBoolean();
