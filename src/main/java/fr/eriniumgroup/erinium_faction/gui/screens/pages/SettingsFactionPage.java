@@ -1,10 +1,12 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
+import fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledButton;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledTextField;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledToggle;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +58,26 @@ public class SettingsFactionPage extends FactionPage {
             actionButtons.clear();
 
             StyledButton saveBtn = new StyledButton(font, "Save", () -> {
-                System.out.println("SettingsFactionPage: Saving changes...");
-                System.out.println("  Name: " + nameField.getText());
-                System.out.println("  Description: " + descriptionField.getText());
-                System.out.println("  Open to Join: " + openToJoinToggle.getState());
+                // Envoyer les modifications au serveur via packets
+                if (!nameField.getText().isEmpty()) {
+                    PacketDistributor.sendToServer(new FactionActionPacket(
+                        FactionActionPacket.ActionType.UPDATE_NAME,
+                        nameField.getText(),
+                        ""
+                    ));
+                }
+
+                PacketDistributor.sendToServer(new FactionActionPacket(
+                    FactionActionPacket.ActionType.UPDATE_DESCRIPTION,
+                    descriptionField.getText(),
+                    ""
+                ));
+
+                PacketDistributor.sendToServer(new FactionActionPacket(
+                    FactionActionPacket.ActionType.UPDATE_MODE,
+                    openToJoinToggle.getState() ? "OPEN" : "INVITE_ONLY",
+                    ""
+                ));
             });
             saveBtn.setPrimary(true);
             saveBtn.setBounds(x + sw(4, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));

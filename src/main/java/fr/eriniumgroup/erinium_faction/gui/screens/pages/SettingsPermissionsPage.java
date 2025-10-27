@@ -1,9 +1,12 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
+import fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledButton;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
 
@@ -49,22 +52,77 @@ public class SettingsPermissionsPage extends FactionPage {
         for (Rank rank : Rank.values()) {
             rankPermissions.put(rank, new HashSet<>());
         }
+    }
 
-        // Default permissions (Officer has most, Recruit has least)
-        rankPermissions.get(Rank.OFFICER).addAll(Arrays.asList(
-            "Invite Members", "Kick Members", "Claim Territory", "Unclaim Territory",
-            "Build in Territory", "Break in Territory", "Use Doors", "Use Buttons",
-            "Use Levers", "Use Containers", "Manage Permissions", "Manage Alliances"
-        ));
+    private void loadRealPermissions() {
+        // Charger les vraies permissions depuis FactionSnapshot
+        var data = getFactionData();
+        if (data != null && data.ranks != null) {
+            // Réinitialiser les permissions
+            for (Rank rank : Rank.values()) {
+                rankPermissions.get(rank).clear();
+            }
 
-        rankPermissions.get(Rank.MEMBER).addAll(Arrays.asList(
-            "Invite Members", "Claim Territory", "Build in Territory", "Break in Territory",
-            "Use Doors", "Use Buttons", "Use Levers", "Use Containers"
-        ));
+            // Charger les permissions réelles
+            for (FactionSnapshot.RankInfo rankInfo : data.ranks) {
+                Rank rank = getRankByName(rankInfo.display);
+                if (rank != null) {
+                    // Convertir les permissions du format serveur au format GUI
+                    for (String perm : rankInfo.perms) {
+                        String guiPerm = convertServerPermToGui(perm);
+                        if (guiPerm != null) {
+                            rankPermissions.get(rank).add(guiPerm);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-        rankPermissions.get(Rank.RECRUIT).addAll(Arrays.asList(
-            "Build in Territory", "Break in Territory", "Use Doors", "Use Containers"
-        ));
+    private Rank getRankByName(String name) {
+        for (Rank rank : Rank.values()) {
+            if (rank.name.equalsIgnoreCase(name)) {
+                return rank;
+            }
+        }
+        return null;
+    }
+
+    private String convertServerPermToGui(String serverPerm) {
+        // Mapping simple pour l'instant
+        return switch (serverPerm) {
+            case "faction.invite" -> "Invite Members";
+            case "faction.kick" -> "Kick Members";
+            case "faction.claim" -> "Claim Territory";
+            case "faction.unclaim" -> "Unclaim Territory";
+            case "faction.build" -> "Build in Territory";
+            case "faction.break" -> "Break in Territory";
+            case "faction.use.doors" -> "Use Doors";
+            case "faction.use.buttons" -> "Use Buttons";
+            case "faction.use.levers" -> "Use Levers";
+            case "faction.use.containers" -> "Use Containers";
+            case "faction.manage.permissions" -> "Manage Permissions";
+            case "faction.manage.alliances" -> "Manage Alliances";
+            default -> null;
+        };
+    }
+
+    private String convertGuiPermToServer(String guiPerm) {
+        return switch (guiPerm) {
+            case "Invite Members" -> "faction.invite";
+            case "Kick Members" -> "faction.kick";
+            case "Claim Territory" -> "faction.claim";
+            case "Unclaim Territory" -> "faction.unclaim";
+            case "Build in Territory" -> "faction.build";
+            case "Break in Territory" -> "faction.break";
+            case "Use Doors" -> "faction.use.doors";
+            case "Use Buttons" -> "faction.use.buttons";
+            case "Use Levers" -> "faction.use.levers";
+            case "Use Containers" -> "faction.use.containers";
+            case "Manage Permissions" -> "faction.manage.permissions";
+            case "Manage Alliances" -> "faction.manage.alliances";
+            default -> guiPerm.toLowerCase().replace(" ", ".");
+        };
     }
 
     private void initComponents(int leftPos, int topPos, double scaleX, double scaleY) {
@@ -96,14 +154,30 @@ public class SettingsPermissionsPage extends FactionPage {
             permissionScrollList.setItems(permissions);
             permissionScrollList.setOnItemClick(perm -> {
                 Set<String> perms = rankPermissions.get(selectedRank);
+                String rankId = selectedRank.name.toLowerCase();
+                String serverPerm = convertGuiPermToServer(perm.name);
+
                 if (perms.contains(perm.name)) {
                     perms.remove(perm.name);
-                    System.out.println("SettingsPermissionsPage: Removed " + perm.name + " from " + selectedRank.name);
+                    // Envoyer au serveur
+                    PacketDistributor.sendToServer(new FactionActionPacket(
+                        FactionActionPacket.ActionType.REMOVE_RANK_PERMISSION,
+                        rankId,
+                        serverPerm
+                    ));
                 } else {
                     perms.add(perm.name);
-                    System.out.println("SettingsPermissionsPage: Added " + perm.name + " to " + selectedRank.name);
+                    // Envoyer au serveur
+                    PacketDistributor.sendToServer(new FactionActionPacket(
+                        FactionActionPacket.ActionType.ADD_RANK_PERMISSION,
+                        rankId,
+                        serverPerm
+                    ));
                 }
             });
+
+            // Charger les vraies permissions
+            loadRealPermissions();
 
             int x = sx(CONTENT_X, leftPos, scaleX);
             int y = sy(CONTENT_Y, topPos, scaleY);
@@ -113,11 +187,9 @@ public class SettingsPermissionsPage extends FactionPage {
             // Action buttons
             actionButtons.clear();
 
-            StyledButton saveBtn = new StyledButton(font, "Save Permissions", () -> {
-                System.out.println("SettingsPermissionsPage: Saving permissions...");
-                for (Rank rank : Rank.values()) {
-                    System.out.println("  " + rank.name + ": " + rankPermissions.get(rank));
-                }
+            StyledButton saveBtn = new StyledButton(font, "Refresh Data", () -> {
+                // Recharger les données depuis le serveur
+                loadRealPermissions();
             });
             saveBtn.setPrimary(true);
             saveBtn.setBounds(x, y + sh(200, scaleY), sw(85, scaleX), sh(17, scaleY));

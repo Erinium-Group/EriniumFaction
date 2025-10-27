@@ -38,6 +38,7 @@ public class PacketHandler {
         registrar.playToServer(FactionGuiNetwork.TYPE, FactionGuiNetwork.STREAM_CODEC, FactionGuiNetwork::handleData);
         registrar.playToServer(FactionMenuSettingsButtonMessage.TYPE, FactionMenuSettingsButtonMessage.STREAM_CODEC, FactionMenuSettingsButtonMessage::handleData);
         registrar.playToServer(OpenFactionChestMessage.TYPE, OpenFactionChestMessage.STREAM_CODEC, OpenFactionChestMessage::handleData);
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket::handleData);
 
         // Serveur -> Client (sync affichage HP de bloc)
         registrar.playToClient(BlockHpSyncMessage.TYPE, BlockHpSyncMessage.STREAM_CODEC, BlockHpSyncMessage::handleData);
