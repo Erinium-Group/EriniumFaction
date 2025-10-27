@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -41,9 +42,6 @@ public class MembersPage extends FactionPage {
         if (memberScrollList == null) {
             // Hauteur augmentée pour que tout soit visible (30 au lieu de 16)
             memberScrollList = new ScrollList<>(font, this::renderMemberItem, sh(30, scaleY));
-            memberScrollList.setOnItemClick(member -> {
-                System.out.println("MembersPage: Clicked on member " + member.name);
-            });
         }
 
         // Mettre à jour la liste avec les vraies données
@@ -65,7 +63,7 @@ public class MembersPage extends FactionPage {
 
         if (members.isEmpty()) {
             // Ajouter un message si aucun membre
-            members.add(new MemberInfo("No members found", "N/A", 0, 0, false));
+            members.add(new MemberInfo(translate("erinium_faction.gui.members.none"), translate("erinium_faction.gui.members.rank_na"), 0, 0, false));
         }
 
         memberScrollList.setItems(members);
@@ -79,7 +77,7 @@ public class MembersPage extends FactionPage {
         memberScrollList.setBounds(x, y + sh(15, scaleY), w, h - sh(21, scaleY));
     }
 
-    private void renderMemberItem(GuiGraphics g, MemberInfo member, int x, int y, int width, int height, boolean hovered, Font font) {
+    private void renderMemberItem(GuiGraphics g, MemberInfo member, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         // Background
         int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
         g.fill(x, y, x + width, y + height, bgColor);
@@ -89,13 +87,16 @@ public class MembersPage extends FactionPage {
         int indicatorColor = member.online ? 0xFF10b981 : 0xFF6a6a7e;
         g.fill(x + 4, y + 7, x + 8, y + 11, indicatorColor);
 
-        // Member name (en haut)
+        // Member name (en haut) - auto-scroll on hover
         int nameColor = member.online ? 0xFFffffff : 0xFF9a9aae;
-        g.drawString(font, member.name, x + 12, y + 4, nameColor, false);
+        int nameMaxWidth = width - 70; // Laisser place pour la barre de power
+        boolean nameHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 12, y + 4, nameMaxWidth, font.lineHeight);
+        TextHelper.drawAutoScrollingText(g, font, member.name, x + 12, y + 4, nameMaxWidth, nameColor, false, nameHovered, "member_name_" + member.name);
 
-        // Rank (en bas)
+        // Rank (en bas) - auto-scroll on hover
         int rankColor = getRankColor(member.rank);
-        g.drawString(font, member.rank, x + 12, y + 16, rankColor, false);
+        boolean rankHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 12, y + 16, nameMaxWidth, font.lineHeight);
+        TextHelper.drawAutoScrollingText(g, font, member.rank, x + 12, y + 16, nameMaxWidth, rankColor, false, rankHovered, "member_rank_" + member.name);
 
         // Power bar (réduite pour petit GUI)
         int barX = x + width - 55;
@@ -108,8 +109,8 @@ public class MembersPage extends FactionPage {
         powerPercent = Math.min(100, Math.max(0, powerPercent));
         g.fill(barX, barY, barX + (barW * powerPercent / 100), barY + barH, 0xFFa855f7);
 
-        // Power text (en dessous de la barre) - Affiche power / maxPower
-        String powerText = String.format("%.0f/%.0f", member.power, member.maxPower);
+        // Power text (en dessous de la barre) - Affiche power / maxPower en Double (1 décimale)
+        String powerText = String.format("%.1f/%.1f", member.power, member.maxPower);
         int textWidth = font.width(powerText);
         g.drawString(font, powerText, barX + barW / 2 - textWidth / 2, y + 17, 0xFF00d2ff, false);
     }
@@ -133,11 +134,11 @@ public class MembersPage extends FactionPage {
         // Header
         g.fill(x, y, x + w, y + sh(12, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
-        g.drawString(font, "FACTION MEMBERS", x + sw(5, scaleX), y + sh(5, scaleY), 0xFFffffff, true);
+        g.drawString(font, translate("erinium_faction.gui.members.title"), x + sw(5, scaleX), y + sh(5, scaleY), 0xFFffffff, true);
 
         // Stats avec vraies données
         var data = getFactionData();
-        String statsText = data != null ? data.membersCount + " Members" : "0 Members";
+        String statsText = data != null ? translate("erinium_faction.gui.members.count", data.membersCount) : translate("erinium_faction.gui.members.count", 0);
         g.drawString(font, statsText, x + w - font.width(statsText) - sw(5, scaleX), y + sh(5, scaleY), 0xFF00d2ff, false);
 
         // Member list

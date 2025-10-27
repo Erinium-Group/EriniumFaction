@@ -1,9 +1,11 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledButton;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -17,16 +19,24 @@ import java.util.*;
 public class SettingsPermissionsPage extends FactionPage {
 
     private enum Rank {
-        OFFICER("Officer", 0xFFa855f7),
-        MEMBER("Member", 0xFF3b82f6),
-        RECRUIT("Recruit", 0xFF6a6a7e);
+        OFFICER("officer", 0xFFa855f7),
+        MEMBER("member", 0xFF3b82f6),
+        RECRUIT("recruit", 0xFF6a6a7e);
 
-        final String name;
+        final String key;  // Clé de traduction
         final int color;
 
-        Rank(String name, int color) {
-            this.name = name;
+        Rank(String key, int color) {
+            this.key = key;
             this.color = color;
+        }
+
+        String getDisplayName() {
+            return net.minecraft.network.chat.Component.translatable("erinium_faction.gui.permissions.rank." + key).getString();
+        }
+
+        String getId() {
+            return key;
         }
     }
 
@@ -81,7 +91,7 @@ public class SettingsPermissionsPage extends FactionPage {
 
     private Rank getRankByName(String name) {
         for (Rank rank : Rank.values()) {
-            if (rank.name.equalsIgnoreCase(name)) {
+            if (rank.getDisplayName().equalsIgnoreCase(name) || rank.getId().equalsIgnoreCase(name)) {
                 return rank;
             }
         }
@@ -132,32 +142,25 @@ public class SettingsPermissionsPage extends FactionPage {
         if (permissionScrollList == null) {
             permissionScrollList = new ScrollList<>(font, this::renderPermissionItem, sh(24, scaleY));
 
+            // Charger les permissions depuis les clés de langue
             List<Permission> permissions = new ArrayList<>();
-            permissions.add(new Permission("Invite Members", "Allow inviting new members to the faction"));
-            permissions.add(new Permission("Kick Members", "Allow removing members from the faction"));
-            permissions.add(new Permission("Claim Territory", "Allow claiming new chunks for the faction"));
-            permissions.add(new Permission("Unclaim Territory", "Allow unclaiming chunks"));
-            permissions.add(new Permission("Build in Territory", "Allow placing blocks in faction territory"));
-            permissions.add(new Permission("Break in Territory", "Allow breaking blocks in faction territory"));
-            permissions.add(new Permission("Use Doors", "Allow using doors in faction territory"));
-            permissions.add(new Permission("Use Buttons", "Allow using buttons in faction territory"));
-            permissions.add(new Permission("Use Levers", "Allow using levers in faction territory"));
-            permissions.add(new Permission("Use Containers", "Allow accessing chests and containers"));
-            permissions.add(new Permission("Manage Permissions", "Allow modifying rank permissions"));
-            permissions.add(new Permission("Manage Alliances", "Allow creating and breaking alliances"));
-            permissions.add(new Permission("Manage Economy", "Allow depositing/withdrawing from faction bank"));
-            permissions.add(new Permission("Use Teleports", "Allow using faction home and warps"));
-            permissions.add(new Permission("Set Home", "Allow setting faction home location"));
-            permissions.add(new Permission("Create Warps", "Allow creating faction warps"));
-            permissions.add(new Permission("Delete Warps", "Allow deleting faction warps"));
-            permissions.add(new Permission("Manage Shop", "Allow buying items from faction shop"));
-            permissions.add(new Permission("Access Chest", "Allow accessing faction chest"));
-            permissions.add(new Permission("Manage Chest", "Allow depositing to faction chest"));
+            String[] permKeys = {
+                "invite_members", "kick_members", "claim_territory", "unclaim_territory",
+                "build", "break", "use_doors", "use_buttons", "use_levers", "use_containers",
+                "manage_permissions", "manage_alliances", "manage_economy", "use_teleports",
+                "set_home", "create_warps", "delete_warps", "manage_shop", "access_chest", "manage_chest"
+            };
+
+            for (String key : permKeys) {
+                String name = translate("erinium_faction.gui.permissions." + key);
+                String desc = translate("erinium_faction.gui.permissions." + key + ".desc");
+                permissions.add(new Permission(name, desc));
+            }
 
             permissionScrollList.setItems(permissions);
             permissionScrollList.setOnItemClick(perm -> {
                 Set<String> perms = rankPermissions.get(selectedRank);
-                String rankId = selectedRank.name.toLowerCase();
+                String rankId = selectedRank.getId();
                 String serverPerm = convertGuiPermToServer(perm.name);
 
                 if (perms.contains(perm.name)) {
@@ -189,7 +192,7 @@ public class SettingsPermissionsPage extends FactionPage {
             // Action buttons
             actionButtons.clear();
 
-            StyledButton saveBtn = new StyledButton(font, "Refresh Data", () -> {
+            StyledButton saveBtn = new StyledButton(font, translate("erinium_faction.gui.permissions.button.refresh"), () -> {
                 // Recharger les données depuis le serveur
                 loadRealPermissions();
             });
@@ -197,32 +200,75 @@ public class SettingsPermissionsPage extends FactionPage {
             saveBtn.setBounds(x, y + sh(200, scaleY), sw(85, scaleX), sh(17, scaleY));
             actionButtons.add(saveBtn);
 
-            StyledButton resetBtn = new StyledButton(font, "Reset to Default", () -> {
-                System.out.println("SettingsPermissionsPage: Resetting to default permissions");
-                rankPermissions.get(Rank.OFFICER).clear();
-                rankPermissions.get(Rank.MEMBER).clear();
-                rankPermissions.get(Rank.RECRUIT).clear();
-                // Re-add defaults
-                rankPermissions.get(Rank.OFFICER).addAll(Arrays.asList(
+            StyledButton resetBtn = new StyledButton(font, translate("erinium_faction.gui.permissions.button.reset"), () -> {
+                EFC.log.info("§6Permissions", "§aResetting to default permissions");
+
+                // Définir les permissions par défaut pour chaque rang
+                Map<Rank, List<String>> defaultPerms = new HashMap<>();
+                defaultPerms.put(Rank.OFFICER, Arrays.asList(
                     "Invite Members", "Kick Members", "Claim Territory", "Unclaim Territory",
                     "Build in Territory", "Break in Territory", "Use Doors", "Use Buttons",
                     "Use Levers", "Use Containers", "Manage Permissions", "Manage Alliances"
                 ));
-                rankPermissions.get(Rank.MEMBER).addAll(Arrays.asList(
+                defaultPerms.put(Rank.MEMBER, Arrays.asList(
                     "Invite Members", "Claim Territory", "Build in Territory", "Break in Territory",
                     "Use Doors", "Use Buttons", "Use Levers", "Use Containers"
                 ));
-                rankPermissions.get(Rank.RECRUIT).addAll(Arrays.asList(
+                defaultPerms.put(Rank.RECRUIT, Arrays.asList(
                     "Build in Territory", "Break in Territory", "Use Doors", "Use Containers"
                 ));
+
+                // Pour chaque rang, supprimer toutes les permissions actuelles puis ajouter les permissions par défaut
+                for (Rank rank : Rank.values()) {
+                    String rankId = rank.getId();
+                    Set<String> currentPerms = new HashSet<>(rankPermissions.get(rank));
+
+                    // Supprimer toutes les permissions actuelles
+                    for (String perm : currentPerms) {
+                        String serverPerm = convertGuiPermToServer(perm);
+                        PacketDistributor.sendToServer(new FactionActionPacket(
+                            FactionActionPacket.ActionType.REMOVE_RANK_PERMISSION,
+                            rankId,
+                            serverPerm
+                        ));
+                    }
+
+                    // Ajouter les permissions par défaut
+                    List<String> defaults = defaultPerms.getOrDefault(rank, new ArrayList<>());
+                    for (String perm : defaults) {
+                        String serverPerm = convertGuiPermToServer(perm);
+                        PacketDistributor.sendToServer(new FactionActionPacket(
+                            FactionActionPacket.ActionType.ADD_RANK_PERMISSION,
+                            rankId,
+                            serverPerm
+                        ));
+                    }
+
+                    // Mettre à jour localement pour feedback immédiat
+                    rankPermissions.get(rank).clear();
+                    rankPermissions.get(rank).addAll(defaults);
+                }
             });
             resetBtn.setBounds(x + sw(91, scaleX), y + sh(200, scaleY), sw(85, scaleX), sh(17, scaleY));
             actionButtons.add(resetBtn);
 
-            StyledButton grantAllBtn = new StyledButton(font, "Grant All to " + selectedRank.name, () -> {
-                System.out.println("SettingsPermissionsPage: Granting all permissions to " + selectedRank.name);
+            StyledButton grantAllBtn = new StyledButton(font, translate("erinium_faction.gui.permissions.button.grant_all", selectedRank.getDisplayName()), () -> {
+                EFC.log.info("§6Permissions", "§aGranting all permissions to §e{}", selectedRank.getDisplayName());
+                String rankId = selectedRank.getId();
+
+                // Pour chaque permission dans la liste
                 for (Permission perm : permissionScrollList.getItems()) {
-                    rankPermissions.get(selectedRank).add(perm.name);
+                    // Si la permission n'est pas déjà accordée
+                    if (!rankPermissions.get(selectedRank).contains(perm.name)) {
+                        String serverPerm = convertGuiPermToServer(perm.name);
+                        PacketDistributor.sendToServer(new FactionActionPacket(
+                            FactionActionPacket.ActionType.ADD_RANK_PERMISSION,
+                            rankId,
+                            serverPerm
+                        ));
+                        // Mettre à jour localement pour feedback immédiat
+                        rankPermissions.get(selectedRank).add(perm.name);
+                    }
                 }
             });
             grantAllBtn.setBounds(x + sw(182, scaleX), y + sh(200, scaleY), sw(85, scaleX), sh(17, scaleY));
@@ -230,7 +276,7 @@ public class SettingsPermissionsPage extends FactionPage {
         }
     }
 
-    private void renderPermissionItem(GuiGraphics g, Permission perm, int x, int y, int width, int height, boolean hovered, Font font) {
+    private void renderPermissionItem(GuiGraphics g, Permission perm, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         boolean hasPermission = rankPermissions.get(selectedRank).contains(perm.name);
         int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
         g.fill(x, y, x + width, y + height, bgColor);
@@ -248,11 +294,13 @@ public class SettingsPermissionsPage extends FactionPage {
             g.drawCenteredString(font, "✓", checkX + checkSize / 2, checkY + 1, 0xFFffffff);
         }
 
-        // Permission name (décalé pour ne pas chevaucher la checkbox)
-        g.drawString(font, perm.name, x + 18, y + 3, 0xFFffffff, false);
+        // Permission name with scaling (décalé pour ne pas chevaucher la checkbox)
+        int maxNameWidth = width - 22;
+        TextHelper.drawScaledText(g, font, perm.name, x + 18, y + 3, maxNameWidth, 0xFFffffff, false);
 
-        // Description (également décalée)
-        g.drawString(font, perm.description, x + 18, y + 12, 0xFF9a9aae, false);
+        // Description with auto-scroll on hover (également décalée)
+        boolean descHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 18, y + 12, maxNameWidth, font.lineHeight);
+        TextHelper.drawAutoScrollingText(g, font, perm.description, x + 18, y + 12, maxNameWidth, 0xFF9a9aae, false, descHovered, "perm_desc_" + perm.name);
     }
 
     @Override
@@ -274,7 +322,7 @@ public class SettingsPermissionsPage extends FactionPage {
         // Header
         g.fill(x, y, x + w, y + sh(22, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
-        g.drawString(font, "RANK PERMISSIONS", x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
+        g.drawString(font, translate("erinium_faction.gui.permissions.title"), x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
 
         // Rank selector (3 buttons horizontally)
         int rankY = y + sh(27, scaleY);
@@ -294,7 +342,7 @@ public class SettingsPermissionsPage extends FactionPage {
             g.fill(rankX, rankY, rankX + rankBtnWidth, rankY + 1, rank.color & 0x80FFFFFF);
 
             // Center text vertically (mieux espacé)
-            g.drawCenteredString(font, rank.name, rankX + rankBtnWidth / 2, rankY + 2, 0xFFffffff);
+            g.drawCenteredString(font, rank.getDisplayName(), rankX + rankBtnWidth / 2, rankY + 2, 0xFFffffff);
 
             // Show permission count (plus bas et mieux espacé)
             int permCount = rankPermissions.get(rank).size();
@@ -315,6 +363,14 @@ public class SettingsPermissionsPage extends FactionPage {
         int x = sx(CONTENT_X, leftPos, scaleX);
         int y = sy(CONTENT_Y, topPos, scaleY);
 
+        // Check permission scroll list FIRST (avant les rank buttons)
+        if (permissionScrollList != null) {
+            boolean handled = permissionScrollList.mouseClicked(mouseX, mouseY, button);
+            if (handled) {
+                return true;
+            }
+        }
+
         // Check rank selector
         int rankY = y + sh(27, scaleY);
         int rankBtnWidth = sw(92, scaleX);
@@ -328,18 +384,12 @@ public class SettingsPermissionsPage extends FactionPage {
             if (mouseX >= rankX && mouseX < rankX + rankBtnWidth &&
                 mouseY >= rankY && mouseY < rankY + rankBtnHeight) {
                 selectedRank = rank;
-                System.out.println("SettingsPermissionsPage: Selected rank " + rank.name);
                 // Update grant all button text
                 if (!actionButtons.isEmpty()) {
-                    actionButtons.get(2).setText("Grant All to " + selectedRank.name);
+                    actionButtons.get(2).setText(translate("erinium_faction.gui.permissions.button.grant_all", selectedRank.getDisplayName()));
                 }
                 return true;
             }
-        }
-
-        // Check permission scroll list
-        if (permissionScrollList != null && permissionScrollList.mouseClicked(mouseX, mouseY, button)) {
-            return true;
         }
 
         // Check buttons

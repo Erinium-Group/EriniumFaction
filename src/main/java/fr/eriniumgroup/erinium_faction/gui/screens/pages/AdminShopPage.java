@@ -1,6 +1,8 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -58,7 +60,7 @@ public class AdminShopPage extends FactionPage {
 
             shopScrollList.setItems(items);
             shopScrollList.setOnItemClick(item -> {
-                System.out.println("AdminShopPage: Attempting to purchase " + item.name + " for $" + item.price + " (requires level " + item.requiredLevel + ")");
+                EFC.log.info("§6Shop", "§aAttempting to purchase §e{} §afor §e${} §a(requires level §e{}§a)", item.name, item.price, item.requiredLevel);
             });
         }
 
@@ -70,7 +72,7 @@ public class AdminShopPage extends FactionPage {
         shopScrollList.setBounds(x, y + sh(27, scaleY), w, h - sh(27, scaleY));
     }
 
-    private void renderShopItem(GuiGraphics g, ShopItem item, int x, int y, int width, int height, boolean hovered, Font font) {
+    private void renderShopItem(GuiGraphics g, ShopItem item, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
         g.fill(x, y, x + width, y + height, bgColor);
         g.fill(x, y, x + width, y + 1, 0x80667eea);
@@ -81,24 +83,28 @@ public class AdminShopPage extends FactionPage {
         g.fill(x + 7, y + 6, x + 7 + iconSize, y + 7, 0xFFa855f7);
         g.fill(x + 7, y + 6, x + 7, y + 6 + iconSize, 0xFFa855f7);
 
-        // Item name
-        g.drawString(font, item.name, x + 49, y + 6, 0xFFffffff, true);
+        // Calculate max width for text (account for icon, margins, and buy button)
+        int buyTextWidth = font.width(translate("erinium_faction.gui.shop.button.buy"));
+        int maxTextWidth = width - 49 - 16 - buyTextWidth - 10;
 
-        // Description
-        g.drawString(font, item.description, x + 49, y + 15, 0xFFa0a0c0, false);
+        // Item name with scaling (keep for fitting)
+        TextHelper.drawScaledText(g, font, item.name, x + 49, y + 6, maxTextWidth, 0xFFffffff, true);
+
+        // Description with auto-scroll on hover
+        boolean descHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 49, y + 15, maxTextWidth, font.lineHeight);
+        TextHelper.drawAutoScrollingText(g, font, item.description, x + 49, y + 15, maxTextWidth, 0xFFa0a0c0, false, descHovered, "shop_desc_" + item.name);
 
         // Price
-        String priceText = "Price: $" + item.price;
+        String priceText = translate("erinium_faction.gui.shop.price", item.price);
         g.drawString(font, priceText, x + 49, y + 26, 0xFFfbbf24, false);
 
         // Required level
-        String levelText = "Requires Level " + item.requiredLevel;
+        String levelText = translate("erinium_faction.gui.shop.level_required", item.requiredLevel);
         int levelColor = 0xFF00d2ff;
         g.drawString(font, levelText, x + 49, y + 35, levelColor, false);
 
         // Buy button indicator
-        String buyText = "Click to Buy";
-        int buyTextWidth = font.width(buyText);
+        String buyText = translate("erinium_faction.gui.shop.button.buy");
         g.drawString(font, buyText, x + width - buyTextWidth - 16, y + height / 2 - 4, hovered ? 0xFF10b981 : 0xFF6a6a7e, false);
     }
 
@@ -113,11 +119,11 @@ public class AdminShopPage extends FactionPage {
         // Header
         g.fill(x, y, x + w, y + sh(22, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
-        g.drawString(font, "FACTION SHOP", x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
+        g.drawString(font, translate("erinium_faction.gui.shop.title"), x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
 
         // Balance display avec vraies données
         var data = getFactionData();
-        String balanceText = data != null ? "Balance: $" + data.bank : "Balance: $0";
+        String balanceText = data != null ? translate("erinium_faction.gui.shop.balance", data.bank) : translate("erinium_faction.gui.shop.balance", 0);
         g.drawString(font, balanceText, x + w - font.width(balanceText) - sw(9, scaleX), y + sh(9, scaleY), 0xFFfbbf24, false);
 
         shopScrollList.render(g, mouseX, mouseY);

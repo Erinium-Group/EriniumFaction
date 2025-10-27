@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -32,9 +33,6 @@ public class AlliancesPage extends FactionPage {
     private void initComponents(int leftPos, int topPos, double scaleX, double scaleY) {
         if (allianceScrollList == null) {
             allianceScrollList = new ScrollList<>(font, this::renderAllianceItem, sh(37, scaleY));
-            allianceScrollList.setOnItemClick(alliance -> {
-                System.out.println("AlliancesPage: Clicked on alliance " + alliance.name);
-            });
         }
 
         // Mettre à jour la liste avec les vraies données
@@ -63,13 +61,16 @@ public class AlliancesPage extends FactionPage {
         allianceScrollList.setBounds(x, y + sh(27, scaleY), w, h - sh(27, scaleY));
     }
 
-    private void renderAllianceItem(GuiGraphics g, AllianceInfo alliance, int x, int y, int width, int height, boolean hovered, Font font) {
+    private void renderAllianceItem(GuiGraphics g, AllianceInfo alliance, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
         g.fill(x, y, x + width, y + height, bgColor);
         g.fill(x, y, x + width, y + 1, 0x8000d2ff);
 
-        g.drawString(font, alliance.name, x + 9, y + 9, 0xFF00d2ff, true);
-        g.drawString(font, "Members: " + alliance.memberCount, x + 9, y + 19, 0xFFa0a0c0, false);
+        // Auto-scroll alliance name on hover
+        int maxNameWidth = width - 18;
+        boolean nameHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 9, y + 9, maxNameWidth, font.lineHeight);
+        TextHelper.drawAutoScrollingText(g, font, alliance.name, x + 9, y + 9, maxNameWidth, 0xFF00d2ff, true, nameHovered, "alliance_" + alliance.name);
+        g.drawString(font, translate("erinium_faction.gui.alliances.members", alliance.memberCount), x + 9, y + 19, 0xFFa0a0c0, false);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class AlliancesPage extends FactionPage {
         // Header
         g.fill(x, y, x + w, y + sh(22, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
-        g.drawString(font, "ALLIED FACTIONS", x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
+        g.drawString(font, translate("erinium_faction.gui.alliances.title"), x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
 
         allianceScrollList.render(g, mouseX, mouseY);
     }

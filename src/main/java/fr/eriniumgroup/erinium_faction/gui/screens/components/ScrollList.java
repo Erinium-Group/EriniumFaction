@@ -28,7 +28,7 @@ public class ScrollList<T> {
     private Consumer<T> onItemClick;
 
     public interface ItemRenderer<T> {
-        void render(GuiGraphics g, T item, int x, int y, int width, int height, boolean hovered, Font font);
+        void render(GuiGraphics g, T item, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY);
     }
 
     public ScrollList(Font font, ItemRenderer<T> renderer, int itemHeight) {
@@ -95,7 +95,7 @@ public class ScrollList<T> {
             boolean hovered = mouseX >= x && mouseX < x + width - 8 &&
                             mouseY >= itemY && mouseY < itemY + itemHeight;
 
-            renderer.render(g, item, x, itemY, width - 8, itemHeight, hovered, font);
+            renderer.render(g, item, x, itemY, width - 8, itemHeight, hovered, font, mouseX, mouseY);
         }
 
         g.disableScissor();
@@ -143,7 +143,6 @@ public class ScrollList<T> {
 
             if (clickedIndex >= 0 && clickedIndex < items.size() && onItemClick != null) {
                 onItemClick.accept(items.get(clickedIndex));
-                System.out.println("ScrollList: Item clicked at index " + clickedIndex);
                 return true;
             }
         }

@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.screens.pages.*;
@@ -45,19 +46,23 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     // Enum des pages (basées sur les SVG existants)
     public enum PageType {
-        OVERVIEW("Overview"),
-        MEMBERS("Members"),
-        TERRITORY("Territory"),
-        ALLIANCES("Alliances"),
-        CHEST("Chest"),
-        LEVEL("Level"),
-        QUESTS("Quests"),
-        ADMINSHOP("Shop"),
-        SETTINGS_FACTION("Settings"),
-        SETTINGS_PERMISSIONS("Permissions");
+        OVERVIEW("erinium_faction.gui.nav.overview"),
+        MEMBERS("erinium_faction.gui.nav.members"),
+        TERRITORY("erinium_faction.gui.nav.territory"),
+        ALLIANCES("erinium_faction.gui.nav.alliances"),
+        CHEST("erinium_faction.gui.nav.chest"),
+        LEVEL("erinium_faction.gui.nav.level"),
+        QUESTS("erinium_faction.gui.nav.quests"),
+        ADMINSHOP("erinium_faction.gui.nav.shop"),
+        SETTINGS_FACTION("erinium_faction.gui.nav.settings"),
+        SETTINGS_PERMISSIONS("erinium_faction.gui.nav.permissions");
 
-        final String label;
-        PageType(String label) { this.label = label; }
+        final String translationKey;
+        PageType(String translationKey) { this.translationKey = translationKey; }
+
+        public Component getLocalizedLabel() {
+            return Component.translatable(this.translationKey);
+        }
     }
 
     private PageType currentPage = PageType.OVERVIEW;
@@ -156,9 +161,9 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
             int slotIndex = 0;
 
-            // Faction chest slots (27 slots)
+            // Faction chest slots (utiliser FACTION_CHEST_ROWS au lieu de hardcoder 3)
             double scaledChestY = baseChestY * this.scaleY;
-            for (int row = 0; row < 3; row++) {
+            for (int row = 0; row < FactionMenu.FACTION_CHEST_ROWS; row++) {
                 for (int col = 0; col < 9; col++) {
                     if (slotIndex < this.menu.slots.size()) {
                         net.minecraft.world.inventory.Slot slot = this.menu.slots.get(slotIndex);
@@ -341,7 +346,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             }
 
             int textColor = isSelected ? 0xFFffffff : (isHovered ? 0xFFe0e0ff : 0xFFb8b8d0);
-            g.drawString(font, page.label, btnX + sw(5), btnY + sh(6), textColor, isSelected);
+            g.drawString(font, page.getLocalizedLabel().getString(), btnX + sw(5), btnY + sh(6), textColor, isSelected);
         }
 
         g.disableScissor();
@@ -370,7 +375,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         int pwCenterX = pwX + pwW / 2;
 
         g.fill(pwX, pwY, pwX + pwW, pwY + sh(26), 0xE61a1a2e);
-        g.drawCenteredString(font, "POWER", pwCenterX, pwY + sh(5), 0xFFa0a0c0);
+        g.drawCenteredString(font, Component.translatable("erinium_faction.gui.sidebar.power").getString(), pwCenterX, pwY + sh(5), 0xFFa0a0c0);
 
         // Bar avec données réelles
         int barX = sx(18);
@@ -407,7 +412,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         g.fill(hX, hY, hX + hW, hY + 2, 0xFF00d2ff);
         g.fill(hX, hY, hX + sw(22), hY + 2, 0xFF00d2ff);
 
-        g.drawString(font, "Faction " + currentPage.label, hX + sw(7), hY + sh(11), 0xFFffffff, true);
+        g.drawString(font, Component.translatable("erinium_faction.gui.header.faction", currentPage.getLocalizedLabel()).getString(), hX + sw(7), hY + sh(11), 0xFFffffff, true);
 
         // Close button
         int closeX = sx(373);
@@ -513,13 +518,11 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
                 // Vérifier si le joueur peut accéder à cette page
                 if (!canAccessPage(targetPage)) {
-                    // Afficher un message d'erreur ou jouer un son
-                    System.out.println("Access denied to page: " + targetPage.label);
+                    EFC.log.warn("§6GUI", "§cAccess denied to page: §e{}", targetPage.getLocalizedLabel().getString());
                     return true; // Consommer le clic sans changer de page
                 }
 
                 currentPage = targetPage;
-                System.out.println("Page changed to: " + currentPage.label);
                 // Mettre à jour les positions des slots (hors écran si pas Chest)
                 updateSlotPositionsWithReflection();
                 return true;

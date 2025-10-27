@@ -115,8 +115,6 @@ public class StyledTextField {
                     totalWidth += charWidth;
                     cursorPosition++;
                 }
-
-                System.out.println("StyledTextField focused");
             }
 
             return wasInside;
@@ -132,14 +130,12 @@ public class StyledTextField {
                 text = text.substring(0, cursorPosition - 1) + text.substring(cursorPosition);
                 cursorPosition--;
                 if (onChange != null) onChange.accept(text);
-                System.out.println("StyledTextField: text changed to '" + text + "'");
             }
             return true;
         } else if (keyCode == GLFW.GLFW_KEY_DELETE) {
             if (cursorPosition < text.length()) {
                 text = text.substring(0, cursorPosition) + text.substring(cursorPosition + 1);
                 if (onChange != null) onChange.accept(text);
-                System.out.println("StyledTextField: text changed to '" + text + "'");
             }
             return true;
         } else if (keyCode == GLFW.GLFW_KEY_LEFT) {
@@ -167,7 +163,6 @@ public class StyledTextField {
                 text = text.substring(0, cursorPosition) + codePoint + text.substring(cursorPosition);
                 cursorPosition++;
                 if (onChange != null) onChange.accept(text);
-                System.out.println("StyledTextField: text changed to '" + text + "'");
                 return true;
             }
         }

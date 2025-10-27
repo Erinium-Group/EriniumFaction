@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -64,13 +65,16 @@ public class TerritoryPage extends FactionPage {
         claimScrollList.setBounds(x, y + sh(59, scaleY), w, sh(151, scaleY));
     }
 
-    private void renderClaimItem(GuiGraphics g, ClaimInfo claim, int x, int y, int width, int height, boolean hovered, Font font) {
+    private void renderClaimItem(GuiGraphics g, ClaimInfo claim, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
         g.fill(x, y, x + width, y + height, bgColor);
         g.fill(x, y, x + width, y + 1, 0x50667eea);
 
-        g.drawString(font, claim.coords, x + 9, y + 5, 0xFFffffff, true);
-        g.drawString(font, "Dimension: " + claim.dimension, x + 9, y + 14, 0xFFa0a0c0, false);
+        // Auto-scroll coords on hover
+        int maxCoordsWidth = width - 18;
+        boolean coordsHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 9, y + 5, maxCoordsWidth, font.lineHeight);
+        TextHelper.drawAutoScrollingText(g, font, claim.coords, x + 9, y + 5, maxCoordsWidth, 0xFFffffff, true, coordsHovered, "claim_" + claim.coords);
+        g.drawString(font, translate("erinium_faction.gui.territory.label.dimension", claim.dimension), x + 9, y + 14, 0xFFa0a0c0, false);
     }
 
     @Override

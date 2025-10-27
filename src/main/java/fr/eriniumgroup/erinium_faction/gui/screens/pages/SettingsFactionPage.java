@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledButton;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledTextField;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledToggle;
@@ -49,15 +50,14 @@ public class SettingsFactionPage extends FactionPage {
 
             // Toggle basé sur le mode de faction
             boolean isOpen = data != null && "OPEN".equalsIgnoreCase(data.mode);
-            openToJoinToggle = new StyledToggle(font, "Open to Join", isOpen, state -> {
-                System.out.println("SettingsFactionPage: Open to Join set to " + state);
+            openToJoinToggle = new StyledToggle(font, translate("erinium_faction.gui.settings_faction.toggle.open"), isOpen, state -> {
             });
             openToJoinToggle.setBounds(x + sw(4, scaleX), y + sh(108, scaleY));
 
             // Action buttons (réduits)
             actionButtons.clear();
 
-            StyledButton saveBtn = new StyledButton(font, "Save", () -> {
+            StyledButton saveBtn = new StyledButton(font, translate("erinium_faction.gui.settings_faction.button.save"), () -> {
                 // Envoyer les modifications au serveur via packets
                 if (!nameField.getText().isEmpty()) {
                     PacketDistributor.sendToServer(new FactionActionPacket(
@@ -83,8 +83,7 @@ public class SettingsFactionPage extends FactionPage {
             saveBtn.setBounds(x + sw(4, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));
             actionButtons.add(saveBtn);
 
-            StyledButton resetBtn = new StyledButton(font, "Reset", () -> {
-                System.out.println("SettingsFactionPage: Resetting to defaults");
+            StyledButton resetBtn = new StyledButton(font, translate("erinium_faction.gui.settings_faction.button.reset"), () -> {
                 var resetData = getFactionData();
                 nameField.setText(resetData != null ? resetData.displayName : "");
                 descriptionField.setText(resetData != null && resetData.description != null ? resetData.description : "");
@@ -93,8 +92,8 @@ public class SettingsFactionPage extends FactionPage {
             resetBtn.setBounds(x + sw(95, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));
             actionButtons.add(resetBtn);
 
-            StyledButton disbandBtn = new StyledButton(font, "Disband", () -> {
-                System.out.println("SettingsFactionPage: WARNING - Attempting to disband faction");
+            StyledButton disbandBtn = new StyledButton(font, translate("erinium_faction.gui.settings_faction.button.disband"), () -> {
+                EFC.log.warn("§6Settings", "§cWARNING - Attempting to disband faction");
             });
             // Positionné après Reset: 95 + 85 + 6 espacement = 186
             disbandBtn.setBounds(x + sw(186, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));
@@ -125,12 +124,12 @@ public class SettingsFactionPage extends FactionPage {
         // Header
         g.fill(x, y, x + w, y + sh(22, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
-        g.drawString(font, "FACTION SETTINGS", x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
+        g.drawString(font, translate("erinium_faction.gui.settings_faction.title"), x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
 
         // Labels (réduits et mieux alignés)
-        g.drawString(font, "Name:", x + sw(4, scaleX), y + sh(31, scaleY), 0xFFa0a0c0, false);
-        g.drawString(font, "Desc:", x + sw(4, scaleX), y + sh(58, scaleY), 0xFFa0a0c0, false);
-        g.drawString(font, "MOTD:", x + sw(4, scaleX), y + sh(85, scaleY), 0xFFa0a0c0, false);
+        g.drawString(font, translate("erinium_faction.gui.settings_faction.label.name"), x + sw(4, scaleX), y + sh(31, scaleY), 0xFFa0a0c0, false);
+        g.drawString(font, translate("erinium_faction.gui.settings_faction.label.desc"), x + sw(4, scaleX), y + sh(58, scaleY), 0xFFa0a0c0, false);
+        g.drawString(font, translate("erinium_faction.gui.settings_faction.label.motd"), x + sw(4, scaleX), y + sh(85, scaleY), 0xFFa0a0c0, false);
 
         // Render text fields
         nameField.render(g, mouseX, mouseY);

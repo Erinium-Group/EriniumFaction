@@ -70,7 +70,6 @@ public class StyledButton {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && enabled && hovered) {
             onClick.run();
-            System.out.println("StyledButton clicked: " + label);
             return true;
         }
         return false;

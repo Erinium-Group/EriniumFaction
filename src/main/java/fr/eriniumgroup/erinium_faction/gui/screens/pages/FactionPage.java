@@ -4,6 +4,7 @@ import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionClientData;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 /**
  * Classe abstraite pour les pages du GUI de faction
@@ -36,6 +37,25 @@ public abstract class FactionPage {
      */
     protected FactionSnapshot getFactionData() {
         return FactionClientData.getFactionData();
+    }
+
+    /**
+     * Traduit une clé de langue en string
+     * @param key Clé de traduction
+     * @return String traduite
+     */
+    protected String translate(String key) {
+        return Component.translatable(key).getString();
+    }
+
+    /**
+     * Traduit une clé de langue avec des paramètres
+     * @param key Clé de traduction
+     * @param args Arguments pour le format
+     * @return String traduite
+     */
+    protected String translate(String key, Object... args) {
+        return Component.translatable(key, args).getString();
     }
 
     /**

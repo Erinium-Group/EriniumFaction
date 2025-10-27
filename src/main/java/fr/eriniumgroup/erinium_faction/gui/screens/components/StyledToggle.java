@@ -100,7 +100,6 @@ public class StyledToggle {
             if (inside) {
                 state = !state;
                 if (onChange != null) onChange.accept(state);
-                System.out.println("StyledToggle: state changed to " + state);
                 return true;
             }
         }

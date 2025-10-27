@@ -45,13 +45,13 @@ public class OverviewPage extends FactionPage {
         List<InfoItem> items = new ArrayList<>();
 
         if (data != null) {
-            items.add(new InfoItem("Name:", data.displayName, 0xFF00d2ff));
-            items.add(new InfoItem("Level:", String.valueOf(data.level), 0xFFfbbf24));
+            items.add(new InfoItem(translate("erinium_faction.gui.overview.label.name"), data.displayName, 0xFF00d2ff));
+            items.add(new InfoItem(translate("erinium_faction.gui.overview.label.level"), String.valueOf(data.level), 0xFFfbbf24));
             items.add(new InfoItem("Mode:", data.mode, 0xFFa855f7));
-            items.add(new InfoItem("Members:", data.membersCount + " / " + data.maxPlayers, 0xFF3b82f6));
-            items.add(new InfoItem("Claims:", data.claims + " / " + data.maxClaims, 0xFFa855f7));
+            items.add(new InfoItem(translate("erinium_faction.gui.overview.label.members"), data.membersCount + " / " + data.maxPlayers, 0xFF3b82f6));
+            items.add(new InfoItem(translate("erinium_faction.gui.overview.label.claims"), data.claims + " / " + data.maxClaims, 0xFFa855f7));
             items.add(new InfoItem("Warps:", data.warpsCount + " / " + data.maxWarps, 0xFF8b5cf6));
-            items.add(new InfoItem("Bank:", data.bank + " coins", 0xFF10b981));
+            items.add(new InfoItem(translate("erinium_faction.gui.overview.label.bank"), data.bank + " coins", 0xFF10b981));
             items.add(new InfoItem("Description:", data.description != null && !data.description.isEmpty() ? data.description : "No description", 0xFFb8b8d0));
         } else {
             items.add(new InfoItem("Status:", "No faction data", 0xFFef4444));
@@ -61,19 +61,16 @@ public class OverviewPage extends FactionPage {
 
         if (actionButtons.isEmpty()) {
 
-            StyledButton inviteBtn = new StyledButton(font, "Invite", () -> {
-                System.out.println("OverviewPage: Invite button clicked");
+            StyledButton inviteBtn = new StyledButton(font, translate("erinium_faction.gui.overview.button.invite"), () -> {
             });
             inviteBtn.setPrimary(true);
             actionButtons.add(inviteBtn);
 
-            StyledButton manageBtn = new StyledButton(font, "Manage", () -> {
-                System.out.println("OverviewPage: Manage button clicked");
+            StyledButton manageBtn = new StyledButton(font, translate("erinium_faction.gui.overview.button.manage"), () -> {
             });
             actionButtons.add(manageBtn);
 
-            StyledButton leaveBtn = new StyledButton(font, "Leave", () -> {
-                System.out.println("OverviewPage: Leave button clicked");
+            StyledButton leaveBtn = new StyledButton(font, translate("erinium_faction.gui.overview.button.leave"), () -> {
             });
             actionButtons.add(leaveBtn);
         }
@@ -101,7 +98,7 @@ public class OverviewPage extends FactionPage {
         }
     }
 
-    private void renderInfoItem(GuiGraphics g, InfoItem item, int x, int y, int width, int height, boolean hovered, Font font) {
+    private void renderInfoItem(GuiGraphics g, InfoItem item, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         if (hovered) {
             g.fill(x, y, x + width, y + height, 0x40667eea);
         }

@@ -32,10 +32,10 @@ public class ChestPage extends FactionPage {
         // Header
         g.fill(x, y, x + w, y + sh(40, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
-        g.drawString(font, "FACTION CHEST", x + sw(16, scaleX), y + sh(16, scaleY), 0xFFffffff, true);
+        g.drawString(font, translate("erinium_faction.gui.chest.title"), x + sw(16, scaleX), y + sh(16, scaleY), 0xFFffffff, true);
 
         // Info text
-        String info = FactionMenu.FACTION_CHEST_ROWS + " rows • " + FactionMenu.FACTION_CHEST_SLOTS + " slots";
+        String info = translate("erinium_faction.gui.chest.info", FactionMenu.FACTION_CHEST_ROWS, FactionMenu.FACTION_CHEST_SLOTS);
         g.drawString(font, info, x + w - font.width(info) - sw(16, scaleX), y + sh(16, scaleY), 0xFF00d2ff, false);
 
         // Calculate positions for labels (scaled) - utiliser doubles pour éviter erreurs d'arrondi
@@ -46,15 +46,15 @@ public class ChestPage extends FactionPage {
         double scaledSpacing = 18 * scaleX;
 
         // Label for player inventory
-        g.drawString(font, "Player Inventory", (int) Math.round(scaledBaseX), (int) Math.round(scaledInvY) - sh(9, scaleY), 0xFFa0a0c0, false);
+        g.drawString(font, translate("erinium_faction.gui.chest.player_inventory"), (int) Math.round(scaledBaseX), (int) Math.round(scaledInvY) - sh(9, scaleY), 0xFFa0a0c0, false);
 
         // DEBUG: Dessiner des carrés pour montrer où sont les slots
         // Les slots Minecraft font toujours 16x16 en rendu, donc on dessine des carrés de 16x16 centrés
         int slotRenderSize = 16;
         int centerOffset = (int) Math.round((scaledSpacing - slotRenderSize) / 2);
 
-        // Faction chest slots (3 rangées de 9)
-        for (int row = 0; row < 3; row++) {
+        // Faction chest slots (utiliser FACTION_CHEST_ROWS au lieu de hardcoder 3)
+        for (int row = 0; row < FactionMenu.FACTION_CHEST_ROWS; row++) {
             for (int col = 0; col < 9; col++) {
                 int slotX = (int) Math.round(scaledBaseX + col * scaledSpacing) + centerOffset;
                 int slotY = (int) Math.round(scaledChestY + row * scaledSpacing) + centerOffset;

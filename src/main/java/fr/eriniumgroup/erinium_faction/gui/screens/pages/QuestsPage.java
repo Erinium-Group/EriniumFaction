@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -64,7 +65,7 @@ public class QuestsPage extends FactionPage {
         questScrollList.setBounds(x, y + sh(27, scaleY), w, h - sh(27, scaleY));
     }
 
-    private void renderQuestItem(GuiGraphics g, QuestInfo quest, int x, int y, int width, int height, boolean hovered, Font font) {
+    private void renderQuestItem(GuiGraphics g, QuestInfo quest, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
         int borderColor = quest.isWeekly ? 0xFFfbbf24 : 0xFF00d2ff;
         int progressColor = quest.isWeekly ? 0xFFfbbf24 : 0xFF00d2ff;
@@ -72,11 +73,15 @@ public class QuestsPage extends FactionPage {
         g.fill(x, y, x + width, y + height, bgColor);
         g.fill(x, y, x + width, y + 1, borderColor);
 
-        // Quest name (en haut)
-        g.drawString(font, quest.name, x + 6, y + 4, 0xFFffffff, true);
+        // Calculate max width for text
+        int maxTextWidth = width - 12;
 
-        // Description (mieux espacée)
-        g.drawString(font, quest.description, x + 6, y + 17, 0xFFa0a0c0, false);
+        // Quest name with scaling (keep for fitting)
+        TextHelper.drawScaledText(g, font, quest.name, x + 6, y + 4, maxTextWidth, 0xFFffffff, true);
+
+        // Description with auto-scroll on hover
+        boolean descHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 6, y + 17, maxTextWidth, font.lineHeight);
+        TextHelper.drawAutoScrollingText(g, font, quest.description, x + 6, y + 17, maxTextWidth, 0xFFa0a0c0, false, descHovered, "quest_desc_" + quest.name);
 
         // Progress bar (plus bas)
         int barX = x + 6;
@@ -102,8 +107,8 @@ public class QuestsPage extends FactionPage {
         // Header
         g.fill(x, y, x + w, y + sh(22, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
-        g.drawString(font, "FACTION QUESTS", x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
-        g.drawString(font, "6 Daily + 1 Weekly", x + w - sw(78, scaleX), y + sh(9, scaleY), 0xFF00d2ff, false);
+        g.drawString(font, translate("erinium_faction.gui.quests.title"), x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
+        g.drawString(font, translate("erinium_faction.gui.quests.info", 6, 1), x + w - sw(78, scaleX), y + sh(9, scaleY), 0xFF00d2ff, false);
 
         questScrollList.render(g, mouseX, mouseY);
     }
