@@ -60,11 +60,13 @@ public class StyledButton {
         int borderColor = primary ? 0x8000d2ff : 0x50667eea;
         g.fill(x, y, x + width, y + 1, borderColor);
 
-        // Text
+        // Text avec troncature si trop long
         int textColor = enabled ? 0xFFffffff : 0xFF6a6a7e;
-        int textX = x + width / 2 - font.width(label) / 2;
+        int maxTextWidth = width - 8; // Marge de 4px de chaque côté
         int textY = y + height / 2 - 4;
-        g.drawString(font, label, textX, textY, textColor, primary && enabled);
+
+        // Utiliser TextHelper pour centrer et tronquer le texte
+        TextHelper.drawCenteredScaledText(g, font, label, x + width / 2, textY, maxTextWidth, textColor);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

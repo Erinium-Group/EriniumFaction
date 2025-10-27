@@ -108,7 +108,11 @@ public class QuestsPage extends FactionPage {
         g.fill(x, y, x + w, y + sh(22, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
         g.drawString(font, translate("erinium_faction.gui.quests.title"), x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
-        g.drawString(font, translate("erinium_faction.gui.quests.info", 6, 1), x + w - sw(78, scaleX), y + sh(9, scaleY), 0xFF00d2ff, false);
+
+        // Tronquer le texte info si trop long
+        String questInfoText = translate("erinium_faction.gui.quests.info", 6, 1);
+        int maxInfoWidth = sw(78, scaleX);
+        TextHelper.drawScaledText(g, font, questInfoText, x + w - maxInfoWidth, y + sh(9, scaleY), maxInfoWidth, 0xFF00d2ff, false);
 
         questScrollList.render(g, mouseX, mouseY);
     }

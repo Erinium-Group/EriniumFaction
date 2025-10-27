@@ -18,8 +18,8 @@ public class TextHelper {
 
     // Tracker pour les animations de scroll
     private static final Map<String, ScrollState> scrollStates = new HashMap<>();
-    private static final float SCROLL_SPEED = 1.0f; // pixels par tick
-    private static final int SCROLL_PAUSE_TICKS = 20; // pause au début/fin
+    private static final float SCROLL_SPEED = 0.15f; // pixels par tick (très lent)
+    private static final int SCROLL_PAUSE_TICKS = 100; // pause au début/fin (longue pause)
 
     private static class ScrollState {
         float offset = 0;

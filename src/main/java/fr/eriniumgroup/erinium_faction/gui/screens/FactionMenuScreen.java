@@ -346,7 +346,13 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             }
 
             int textColor = isSelected ? 0xFFffffff : (isHovered ? 0xFFe0e0ff : 0xFFb8b8d0);
-            g.drawString(font, page.getLocalizedLabel().getString(), btnX + sw(5), btnY + sh(6), textColor, isSelected);
+
+            // Tronquer le texte si trop long pour le bouton
+            int maxNavTextWidth = btnW - sw(10); // Marge de 5px de chaque côté
+            fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper.drawScaledText(
+                g, font, page.getLocalizedLabel().getString(),
+                btnX + sw(5), btnY + sh(6), maxNavTextWidth, textColor, isSelected
+            );
         }
 
         g.disableScissor();
@@ -471,6 +477,8 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         super.removed();
         // Nettoyer les données quand le GUI est fermé
         FactionClientData.clear();
+        // Nettoyer les pages pour qu'elles soient recréées à la prochaine ouverture
+        pages.clear();
     }
 
     /**
