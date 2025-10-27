@@ -25,6 +25,33 @@ public class FactionTitleOverlay extends Overlay {
     private static int fadeOutMs = 500; // par défaut
 
     /**
+     * Convertit les codes de style "&" en codes format Minecraft "§" uniquement si valides.
+     * Pris en charge: couleurs 0-9, a-f et formats k, l, m, n, o, r (insensible à la casse).
+     */
+    private static String applyAmpersandFormatting(String input) {
+        if (input == null || input.isEmpty()) return input;
+        StringBuilder out = new StringBuilder(input.length());
+        int i = 0, n = input.length();
+        while (i < n) {
+            char c = input.charAt(i);
+            if (c == '&' && i + 1 < n) {
+                char code = input.charAt(i + 1);
+                char lower = Character.toLowerCase(code);
+                boolean isColor = (lower >= '0' && lower <= '9') || (lower >= 'a' && lower <= 'f');
+                boolean isFormat = (lower == 'k' || lower == 'l' || lower == 'm' || lower == 'n' || lower == 'o' || lower == 'r');
+                if (isColor || isFormat) {
+                    out.append('\u00A7').append(lower);
+                    i += 2;
+                    continue;
+                }
+            }
+            out.append(c);
+            i++;
+        }
+        return out.toString();
+    }
+
+    /**
      * Déclenche l’affichage d’un titre au centre de l’écran.
      * @param titleText   texte principal (nul/blank = rien)
      * @param subtitleText sous-titre optionnel (peut être nul ou vide)
@@ -37,8 +64,11 @@ public class FactionTitleOverlay extends Overlay {
             clear();
             return;
         }
-        title = Component.literal(titleText);
-        subtitle = (subtitleText != null && !subtitleText.isBlank()) ? Component.literal(subtitleText) : null;
+        // Appliquer la conversion & -> § uniquement pour codes valides
+        String parsedTitle = applyAmpersandFormatting(titleText);
+        String parsedSubtitle = (subtitleText != null) ? applyAmpersandFormatting(subtitleText) : null;
+        title = Component.literal(parsedTitle);
+        subtitle = (parsedSubtitle != null && !parsedSubtitle.isBlank()) ? Component.literal(parsedSubtitle) : null;
         fadeInMs = Math.max(0, fadeIn);
         stayMs = Math.max(0, stay);
         fadeOutMs = Math.max(0, fadeOut);
