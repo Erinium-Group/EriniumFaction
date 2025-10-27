@@ -17,7 +17,6 @@ public class SettingsFactionPage extends FactionPage {
 
     private StyledTextField nameField;
     private StyledTextField descriptionField;
-    private StyledTextField motdField;
     private StyledToggle openToJoinToggle;
     private final List<StyledButton> actionButtons = new ArrayList<>();
 
@@ -46,11 +45,6 @@ public class SettingsFactionPage extends FactionPage {
             descriptionField.setText(data != null && data.description != null ? data.description : "");
             descriptionField.setBounds(x + sw(70, scaleX), y + sh(54, scaleY), inputWidth, inputHeight);
 
-            motdField = new StyledTextField(font);
-            motdField.setPlaceholder("Message of the Day");
-            motdField.setText(""); // MOTD n'est pas dans FactionSnapshot
-            motdField.setBounds(x + sw(70, scaleX), y + sh(81, scaleY), inputWidth, inputHeight);
-
             // Toggle basé sur le mode de faction
             boolean isOpen = data != null && "OPEN".equalsIgnoreCase(data.mode);
             openToJoinToggle = new StyledToggle(font, "Open to Join", isOpen, state -> {
@@ -65,7 +59,6 @@ public class SettingsFactionPage extends FactionPage {
                 System.out.println("SettingsFactionPage: Saving changes...");
                 System.out.println("  Name: " + nameField.getText());
                 System.out.println("  Description: " + descriptionField.getText());
-                System.out.println("  MOTD: " + motdField.getText());
                 System.out.println("  Open to Join: " + openToJoinToggle.getState());
             });
             saveBtn.setPrimary(true);
@@ -77,7 +70,6 @@ public class SettingsFactionPage extends FactionPage {
                 var resetData = getFactionData();
                 nameField.setText(resetData != null ? resetData.displayName : "");
                 descriptionField.setText(resetData != null && resetData.description != null ? resetData.description : "");
-                motdField.setText("");
                 openToJoinToggle.setState(resetData != null && "OPEN".equalsIgnoreCase(resetData.mode));
             });
             resetBtn.setBounds(x + sw(95, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));
@@ -105,7 +97,6 @@ public class SettingsFactionPage extends FactionPage {
         int inputHeight = sh(15, scaleY);
         nameField.setBounds(x + sw(70, scaleX), y + sh(27, scaleY), inputWidth, inputHeight);
         descriptionField.setBounds(x + sw(70, scaleX), y + sh(54, scaleY), inputWidth, inputHeight);
-        motdField.setBounds(x + sw(70, scaleX), y + sh(81, scaleY), inputWidth, inputHeight);
         openToJoinToggle.setBounds(x + sw(4, scaleX), y + sh(108, scaleY));
 
         // Recalculer positions des boutons
@@ -126,7 +117,6 @@ public class SettingsFactionPage extends FactionPage {
         // Render text fields
         nameField.render(g, mouseX, mouseY);
         descriptionField.render(g, mouseX, mouseY);
-        motdField.render(g, mouseX, mouseY);
 
         // Render toggle
         openToJoinToggle.render(g, mouseX, mouseY);
@@ -142,7 +132,6 @@ public class SettingsFactionPage extends FactionPage {
         if (nameField != null) {
             nameField.tick();
             descriptionField.tick();
-            motdField.tick();
         }
     }
 
@@ -152,7 +141,6 @@ public class SettingsFactionPage extends FactionPage {
         if (nameField != null) {
             nameField.mouseClicked(mouseX, mouseY, button);
             descriptionField.mouseClicked(mouseX, mouseY, button);
-            motdField.mouseClicked(mouseX, mouseY, button);
         }
 
         // Check toggle
@@ -175,7 +163,6 @@ public class SettingsFactionPage extends FactionPage {
         if (nameField != null) {
             if (nameField.keyPressed(keyCode, scanCode, modifiers)) return true;
             if (descriptionField.keyPressed(keyCode, scanCode, modifiers)) return true;
-            if (motdField.keyPressed(keyCode, scanCode, modifiers)) return true;
         }
         return false;
     }
@@ -185,7 +172,6 @@ public class SettingsFactionPage extends FactionPage {
         if (nameField != null) {
             if (nameField.charTyped(codePoint, modifiers)) return true;
             if (descriptionField.charTyped(codePoint, modifiers)) return true;
-            if (motdField.charTyped(codePoint, modifiers)) return true;
         }
         return false;
     }

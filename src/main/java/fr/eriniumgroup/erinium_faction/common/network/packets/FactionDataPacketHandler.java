@@ -40,7 +40,7 @@ public class FactionDataPacketHandler {
         if (factionName != null && !factionName.isEmpty()) {
             Faction faction = FactionManager.getFaction(factionName);
             if (faction != null) {
-                FactionSnapshot snapshot = FactionSnapshot.of(faction);
+                FactionSnapshot snapshot = FactionSnapshot.of(faction, player);
                 PacketDistributor.sendToPlayer(player, new FactionDataPacket(snapshot));
             }
         }
@@ -53,12 +53,13 @@ public class FactionDataPacketHandler {
     public static void sendFactionDataToAllMembers(String factionName) {
         Faction faction = FactionManager.getFaction(factionName);
         if (faction != null) {
-            FactionSnapshot snapshot = FactionSnapshot.of(faction);
             var server = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
             if (server != null) {
                 for (var uuid : faction.getMembers().keySet()) {
                     ServerPlayer player = server.getPlayerList().getPlayer(uuid);
                     if (player != null) {
+                        // Créer un snapshot personnalisé pour chaque joueur avec son propre power
+                        FactionSnapshot snapshot = FactionSnapshot.of(faction, player);
                         PacketDistributor.sendToPlayer(player, new FactionDataPacket(snapshot));
                     }
                 }

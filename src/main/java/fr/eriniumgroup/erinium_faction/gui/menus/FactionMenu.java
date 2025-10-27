@@ -86,15 +86,15 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         }
 
         // Calcul des rows basé sur le level (1 row + 1 row tous les 10 niveaux, max 3 rows à level 20)
-        int factionLevel = 1; // default
+        int factionChestSize = 1; // default
         if (this.world.isClientSide()) {
             // Client: utiliser le snapshot
-            factionLevel = (this.snapshot != null) ? this.snapshot.level : 1;
+            factionChestSize = (this.snapshot != null) ? this.snapshot.factionChestSize : 1;
         } else {
             // Server: utiliser la faction
-            factionLevel = (this.faction != null) ? this.faction.getLevel() : 1;
+            factionChestSize = (this.faction != null) ? this.faction.getChestSize() : 1;
         }
-        FACTION_CHEST_ROWS = Math.min(1 + (factionLevel / 10), 3);
+        FACTION_CHEST_ROWS = Math.min(1 + (factionChestSize), 3);
         FACTION_CHEST_SLOTS = FACTION_CHEST_ROWS * 9;
 
         // Initialiser l'ItemStackHandler avec la bonne taille

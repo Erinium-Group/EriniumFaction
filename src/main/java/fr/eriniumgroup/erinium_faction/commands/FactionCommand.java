@@ -456,7 +456,7 @@ public class FactionCommand {
             sp.sendSystemMessage(Component.translatable(factionIdOrNull == null ? "erinium_faction.cmd.faction.not_in_faction" : "erinium_faction.cmd.faction.not_found"));
             return 0;
         }
-        var snapshot = FactionSnapshot.of(f);
+        var snapshot = FactionSnapshot.of(f, sp);
         MenuProvider provider = new SimpleMenuProvider((id, inv, player) -> new FactionMenu(id, inv, null), Component.translatable("erinium_faction.faction.menu.title"));
         sp.openMenu(provider, buf -> {
             buf.writeBlockPos(sp.blockPosition());

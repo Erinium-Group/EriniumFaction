@@ -2,9 +2,7 @@ package fr.eriniumgroup.erinium_faction.core.faction;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Petit snapshot sérialisable pour UI client.
@@ -31,10 +29,63 @@ public class FactionSnapshot {
     public int maxWarps;
     public int bank; // arrondi pour affichage
 
+    public int factionChestSize;
+
     public Map<UUID, String> membersRank = new HashMap<>();
     public Map<UUID, String> memberNames = new HashMap<>();
 
+    // Player power
+    public double playerPower;
+    public double playerMaxPower;
+
+    // Allies
+    public List<String> allies = new ArrayList<>();
+
+    // Ranks definitions
+    public List<RankInfo> ranks = new ArrayList<>();
+
+    // Claims list
+    public List<ClaimInfo> claimsList = new ArrayList<>();
+
+    // Config limits
+    public int nameMinLength;
+    public int nameMaxLength;
+
+    public static class RankInfo {
+        public String id;
+        public String display;
+        public int priority;
+        public List<String> perms = new ArrayList<>();
+
+        public RankInfo() {}
+
+        public RankInfo(String id, String display, int priority, Set<String> perms) {
+            this.id = id;
+            this.display = display;
+            this.priority = priority;
+            this.perms.addAll(perms);
+        }
+    }
+
+    public static class ClaimInfo {
+        public String dimension;
+        public int chunkX;
+        public int chunkZ;
+
+        public ClaimInfo() {}
+
+        public ClaimInfo(String dimension, int chunkX, int chunkZ) {
+            this.dimension = dimension;
+            this.chunkX = chunkX;
+            this.chunkZ = chunkZ;
+        }
+    }
+
     public static FactionSnapshot of(Faction f) {
+        return of(f, null);
+    }
+
+    public static FactionSnapshot of(Faction f, net.minecraft.server.level.ServerPlayer viewer) {
         FactionSnapshot s = new FactionSnapshot();
         s.name = f.getName();
         s.displayName = f.getName();
@@ -56,9 +107,35 @@ public class FactionSnapshot {
         s.warpsCount = f.getWarps().size();
         s.maxWarps = f.getMaxWarps();
         s.bank = (int) Math.round(f.getBankBalance());
+        s.factionChestSize = f.getChestSize();
 
         var server = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
         var profileCache = server != null ? server.getProfileCache() : null;
+
+        // Player power (si viewer fourni)
+        if (viewer != null) {
+            var playerPower = fr.eriniumgroup.erinium_faction.core.power.PowerManager.get(viewer);
+            s.playerPower = playerPower.getPower();
+            s.playerMaxPower = playerPower.getMaxPower();
+        }
+
+        // Allies
+        s.allies.addAll(f.getAllies());
+
+        // Ranks definitions
+        for (var rank : f.getRanks().values()) {
+            s.ranks.add(new RankInfo(rank.id, rank.display, rank.priority, rank.perms));
+        }
+
+        // Claims list
+        var claimKeys = FactionManager.getClaimsOfFaction(f.getId());
+        for (var claimKey : claimKeys) {
+            s.claimsList.add(new ClaimInfo(claimKey.dimension(), claimKey.chunkX(), claimKey.chunkZ()));
+        }
+
+        // Config limits
+        s.nameMinLength = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_NAME_MIN.get();
+        s.nameMaxLength = fr.eriniumgroup.erinium_faction.common.config.EFConfig.FACTION_NAME_MAX.get();
 
         for (var e : f.getMembers().entrySet()) {
             UUID uuid = e.getKey();
@@ -107,6 +184,41 @@ public class FactionSnapshot {
             buf.writeUtf(e.getValue());
             buf.writeUtf(s.memberNames.getOrDefault(e.getKey(), e.getKey().toString()));
         }
+        buf.writeInt(s.factionChestSize);
+
+        // Player power
+        buf.writeDouble(s.playerPower);
+        buf.writeDouble(s.playerMaxPower);
+
+        // Allies
+        buf.writeVarInt(s.allies.size());
+        for (String ally : s.allies) {
+            buf.writeUtf(ally);
+        }
+
+        // Ranks definitions
+        buf.writeVarInt(s.ranks.size());
+        for (RankInfo rank : s.ranks) {
+            buf.writeUtf(rank.id);
+            buf.writeUtf(rank.display);
+            buf.writeVarInt(rank.priority);
+            buf.writeVarInt(rank.perms.size());
+            for (String perm : rank.perms) {
+                buf.writeUtf(perm);
+            }
+        }
+
+        // Claims list
+        buf.writeVarInt(s.claimsList.size());
+        for (ClaimInfo claim : s.claimsList) {
+            buf.writeUtf(claim.dimension);
+            buf.writeVarInt(claim.chunkX);
+            buf.writeVarInt(claim.chunkZ);
+        }
+
+        // Config limits
+        buf.writeVarInt(s.nameMinLength);
+        buf.writeVarInt(s.nameMaxLength);
     }
 
     public static FactionSnapshot read(FriendlyByteBuf buf) {
@@ -138,6 +250,46 @@ public class FactionSnapshot {
             s.membersRank.put(id, rank);
             s.memberNames.put(id, name);
         }
+        s.factionChestSize = buf.readInt();
+
+        // Player power
+        s.playerPower = buf.readDouble();
+        s.playerMaxPower = buf.readDouble();
+
+        // Allies
+        int alliesCount = buf.readVarInt();
+        for (int i = 0; i < alliesCount; i++) {
+            s.allies.add(buf.readUtf());
+        }
+
+        // Ranks definitions
+        int ranksCount = buf.readVarInt();
+        for (int i = 0; i < ranksCount; i++) {
+            RankInfo rank = new RankInfo();
+            rank.id = buf.readUtf();
+            rank.display = buf.readUtf();
+            rank.priority = buf.readVarInt();
+            int permsCount = buf.readVarInt();
+            for (int j = 0; j < permsCount; j++) {
+                rank.perms.add(buf.readUtf());
+            }
+            s.ranks.add(rank);
+        }
+
+        // Claims list
+        int claimsCount = buf.readVarInt();
+        for (int i = 0; i < claimsCount; i++) {
+            ClaimInfo claim = new ClaimInfo();
+            claim.dimension = buf.readUtf();
+            claim.chunkX = buf.readVarInt();
+            claim.chunkZ = buf.readVarInt();
+            s.claimsList.add(claim);
+        }
+
+        // Config limits
+        s.nameMinLength = buf.readVarInt();
+        s.nameMaxLength = buf.readVarInt();
+
         return s;
     }
 }

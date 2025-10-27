@@ -17,11 +17,11 @@ public class TerritoryPage extends FactionPage {
 
     private static class ClaimInfo {
         String coords;
-        String type;
+        String dimension;
 
-        ClaimInfo(String coords, String type) {
+        ClaimInfo(String coords, String dimension) {
             this.coords = coords;
-            this.type = type;
+            this.dimension = dimension;
         }
     }
 
@@ -32,19 +32,30 @@ public class TerritoryPage extends FactionPage {
     private void initComponents(int leftPos, int topPos, double scaleX, double scaleY) {
         if (claimScrollList == null) {
             claimScrollList = new ScrollList<>(font, this::renderClaimItem, sh(26, scaleY));
-
-            List<ClaimInfo> claims = new ArrayList<>();
-            claims.add(new ClaimInfo("{{CLAIM_1_COORDS}}", "{{CLAIM_1_TYPE}}"));
-            claims.add(new ClaimInfo("{{CLAIM_2_COORDS}}", "{{CLAIM_2_TYPE}}"));
-            claims.add(new ClaimInfo("{{CLAIM_3_COORDS}}", "{{CLAIM_3_TYPE}}"));
-            claims.add(new ClaimInfo("{{CLAIM_4_COORDS}}", "{{CLAIM_4_TYPE}}"));
-            // Exemples
-            for (int i = 0; i < 8; i++) {
-                claims.add(new ClaimInfo("X: " + (i * 100) + ", Z: " + (i * 50), "Normal"));
-            }
-
-            claimScrollList.setItems(claims);
         }
+
+        // Récupérer les vraies données de claims depuis FactionSnapshot
+        var data = getFactionData();
+        List<ClaimInfo> claims = new ArrayList<>();
+
+        if (data != null && data.claimsList != null) {
+            for (var claim : data.claimsList) {
+                // Format des coordonnées: X: chunkX, Z: chunkZ
+                String coords = "X: " + claim.chunkX + ", Z: " + claim.chunkZ;
+                // Simplifier le nom de dimension (ex: minecraft:overworld -> Overworld)
+                String dimName = claim.dimension;
+                if (dimName.contains(":")) {
+                    dimName = dimName.substring(dimName.lastIndexOf(':') + 1);
+                }
+                // Première lettre en majuscule
+                if (!dimName.isEmpty()) {
+                    dimName = dimName.substring(0, 1).toUpperCase() + dimName.substring(1);
+                }
+                claims.add(new ClaimInfo(coords, dimName));
+            }
+        }
+
+        claimScrollList.setItems(claims);
 
         int x = sx(CONTENT_X, leftPos, scaleX);
         int y = sy(CONTENT_Y, topPos, scaleY);
@@ -59,7 +70,7 @@ public class TerritoryPage extends FactionPage {
         g.fill(x, y, x + width, y + 1, 0x50667eea);
 
         g.drawString(font, claim.coords, x + 9, y + 5, 0xFFffffff, true);
-        g.drawString(font, "Type: " + claim.type, x + 9, y + 14, 0xFFa0a0c0, false);
+        g.drawString(font, "Dimension: " + claim.dimension, x + 9, y + 14, 0xFFa0a0c0, false);
     }
 
     @Override
