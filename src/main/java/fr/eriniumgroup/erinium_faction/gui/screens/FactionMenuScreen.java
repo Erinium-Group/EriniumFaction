@@ -53,6 +53,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         TERRITORY("erinium_faction.gui.nav.territory"),
         ALLIANCES("erinium_faction.gui.nav.alliances"),
         CHEST("erinium_faction.gui.nav.chest"),
+        BANK("erinium_faction.gui.nav.bank"),
         LEVEL("erinium_faction.gui.nav.level"),
         QUESTS("erinium_faction.gui.nav.quests"),
         ADMINSHOP("erinium_faction.gui.nav.shop"),
@@ -289,7 +290,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         String factionInitial = factionName.isEmpty() ? "?" : factionName.substring(0, 1).toUpperCase();
 
         g.drawCenteredString(font, factionInitial, logoX, logoY - sh(3), 0xFFffffff);
-        g.drawCenteredString(font, factionName, logoX, sy(51), 0xFF00d2ff);
+        g.drawCenteredString(font, factionName, logoX, sy(51) - 10, 0xFF00d2ff);
 
         // Navigation area avec scroll
         int navX = sx(13);
@@ -386,7 +387,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         }
 
         String powerText = String.format("%.1f/%.1f", currentPower, maxPower);
-        g.drawCenteredString(font, powerText, pwCenterX, pwY + sh(17), 0xFF00d2ff);
+        g.drawCenteredString(font, powerText, pwCenterX, pwY + sh(17) + 2, 0xFF00d2ff);
     }
 
     private void renderMainPanel(GuiGraphics g, int mouseX, int mouseY) {
@@ -441,6 +442,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             pages.put(PageType.TERRITORY, new TerritoryPage(font));
             pages.put(PageType.ALLIANCES, new AlliancesPage(font));
             pages.put(PageType.CHEST, new ChestPage(font, this.menu));
+            pages.put(PageType.BANK, new BankPage(font));
             pages.put(PageType.LEVEL, new LevelPage(font));
             pages.put(PageType.QUESTS, new QuestsPage(font));
             pages.put(PageType.ADMINSHOP, new AdminShopPage(font));

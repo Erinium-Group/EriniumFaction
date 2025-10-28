@@ -1,0 +1,19 @@
+<!-- Input Field Background - 160x26px (pour entrer les montants) -->
+<svg width="160" height="26" viewBox="0 0 160 26" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient pour le fond -->
+    <linearGradient id="inputBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#16161f;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:0.95" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="160" height="26" rx="4" fill="url(#inputBg)"/>
+
+  <!-- Border (cyan subtle) -->
+  <rect width="160" height="26" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+
+  <!-- Inner shadow effect (top) -->
+  <rect x="0" y="0" width="160" height="2" rx="4" fill="#000000" opacity="0.2"/>
+</svg>

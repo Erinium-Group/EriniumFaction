@@ -326,6 +326,9 @@ public class Faction {
     private final Set<String> allies = new HashSet<>();
     private final Set<UUID> invitedPlayers = new HashSet<>();
 
+    // Historique des transactions bancaires
+    private TransactionHistory transactionHistory = new TransactionHistory();
+
     // Accessors --------------------------------------------------------------
     public boolean isAdminFaction() { return adminFaction; }
     public void setAdminFaction(boolean v) { this.adminFaction = v; }
@@ -371,6 +374,8 @@ public class Faction {
 
     public Set<String> getAllies() { return allies; }
     public Set<UUID> getInvitedPlayers() { return invitedPlayers; }
+
+    public TransactionHistory getTransactionHistory() { return transactionHistory; }
 
     // Coffre de faction
     public int getChestSize() {
@@ -485,6 +490,12 @@ public class Faction {
         ListTag invList = new ListTag();
         for (UUID u : invitedPlayers) invList.add(StringTag.valueOf(u.toString()));
         tag.put("invited", invList);
+
+        // transaction history
+        if (transactionHistory != null) {
+            tag.put("transactionHistory", transactionHistory.save());
+        }
+
         return tag;
     }
 
@@ -579,6 +590,11 @@ public class Faction {
                     f.chestItems[slot] = net.minecraft.world.item.ItemStack.parseOptional(registryAccess, stackTag);
                 }
             }
+        }
+
+        // transaction history
+        if (tag.contains("transactionHistory")) {
+            f.transactionHistory = TransactionHistory.load(tag.getCompound("transactionHistory"));
         }
 
         return f;

@@ -5,6 +5,7 @@ import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionClientData;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen;
+import fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -42,6 +43,12 @@ public class FactionDataPacketHandler {
             if (faction != null) {
                 FactionSnapshot snapshot = FactionSnapshot.of(faction, player);
                 PacketDistributor.sendToPlayer(player, new FactionDataPacket(snapshot));
+
+                // Envoyer aussi l'historique des transactions
+                SyncTransactionHistoryMessage.sendTo(player, faction.getTransactionHistory());
+
+                // Envoyer le solde du joueur
+                SyncPlayerBalanceMessage.sendTo(player, EconomyIntegration.getBalance(player));
             }
         }
     }
@@ -61,6 +68,12 @@ public class FactionDataPacketHandler {
                         // Créer un snapshot personnalisé pour chaque joueur avec son propre power
                         FactionSnapshot snapshot = FactionSnapshot.of(faction, player);
                         PacketDistributor.sendToPlayer(player, new FactionDataPacket(snapshot));
+
+                        // Envoyer aussi l'historique des transactions
+                        SyncTransactionHistoryMessage.sendTo(player, faction.getTransactionHistory());
+
+                        // Envoyer le solde du joueur
+                        SyncPlayerBalanceMessage.sendTo(player, EconomyIntegration.getBalance(player));
                     }
                 }
             }

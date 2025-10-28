@@ -1,0 +1,31 @@
+<!-- Deposit Button Hover - 142x26px (bouton vert pour déposer - hover) -->
+<svg width="142" height="26" viewBox="0 0 142 26" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Brighter green gradient for hover -->
+    <linearGradient id="depositHoverGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.9" />
+    </linearGradient>
+
+    <!-- Glow effect -->
+    <filter id="depositGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="142" height="26" rx="4" fill="url(#depositHoverGradient)"/>
+
+  <!-- Glow border -->
+  <rect width="142" height="26" rx="4" fill="none" stroke="#10b981" stroke-width="2" filter="url(#depositGlow)" opacity="0.5"/>
+
+  <!-- Border -->
+  <rect width="142" height="26" rx="4" fill="none" stroke="#34d399" stroke-width="1"/>
+
+  <!-- Top highlight -->
+  <rect x="0" y="0" width="142" height="2" rx="4" fill="#ffffff" opacity="0.3"/>
+</svg>

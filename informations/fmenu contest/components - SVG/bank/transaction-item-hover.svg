@@ -1,0 +1,19 @@
+<!-- Transaction History Item Hover - 352x40px (pour la liste des transactions - hover) -->
+<svg width="352" height="40" viewBox="0 0 352 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Brighter gradient for hover -->
+    <linearGradient id="transactionHoverBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a2a3e;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#1e1e2e;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="352" height="40" fill="url(#transactionHoverBg)"/>
+
+  <!-- Left accent line -->
+  <rect x="0" y="0" width="3" height="40" fill="#667eea" opacity="0.7"/>
+
+  <!-- Bottom separator line -->
+  <rect x="0" y="39" width="352" height="1" fill="#667eea" opacity="0.4"/>
+</svg>
