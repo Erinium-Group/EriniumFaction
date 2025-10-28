@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.gui.screens.components;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.function.Consumer;
  * Permet de scroller à travers une liste d'éléments
  */
 public class ScrollList<T> {
+    private static final ResourceLocation SCROLLLIST_BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/scrolllist-background.png");
+
     private final Font font;
     private final List<T> items = new ArrayList<>();
     private final ItemRenderer<T> renderer;
@@ -77,9 +80,8 @@ public class ScrollList<T> {
     }
 
     public void render(GuiGraphics g, int mouseX, int mouseY) {
-        // Background
-        g.fill(x, y, x + width, y + height, 0xE61e1e2e);
-        g.fill(x, y, x + width, y + 1, 0x80667eea);
+        // Background - Utiliser l'image au lieu de g.fill
+        ImageRenderer.renderScaledImage(g, SCROLLLIST_BACKGROUND, x, y, width, height);
 
         // Scissor pour clipping
         g.enableScissor(x, y, x + width, y + height);

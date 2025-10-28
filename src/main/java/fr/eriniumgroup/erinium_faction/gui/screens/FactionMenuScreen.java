@@ -82,6 +82,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     private static final int NAV_AREA_HEIGHT = 170; // 316 * 0.54 = 170 (y=65 à y=235)
 
     // Textures
+    private static final ResourceLocation MAIN_BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/main-background.png");
     private static final ResourceLocation NAV_BUTTON_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/nav-button-normal.png");
     private static final ResourceLocation NAV_BUTTON_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/nav-button-hover.png");
     private static final ResourceLocation NAV_BUTTON_SELECTED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/nav-button-selected.png");
@@ -270,45 +271,12 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     }
 
     private void renderBackground(GuiGraphics g) {
-        // Background cosmic
-        g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF0f0c29);
-
-        // Bordure cyan (scaled for 400x270)
-        int borderX = sx(4);
-        int borderY = sy(4);
-        int borderW = sw(392); // 400 - 8
-        int borderH = sh(262); // 270 - 8
-
-        // Glow (2px instead of 3)
-        g.fill(borderX, borderY, borderX + borderW, borderY + 2, 0x8000d2ff);
-        g.fill(borderX, borderY + borderH - 2, borderX + borderW, borderY + borderH, 0x8000d2ff);
-        g.fill(borderX, borderY, borderX + 2, borderY + borderH, 0x8000d2ff);
-        g.fill(borderX + borderW - 2, borderY, borderX + borderW, borderY + borderH, 0x8000d2ff);
-
-        // Line
-        g.fill(borderX, borderY, borderX + borderW, borderY + 1, 0xFF00d2ff);
-        g.fill(borderX, borderY + borderH - 1, borderX + borderW, borderY + borderH, 0xFF00d2ff);
-        g.fill(borderX, borderY, borderX + 1, borderY + borderH, 0xFF00d2ff);
-        g.fill(borderX + borderW - 1, borderY, borderX + borderW, borderY + borderH, 0xFF00d2ff);
+        // Utiliser l'image du background principal
+        ImageRenderer.renderScaledImage(g, MAIN_BACKGROUND, leftPos, topPos, imageWidth, imageHeight);
     }
 
     private void renderSidebar(GuiGraphics g, int mouseX, int mouseY) {
-        // Sidebar (scaled for 400x270)
-        int sbX = sx(9);
-        int sbY = sy(9);
-        int sbW = sw(77);
-        int sbH = sh(252);
-
-        g.fill(sbX, sbY, sbX + sbW, sbY + sbH, 0xF816161f);
-        g.fill(sbX, sbY, sbX + sbW, sbY + 1, 0x50667eea);
-
-        // Header
-        int hX = sx(13);
-        int hY = sy(13);
-        int hW = sw(68);
-
-        g.fill(hX, hY, hX + hW, hY + sh(43), 0xCC1a1a2e);
-        g.fill(hX, hY, hX + hW, hY + 2, 0xFF00d2ff);
+        // Note: Les backgrounds de la sidebar sont maintenant dans l'image principale
 
         // Logo
         int logoX = sx(47);
@@ -387,13 +355,12 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             g.fill(scrollbarX, thumbY, scrollbarX + sw(2), thumbY + thumbHeight, thumbColor);
         }
 
-        // Power indicator
+        // Power indicator (background déjà dans l'image principale)
         int pwX = sx(13);
         int pwY = sy(235);
         int pwW = sw(68);
         int pwCenterX = pwX + pwW / 2;
 
-        g.fill(pwX, pwY, pwX + pwW, pwY + sh(26), 0xE61a1a2e);
         g.drawCenteredString(font, Component.translatable("erinium_faction.gui.sidebar.power").getString(), pwCenterX, pwY + sh(5), 0xFFa0a0c0);
 
         // Bar avec données réelles - Utiliser les images
@@ -423,22 +390,12 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     }
 
     private void renderMainPanel(GuiGraphics g, int mouseX, int mouseY) {
-        // Main panel
-        int pX = sx(90);
-        int pY = sy(9);
-        int pW = sw(297);
-        int pH = sh(252);
+        // Note: Les backgrounds du main panel sont maintenant dans l'image principale
 
-        g.fill(pX, pY, pX + pW, pY + pH, 0xF01e1e2e);
-
-        // Header
+        // Header text
         int hX = sx(95);
         int hY = sy(13);
         int hW = sw(289);
-
-        g.fill(hX, hY, hX + hW, hY + sh(26), 0xCC1a1a2e);
-        g.fill(hX, hY, hX + hW, hY + 2, 0xFF00d2ff);
-        g.fill(hX, hY, hX + sw(22), hY + 2, 0xFF00d2ff);
 
         g.drawString(font, Component.translatable("erinium_faction.gui.header.faction", currentPage.getLocalizedLabel()).getString(), hX + sw(7), hY + sh(11), 0xFFffffff, true);
 
