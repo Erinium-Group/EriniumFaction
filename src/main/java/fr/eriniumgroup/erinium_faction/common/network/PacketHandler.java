@@ -1,9 +1,7 @@
 package fr.eriniumgroup.erinium_faction.common.network;
 
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables.PlayerVariablesSyncMessage;
-import fr.eriniumgroup.erinium_faction.common.network.packets.FactionMenuSettingsButtonMessage;
 import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
-import fr.eriniumgroup.erinium_faction.common.network.packets.OpenFactionChestMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.features.block_hp.BlockHpSyncMessage;
 import fr.eriniumgroup.erinium_faction.gui.widgets.FactionGuiNetwork;
@@ -36,8 +34,6 @@ public class PacketHandler {
 
         // Paquet GUI -> Serveur (clics, actions)
         registrar.playToServer(FactionGuiNetwork.TYPE, FactionGuiNetwork.STREAM_CODEC, FactionGuiNetwork::handleData);
-        registrar.playToServer(FactionMenuSettingsButtonMessage.TYPE, FactionMenuSettingsButtonMessage.STREAM_CODEC, FactionMenuSettingsButtonMessage::handleData);
-        registrar.playToServer(OpenFactionChestMessage.TYPE, OpenFactionChestMessage.STREAM_CODEC, OpenFactionChestMessage::handleData);
         registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket::handleData);
 
         // Serveur -> Client (sync affichage HP de bloc)
@@ -52,9 +48,6 @@ public class PacketHandler {
         // Nouveaux paquets: carte des claims
         registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage::handleData);
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage::handleData);
-
-        // Nouveau paquet clientbound pour synchroniser l’état des Settings
-        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionSettingsStateMessage::handleData);
 
         // Nouveau paquet clientbound: afficher un titre overlay
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket::handleData);

@@ -2,9 +2,7 @@ package fr.eriniumgroup.erinium_faction.init;
 
 import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
-import fr.eriniumgroup.erinium_faction.gui.menus.FactionChestMenu;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
-import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenuSettingsMenu;
 import fr.eriniumgroup.erinium_faction.player.level.gui.PlayerStatsMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,8 +19,6 @@ import java.util.Map;
 public class EFMenus {
     public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(Registries.MENU, EFC.MODID);
     public static final DeferredHolder<MenuType<?>, MenuType<FactionMenu>> FACTION_MENU = REGISTER.register("faction_menu", () -> IMenuTypeExtension.create(FactionMenu::new));
-    public static final DeferredHolder<MenuType<?>, MenuType<FactionMenuSettingsMenu>> FACTION_MENU_SETTINGS = REGISTER.register("faction_menu_settings", () -> IMenuTypeExtension.create(FactionMenuSettingsMenu::new));
-    public static final DeferredHolder<MenuType<?>, MenuType<FactionChestMenu>> FACTION_CHEST_MENU = REGISTER.register("faction_chest_menu", () -> IMenuTypeExtension.create(FactionChestMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<PlayerStatsMenu>> PLAYER_STATS_MENU = REGISTER.register("player_stats_menu", () -> IMenuTypeExtension.create(PlayerStatsMenu::new));
 
     public interface MenuAccessor {
