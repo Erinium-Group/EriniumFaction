@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.player.level.gui;
 
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelData;
 import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelManager;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,6 +18,14 @@ import javax.annotation.Nonnull;
 public class PlayerStatsScreen extends AbstractContainerScreen<PlayerStatsMenu> {
 
     private PlayerLevelData cachedData;
+
+    // Textures principales
+    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/player-stats/playerstats-background.png");
+    private static final ResourceLocation XP_BAR_EMPTY = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/player-stats/xp-bar-empty.png");
+    private static final ResourceLocation XP_BAR_FILLED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/player-stats/xp-bar-filled.png");
+    private static final ResourceLocation ATTRIBUTE_BOX_RED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/player-stats/attribute-box-red.png");
+    private static final ResourceLocation ATTRIBUTE_BOX_CYAN = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/player-stats/attribute-box-cyan.png");
+    private static final ResourceLocation ATTRIBUTE_BOX_GREEN = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/player-stats/attribute-box-green.png");
 
     // Textures des icônes
     private static final ResourceLocation ICON_HEALTH = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/screens/player_stats_health.png");
@@ -115,83 +124,10 @@ public class PlayerStatsScreen extends AbstractContainerScreen<PlayerStatsMenu> 
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        // Fond dégradé cyber-astral (gradient #0f0c29 -> #1a1347 -> #24243e)
-        fillGradientVertical(guiGraphics, this.leftPos, this.topPos, this.leftPos + this.imageWidth, this.topPos + this.imageHeight / 2, 0xFF0f0c29, 0xFF1a1347);
-        fillGradientVertical(guiGraphics, this.leftPos, this.topPos + this.imageHeight / 2, this.leftPos + this.imageWidth, this.topPos + this.imageHeight, 0xFF1a1347, 0xFF24243e);
-
-        // Pattern d'étoiles (petits points lumineux)
-        renderStarsPattern(guiGraphics);
-
-        // Bordure extérieure lumineuse (gradient cyan-bleu)
-        int borderColor1 = 0xFF00d2ff; // Cyan
-        int borderColor2 = 0xFF3a47d5; // Bleu
-
-        // Bordure avec effet glow
-        drawGlowBorder(guiGraphics, this.leftPos + 4, this.topPos + 4, this.imageWidth - 8, this.imageHeight - 8, 8, borderColor1);
-
-        // Main panel (gradient #1e1e2e -> #2a2a3e)
-        fillGradientVertical(guiGraphics, this.leftPos + 8, this.topPos + 8, this.leftPos + this.imageWidth - 8, this.topPos + this.imageHeight - 8, 0xF01e1e2e, 0xF02a2a3e);
-
-        // Bordure du main panel
-        drawRoundedRect(guiGraphics, this.leftPos + 8, this.topPos + 8, this.imageWidth - 16, this.imageHeight - 16, 6, 0x4D667eea);
-
-        // Header background
-        guiGraphics.fill(this.leftPos + 16, this.topPos + 16, this.leftPos + 16 + 368, this.topPos + 16 + 32, 0xCC1a1a2e);
-
-        // Header border (gradient accent)
-        drawRoundedRect(guiGraphics, this.leftPos + 16, this.topPos + 16, 368, 32, 4, borderColor1);
-
-        // Ligne accent en haut du header
-        guiGraphics.fill(this.leftPos + 20, this.topPos + 16, this.leftPos + 50, this.topPos + 18, borderColor1);
+        // Utiliser l'image du background principal
+        ImageRenderer.renderScaledImage(guiGraphics, BACKGROUND, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
     }
 
-    private void fillGradientVertical(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int colorFrom, int colorTo) {
-        guiGraphics.fillGradient(x1, y1, x2, y2, colorFrom, colorTo);
-    }
-
-    private void renderStarsPattern(GuiGraphics guiGraphics) {
-        // Dessiner des petites étoiles aléatoires
-        int[][] stars = {
-            {50, 30, 1, 0x9900d2ff},
-            {350, 50, 1, 0xAAa855f7},
-            {100, 200, 1, 0x88ffffff},
-            {300, 180, 1, 0x9900d2ff},
-            {150, 100, 1, 0xAAa855f7},
-            {250, 150, 1, 0x88ffffff},
-            {80, 240, 1, 0x9900d2ff}
-        };
-
-        for (int[] star : stars) {
-            int x = this.leftPos + star[0];
-            int y = this.topPos + star[1];
-            int size = star[2];
-            int color = star[3];
-            guiGraphics.fill(x, y, x + size, y + size, color);
-        }
-    }
-
-    private void drawGlowBorder(GuiGraphics guiGraphics, int x, int y, int width, int height, int radius, int color) {
-        // Haut
-        guiGraphics.fill(x + radius, y, x + width - radius, y + 2, color);
-        // Bas
-        guiGraphics.fill(x + radius, y + height - 2, x + width - radius, y + height, color);
-        // Gauche
-        guiGraphics.fill(x, y + radius, x + 2, y + height - radius, color);
-        // Droite
-        guiGraphics.fill(x + width - 2, y + radius, x + width, y + height - radius, color);
-    }
-
-    private void drawRoundedRect(GuiGraphics guiGraphics, int x, int y, int width, int height, int radius, int color) {
-        // Approximation simple d'un rectangle arrondi (bordure)
-        // Haut
-        guiGraphics.fill(x + radius, y, x + width - radius, y + 1, color);
-        // Bas
-        guiGraphics.fill(x + radius, y + height - 1, x + width - radius, y + height, color);
-        // Gauche
-        guiGraphics.fill(x, y + radius, x + 1, y + height - radius, color);
-        // Droite
-        guiGraphics.fill(x + width - 1, y + radius, x + width, y + height - radius, color);
-    }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -227,26 +163,24 @@ public class PlayerStatsScreen extends AbstractContainerScreen<PlayerStatsMenu> 
         int barWidth = 352;
         int barHeight = 10;
 
-        // Fond de la barre
-        guiGraphics.fill(barX, barY, barX + barWidth, barY + barHeight, 0xFF2a2a3e);
+        // Fond de la barre (image vide)
+        ImageRenderer.renderScaledImage(guiGraphics, XP_BAR_EMPTY, barX, barY, barWidth, barHeight);
 
-        // Progression (gradient vert #10b981 -> #06d6a0)
+        // Progression (image remplie avec scissor pour couper à la bonne longueur)
         float progress = (float) cachedData.getExperience() / cachedData.getExperienceToNextLevel();
         int progressWidth = (int) (barWidth * progress);
         if (progressWidth > 0) {
-            guiGraphics.fillGradient(barX, barY, barX + progressWidth, barY + barHeight, 0xFF10b981, 0xFF06d6a0);
+            guiGraphics.enableScissor(barX, barY, barX + progressWidth, barY + barHeight);
+            ImageRenderer.renderScaledImage(guiGraphics, XP_BAR_FILLED, barX, barY, barWidth, barHeight);
+            guiGraphics.disableScissor();
         }
-
-        // Bordure de la barre
-        drawRoundedRect(guiGraphics, barX, barY, barWidth, barHeight, 5, 0x80667eea);
 
         // Points disponibles (y=116)
         Component pointsText = Component.translatable("player_level.points_available").append(": ").withStyle(style -> style.withColor(0xfbbf24).withBold(true));
         pointsText = pointsText.copy().append(Component.literal(String.valueOf(cachedData.getAvailablePoints())).withStyle(style -> style.withColor(0xfbbf24).withBold(true)));
         guiGraphics.drawString(this.font, pointsText, this.leftPos + 24, this.topPos + 108, 0xfbbf24);
 
-        // Ligne de séparation (y=126)
-        guiGraphics.fill(this.leftPos + 24, this.topPos + 118, this.leftPos + 376, this.topPos + 119, 0x4D667eea);
+        // Note: Ligne de séparation maintenant dans l'image de background
 
         // Titre de section "Investir vos points" (y=144)
         Component sectionTitle = Component.translatable("player_level.section.invest").withStyle(style -> style.withColor(0xa0a0c0));
@@ -260,37 +194,34 @@ public class PlayerStatsScreen extends AbstractContainerScreen<PlayerStatsMenu> 
         // Rangée 1 (y=152)
         int row1Y = this.topPos + 152;
 
-        // Zone Vie (x=172, couleur rouge #ef4444)
-        renderAttributeBox(guiGraphics, this.leftPos + 172, row1Y, 24, 26, String.valueOf(data.getHealthPoints()), 0xef4444);
+        // Zone Vie (x=172, rouge)
+        renderAttributeBox(guiGraphics, this.leftPos + 172, row1Y, 24, 26, String.valueOf(data.getHealthPoints()), 0xef4444, ATTRIBUTE_BOX_RED);
 
-        // Zone Intelligence (x=352, couleur rouge #ef4444)
-        renderAttributeBox(guiGraphics, this.leftPos + 352, row1Y, 24, 26, String.valueOf(data.getIntelligencePoints()), 0xef4444);
+        // Zone Intelligence (x=352, rouge)
+        renderAttributeBox(guiGraphics, this.leftPos + 352, row1Y, 24, 26, String.valueOf(data.getIntelligencePoints()), 0xef4444, ATTRIBUTE_BOX_RED);
 
         // Rangée 2 (y=184)
         int row2Y = this.topPos + 184;
 
-        // Zone Armure (x=172, couleur rouge #ef4444)
-        renderAttributeBox(guiGraphics, this.leftPos + 172, row2Y, 24, 26, String.valueOf(data.getArmorPoints()), 0xef4444);
+        // Zone Armure (x=172, rouge)
+        renderAttributeBox(guiGraphics, this.leftPos + 172, row2Y, 24, 26, String.valueOf(data.getArmorPoints()), 0xef4444, ATTRIBUTE_BOX_RED);
 
-        // Zone Force (x=352, couleur rouge #ef4444)
-        renderAttributeBox(guiGraphics, this.leftPos + 352, row2Y, 24, 26, String.valueOf(data.getStrengthPoints()), 0xef4444);
+        // Zone Force (x=352, rouge)
+        renderAttributeBox(guiGraphics, this.leftPos + 352, row2Y, 24, 26, String.valueOf(data.getStrengthPoints()), 0xef4444, ATTRIBUTE_BOX_RED);
 
         // Rangée 3 (y=216)
         int row3Y = this.topPos + 216;
 
-        // Zone Vitesse (x=172, couleur cyan #00d2ff)
-        renderAttributeBox(guiGraphics, this.leftPos + 172, row3Y, 24, 26, String.valueOf(data.getSpeedPoints()), 0x00d2ff);
+        // Zone Vitesse (x=172, cyan)
+        renderAttributeBox(guiGraphics, this.leftPos + 172, row3Y, 24, 26, String.valueOf(data.getSpeedPoints()), 0x00d2ff, ATTRIBUTE_BOX_CYAN);
 
-        // Zone Chance (x=352, couleur verte #10b981)
-        renderAttributeBox(guiGraphics, this.leftPos + 352, row3Y, 24, 26, String.valueOf(data.getLuckPoints()), 0x10b981);
+        // Zone Chance (x=352, verte)
+        renderAttributeBox(guiGraphics, this.leftPos + 352, row3Y, 24, 26, String.valueOf(data.getLuckPoints()), 0x10b981, ATTRIBUTE_BOX_GREEN);
     }
 
-    private void renderAttributeBox(GuiGraphics guiGraphics, int x, int y, int width, int height, String value, int color) {
-        // Fond
-        guiGraphics.fill(x, y, x + width, y + height, 0xFF1a1a2e);
-
-        // Bordure
-        drawRoundedRect(guiGraphics, x, y, width, height, 4, color);
+    private void renderAttributeBox(GuiGraphics guiGraphics, int x, int y, int width, int height, String value, int color, ResourceLocation boxTexture) {
+        // Utiliser l'image de la box
+        ImageRenderer.renderScaledImage(guiGraphics, boxTexture, x, y, width, height);
 
         // Texte centré
         int textWidth = this.font.width(value);

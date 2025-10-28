@@ -1,0 +1,18 @@
+<!-- XP Bar Filled - 352x10px (gradient vert) -->
+<svg width="352" height="10" viewBox="0 0 352 10" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Green gradient for XP progression -->
+    <linearGradient id="xpGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06d6a0;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Rounded corners -->
+    <clipPath id="roundedFill">
+      <rect width="352" height="10" rx="5" ry="5"/>
+    </clipPath>
+  </defs>
+
+  <!-- Filled bar with gradient -->
+  <rect width="352" height="10" rx="5" fill="url(#xpGradient)" clip-path="url(#roundedFill)"/>
+</svg>

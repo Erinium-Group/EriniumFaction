@@ -1,0 +1,15 @@
+<!-- XP Bar Empty - 352x10px -->
+<svg width="352" height="10" viewBox="0 0 352 10" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Rounded corners definition -->
+    <clipPath id="roundedBar">
+      <rect width="352" height="10" rx="5" ry="5"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background (dark) -->
+  <rect width="352" height="10" rx="5" fill="#2a2a3e"/>
+
+  <!-- Border -->
+  <rect width="352" height="10" rx="5" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+</svg>
