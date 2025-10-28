@@ -5,10 +5,12 @@ import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.screens.pages.*;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -78,6 +80,15 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     private static final int NAV_BUTTON_HEIGHT = 17; // 32 * 0.54 = 17
     private static final int NAV_BUTTON_SPACING = 2; // 4 * 0.54 = 2
     private static final int NAV_AREA_HEIGHT = 170; // 316 * 0.54 = 170 (y=65 à y=235)
+
+    // Textures
+    private static final ResourceLocation NAV_BUTTON_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/nav-button-normal.png");
+    private static final ResourceLocation NAV_BUTTON_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/nav-button-hover.png");
+    private static final ResourceLocation NAV_BUTTON_SELECTED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/nav-button-selected.png");
+    private static final ResourceLocation PROGRESSBAR_EMPTY = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/progressbar-empty.png");
+    private static final ResourceLocation PROGRESSBAR_FILLED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/progressbar-filled-100.png");
+    private static final ResourceLocation CLOSE_BUTTON_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/close-button-normal.png");
+    private static final ResourceLocation CLOSE_BUTTON_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/close-button-hover.png");
 
     public FactionMenuScreen(FactionMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -336,14 +347,16 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             boolean isHovered = mouseX >= btnX && mouseX < btnX + btnW && mouseY >= btnY && mouseY < btnY + btnH &&
                                mouseY >= navY && mouseY < navY + navH;
 
+            // Utiliser les images au lieu de g.fill
+            ResourceLocation buttonTexture;
             if (isSelected) {
-                g.fill(btnX, btnY, btnX + btnW, btnY + btnH, 0xFF667eea);
-                g.fill(btnX, btnY, btnX + sw(20), btnY + 2, 0xFF00d2ff);
+                buttonTexture = NAV_BUTTON_SELECTED;
             } else if (isHovered) {
-                g.fill(btnX, btnY, btnX + btnW, btnY + btnH, 0x802a2a3e);
+                buttonTexture = NAV_BUTTON_HOVER;
             } else {
-                g.fill(btnX, btnY, btnX + btnW, btnY + btnH, 0xCC2a2a3e);
+                buttonTexture = NAV_BUTTON_NORMAL;
             }
+            ImageRenderer.renderScaledImage(g, buttonTexture, btnX, btnY, btnW, btnH);
 
             int textColor = isSelected ? 0xFFffffff : (isHovered ? 0xFFe0e0ff : 0xFFb8b8d0);
 
@@ -383,7 +396,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         g.fill(pwX, pwY, pwX + pwW, pwY + sh(26), 0xE61a1a2e);
         g.drawCenteredString(font, Component.translatable("erinium_faction.gui.sidebar.power").getString(), pwCenterX, pwY + sh(5), 0xFFa0a0c0);
 
-        // Bar avec données réelles
+        // Bar avec données réelles - Utiliser les images
         int barX = sx(18);
         int barY = sy(248);
         int barW = sw(60);
@@ -393,8 +406,17 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         double maxPower = factionData != null && factionData.maxPower > 0 ? factionData.maxPower : 100;
         int powerPercent = maxPower > 0 ? (int) ((currentPower * 100) / maxPower) : 0;
 
-        g.fill(barX, barY, barX + barW, barY + barH, 0xFF2a2a3e);
-        g.fill(barX, barY, barX + (barW * powerPercent / 100), barY + barH, 0xFFa855f7);
+        // Barre vide
+        ImageRenderer.renderScaledImage(g, PROGRESSBAR_EMPTY, barX, barY, barW, barH);
+
+        // Barre remplie (proportionnelle au pourcentage)
+        if (powerPercent > 0) {
+            int filledWidth = (barW * powerPercent / 100);
+            // Utiliser scissor pour couper la barre remplie à la bonne longueur
+            g.enableScissor(barX, barY, barX + filledWidth, barY + barH);
+            ImageRenderer.renderScaledImage(g, PROGRESSBAR_FILLED, barX, barY, barW, barH);
+            g.disableScissor();
+        }
 
         String powerText = String.format("%.1f/%.1f", currentPower, maxPower);
         g.drawCenteredString(font, powerText, pwCenterX, pwY + sh(17), 0xFF00d2ff);
@@ -420,13 +442,15 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
         g.drawString(font, Component.translatable("erinium_faction.gui.header.faction", currentPage.getLocalizedLabel()).getString(), hX + sw(7), hY + sh(11), 0xFFffffff, true);
 
-        // Close button
+        // Close button - Utiliser les images
         int closeX = sx(373);
         int closeY = sy(17);
-        boolean closeHovered = mouseX >= closeX && mouseX < closeX + sw(11) && mouseY >= closeY && mouseY < closeY + sh(11);
+        int closeW = sw(11);
+        int closeH = sh(11);
+        boolean closeHovered = mouseX >= closeX && mouseX < closeX + closeW && mouseY >= closeY && mouseY < closeY + closeH;
 
-        g.fill(closeX, closeY, closeX + sw(11), closeY + sh(11), closeHovered ? 0xFFff4444 : 0xCCef4444);
-        g.drawCenteredString(font, "X", closeX + sw(5), closeY + sh(3), 0xFFffffff);
+        ResourceLocation closeTexture = closeHovered ? CLOSE_BUTTON_HOVER : CLOSE_BUTTON_NORMAL;
+        ImageRenderer.renderScaledImage(g, closeTexture, closeX, closeY, closeW, closeH);
 
         // Render page content
         FactionPage page = pages.get(currentPage);

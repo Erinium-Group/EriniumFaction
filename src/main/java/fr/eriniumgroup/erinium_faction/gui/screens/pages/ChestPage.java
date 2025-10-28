@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +16,10 @@ public class ChestPage extends FactionPage {
 
     private static final int SLOT_SIZE = 18;
     private static final int SLOT_SPACING = 18;
+
+    // Textures pour les slots d'inventaire
+    private static final ResourceLocation INVENTORY_SLOT_EMPTY = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/chest/inventory-slot-empty.png");
+    private static final ResourceLocation INVENTORY_SLOT_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/chest/inventory-slot-hover.png");
 
     private final FactionMenu menu;
 
@@ -48,8 +53,8 @@ public class ChestPage extends FactionPage {
         // Label for player inventory
         g.drawString(font, translate("erinium_faction.gui.chest.player_inventory"), (int) Math.round(scaledBaseX), (int) Math.round(scaledInvY) - sh(9, scaleY), 0xFFa0a0c0, false);
 
-        // DEBUG: Dessiner des carrés pour montrer où sont les slots
-        // Les slots Minecraft font toujours 16x16 en rendu, donc on dessine des carrés de 16x16 centrés
+        // Dessiner les emplacements de slots avec les textures
+        // Les slots Minecraft font toujours 16x16 en rendu, donc on dessine des images de 16x16 centrés
         int slotRenderSize = 16;
         int centerOffset = (int) Math.round((scaledSpacing - slotRenderSize) / 2);
 
@@ -58,8 +63,14 @@ public class ChestPage extends FactionPage {
             for (int col = 0; col < 9; col++) {
                 int slotX = (int) Math.round(scaledBaseX + col * scaledSpacing) + centerOffset;
                 int slotY = (int) Math.round(scaledChestY + row * scaledSpacing) + centerOffset;
-                // Dessiner un carré vert transparent
-                g.fill(slotX, slotY, slotX + slotRenderSize, slotY + slotRenderSize, 0x4000FF00);
+
+                // Vérifier si la souris est sur ce slot
+                boolean isHovered = mouseX >= slotX && mouseX < slotX + slotRenderSize &&
+                                   mouseY >= slotY && mouseY < slotY + slotRenderSize;
+
+                // Dessiner le slot avec la texture appropriée
+                ResourceLocation slotTexture = isHovered ? INVENTORY_SLOT_HOVER : INVENTORY_SLOT_EMPTY;
+                ImageRenderer.renderScaledImage(g, slotTexture, slotX, slotY, slotRenderSize, slotRenderSize);
             }
         }
 
@@ -68,8 +79,12 @@ public class ChestPage extends FactionPage {
             for (int col = 0; col < 9; col++) {
                 int slotX = (int) Math.round(scaledBaseX + col * scaledSpacing) + centerOffset;
                 int slotY = (int) Math.round(scaledInvY + row * scaledSpacing) + centerOffset;
-                // Dessiner un carré bleu transparent
-                g.fill(slotX, slotY, slotX + slotRenderSize, slotY + slotRenderSize, 0x400000FF);
+
+                boolean isHovered = mouseX >= slotX && mouseX < slotX + slotRenderSize &&
+                                   mouseY >= slotY && mouseY < slotY + slotRenderSize;
+
+                ResourceLocation slotTexture = isHovered ? INVENTORY_SLOT_HOVER : INVENTORY_SLOT_EMPTY;
+                ImageRenderer.renderScaledImage(g, slotTexture, slotX, slotY, slotRenderSize, slotRenderSize);
             }
         }
 
@@ -77,8 +92,12 @@ public class ChestPage extends FactionPage {
         for (int col = 0; col < 9; col++) {
             int slotX = (int) Math.round(scaledBaseX + col * scaledSpacing) + centerOffset;
             int slotY = (int) Math.round(scaledHotbarY) + centerOffset;
-            // Dessiner un carré rouge transparent
-            g.fill(slotX, slotY, slotX + slotRenderSize, slotY + slotRenderSize, 0x40FF0000);
+
+            boolean isHovered = mouseX >= slotX && mouseX < slotX + slotRenderSize &&
+                               mouseY >= slotY && mouseY < slotY + slotRenderSize;
+
+            ResourceLocation slotTexture = isHovered ? INVENTORY_SLOT_HOVER : INVENTORY_SLOT_EMPTY;
+            ImageRenderer.renderScaledImage(g, slotTexture, slotX, slotY, slotRenderSize, slotRenderSize);
         }
 
         // Note: Les slots sont automatiquement rendus par AbstractContainerScreen

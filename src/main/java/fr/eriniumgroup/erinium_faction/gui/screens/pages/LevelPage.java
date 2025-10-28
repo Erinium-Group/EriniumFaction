@@ -1,13 +1,20 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Page Level - Basée sur faction-level.svg
  * Niveau et XP de la faction
  */
 public class LevelPage extends FactionPage {
+
+    // Textures pour le level badge
+    private static final ResourceLocation LEVEL_BADGE = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/level/level-badge.png");
+    private static final ResourceLocation PROGRESSBAR_EMPTY = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/progressbar-empty.png");
+    private static final ResourceLocation PROGRESSBAR_FILLED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/progressbar-filled-100.png");
 
     public LevelPage(Font font) {
         super(font);
@@ -30,10 +37,12 @@ public class LevelPage extends FactionPage {
         g.fill(x, y, x + sw(267, scaleX), y + sh(65, scaleY), 0xE61e1e2e);
         g.fill(x, y, x + sw(267, scaleX), y + 1, 0xFFfbbf24);
 
-        // Level badge
+        // Level badge - Utiliser l'image
         int badgeX = x + sw(44, scaleX);
         int badgeY = y + sh(32, scaleY);
-        g.fill(badgeX - sw(25, scaleX), badgeY - sh(24, scaleY), badgeX + sw(25, scaleX), badgeY + sh(24, scaleY), 0xFFfbbf24);
+        int badgeW = sw(50, scaleX);
+        int badgeH = sh(48, scaleY);
+        ImageRenderer.renderScaledImage(g, LEVEL_BADGE, badgeX - badgeW / 2, badgeY - badgeH / 2, badgeW, badgeH);
 
         g.drawCenteredString(font, translate("erinium_faction.gui.level.label"), badgeX, badgeY - sh(8, scaleY), 0xFFffffff);
         g.drawCenteredString(font, String.valueOf(level), badgeX, badgeY + sh(5, scaleY), 0xFFffffff);
@@ -52,9 +61,18 @@ public class LevelPage extends FactionPage {
         int barH = sh(11, scaleY);
         int barX = x + sw(4, scaleX);
         int barW = sw(267, scaleX);  // 275 - 8 de marge
-        g.fill(barX, barBgY, barX + barW, barBgY + barH, 0xFF2a2a3e);
         int xpPercent = xpRequired > 0 ? (xp * 100 / xpRequired) : 0;
-        g.fill(barX, barBgY, barX + (barW * xpPercent / 100), barBgY + barH, 0xFFa855f7);
+
+        // Utiliser les images pour la barre XP
+        ImageRenderer.renderScaledImage(g, PROGRESSBAR_EMPTY, barX, barBgY, barW, barH);
+
+        // Barre remplie (proportionnelle au pourcentage)
+        if (xpPercent > 0) {
+            int filledWidth = (barW * xpPercent / 100);
+            g.enableScissor(barX, barBgY, barX + filledWidth, barBgY + barH);
+            ImageRenderer.renderScaledImage(g, PROGRESSBAR_FILLED, barX, barBgY, barW, barH);
+            g.disableScissor();
+        }
 
         // Center text vertically in the bar
         g.drawCenteredString(font, translate("erinium_faction.gui.level.xp_format", xp, xpRequired), barX + barW / 2, barBgY + barH / 2 - 4, 0xFFffffff);

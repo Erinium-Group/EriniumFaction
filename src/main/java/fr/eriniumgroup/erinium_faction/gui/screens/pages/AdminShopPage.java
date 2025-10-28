@@ -3,8 +3,10 @@ package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,14 @@ import java.util.List;
 public class AdminShopPage extends FactionPage {
 
     private ScrollList<ShopItem> shopScrollList;
+
+    // Textures pour les shop items
+    private static final ResourceLocation SHOP_ITEM_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/shop/shop-item-normal.png");
+    private static final ResourceLocation SHOP_ITEM_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/shop/shop-item-hover.png");
+
+    // Textures pour les boutons purchase
+    private static final ResourceLocation BUTTON_PURCHASE_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/shop/button-purchase-normal.png");
+    private static final ResourceLocation BUTTON_PURCHASE_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/shop/button-purchase-hover.png");
 
     private static class ShopItem {
         String name;
@@ -73,9 +83,9 @@ public class AdminShopPage extends FactionPage {
     }
 
     private void renderShopItem(GuiGraphics g, ShopItem item, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
-        int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
-        g.fill(x, y, x + width, y + height, bgColor);
-        g.fill(x, y, x + width, y + 1, 0x80667eea);
+        // Utiliser les images au lieu de g.fill
+        ResourceLocation itemTexture = hovered ? SHOP_ITEM_HOVER : SHOP_ITEM_NORMAL;
+        ImageRenderer.renderScaledImage(g, itemTexture, x, y, width, height);
 
         // Item icon area (placeholder purple square)
         int iconSize = sh(32, 1.0);

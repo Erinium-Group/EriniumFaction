@@ -2,8 +2,10 @@ package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledButton;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,9 @@ public class OverviewPage extends FactionPage {
 
     private ScrollList<InfoItem> infoScrollList;
     private final List<StyledButton> actionButtons = new ArrayList<>();
+
+    // Textures pour les stat cards
+    private static final ResourceLocation STAT_CARD_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/territory/stat-card-normal.png");
 
     // Classe pour les items de la liste
     private static class InfoItem {
@@ -139,7 +144,10 @@ public class OverviewPage extends FactionPage {
         int w = sw(88, scaleX);
         int h = sh(50, scaleY);
 
-        g.fill(x, y, x + w, y + h, 0xE61e1e2e);
+        // Utiliser l'image au lieu de g.fill
+        ImageRenderer.renderScaledImage(g, STAT_CARD_NORMAL, x, y, w, h);
+
+        // Dessiner une ligne de couleur en haut pour différencier les types
         g.fill(x, y, x + w, y + 1, color & 0x80FFFFFF);
 
         g.drawString(font, label, x + sw(9, scaleX), y + sh(26, scaleY), 0xFFa0a0c0, false);

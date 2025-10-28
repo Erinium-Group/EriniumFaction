@@ -2,8 +2,10 @@ package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,22 @@ import java.util.UUID;
 public class MembersPage extends FactionPage {
 
     private ScrollList<MemberInfo> memberScrollList;
+
+    // Textures pour les member cards
+    private static final ResourceLocation MEMBER_CARD_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/member-card-normal.png");
+    private static final ResourceLocation MEMBER_CARD_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/member-card-hover.png");
+
+    // Textures pour les boutons d'action des membres
+    private static final ResourceLocation BUTTON_PROMOTE_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/button-promote-normal.png");
+    private static final ResourceLocation BUTTON_PROMOTE_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/button-promote-hover.png");
+    private static final ResourceLocation BUTTON_DEMOTE_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/button-demote-normal.png");
+    private static final ResourceLocation BUTTON_DEMOTE_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/button-demote-hover.png");
+    private static final ResourceLocation BUTTON_KICK_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/button-kick-normal.png");
+    private static final ResourceLocation BUTTON_KICK_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/button-kick-hover.png");
+
+    // Textures pour la barre de power
+    private static final ResourceLocation PROGRESSBAR_EMPTY = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/progressbar-empty.png");
+    private static final ResourceLocation PROGRESSBAR_FILLED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/progressbar-filled-100.png");
 
     // Classe pour les infos de membre
     private static class MemberInfo {
@@ -78,10 +96,9 @@ public class MembersPage extends FactionPage {
     }
 
     private void renderMemberItem(GuiGraphics g, MemberInfo member, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
-        // Background
-        int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
-        g.fill(x, y, x + width, y + height, bgColor);
-        g.fill(x, y, x + width, y + 1, 0x50667eea);
+        // Background - Utiliser les images
+        ResourceLocation cardTexture = hovered ? MEMBER_CARD_HOVER : MEMBER_CARD_NORMAL;
+        ImageRenderer.renderScaledImage(g, cardTexture, x, y, width, height);
 
         // Online indicator (plus petit)
         int indicatorColor = member.online ? 0xFF10b981 : 0xFF6a6a7e;
@@ -98,16 +115,24 @@ public class MembersPage extends FactionPage {
         boolean rankHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 12, y + 16, nameMaxWidth, font.lineHeight);
         TextHelper.drawAutoScrollingText(g, font, member.rank, x + 12, y + 16, nameMaxWidth, rankColor, false, rankHovered, "member_rank_" + member.name);
 
-        // Power bar (réduite pour petit GUI)
+        // Power bar (réduite pour petit GUI) - Utiliser les images
         int barX = x + width - 55;
         int barY = y + 5;
         int barW = 40;  // Réduit de 100 à 40
         int barH = 8;
 
-        g.fill(barX, barY, barX + barW, barY + barH, 0xFF2a2a3e);
+        // Barre vide
+        ImageRenderer.renderScaledImage(g, PROGRESSBAR_EMPTY, barX, barY, barW, barH);
+
+        // Barre remplie
         int powerPercent = member.maxPower > 0 ? (int) Math.round((member.power / member.maxPower) * 100) : 0;
         powerPercent = Math.min(100, Math.max(0, powerPercent));
-        g.fill(barX, barY, barX + (barW * powerPercent / 100), barY + barH, 0xFFa855f7);
+        if (powerPercent > 0) {
+            int filledWidth = (barW * powerPercent / 100);
+            g.enableScissor(barX, barY, barX + filledWidth, barY + barH);
+            ImageRenderer.renderScaledImage(g, PROGRESSBAR_FILLED, barX, barY, barW, barH);
+            g.disableScissor();
+        }
 
         // Power text (en dessous de la barre) - Affiche power / maxPower en Double (1 décimale)
         String powerText = String.format("%.1f/%.1f", member.power, member.maxPower);

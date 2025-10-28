@@ -2,8 +2,10 @@ package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,11 @@ import java.util.List;
 public class TerritoryPage extends FactionPage {
 
     private ScrollList<ClaimInfo> claimScrollList;
+
+    // Textures
+    private static final ResourceLocation CLAIM_CARD_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/territory/claim-card-normal.png");
+    private static final ResourceLocation CLAIM_CARD_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/territory/claim-card-hover.png");
+    private static final ResourceLocation STAT_CARD_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/territory/stat-card-normal.png");
 
     private static class ClaimInfo {
         String coords;
@@ -66,9 +73,9 @@ public class TerritoryPage extends FactionPage {
     }
 
     private void renderClaimItem(GuiGraphics g, ClaimInfo claim, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
-        int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
-        g.fill(x, y, x + width, y + height, bgColor);
-        g.fill(x, y, x + width, y + 1, 0x50667eea);
+        // Utiliser les images au lieu de g.fill
+        ResourceLocation cardTexture = hovered ? CLAIM_CARD_HOVER : CLAIM_CARD_NORMAL;
+        ImageRenderer.renderScaledImage(g, cardTexture, x, y, width, height);
 
         // Auto-scroll coords on hover
         int maxCoordsWidth = width - 18;
@@ -99,8 +106,15 @@ public class TerritoryPage extends FactionPage {
     }
 
     private void renderStatCard(GuiGraphics g, int x, int y, String label, String value, int color, double scaleX, double scaleY) {
-        g.fill(x, y, x + sw(92, scaleX), y + sh(32, scaleY), 0xE61e1e2e);
-        g.fill(x, y, x + sw(92, scaleX), y + 1, color & 0x80FFFFFF);
+        int w = sw(92, scaleX);
+        int h = sh(32, scaleY);
+
+        // Utiliser l'image au lieu de g.fill
+        ImageRenderer.renderScaledImage(g, STAT_CARD_NORMAL, x, y, w, h);
+
+        // Dessiner une ligne de couleur en haut pour différencier les types
+        g.fill(x, y, x + w, y + 1, color & 0x80FFFFFF);
+
         g.drawString(font, label, x + sw(9, scaleX), y + sh(11, scaleY), 0xFFa0a0c0, false);
         g.drawString(font, value, x + sw(9, scaleX), y + sh(24, scaleY), color, true);
     }

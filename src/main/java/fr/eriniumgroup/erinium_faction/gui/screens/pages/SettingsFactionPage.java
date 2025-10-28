@@ -1,12 +1,15 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
+import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledButton;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledTextField;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledToggle;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
@@ -17,6 +20,9 @@ import java.util.List;
  * Paramètres de la faction avec vrais inputs et boutons
  */
 public class SettingsFactionPage extends FactionPage {
+
+    // Texture pour le header de page
+    private static final ResourceLocation PAGE_HEADER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/page-header.png");
 
     private StyledTextField nameField;
     private StyledTextField descriptionField;
@@ -40,11 +46,13 @@ public class SettingsFactionPage extends FactionPage {
             // Text fields (réduits et mieux espacés) avec vraies données
             nameField = new StyledTextField(font);
             nameField.setPlaceholder("Faction Name");
+            nameField.setMaxLength(EFConfig.FACTION_NAME_MAX.get());
             nameField.setText(data != null ? data.displayName : "");
             nameField.setBounds(x + sw(70, scaleX), y + sh(27, scaleY), inputWidth, inputHeight);
 
             descriptionField = new StyledTextField(font);
             descriptionField.setPlaceholder("Faction Description");
+            descriptionField.setMaxLength(200);
             descriptionField.setText(data != null && data.description != null ? data.description : "");
             descriptionField.setBounds(x + sw(70, scaleX), y + sh(54, scaleY), inputWidth, inputHeight);
 
@@ -95,6 +103,7 @@ public class SettingsFactionPage extends FactionPage {
             StyledButton disbandBtn = new StyledButton(font, translate("erinium_faction.gui.settings_faction.button.disband"), () -> {
                 EFC.log.warn("§6Settings", "§cWARNING - Attempting to disband faction");
             });
+            disbandBtn.setDanger(true); // Bouton rouge pour action dangereuse
             // Positionné après Reset: 95 + 85 + 6 espacement = 186
             disbandBtn.setBounds(x + sw(186, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));
             actionButtons.add(disbandBtn);
@@ -121,9 +130,8 @@ public class SettingsFactionPage extends FactionPage {
         actionButtons.get(1).setBounds(x + sw(95, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));
         actionButtons.get(2).setBounds(x + sw(186, scaleX), y + sh(140, scaleY), sw(85, scaleX), sh(17, scaleY));
 
-        // Header
-        g.fill(x, y, x + w, y + sh(22, scaleY), 0xE61e1e2e);
-        g.fill(x, y, x + w, y + 1, 0xFF00d2ff);
+        // Header - Utiliser l'image au lieu de g.fill
+        ImageRenderer.renderScaledImage(g, PAGE_HEADER, x, y, w, sh(22, scaleY));
         g.drawString(font, translate("erinium_faction.gui.settings_faction.title"), x + sw(9, scaleX), y + sh(9, scaleY), 0xFFffffff, true);
 
         // Labels (réduits et mieux alignés)

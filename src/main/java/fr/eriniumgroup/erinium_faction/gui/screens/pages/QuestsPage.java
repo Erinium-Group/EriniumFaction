@@ -2,8 +2,10 @@ package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,19 @@ import java.util.List;
 public class QuestsPage extends FactionPage {
 
     private ScrollList<QuestInfo> questScrollList;
+
+    // Textures pour les quest cards
+    private static final ResourceLocation QUEST_CARD_DAILY_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/quest-card-daily-normal.png");
+    private static final ResourceLocation QUEST_CARD_DAILY_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/quest-card-daily-hover.png");
+    private static final ResourceLocation QUEST_CARD_DAILY_COMPLETED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/quest-card-daily-completed.png");
+    private static final ResourceLocation QUEST_CARD_WEEKLY_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/quest-card-weekly-normal.png");
+    private static final ResourceLocation QUESTBAR_BLUE_EMPTY = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/questbar-blue-empty.png");
+    private static final ResourceLocation QUESTBAR_BLUE_FILLED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/questbar-blue-filled-100.png");
+    private static final ResourceLocation QUESTBAR_SUCCESS_GREEN = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/questbar-success-green-filled-100.png");
+
+    // Textures pour les boutons claim
+    private static final ResourceLocation BUTTON_CLAIM_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/button-claim-normal.png");
+    private static final ResourceLocation BUTTON_CLAIM_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/quests/button-claim-hover.png");
 
     private static class QuestInfo {
         String name;
@@ -66,12 +81,19 @@ public class QuestsPage extends FactionPage {
     }
 
     private void renderQuestItem(GuiGraphics g, QuestInfo quest, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
-        int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
-        int borderColor = quest.isWeekly ? 0xFFfbbf24 : 0xFF00d2ff;
-        int progressColor = quest.isWeekly ? 0xFFfbbf24 : 0xFF00d2ff;
+        boolean isCompleted = quest.progress >= 100;
+        int progressColor = isCompleted ? 0xFF10b981 : (quest.isWeekly ? 0xFFfbbf24 : 0xFF00d2ff);
 
-        g.fill(x, y, x + width, y + height, bgColor);
-        g.fill(x, y, x + width, y + 1, borderColor);
+        // Utiliser les images au lieu de g.fill
+        ResourceLocation cardTexture;
+        if (isCompleted && !quest.isWeekly) {
+            cardTexture = QUEST_CARD_DAILY_COMPLETED;
+        } else if (quest.isWeekly) {
+            cardTexture = QUEST_CARD_WEEKLY_NORMAL;
+        } else {
+            cardTexture = hovered ? QUEST_CARD_DAILY_HOVER : QUEST_CARD_DAILY_NORMAL;
+        }
+        ImageRenderer.renderScaledImage(g, cardTexture, x, y, width, height);
 
         // Calculate max width for text
         int maxTextWidth = width - 12;
@@ -83,12 +105,24 @@ public class QuestsPage extends FactionPage {
         boolean descHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 6, y + 17, maxTextWidth, font.lineHeight);
         TextHelper.drawAutoScrollingText(g, font, quest.description, x + 6, y + 17, maxTextWidth, 0xFFa0a0c0, false, descHovered, "quest_desc_" + quest.name);
 
-        // Progress bar (plus bas)
+        // Progress bar (plus bas) - Utiliser les images
         int barX = x + 6;
         int barY = y + 32;
         int barW = width - 12;
-        g.fill(barX, barY, barX + barW, barY + 8, 0xFF2a2a3e);
-        g.fill(barX, barY, barX + (barW * quest.progress / 100), barY + 8, progressColor);
+        int barH = 8;
+
+        // Barre vide
+        ImageRenderer.renderScaledImage(g, QUESTBAR_BLUE_EMPTY, barX, barY, barW, barH);
+
+        // Barre remplie (proportionnelle au pourcentage)
+        if (quest.progress > 0) {
+            int filledWidth = (barW * quest.progress / 100);
+            g.enableScissor(barX, barY, barX + filledWidth, barY + barH);
+            // Utiliser la barre verte si completed, sinon bleue
+            ResourceLocation barFilled = isCompleted ? QUESTBAR_SUCCESS_GREEN : QUESTBAR_BLUE_FILLED;
+            ImageRenderer.renderScaledImage(g, barFilled, barX, barY, barW, barH);
+            g.disableScissor();
+        }
 
         // Progress text and reset time (sous la barre)
         g.drawString(font, quest.progress + "%", x + 6, y + 44, progressColor, false);

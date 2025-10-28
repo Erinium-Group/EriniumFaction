@@ -6,8 +6,10 @@ import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledButton;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
@@ -17,6 +19,11 @@ import java.util.*;
  * Permissions par rang avec layout vertical des ranks et scroll list des permissions
  */
 public class SettingsPermissionsPage extends FactionPage {
+
+    // Textures pour les checkboxes
+    private static final ResourceLocation CHECKBOX_UNCHECKED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/permissions/checkbox-unchecked.png");
+    private static final ResourceLocation CHECKBOX_CHECKED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/permissions/checkbox-checked.png");
+    private static final ResourceLocation CHECKBOX_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/permissions/checkbox-hover.png");
 
     private enum Rank {
         OFFICER("officer", 0xFFa855f7),
@@ -376,17 +383,23 @@ public class SettingsPermissionsPage extends FactionPage {
         g.fill(x, y, x + width, y + height, bgColor);
         g.fill(x, y, x + width, y + 1, 0x50667eea);
 
-        // Checkbox (plus petite pour petit GUI)
+        // Checkbox (plus petite pour petit GUI) - Utiliser les images
         int checkSize = 10;
         int checkX = x + 4;
         int checkY = y + 7;
-        int checkColor = hasPermission ? 0xFF10b981 : 0xFF2a2a3e;
-        g.fill(checkX, checkY, checkX + checkSize, checkY + checkSize, checkColor);
-        g.fill(checkX, checkY, checkX + checkSize, checkY + 1, 0x50667eea);
 
-        if (hasPermission) {
-            g.drawCenteredString(font, "✓", checkX + checkSize / 2, checkY + 1, 0xFFffffff);
+        // Déterminer quelle checkbox afficher
+        boolean checkHovered = mouseX >= checkX && mouseX < checkX + checkSize &&
+                              mouseY >= checkY && mouseY < checkY + checkSize;
+        ResourceLocation checkboxTexture;
+        if (checkHovered) {
+            checkboxTexture = CHECKBOX_HOVER;
+        } else if (hasPermission) {
+            checkboxTexture = CHECKBOX_CHECKED;
+        } else {
+            checkboxTexture = CHECKBOX_UNCHECKED;
         }
+        ImageRenderer.renderScaledImage(g, checkboxTexture, checkX, checkY, checkSize, checkSize);
 
         // Permission name with scaling (décalé pour ne pas chevaucher la checkbox)
         int maxNameWidth = width - 22;

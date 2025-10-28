@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.gui.screens.components;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
@@ -19,6 +20,10 @@ public class StyledToggle {
 
     private static final int WIDTH = 40;
     private static final int HEIGHT = 20;
+
+    // Textures pour les toggles
+    private static final ResourceLocation TOGGLE_OFF = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/settings/toggle-off.png");
+    private static final ResourceLocation TOGGLE_ON = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/settings/toggle-on.png");
 
     public StyledToggle(Font font, boolean initialState) {
         this.font = font;
@@ -67,31 +72,13 @@ public class StyledToggle {
             g.drawString(font, label, x + WIDTH + 8, y + 6, 0xFFffffff, false);
         }
 
-        // Background
-        int bgColor = state ? 0xFF10b981 : 0xFFef4444;
-        if (!enabled) bgColor = 0xFF4a4a5e;
-        if (hovered && enabled) {
-            // Slightly brighter when hovered
-            int r = (bgColor >> 16) & 0xFF;
-            int gr = (bgColor >> 8) & 0xFF;
-            int b = bgColor & 0xFF;
-            r = Math.min(255, r + 20);
-            gr = Math.min(255, gr + 20);
-            b = Math.min(255, b + 20);
-            bgColor = 0xFF000000 | (r << 16) | (gr << 8) | b;
+        // Utiliser les images au lieu de g.fill
+        ResourceLocation toggleTexture = state ? TOGGLE_ON : TOGGLE_OFF;
+        if (enabled) {
+            ImageRenderer.renderScaledImage(g, toggleTexture, x, y, WIDTH, HEIGHT);
+        } else {
+            ImageRenderer.renderScaledImageWithAlpha(g, TOGGLE_OFF, x, y, WIDTH, HEIGHT, 0.5f);
         }
-
-        g.fill(x, y, x + WIDTH, y + HEIGHT, bgColor);
-
-        // Thumb
-        int thumbX = state ? x + WIDTH - 18 : x + 2;
-        int thumbY = y + 2;
-        g.fill(thumbX, thumbY, thumbX + 16, thumbY + 16, 0xFFffffff);
-
-        // ON/OFF text inside toggle
-        String toggleText = state ? "ON" : "OFF";
-        int labelX = state ? x + 4 : x + WIDTH - 20;
-        g.drawCenteredString(font, toggleText, labelX + 8, y + 6, 0xFFffffff);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

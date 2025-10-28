@@ -2,8 +2,10 @@ package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,16 @@ import java.util.List;
 public class AlliancesPage extends FactionPage {
 
     private ScrollList<AllianceInfo> allianceScrollList;
+
+    // Textures pour les alliance cards
+    private static final ResourceLocation ALLIANCE_CARD_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/alliances/alliance-card-normal.png");
+    private static final ResourceLocation ALLIANCE_CARD_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/alliances/alliance-card-hover.png");
+
+    // Textures pour les boutons d'action des alliances
+    private static final ResourceLocation BUTTON_ADD_ALLIANCE_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/alliances/button-add-alliance-normal.png");
+    private static final ResourceLocation BUTTON_ADD_ALLIANCE_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/alliances/button-add-alliance-hover.png");
+    private static final ResourceLocation BUTTON_REMOVE_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/alliances/button-remove-normal.png");
+    private static final ResourceLocation BUTTON_REMOVE_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/alliances/button-remove-hover.png");
 
     private static class AllianceInfo {
         String name;
@@ -62,9 +74,9 @@ public class AlliancesPage extends FactionPage {
     }
 
     private void renderAllianceItem(GuiGraphics g, AllianceInfo alliance, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
-        int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
-        g.fill(x, y, x + width, y + height, bgColor);
-        g.fill(x, y, x + width, y + 1, 0x8000d2ff);
+        // Utiliser les images au lieu de g.fill
+        ResourceLocation cardTexture = hovered ? ALLIANCE_CARD_HOVER : ALLIANCE_CARD_NORMAL;
+        ImageRenderer.renderScaledImage(g, cardTexture, x, y, width, height);
 
         // Auto-scroll alliance name on hover
         int maxNameWidth = width - 18;

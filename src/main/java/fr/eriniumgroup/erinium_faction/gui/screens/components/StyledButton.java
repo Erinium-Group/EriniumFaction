@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.gui.screens.components;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Bouton stylisé pour le GUI de faction
@@ -13,8 +14,17 @@ public class StyledButton {
 
     private int x, y, width, height;
     private boolean primary;
+    private boolean danger;
     private boolean enabled = true;
     private boolean hovered = false;
+
+    // Textures pour les boutons
+    private static final ResourceLocation BUTTON_PRIMARY_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/button-primary-normal.png");
+    private static final ResourceLocation BUTTON_PRIMARY_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/button-primary-hover.png");
+    private static final ResourceLocation BUTTON_SECONDARY_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/button-secondary-normal.png");
+    private static final ResourceLocation BUTTON_SECONDARY_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/button-secondary-hover.png");
+    private static final ResourceLocation BUTTON_DANGER_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/button-danger-normal.png");
+    private static final ResourceLocation BUTTON_DANGER_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/button-danger-hover.png");
 
     public StyledButton(Font font, String label, Runnable onClick) {
         this.font = font;
@@ -33,6 +43,10 @@ public class StyledButton {
         this.primary = primary;
     }
 
+    public void setDanger(boolean danger) {
+        this.danger = danger;
+    }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -44,21 +58,29 @@ public class StyledButton {
     public void render(GuiGraphics g, int mouseX, int mouseY) {
         hovered = enabled && mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
 
-        int bgColor;
-        if (!enabled) {
-            bgColor = 0x801a1a1e;
-        } else if (primary) {
-            bgColor = hovered ? 0xFF7a8eee : 0xFF667eea;
+        // Utiliser les images au lieu de g.fill
+        if (enabled) {
+            ResourceLocation buttonTexture;
+            if (danger) {
+                buttonTexture = hovered ? BUTTON_DANGER_HOVER : BUTTON_DANGER_NORMAL;
+            } else if (primary) {
+                buttonTexture = hovered ? BUTTON_PRIMARY_HOVER : BUTTON_PRIMARY_NORMAL;
+            } else {
+                buttonTexture = hovered ? BUTTON_SECONDARY_HOVER : BUTTON_SECONDARY_NORMAL;
+            }
+            ImageRenderer.renderScaledImage(g, buttonTexture, x, y, width, height);
         } else {
-            bgColor = hovered ? 0xFF3a3a4e : 0xCC2a2a3e;
+            // Bouton désactivé : utiliser une version semi-transparente
+            ResourceLocation buttonTexture;
+            if (danger) {
+                buttonTexture = BUTTON_DANGER_NORMAL;
+            } else if (primary) {
+                buttonTexture = BUTTON_PRIMARY_NORMAL;
+            } else {
+                buttonTexture = BUTTON_SECONDARY_NORMAL;
+            }
+            ImageRenderer.renderScaledImageWithAlpha(g, buttonTexture, x, y, width, height, 0.5f);
         }
-
-        // Background
-        g.fill(x, y, x + width, y + height, bgColor);
-
-        // Top border
-        int borderColor = primary ? 0x8000d2ff : 0x50667eea;
-        g.fill(x, y, x + width, y + 1, borderColor);
 
         // Text avec troncature si trop long
         int textColor = enabled ? 0xFFffffff : 0xFF6a6a7e;
