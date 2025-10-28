@@ -57,71 +57,68 @@
   <!-- Main panel -->
   <rect x="90" y="9" width="297" height="252" fill="#1e1e2e" opacity="0.94"/>
 
-  <!-- Header -->
-  <rect x="95" y="13" width="289" height="22" fill="#1a1a2e" opacity="0.8"/>
-  <rect x="95" y="13" width="289" height="22" fill="none" stroke="#00d2ff" stroke-width="2"/>
+  <!-- Header (x=99, y=47, w=275, h=12) -->
+  <rect x="95" y="13" width="289" height="26" fill="#1a1a2e" opacity="0.8"/>
+  <rect x="95" y="13" width="289" height="26" fill="none" stroke="#00d2ff" stroke-width="2"/>
   <rect x="95" y="13" width="22" height="2" fill="#00d2ff"/>
-  <text x="102" y="28" font-family="Arial" font-size="14" font-weight="bold" fill="#ffffff">Faction - Members</text>
-  <text x="350" y="28" font-family="Arial" font-size="10" fill="#00d2ff" text-anchor="end">24 membres</text>
+  <text x="102" y="29" font-family="Arial" font-size="14" font-weight="bold" fill="#ffffff">Faction - Members</text>
 
   <!-- Close button -->
   <rect x="373" y="17" width="11" height="11" rx="2" fill="#ef4444" opacity="0.8"/>
   <text x="378.5" y="25" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">X</text>
 
-  <!-- Members list -->
-  <rect x="95" y="40" width="289" height="215" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="95" y="40" width="289" height="215" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+  <!-- Header info (x=99, y=47, w=275, h=12) -->
+  <rect x="99" y="47" width="275" height="12" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="99" y="47" width="275" height="12" fill="none" stroke="#00d2ff" stroke-width="1"/>
+  <text x="104" y="56" font-family="Arial" font-size="9" font-weight="bold" fill="#ffffff">Members</text>
+  <text x="364" y="56" font-family="Arial" font-size="9" fill="#00d2ff" text-anchor="end">24 members</text>
+
+  <!-- Members list (x=99, y=62, w=275, h=190) -->
+  <rect x="99" y="62" width="275" height="190" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="99" y="62" width="275" height="190" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
 
   <!-- Scrollbar -->
-  <rect x="378" y="40" width="6" height="215" fill="#2a2a3e" opacity="0.5"/>
-  <rect x="378" y="40" width="6" height="60" fill="#667eea"/>
+  <rect x="368" y="62" width="6" height="190" fill="#2a2a3e" opacity="0.5"/>
+  <rect x="368" y="62" width="6" height="60" fill="#667eea"/>
 
-  <!-- Member items -->
-  <rect x="99" y="45" width="275" height="30" fill="#667eea" opacity="0.2"/>
-  <circle cx="107" cy="60" r="3" fill="#10b981"/>
-  <text x="115" y="55" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff">AstralCommander</text>
-  <text x="115" y="67" font-family="Arial" font-size="8" fill="#a855f7">Officier</text>
-  <rect x="270" y="52" width="90" height="6" rx="3" fill="#2a2a3e"/>
-  <rect x="270" y="52" width="75" height="6" rx="3" fill="#a855f7"/>
-  <text x="270" y="66" font-family="Arial" font-size="8" fill="#00d2ff">20.0/20.0</text>
+  <!-- Member items (30px height each) -->
+  <rect x="103" y="67" width="265" height="30" fill="#667eea" opacity="0.2"/>
+  <circle cx="111" cy="82" r="3" fill="#10b981"/>
+  <text x="119" y="77" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff">AstralCommander</text>
+  <text x="119" y="89" font-family="Arial" font-size="8" fill="#a855f7">Officer</text>
+  <rect x="313" y="74" width="40" height="8" rx="3" fill="#2a2a3e"/>
+  <rect x="313" y="74" width="33" height="8" rx="3" fill="#a855f7"/>
+  <text x="313" y="91" font-family="Arial" font-size="8" fill="#00d2ff">20.0/20.0</text>
 
-  <rect x="99" y="80" width="275" height="30" fill="transparent"/>
-  <circle cx="107" cy="95" r="3" fill="#10b981"/>
-  <text x="115" y="90" font-family="Arial" font-size="10" fill="#ffffff">Player_123</text>
-  <text x="115" y="102" font-family="Arial" font-size="8" fill="#3b82f6">Membre</text>
-  <rect x="270" y="87" width="90" height="6" rx="3" fill="#2a2a3e"/>
-  <rect x="270" y="87" width="60" height="6" rx="3" fill="#a855f7"/>
-  <text x="270" y="101" font-family="Arial" font-size="8" fill="#00d2ff">12.5/20.0</text>
+  <rect x="103" y="102" width="265" height="30" fill="transparent"/>
+  <circle cx="111" cy="117" r="3" fill="#10b981"/>
+  <text x="119" y="112" font-family="Arial" font-size="10" fill="#ffffff">Player_123</text>
+  <text x="119" y="124" font-family="Arial" font-size="8" fill="#3b82f6">Member</text>
+  <rect x="313" y="109" width="40" height="8" rx="3" fill="#2a2a3e"/>
+  <rect x="313" y="109" width="26" height="8" rx="3" fill="#a855f7"/>
+  <text x="313" y="126" font-family="Arial" font-size="8" fill="#00d2ff">12.5/20.0</text>
 
-  <rect x="99" y="115" width="275" height="30" fill="transparent"/>
-  <circle cx="107" cy="130" r="3" fill="#6a6a7e"/>
-  <text x="115" y="125" font-family="Arial" font-size="10" fill="#b8b8d0">CyberKnight47</text>
-  <text x="115" y="137" font-family="Arial" font-size="8" fill="#3b82f6">Membre</text>
-  <rect x="270" y="122" width="90" height="6" rx="3" fill="#2a2a3e"/>
-  <rect x="270" y="122" width="70" height="6" rx="3" fill="#a855f7"/>
-  <text x="270" y="136" font-family="Arial" font-size="8" fill="#00d2ff">14.0/20.0</text>
+  <rect x="103" y="137" width="265" height="30" fill="transparent"/>
+  <circle cx="111" cy="152" r="3" fill="#6a6a7e"/>
+  <text x="119" y="147" font-family="Arial" font-size="10" fill="#b8b8d0">CyberKnight47</text>
+  <text x="119" y="159" font-family="Arial" font-size="8" fill="#3b82f6">Member</text>
+  <rect x="313" y="144" width="40" height="8" rx="3" fill="#2a2a3e"/>
+  <rect x="313" y="144" width="30" height="8" rx="3" fill="#a855f7"/>
+  <text x="313" y="161" font-family="Arial" font-size="8" fill="#00d2ff">14.0/20.0</text>
 
-  <rect x="99" y="150" width="275" height="30" fill="transparent"/>
-  <circle cx="107" cy="165" r="3" fill="#10b981"/>
-  <text x="115" y="160" font-family="Arial" font-size="10" fill="#ffffff">Newbie_99</text>
-  <text x="115" y="172" font-family="Arial" font-size="8" fill="#6a6a7e">Recrue</text>
-  <rect x="270" y="157" width="90" height="6" rx="3" fill="#2a2a3e"/>
-  <rect x="270" y="157" width="40" height="6" rx="3" fill="#a855f7"/>
-  <text x="270" y="171" font-family="Arial" font-size="8" fill="#00d2ff">8.0/20.0</text>
+  <rect x="103" y="172" width="265" height="30" fill="transparent"/>
+  <circle cx="111" cy="187" r="3" fill="#10b981"/>
+  <text x="119" y="182" font-family="Arial" font-size="10" fill="#ffffff">Newbie_99</text>
+  <text x="119" y="194" font-family="Arial" font-size="8" fill="#6a6a7e">Recruit</text>
+  <rect x="313" y="179" width="40" height="8" rx="3" fill="#2a2a3e"/>
+  <rect x="313" y="179" width="17" height="8" rx="3" fill="#a855f7"/>
+  <text x="313" y="196" font-family="Arial" font-size="8" fill="#00d2ff">8.0/20.0</text>
 
-  <rect x="99" y="185" width="275" height="30" fill="transparent"/>
-  <circle cx="107" cy="200" r="3" fill="#6a6a7e"/>
-  <text x="115" y="195" font-family="Arial" font-size="10" fill="#b8b8d0">Starter_01</text>
-  <text x="115" y="207" font-family="Arial" font-size="8" fill="#6a6a7e">Recrue</text>
-  <rect x="270" y="192" width="90" height="6" rx="3" fill="#2a2a3e"/>
-  <rect x="270" y="192" width="50" height="6" rx="3" fill="#a855f7"/>
-  <text x="270" y="206" font-family="Arial" font-size="8" fill="#00d2ff">10.0/20.0</text>
-
-  <rect x="99" y="220" width="275" height="30" fill="transparent"/>
-  <circle cx="107" cy="235" r="3" fill="#10b981"/>
-  <text x="115" y="230" font-family="Arial" font-size="10" fill="#ffffff">ViceLeader</text>
-  <text x="115" y="242" font-family="Arial" font-size="8" fill="#a855f7">Officier</text>
-  <rect x="270" y="227" width="90" height="6" rx="3" fill="#2a2a3e"/>
-  <rect x="270" y="227" width="80" height="6" rx="3" fill="#a855f7"/>
-  <text x="270" y="241" font-family="Arial" font-size="8" fill="#00d2ff">16.0/20.0</text>
+  <rect x="103" y="207" width="265" height="30" fill="transparent"/>
+  <circle cx="111" cy="222" r="3" fill="#6a6a7e"/>
+  <text x="119" y="217" font-family="Arial" font-size="10" fill="#b8b8d0">Starter_01</text>
+  <text x="119" y="229" font-family="Arial" font-size="8" fill="#6a6a7e">Recruit</text>
+  <rect x="313" y="214" width="40" height="8" rx="3" fill="#2a2a3e"/>
+  <rect x="313" y="214" width="21" height="8" rx="3" fill="#a855f7"/>
+  <text x="313" y="231" font-family="Arial" font-size="8" fill="#00d2ff">10.0/20.0</text>
 </svg>

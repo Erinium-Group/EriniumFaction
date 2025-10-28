@@ -1,3 +1,4 @@
-<svg width="490" height="20" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="490" height="20" rx="10" fill="#2a2a3e"/>
+<svg width="60" height="4" xmlns="http://www.w3.org/2000/svg">
+  <!-- Progress bar empty state -->
+  <rect width="60" height="4" rx="2" fill="#2a2a3e"/>
 </svg>

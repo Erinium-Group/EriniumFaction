@@ -1,19 +1,6 @@
-<svg width="530" height="92" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
-    </linearGradient>
-
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
-  <rect x="0" y="0" width="530" height="92" rx="6" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="0" y="0" width="530" height="92" rx="6" fill="none" stroke="url(#goldGradient)" stroke-width="2" filter="url(#glow)"/>
+<svg width="275" height="60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quest card weekly normal state -->
+  <rect width="275" height="60" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="0" y="0" width="275" height="1" fill="#fbbf24"/>
+  <rect width="275" height="60" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
 </svg>

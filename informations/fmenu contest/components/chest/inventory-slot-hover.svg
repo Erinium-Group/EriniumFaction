@@ -1,15 +1,6 @@
-<svg width="54" height="54" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
-  <rect x="0" y="0" width="54" height="54" rx="4" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="0" y="0" width="54" height="54" rx="4" fill="none" stroke="#00d2ff" stroke-width="2" filter="url(#glow)"/>
-  <rect x="0" y="0" width="54" height="54" rx="4" fill="#ffffff" opacity="0.05"/>
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Inventory slot hover state -->
+  <rect width="16" height="16" fill="#2a2a3e"/>
+  <rect width="16" height="16" fill="#667eea" opacity="0.4"/>
+  <rect width="16" height="16" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.8"/>
 </svg>

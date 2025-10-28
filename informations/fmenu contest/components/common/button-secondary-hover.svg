@@ -1,15 +1,5 @@
-<svg width="170" height="40" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
-  <rect x="0" y="0" width="170" height="40" rx="6" fill="#3a3a52" opacity="0.9"/>
-  <rect x="0" y="0" width="170" height="40" rx="6" fill="none" stroke="#7c8ef5" stroke-width="1" filter="url(#glow)"/>
-  <rect x="0" y="0" width="170" height="40" rx="6" fill="#ffffff" opacity="0.05"/>
+<svg width="88" height="17" xmlns="http://www.w3.org/2000/svg">
+  <!-- Secondary button hover state -->
+  <rect width="88" height="17" rx="3" fill="#3a3a4e"/>
+  <rect width="88" height="17" rx="3" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
 </svg>

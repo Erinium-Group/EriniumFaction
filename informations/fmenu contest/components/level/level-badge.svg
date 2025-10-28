@@ -1,19 +1,16 @@
-<svg width="90" height="90" xmlns="http://www.w3.org/2000/svg">
+<svg width="50" height="48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Level badge (hexagon shape) -->
   <defs>
-    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="levelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
     </linearGradient>
-
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
   </defs>
 
-  <circle cx="45" cy="45" r="45" fill="url(#goldGradient)" filter="url(#glow)"/>
-  <circle cx="45" cy="45" r="42" fill="none" stroke="#fbbf24" stroke-width="3"/>
+  <!-- Hexagon shape -->
+  <path d="M 25 2 L 45 14 L 45 34 L 25 46 L 5 34 L 5 14 Z" fill="url(#levelGradient)"/>
+  <path d="M 25 2 L 45 14 L 45 34 L 25 46 L 5 34 L 5 14 Z" fill="none" stroke="#fbbf24" stroke-width="2"/>
+
+  <!-- Inner hexagon for depth -->
+  <path d="M 25 8 L 39 17 L 39 31 L 25 40 L 11 31 L 11 17 Z" fill="#2a2a3e" opacity="0.3"/>
 </svg>

@@ -1,241 +1,136 @@
-<svg width="768" height="512" xmlns="http://www.w3.org/2000/svg">
+<svg width="400" height="270" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Gradients Cyber-Astral -->
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#0f0c29;stop-opacity:1" />
       <stop offset="50%" style="stop-color:#1a1347;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#24243e;stop-opacity:1" />
     </linearGradient>
-
     <linearGradient id="mainPanelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" style="stop-color:#1e1e2e;stop-opacity:0.95" />
       <stop offset="100%" style="stop-color:#2a2a3e;stop-opacity:0.95" />
     </linearGradient>
-
     <linearGradient id="sidebarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" style="stop-color:#16161f;stop-opacity:0.98" />
       <stop offset="100%" style="stop-color:#1e1e2a;stop-opacity:0.98" />
     </linearGradient>
-
-    <linearGradient id="buttonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-    </linearGradient>
-
     <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" style="stop-color:#00d2ff;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#3a47d5;stop-opacity:1" />
     </linearGradient>
-
     <linearGradient id="cosmicGlow" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#a855f7;stop-opacity:0.6" />
       <stop offset="50%" style="stop-color:#ec4899;stop-opacity:0.4" />
       <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.6" />
     </linearGradient>
-
-    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
-    </linearGradient>
-
-    <!-- Filters pour les effets -->
     <filter id="glow">
-      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-
-    <filter id="strongGlow">
-      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
-    <!-- Pattern pour le background tech -->
     <pattern id="circuitPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
       <line x1="0" y1="20" x2="40" y2="20" stroke="#667eea" stroke-width="0.5" opacity="0.1"/>
       <line x1="20" y1="0" x2="20" y2="40" stroke="#667eea" stroke-width="0.5" opacity="0.1"/>
       <circle cx="20" cy="20" r="2" fill="#00d2ff" opacity="0.2"/>
     </pattern>
-
-    <!-- Pattern étoiles -->
-    <pattern id="starsPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-      <circle cx="10" cy="15" r="0.8" fill="#ffffff" opacity="0.6"/>
-      <circle cx="45" cy="30" r="1" fill="#00d2ff" opacity="0.8"/>
-      <circle cx="75" cy="60" r="0.6" fill="#a855f7" opacity="0.7"/>
-      <circle cx="30" cy="80" r="0.9" fill="#ffffff" opacity="0.5"/>
-      <circle cx="85" cy="20" r="0.7" fill="#ec4899" opacity="0.6"/>
-      <circle cx="60" cy="90" r="1.1" fill="#3b82f6" opacity="0.7"/>
-    </pattern>
   </defs>
 
-  <!-- Background principal -->
-  <rect width="768" height="512" fill="url(#bgGradient)"/>
-  <rect width="768" height="512" fill="url(#starsPattern)" opacity="0.3"/>
-  <rect width="768" height="512" fill="url(#circuitPattern)" opacity="0.5"/>
+  <!-- Background -->
+  <rect width="400" height="270" fill="url(#bgGradient)"/>
+  <rect width="400" height="270" fill="url(#circuitPattern)" opacity="0.5"/>
 
-  <!-- Bordure extérieure cyan avec glow -->
-  <rect x="8" y="8" width="752" height="496" rx="12" fill="none" stroke="url(#accentGradient)" stroke-width="3" filter="url(#strongGlow)"/>
-  <rect x="8" y="8" width="752" height="496" rx="12" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.5"/>
-
-  <!-- Sidebar gauche -->
+  <!-- Sidebar (x=9, y=9, w=77, h=252) -->
   <g id="sidebar">
-    <!-- Background sidebar -->
-    <rect x="16" y="16" width="140" height="480" rx="8" fill="url(#sidebarGradient)"/>
-    <rect x="16" y="16" width="140" height="480" rx="8" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+    <rect x="9" y="9" width="77" height="252" rx="4" fill="url(#sidebarGradient)"/>
+    <rect x="9" y="9" width="77" height="252" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
 
-    <!-- Header sidebar avec logo -->
-    <rect x="24" y="24" width="124" height="80" rx="6" fill="#1a1a2e" opacity="0.8"/>
-    <rect x="24" y="24" width="124" height="80" rx="6" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+    <!-- Logo -->
+    <circle cx="47.5" cy="30" r="12" fill="url(#cosmicGlow)"/>
+    <text x="47.5" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">E</text>
 
-    <!-- Logo/Icon faction placeholder -->
-    <circle cx="86" cy="52" r="20" fill="url(#cosmicGlow)" filter="url(#glow)"/>
-    <circle cx="86" cy="52" r="18" fill="none" stroke="#00d2ff" stroke-width="2"/>
-    <text x="86" y="58" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">E</text>
+    <!-- Nav buttons -->
+    <rect x="13" y="50" width="69" height="20" rx="2" fill="#2a2a3e" opacity="0.8"/>
+    <text x="17" y="64" font-family="Arial, sans-serif" font-size="9" fill="#b8b8d0">Overview</text>
 
-    <text x="86" y="94" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff" text-anchor="middle">ERINIUM</text>
+    <rect x="13" y="73" width="69" height="20" rx="2" fill="#2a2a3e" opacity="0.8"/>
+    <text x="17" y="87" font-family="Arial, sans-serif" font-size="9" fill="#b8b8d0">Members</text>
 
-    <!-- Navigation buttons -->
-    <g id="navButton1">
-      <rect x="24" y="120" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
-      <rect x="24" y="120" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
-      <text x="34" y="143" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🏠 Overview</text>
-    </g>
+    <rect x="13" y="96" width="69" height="20" rx="2" fill="#2a2a3e" opacity="0.8"/>
+    <text x="17" y="110" font-family="Arial, sans-serif" font-size="9" fill="#b8b8d0">Territory</text>
 
-    <g id="navButton2">
-      <rect x="24" y="164" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
-      <rect x="24" y="164" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
-      <text x="34" y="187" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">👥 Members</text>
-    </g>
+    <rect x="13" y="119" width="69" height="20" rx="2" fill="#2a2a3e" opacity="0.8"/>
+    <text x="17" y="133" font-family="Arial, sans-serif" font-size="9" fill="#b8b8d0">Quests</text>
 
-    <g id="navButton3">
-      <rect x="24" y="208" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
-      <rect x="24" y="208" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
-      <text x="34" y="231" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🗺️ Territory</text>
-    </g>
+    <rect x="13" y="142" width="69" height="20" rx="2" fill="#2a2a3e" opacity="0.8"/>
+    <text x="17" y="156" font-family="Arial, sans-serif" font-size="9" fill="#b8b8d0">Level</text>
 
-    <g id="navButton4">
-      <rect x="24" y="252" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
-      <rect x="24" y="252" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
-      <text x="34" y="275" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">⚔️ Wars</text>
-    </g>
+    <rect x="13" y="165" width="69" height="20" rx="2" fill="#2a2a3e" opacity="0.8"/>
+    <text x="17" y="179" font-family="Arial, sans-serif" font-size="9" fill="#b8b8d0">Shop</text>
 
-    <g id="navButton5">
-      <rect x="24" y="296" width="124" height="36" rx="4" fill="#2a2a3e" opacity="0.8"/>
-      <rect x="24" y="296" width="124" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
-      <text x="34" y="319" font-family="Arial, sans-serif" font-size="13" fill="#b8b8d0">🤝 Alliances</text>
-    </g>
+    <rect x="13" y="188" width="69" height="20" rx="2" fill="#667eea" filter="url(#glow)"/>
+    <rect x="13" y="188" width="69" height="20" rx="2" fill="none" stroke="#00d2ff" stroke-width="1"/>
+    <text x="17" y="202" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#ffffff">Settings</text>
 
-    <g id="navButton6">
-      <rect x="24" y="340" width="124" height="36" rx="4" fill="url(#buttonGradient)" filter="url(#glow)"/>
-      <rect x="24" y="340" width="124" height="36" rx="4" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.6"/>
-      <line x1="28" y1="340" x2="48" y2="340" stroke="#00d2ff" stroke-width="2"/>
-      <text x="34" y="363" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#ffffff">⚙️ Settings</text>
-    </g>
-
-    <!-- Power indicator en bas -->
-    <rect x="24" y="440" width="124" height="48" rx="6" fill="#1a1a2e" opacity="0.9"/>
-    <rect x="24" y="440" width="124" height="48" rx="6" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/>
-
-    <text x="86" y="458" font-family="Arial, sans-serif" font-size="10" fill="#a0a0c0" text-anchor="middle">FACTION POWER</text>
-
-    <!-- Power bar -->
-    <rect x="32" y="464" width="108" height="8" rx="4" fill="#2a2a3e"/>
-    <rect x="32" y="464" width="81" height="8" rx="4" fill="url(#cosmicGlow)" filter="url(#glow)"/>
-
-    <text x="86" y="481" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#00d2ff" text-anchor="middle">75 / 100</text>
+    <!-- Power indicator -->
+    <rect x="13" y="238" width="69" height="18" rx="2" fill="#1a1a2e" opacity="0.9"/>
+    <text x="47.5" y="249" font-family="Arial, sans-serif" font-size="8" fill="#00d2ff" text-anchor="middle">75.0 PWR</text>
   </g>
 
-  <!-- Main content panel -->
+  <!-- Main panel (x=90, y=9, w=297, h=252) -->
   <g id="mainPanel">
-    <!-- Background -->
-    <rect x="164" y="16" width="588" height="480" rx="8" fill="url(#mainPanelGradient)"/>
-    <rect x="164" y="16" width="588" height="480" rx="8" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+    <rect x="90" y="9" width="297" height="252" rx="4" fill="url(#mainPanelGradient)"/>
+    <rect x="90" y="9" width="297" height="252" rx="4" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
 
-    <!-- Header bar -->
-    <rect x="172" y="24" width="572" height="48" rx="6" fill="#1a1a2e" opacity="0.8"/>
-    <rect x="172" y="24" width="572" height="48" rx="6" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
-    <line x1="176" y1="24" x2="216" y2="24" stroke="#00d2ff" stroke-width="3" filter="url(#glow)"/>
-
-    <text x="184" y="52" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff">Faction Settings</text>
+    <!-- Header (x=90, y=9, w=297, h=35) -->
+    <rect x="90" y="9" width="297" height="35" rx="4" fill="#1a1a2e" opacity="0.8"/>
+    <line x1="94" y1="9" x2="120" y2="9" stroke="#00d2ff" stroke-width="2" filter="url(#glow)"/>
+    <text x="99" y="31" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">Faction Settings</text>
 
     <!-- Close button -->
-    <g id="closeButton">
-      <rect x="716" y="32" width="20" height="20" rx="3" fill="#ef4444" opacity="0.8"/>
-      <rect x="716" y="32" width="20" height="20" rx="3" fill="none" stroke="#ff6b6b" stroke-width="1"/>
-      <line x1="720" y1="36" x2="732" y2="48" stroke="#ffffff" stroke-width="2"/>
-      <line x1="732" y1="36" x2="720" y2="48" stroke="#ffffff" stroke-width="2"/>
-    </g>
-
-    <!-- Faction Type Section -->
-    <rect x="180" y="88" width="530" height="88" rx="6" fill="#1e1e2e" opacity="0.9"/>
-    <rect x="180" y="88" width="530" height="88" rx="6" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
-
-    <rect x="188" y="96" width="514" height="28" rx="4" fill="#2a2a3e" opacity="0.8"/>
-    <line x1="192" y1="96" x2="220" y2="96" stroke="url(#accentGradient)" stroke-width="2"/>
-    <text x="196" y="115" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">FACTION TYPE</text>
-
-    <text x="196" y="142" font-family="Arial, sans-serif" font-size="11" fill="#a0a0c0">Join Method:</text>
-
-    <!-- Toggle Open/Invite -->
-    <rect x="196" y="150" width="100" height="32" rx="4" fill="url(#greenGradient)" opacity="0.8"/>
-    <rect x="196" y="150" width="100" height="32" rx="4" fill="none" stroke="#10b981" stroke-width="1"/>
-    <text x="246" y="171" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">✓ Open</text>
-
-    <rect x="304" y="150" width="100" height="32" rx="4" fill="#2a2a3e" opacity="0.9"/>
-    <rect x="304" y="150" width="100" height="32" rx="4" fill="none" stroke="#667eea" stroke-width="1"/>
-    <text x="354" y="171" font-family="Arial, sans-serif" font-size="11" fill="#b8b8d0" text-anchor="middle">Invite Only</text>
-
-    <text x="420" y="166" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">Anyone can join if open,</text>
-    <text x="420" y="176" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">invite required otherwise</text>
-
-    <!-- Faction Name Section -->
-    <rect x="180" y="188" width="530" height="108" rx="6" fill="#1e1e2e" opacity="0.9"/>
-    <rect x="180" y="188" width="530" height="108" rx="6" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
-
-    <rect x="188" y="196" width="514" height="28" rx="4" fill="#2a2a3e" opacity="0.8"/>
-    <line x1="192" y1="196" x2="220" y2="196" stroke="url(#accentGradient)" stroke-width="2"/>
-    <text x="196" y="215" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">FACTION TITLE</text>
-
-    <text x="196" y="242" font-family="Arial, sans-serif" font-size="11" fill="#a0a0c0">Faction Name:</text>
-
-    <rect x="196" y="250" width="490" height="36" rx="4" fill="#2a2a3e" opacity="0.9"/>
-    <rect x="196" y="250" width="490" height="36" rx="4" fill="none" stroke="#667eea" stroke-width="1"/>
-    <text x="208" y="273" font-family="Arial, sans-serif" font-size="12" fill="#ffffff">Cyber Knights</text>
-    <text x="670" y="273" font-family="Arial, sans-serif" font-size="10" fill="#a0a0c0">✏️</text>
-
-    <!-- Faction Description Section -->
-    <rect x="180" y="308" width="530" height="132" rx="6" fill="#1e1e2e" opacity="0.9"/>
-    <rect x="180" y="308" width="530" height="132" rx="6" fill="none" stroke="#667eea" stroke-width="1" opacity="0.5"/>
-
-    <rect x="188" y="316" width="514" height="28" rx="4" fill="#2a2a3e" opacity="0.8"/>
-    <line x1="192" y1="316" x2="220" y2="316" stroke="url(#accentGradient)" stroke-width="2"/>
-    <text x="196" y="335" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">FACTION DESCRIPTION</text>
-
-    <text x="196" y="362" font-family="Arial, sans-serif" font-size="11" fill="#a0a0c0">Description:</text>
-
-    <rect x="196" y="370" width="490" height="60" rx="4" fill="#2a2a3e" opacity="0.9"/>
-    <rect x="196" y="370" width="490" height="60" rx="4" fill="none" stroke="#667eea" stroke-width="1"/>
-    <text x="208" y="389" font-family="Arial, sans-serif" font-size="11" fill="#ffffff">A cosmic-powered faction dominating the</text>
-    <text x="208" y="404" font-family="Arial, sans-serif" font-size="11" fill="#ffffff">astral realms with advanced cyber technology.</text>
-    <text x="208" y="419" font-family="Arial, sans-serif" font-size="11" fill="#ffffff">Join us in conquest!</text>
-    <text x="670" y="400" font-family="Arial, sans-serif" font-size="10" fill="#a0a0c0">✏️</text>
-
-    <!-- Save Button -->
-    <rect x="180" y="452" width="530" height="36" rx="6" fill="url(#buttonGradient)" filter="url(#glow)"/>
-    <rect x="180" y="452" width="530" height="36" rx="6" fill="none" stroke="#00d2ff" stroke-width="2"/>
-    <text x="445" y="475" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">💾 Save Changes</text>
+    <rect x="367" y="18" width="12" height="12" rx="2" fill="#ef4444" opacity="0.8"/>
+    <line x1="370" y1="21" x2="376" y2="27" stroke="#ffffff" stroke-width="1.5"/>
+    <line x1="376" y1="21" x2="370" y2="27" stroke="#ffffff" stroke-width="1.5"/>
   </g>
 
-  <!-- Animated particles -->
-  <circle cx="400" cy="50" r="1.5" fill="#00d2ff" opacity="0.8">
-    <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="650" cy="100" r="1" fill="#a855f7" opacity="0.6">
-    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite"/>
-  </circle>
+  <!-- Header bar (x=99, y=47, w=275, h=22) -->
+  <rect x="99" y="47" width="275" height="22" rx="0" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="99" y="47" width="275" height="1" fill="#00d2ff"/>
+  <text x="108" y="61" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff">FACTION SETTINGS</text>
+
+  <!-- Labels and fields -->
+  <text x="103" y="78" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">NAME:</text>
+  <!-- Name field (x=169, y=74, w=200, h=15) -->
+  <rect x="169" y="74" width="200" height="15" rx="2" fill="#2a2a3e" opacity="0.9"/>
+  <rect x="169" y="74" width="200" height="15" rx="2" fill="none" stroke="#667eea" stroke-width="0.5"/>
+  <text x="173" y="84" font-family="Arial, sans-serif" font-size="9" fill="#ffffff">Cyber Knights</text>
+
+  <text x="103" y="105" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">DESC:</text>
+  <!-- Description field (x=169, y=101, w=200, h=15) -->
+  <rect x="169" y="101" width="200" height="15" rx="2" fill="#2a2a3e" opacity="0.9"/>
+  <rect x="169" y="101" width="200" height="15" rx="2" fill="none" stroke="#667eea" stroke-width="0.5"/>
+  <text x="173" y="111" font-family="Arial, sans-serif" font-size="9" fill="#ffffff">A cosmic faction</text>
+
+  <text x="103" y="132" font-family="Arial, sans-serif" font-size="9" fill="#a0a0c0">MOTD:</text>
+
+  <!-- Toggle (x=103, y=155) -->
+  <rect x="103" y="155" width="80" height="14" rx="7" fill="#10b981" opacity="0.8"/>
+  <circle cx="158" cy="162" r="6" fill="#ffffff"/>
+  <text x="108" y="164" font-family="Arial, sans-serif" font-size="8" fill="#ffffff">Open Join</text>
+
+  <!-- Action buttons (y=187, width=85, height=17) -->
+  <!-- Save button (x=103) -->
+  <rect x="103" y="187" width="85" height="17" rx="2" fill="#667eea" filter="url(#glow)"/>
+  <rect x="103" y="187" width="85" height="17" rx="2" fill="none" stroke="#00d2ff" stroke-width="1"/>
+  <text x="145.5" y="198" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">Save</text>
+
+  <!-- Reset button (x=194) -->
+  <rect x="194" y="187" width="85" height="17" rx="2" fill="#2a2a3e" opacity="0.9"/>
+  <rect x="194" y="187" width="85" height="17" rx="2" fill="none" stroke="#667eea" stroke-width="1"/>
+  <text x="236.5" y="198" font-family="Arial, sans-serif" font-size="9" fill="#b8b8d0" text-anchor="middle">Reset</text>
+
+  <!-- Disband button (x=285) -->
+  <rect x="285" y="187" width="85" height="17" rx="2" fill="#2a2a3e" opacity="0.9"/>
+  <rect x="285" y="187" width="85" height="17" rx="2" fill="none" stroke="#ef4444" stroke-width="1"/>
+  <text x="327.5" y="198" font-family="Arial, sans-serif" font-size="9" fill="#ef4444" text-anchor="middle">Disband</text>
 </svg>

@@ -75,64 +75,64 @@
   <rect x="373" y="17" width="11" height="11" rx="2" fill="#ef4444" opacity="0.8"/>
   <text x="378.5" y="25" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">X</text>
 
-  <!-- 3 Stat cards -->
-  <rect x="95" y="43" width="88" height="50" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="95" y="43" width="88" height="50" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.5"/>
-  <text x="104" y="69" font-family="Arial" font-size="9" fill="#a0a0c0">MEMBERS</text>
-  <text x="104" y="80" font-family="Arial" font-size="16" font-weight="bold" fill="#3b82f6">24/50</text>
+  <!-- 3 Stat cards (CONTENT_X=99, CONTENT_Y=47, spacing=92) -->
+  <rect x="99" y="47" width="88" height="50" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="99" y="47" width="88" height="50" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.5"/>
+  <text x="108" y="73" font-family="Arial" font-size="9" fill="#a0a0c0">MEMBERS</text>
+  <text x="108" y="84" font-family="Arial" font-size="16" font-weight="bold" fill="#3b82f6">24/50</text>
 
-  <rect x="187" y="43" width="88" height="50" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="187" y="43" width="88" height="50" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/>
-  <text x="196" y="69" font-family="Arial" font-size="9" fill="#a0a0c0">CLAIMS</text>
-  <text x="196" y="80" font-family="Arial" font-size="16" font-weight="bold" fill="#a855f7">156/200</text>
+  <rect x="191" y="47" width="88" height="50" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="191" y="47" width="88" height="50" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/>
+  <text x="200" y="73" font-family="Arial" font-size="9" fill="#a0a0c0">CLAIMS</text>
+  <text x="200" y="84" font-family="Arial" font-size="16" font-weight="bold" fill="#a855f7">156/200</text>
 
-  <rect x="279" y="43" width="88" height="50" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="279" y="43" width="88" height="50" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.5"/>
-  <text x="288" y="69" font-family="Arial" font-size="9" fill="#a0a0c0">LEVEL</text>
-  <text x="288" y="80" font-family="Arial" font-size="16" font-weight="bold" fill="#fbbf24">15</text>
+  <rect x="283" y="47" width="88" height="50" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="283" y="47" width="88" height="50" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.5"/>
+  <text x="292" y="73" font-family="Arial" font-size="9" fill="#a0a0c0">LEVEL</text>
+  <text x="292" y="84" font-family="Arial" font-size="16" font-weight="bold" fill="#fbbf24">15</text>
 
-  <!-- Info scroll list area -->
-  <rect x="95" y="105" width="289" height="130" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="95" y="105" width="289" height="130" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+  <!-- Info scroll list area (x=99, y=109, w=275, h=130) -->
+  <rect x="99" y="109" width="275" height="130" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="99" y="109" width="275" height="130" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
 
   <!-- Scrollbar track -->
-  <rect x="378" y="105" width="6" height="130" fill="#2a2a3e" opacity="0.5"/>
-  <rect x="378" y="105" width="6" height="40" fill="#667eea"/>
+  <rect x="368" y="109" width="6" height="130" fill="#2a2a3e" opacity="0.5"/>
+  <rect x="368" y="109" width="6" height="40" fill="#667eea"/>
 
   <!-- Info items (sample) -->
-  <text x="99" y="115" font-family="Arial" font-size="9" fill="#a0a0c0">Name:</text>
-  <text x="179" y="115" font-family="Arial" font-size="9" font-weight="bold" fill="#00d2ff">Cyber Knights</text>
+  <text x="103" y="119" font-family="Arial" font-size="9" fill="#a0a0c0">Name:</text>
+  <text x="183" y="119" font-family="Arial" font-size="9" font-weight="bold" fill="#00d2ff">Cyber Knights</text>
 
-  <text x="99" y="128" font-family="Arial" font-size="9" fill="#a0a0c0">Level:</text>
-  <text x="179" y="128" font-family="Arial" font-size="9" font-weight="bold" fill="#fbbf24">15</text>
+  <text x="103" y="132" font-family="Arial" font-size="9" fill="#a0a0c0">Level:</text>
+  <text x="183" y="132" font-family="Arial" font-size="9" font-weight="bold" fill="#fbbf24">15</text>
 
-  <text x="99" y="141" font-family="Arial" font-size="9" fill="#a0a0c0">Mode:</text>
-  <text x="179" y="141" font-family="Arial" font-size="9" fill="#a855f7">NORMAL</text>
+  <text x="103" y="145" font-family="Arial" font-size="9" fill="#a0a0c0">Mode:</text>
+  <text x="183" y="145" font-family="Arial" font-size="9" fill="#a855f7">NORMAL</text>
 
-  <text x="99" y="154" font-family="Arial" font-size="9" fill="#a0a0c0">Members:</text>
-  <text x="179" y="154" font-family="Arial" font-size="9" fill="#3b82f6">24 / 50</text>
+  <text x="103" y="158" font-family="Arial" font-size="9" fill="#a0a0c0">Members:</text>
+  <text x="183" y="158" font-family="Arial" font-size="9" fill="#3b82f6">24 / 50</text>
 
-  <text x="99" y="167" font-family="Arial" font-size="9" fill="#a0a0c0">Claims:</text>
-  <text x="179" y="167" font-family="Arial" font-size="9" fill="#a855f7">156 / 200</text>
+  <text x="103" y="171" font-family="Arial" font-size="9" fill="#a0a0c0">Claims:</text>
+  <text x="183" y="171" font-family="Arial" font-size="9" fill="#a855f7">156 / 200</text>
 
-  <text x="99" y="180" font-family="Arial" font-size="9" fill="#a0a0c0">Warps:</text>
-  <text x="179" y="180" font-family="Arial" font-size="9" fill="#8b5cf6">5 / 10</text>
+  <text x="103" y="184" font-family="Arial" font-size="9" fill="#a0a0c0">Warps:</text>
+  <text x="183" y="184" font-family="Arial" font-size="9" fill="#8b5cf6">5 / 10</text>
 
-  <text x="99" y="193" font-family="Arial" font-size="9" fill="#a0a0c0">Bank:</text>
-  <text x="179" y="193" font-family="Arial" font-size="9" fill="#10b981">125000 coins</text>
+  <text x="103" y="197" font-family="Arial" font-size="9" fill="#a0a0c0">Bank:</text>
+  <text x="183" y="197" font-family="Arial" font-size="9" fill="#10b981">125000 coins</text>
 
-  <text x="99" y="206" font-family="Arial" font-size="9" fill="#a0a0c0">Description:</text>
-  <text x="99" y="219" font-family="Arial" font-size="8" fill="#b8b8d0">A powerful faction dominating the server</text>
+  <text x="103" y="210" font-family="Arial" font-size="9" fill="#a0a0c0">Description:</text>
+  <text x="103" y="223" font-family="Arial" font-size="8" fill="#b8b8d0">A powerful faction dominating the server</text>
 
-  <!-- Action buttons -->
-  <rect x="95" y="238" width="88" height="17" rx="3" fill="#667eea"/>
-  <text x="139" y="250" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">Invite</text>
+  <!-- Action buttons (y=242, btnW=88, spacing=6) -->
+  <rect x="99" y="242" width="88" height="17" rx="3" fill="#667eea"/>
+  <text x="143" y="254" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">Invite</text>
 
-  <rect x="189" y="238" width="88" height="17" rx="3" fill="#2a2a3e"/>
-  <rect x="189" y="238" width="88" height="17" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
-  <text x="233" y="250" font-family="Arial" font-size="10" fill="#b8b8d0" text-anchor="middle">Manage</text>
+  <rect x="193" y="242" width="88" height="17" rx="3" fill="#2a2a3e"/>
+  <rect x="193" y="242" width="88" height="17" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+  <text x="237" y="254" font-family="Arial" font-size="10" fill="#b8b8d0" text-anchor="middle">Manage</text>
 
-  <rect x="283" y="238" width="88" height="17" rx="3" fill="#2a2a3e"/>
-  <rect x="283" y="238" width="88" height="17" rx="3" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
-  <text x="327" y="250" font-family="Arial" font-size="10" fill="#ef4444" text-anchor="middle">Leave</text>
+  <rect x="287" y="242" width="88" height="17" rx="3" fill="#2a2a3e"/>
+  <rect x="287" y="242" width="88" height="17" rx="3" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+  <text x="331" y="254" font-family="Arial" font-size="10" fill="#ef4444" text-anchor="middle">Leave</text>
 </svg>

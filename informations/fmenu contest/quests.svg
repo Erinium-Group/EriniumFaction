@@ -42,56 +42,56 @@
   <rect x="90" y="9" width="297" height="252" fill="#1e1e2e" opacity="0.94"/>
 
   <!-- Header -->
-  <rect x="95" y="13" width="289" height="22" fill="#1a1a2e" opacity="0.8"/>
-  <rect x="95" y="13" width="289" height="22" fill="none" stroke="#00d2ff" stroke-width="2"/>
+  <rect x="95" y="13" width="289" height="26" fill="#1a1a2e" opacity="0.8"/>
+  <rect x="95" y="13" width="289" height="26" fill="none" stroke="#00d2ff" stroke-width="2"/>
   <rect x="95" y="13" width="22" height="2" fill="#00d2ff"/>
-  <text x="102" y="28" font-family="Arial" font-size="14" font-weight="bold" fill="#ffffff">Faction - Quests</text>
-  <text x="340" y="28" font-family="Arial" font-size="9" fill="#00d2ff" text-anchor="end">6 daily + 1 weekly</text>
+  <text x="102" y="29" font-family="Arial" font-size="14" font-weight="bold" fill="#ffffff">Faction - Quests</text>
 
   <!-- Close button -->
   <rect x="373" y="17" width="11" height="11" rx="2" fill="#ef4444" opacity="0.8"/>
   <text x="378.5" y="25" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">X</text>
 
-  <!-- Quest list -->
-  <rect x="95" y="40" width="289" height="215" fill="#1e1e2e" opacity="0.9"/>
+  <!-- Header info (x=99, y=47, w=275, h=22) -->
+  <rect x="99" y="47" width="275" height="22" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="99" y="47" width="275" height="22" fill="none" stroke="#00d2ff" stroke-width="1"/>
+  <text x="108" y="62" font-family="Arial" font-size="14" font-weight="bold" fill="#ffffff">Quests</text>
+  <text x="340" y="62" font-family="Arial" font-size="9" fill="#00d2ff" text-anchor="end">6 daily + 1 weekly</text>
 
-  <!-- Quest 1 -->
-  <rect x="99" y="45" width="275" height="40" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="99" y="45" width="275" height="40" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.5"/>
-  <text x="104" y="58" font-family="Arial" font-size="10" font-weight="bold" fill="#fbbf24">Mine 100 blocks</text>
-  <text x="104" y="70" font-family="Arial" font-size="8" fill="#a0a0c0">Reward: 500 coins</text>
-  <rect x="104" y="75" width="240" height="5" rx="2" fill="#2a2a3e"/>
-  <rect x="104" y="75" width="180" height="5" rx="2" fill="#fbbf24"/>
-  <text x="104" y="84" font-family="Arial" font-size="8" fill="#00d2ff">75/100</text>
+  <!-- Quest list (x=99, y=74, w=275, h=184) -->
+  <rect x="99" y="74" width="275" height="184" fill="#1e1e2e" opacity="0.9"/>
 
-  <!-- Quest 2 -->
-  <rect x="99" y="90" width="275" height="40" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="99" y="90" width="275" height="40" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.5"/>
-  <text x="104" y="103" font-family="Arial" font-size="10" font-weight="bold" fill="#3b82f6">Claim 5 territories</text>
-  <text x="104" y="115" font-family="Arial" font-size="8" fill="#a0a0c0">Reward: 1000 coins</text>
-  <rect x="104" y="120" width="240" height="5" rx="2" fill="#2a2a3e"/>
-  <rect x="104" y="120" width="96" height="5" rx="2" fill="#3b82f6"/>
-  <text x="104" y="129" font-family="Arial" font-size="8" fill="#00d2ff">2/5</text>
+  <!-- Quest items (60px height each) -->
+  <!-- Quest 1 - Daily -->
+  <rect x="103" y="79" width="265" height="60" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="103" y="79" width="265" height="1" fill="#00d2ff" opacity="0.5"/>
+  <text x="109" y="92" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff">Mine 100 blocks</text>
+  <text x="109" y="104" font-family="Arial" font-size="8" fill="#a0a0c0">Reward: 500 coins</text>
+  <rect x="109" y="109" width="253" height="8" rx="2" fill="#2a2a3e"/>
+  <rect x="109" y="109" width="190" height="8" rx="2" fill="#00d2ff"/>
+  <text x="109" y="127" font-family="Arial" font-size="8" fill="#00d2ff">75%</text>
+  <text x="344" y="127" font-family="Arial" font-size="8" fill="#6a6a7e" text-anchor="end">Daily</text>
 
-  <!-- Quest 3 -->
-  <rect x="99" y="135" width="275" height="40" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="99" y="135" width="275" height="40" fill="none" stroke="#10b981" stroke-width="1" opacity="0.5"/>
-  <text x="104" y="148" font-family="Arial" font-size="10" font-weight="bold" fill="#10b981">Kill 10 mobs</text>
-  <text x="104" y="160" font-family="Arial" font-size="8" fill="#a0a0c0">Reward: 300 coins</text>
-  <rect x="104" y="165" width="240" height="5" rx="2" fill="#2a2a3e"/>
-  <rect x="104" y="165" width="240" height="5" rx="2" fill="#10b981"/>
-  <text x="104" y="174" font-family="Arial" font-size="8" fill="#00d2ff">10/10 - COMPLETE</text>
+  <!-- Quest 2 - Daily -->
+  <rect x="103" y="144" width="265" height="60" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="103" y="144" width="265" height="1" fill="#00d2ff" opacity="0.5"/>
+  <text x="109" y="157" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff">Claim 5 territories</text>
+  <text x="109" y="169" font-family="Arial" font-size="8" fill="#a0a0c0">Reward: 1000 coins</text>
+  <rect x="109" y="174" width="253" height="8" rx="2" fill="#2a2a3e"/>
+  <rect x="109" y="174" width="101" height="8" rx="2" fill="#00d2ff"/>
+  <text x="109" y="192" font-family="Arial" font-size="8" fill="#00d2ff">40%</text>
+  <text x="344" y="192" font-family="Arial" font-size="8" fill="#6a6a7e" text-anchor="end">Daily</text>
 
-  <!-- Quest 4 (Weekly) -->
-  <rect x="99" y="180" width="275" height="40" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="99" y="180" width="275" height="40" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/>
-  <text x="104" y="193" font-family="Arial" font-size="10" font-weight="bold" fill="#a855f7">WEEKLY: Expand territory to 50 chunks</text>
-  <text x="104" y="205" font-family="Arial" font-size="8" fill="#a0a0c0">Reward: 5000 coins</text>
-  <rect x="104" y="210" width="240" height="5" rx="2" fill="#2a2a3e"/>
-  <rect x="104" y="210" width="120" height="5" rx="2" fill="#a855f7"/>
-  <text x="104" y="219" font-family="Arial" font-size="8" fill="#00d2ff">25/50</text>
+  <!-- Quest 3 - Weekly -->
+  <rect x="103" y="209" width="265" height="60" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="103" y="209" width="265" height="1" fill="#fbbf24" opacity="0.5"/>
+  <text x="109" y="222" font-family="Arial" font-size="10" font-weight="bold" fill="#fbbf24">WEEKLY: Expand territory</text>
+  <text x="109" y="234" font-family="Arial" font-size="8" fill="#a0a0c0">Reward: 5000 coins</text>
+  <rect x="109" y="239" width="253" height="8" rx="2" fill="#2a2a3e"/>
+  <rect x="109" y="239" width="126" height="8" rx="2" fill="#fbbf24"/>
+  <text x="109" y="257" font-family="Arial" font-size="8" fill="#fbbf24">50%</text>
+  <text x="344" y="257" font-family="Arial" font-size="8" fill="#fbbf24" text-anchor="end">Weekly</text>
 
   <!-- Scrollbar -->
-  <rect x="378" y="40" width="6" height="215" fill="#2a2a3e" opacity="0.5"/>
-  <rect x="378" y="40" width="6" height="100" fill="#667eea"/>
+  <rect x="368" y="74" width="6" height="184" fill="#2a2a3e" opacity="0.5"/>
+  <rect x="368" y="74" width="6" height="100" fill="#667eea"/>
 </svg>

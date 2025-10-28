@@ -1,4 +1,5 @@
-<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="20" height="20" rx="3" fill="#2a2a3e" opacity="0.9"/>
-  <rect x="0" y="0" width="20" height="20" rx="3" fill="none" stroke="#667eea" stroke-width="1"/>
+<svg width="10" height="10" xmlns="http://www.w3.org/2000/svg">
+  <!-- Checkbox unchecked state -->
+  <rect width="10" height="10" rx="2" fill="#2a2a3e"/>
+  <rect width="10" height="10" rx="2" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
 </svg>

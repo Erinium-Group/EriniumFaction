@@ -1,4 +1,6 @@
-<svg width="165" height="60" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="165" height="60" rx="6" fill="#1e1e2e" opacity="0.9"/>
-  <rect x="0" y="0" width="165" height="60" rx="6" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/>
+<svg width="92" height="32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Territory stat card normal state (generic - color can be changed) -->
+  <rect width="92" height="32" fill="#1e1e2e" opacity="0.9"/>
+  <rect x="0" y="0" width="92" height="2" fill="#667eea" opacity="0.5"/>
+  <rect width="92" height="32" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
 </svg>

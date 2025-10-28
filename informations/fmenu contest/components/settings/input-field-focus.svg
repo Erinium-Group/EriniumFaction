@@ -1,14 +1,5 @@
-<svg width="490" height="36" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
-  <rect x="0" y="0" width="490" height="36" rx="4" fill="#2a2a3e" opacity="0.9"/>
-  <rect x="0" y="0" width="490" height="36" rx="4" fill="none" stroke="#00d2ff" stroke-width="2" filter="url(#glow)"/>
+<svg width="200" height="15" xmlns="http://www.w3.org/2000/svg">
+  <!-- Text input field focus state -->
+  <rect width="200" height="15" rx="3" fill="#2a2a3e"/>
+  <rect width="200" height="15" rx="3" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.8"/>
 </svg>
