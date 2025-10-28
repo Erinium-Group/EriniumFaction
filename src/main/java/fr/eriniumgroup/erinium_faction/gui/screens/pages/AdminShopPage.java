@@ -18,6 +18,7 @@ import java.util.List;
 public class AdminShopPage extends FactionPage {
 
     private ScrollList<ShopItem> shopScrollList;
+    private double currentScaleY = 1.0; // Pour passer le scale à renderShopItem
 
     // Textures pour les shop items
     private static final ResourceLocation SHOP_ITEM_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/shop/shop-item-normal.png");
@@ -83,43 +84,51 @@ public class AdminShopPage extends FactionPage {
     }
 
     private void renderShopItem(GuiGraphics g, ShopItem item, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
-        // Utiliser les images au lieu de g.fill
+        // Utiliser les images avec le scaling fourni par ScrollList (width et height sont déjà scalés)
         ResourceLocation itemTexture = hovered ? SHOP_ITEM_HOVER : SHOP_ITEM_NORMAL;
         ImageRenderer.renderScaledImage(g, itemTexture, x, y, width, height);
 
-        // Item icon area (placeholder purple square)
-        int iconSize = sh(32, 1.0);
-        g.fill(x + 7, y + 6, x + 7 + iconSize, y + 6 + iconSize, 0x60a855f7);
-        g.fill(x + 7, y + 6, x + 7 + iconSize, y + 7, 0xFFa855f7);
-        g.fill(x + 7, y + 6, x + 7, y + 6 + iconSize, 0xFFa855f7);
+        // Calculer le scaling factor basé sur la hauteur
+        // height vient de ScrollList qui utilise sh(52, scaleY), donc height/52 = scaleY
+        double scale = height / 52.0;
+
+        // Note: L'espace pour l'item icon est réservé mais non rendu
+        // Utiliser g.renderItem() ici plus tard pour afficher un vrai item Minecraft
+        // Position de l'item: x + (int) Math.round(7 * scale), y + (height - 32) / 2
 
         // Calculate max width for text (account for icon, margins, and buy button)
         int buyTextWidth = font.width(translate("erinium_faction.gui.shop.button.buy"));
-        int maxTextWidth = width - 49 - 16 - buyTextWidth - 10;
+        int maxTextWidth = width - (int) Math.round(49 * scale) - (int) Math.round(16 * scale) - buyTextWidth - 10;
+
+        // Toutes les positions doivent être scalées proportionnellement
+        int textStartX = x + (int) Math.round(49 * scale);
 
         // Item name with scaling (keep for fitting)
-        TextHelper.drawScaledText(g, font, item.name, x + 49, y + 6, maxTextWidth, 0xFFffffff, true);
+        TextHelper.drawScaledText(g, font, item.name, textStartX, y + (int) Math.round(6 * scale), maxTextWidth, 0xFFffffff, true);
 
         // Description with auto-scroll on hover
-        boolean descHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 49, y + 15, maxTextWidth, font.lineHeight);
-        TextHelper.drawAutoScrollingText(g, font, item.description, x + 49, y + 15, maxTextWidth, 0xFFa0a0c0, false, descHovered, "shop_desc_" + item.name);
+        int descY = y + (int) Math.round(15 * scale);
+        boolean descHovered = TextHelper.isPointInBounds(mouseX, mouseY, textStartX, descY, maxTextWidth, font.lineHeight);
+        TextHelper.drawAutoScrollingText(g, font, item.description, textStartX, descY, maxTextWidth, 0xFFa0a0c0, false, descHovered, "shop_desc_" + item.name);
 
         // Price
         String priceText = translate("erinium_faction.gui.shop.price", item.price);
-        g.drawString(font, priceText, x + 49, y + 26, 0xFFfbbf24, false);
+        g.drawString(font, priceText, textStartX, y + (int) Math.round(26 * scale), 0xFFfbbf24, false);
 
         // Required level
         String levelText = translate("erinium_faction.gui.shop.level_required", item.requiredLevel);
         int levelColor = 0xFF00d2ff;
-        g.drawString(font, levelText, x + 49, y + 35, levelColor, false);
+        g.drawString(font, levelText, textStartX, y + (int) Math.round(35 * scale), levelColor, false);
 
         // Buy button indicator
         String buyText = translate("erinium_faction.gui.shop.button.buy");
-        g.drawString(font, buyText, x + width - buyTextWidth - 16, y + height / 2 - 4, hovered ? 0xFF10b981 : 0xFF6a6a7e, false);
+        int buyX = x + width - buyTextWidth - (int) Math.round(16 * scale);
+        g.drawString(font, buyText, buyX, y + height / 2 - 4, hovered ? 0xFF10b981 : 0xFF6a6a7e, false);
     }
 
     @Override
     public void render(GuiGraphics g, int leftPos, int topPos, double scaleX, double scaleY, int mouseX, int mouseY) {
+        currentScaleY = scaleY; // Stocker pour utilisation dans renderShopItem
         initComponents(leftPos, topPos, scaleX, scaleY);
 
         int x = sx(CONTENT_X, leftPos, scaleX);
