@@ -371,6 +371,21 @@ public class Faction {
     public Set<UUID> getInvitedPlayers() { return invitedPlayers; }
     public Set<String> getAllyRequests() { return allyRequests; }
 
+    public boolean invitePlayer(UUID uuid) {
+        if (uuid == null) return false;
+        return invitedPlayers.add(uuid);
+    }
+
+    public boolean revokeInvite(UUID uuid) {
+        if (uuid == null) return false;
+        return invitedPlayers.remove(uuid);
+    }
+
+    public boolean isPlayerInvited(UUID uuid) {
+        if (uuid == null) return false;
+        return invitedPlayers.contains(uuid);
+    }
+
     public TransactionHistory getTransactionHistory() { return transactionHistory; }
 
     // Coffre de faction

@@ -372,4 +372,63 @@ public final class FactionManager {
         if (SERVER == null) return false;
         return ClaimsSavedData.get(SERVER).clearClaimPerms(key);
     }
+
+    public static boolean sendInvite(Faction f, UUID playerUuid) {
+        if (f == null || playerUuid == null) return false;
+        if (f.getMembers().containsKey(playerUuid)) return false; // déjà membre
+        // ajouter en tant qu'invité (set invited flag)
+        boolean ok = f.invitePlayer(playerUuid);
+        if (ok) FactionSavedData.get(SERVER).setDirty();
+
+        // envoyer notification clickable si le joueur est en ligne
+        try {
+            ServerPlayer target = SERVER.getPlayerList().getPlayer(playerUuid);
+            if (target != null) {
+                // Construire message: "You have been invited to <Faction>. Click to accept"
+                String cmd = "/f join " + f.getName();
+                net.minecraft.network.chat.Component msg = net.minecraft.network.chat.Component.literal("")
+                        .append(net.minecraft.network.chat.Component.translatable("erinium_faction.msg.invite.header", f.getName()))
+                        .append(net.minecraft.network.chat.Component.literal(" "))
+                        .append(net.minecraft.network.chat.Component.literal("[Accept]").withStyle(s -> s.withClickEvent(new net.minecraft.network.chat.ClickEvent(net.minecraft.network.chat.ClickEvent.Action.RUN_COMMAND, cmd)).withHoverEvent(new net.minecraft.network.chat.HoverEvent(net.minecraft.network.chat.HoverEvent.Action.SHOW_TEXT, net.minecraft.network.chat.Component.translatable("erinium_faction.msg.invite.hover")))));
+                target.sendSystemMessage(msg);
+            }
+        } catch (Exception ignored) {}
+
+        return ok;
+    }
+
+    public static boolean revokeInvite(Faction f, UUID playerUuid) {
+        if (f == null || playerUuid == null) return false;
+        boolean ok = f.revokeInvite(playerUuid);
+        if (ok) FactionSavedData.get(SERVER).setDirty();
+        return ok;
+    }
+
+    public static boolean isInvited(Faction f, UUID playerUuid) {
+        if (f == null || playerUuid == null) return false;
+        return f.isPlayerInvited(playerUuid);
+    }
+
+    public static boolean acceptInvite(Faction f, UUID playerUuid, String playerName) {
+        if (f == null || playerUuid == null) return false;
+        if (f.getMembers().containsKey(playerUuid)) return false; // déjà membre
+        if (!f.isPlayerInvited(playerUuid)) return false; // doit être invité
+        int max = getMaxMembersFor(f);
+        if (f.getMembers().size() >= max) return false; // full
+        boolean added = f.addMember(playerUuid, playerName, "recruit");
+        if (!added) return false;
+        // retirer l'invitation
+        f.revokeInvite(playerUuid);
+        // ajouter power
+        ServerPlayer sp = SERVER.getPlayerList().getPlayer(playerUuid);
+        if (sp != null) {
+            PlayerPower pp = PowerManager.get(sp);
+            f.setPower(f.getPower() + pp.getPower());
+            if (EFConfig.FACTION_MAX_POWER_FROM_PLAYERS.get()) {
+                f.setMaxPower(f.getMaxPower() + pp.getMaxPower());
+            }
+        }
+        FactionSavedData.get(SERVER).setDirty();
+        return true;
+    }
 }

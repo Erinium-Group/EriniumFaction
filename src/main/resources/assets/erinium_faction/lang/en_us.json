@@ -56,7 +56,13 @@
   "erinium_faction.cmd.faction.info": "§6[§bErinium§6/§dFaction§6] §7Faction §b%s§7 | §6Power: §e%s§6/§e%s§6 | §6Level: §e%s§6 (§e%s§6)",
   "erinium_faction.cmd.faction.join.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to join.",
   "erinium_faction.cmd.faction.join.success": "§6[§bErinium§6/§dFaction§6] §aJoined faction §b%s§a.",
+  "erinium_faction.cmd.faction.join.accepted": "§6[§bErinium§6/§dFaction§6] §aYou have joined faction §b%s§a.",
+  "erinium_faction.cmd.faction.join.invite_only": "§6[§bErinium§6/§dFaction§6] §cThis faction is invite-only — you must be invited to join.",
   "erinium_faction.cmd.faction.join.full": "§6[§bErinium§6/§dFaction§6] §cFaction is full (cap §e%s§c).",
+
+  "erinium_faction.msg.invite.header": "§6[§bErinium§6/§dFaction§6] §aYou have been invited to faction §b%s§a.",
+  "erinium_faction.msg.invite.hover": "§7Click to accept the invitation",
+
   "erinium_faction.cmd.faction.not_in_faction": "§6[§bErinium§6/§dFaction§6] §cYou are not in a faction.",
   "erinium_faction.cmd.faction.leave.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to leave.",
   "erinium_faction.cmd.faction.leave.success": "§6[§bErinium§6/§dFaction§6] §aYou left the faction.",
@@ -374,5 +380,10 @@
 
   "erinium_faction.gui.header.faction": "Faction %s",
   "erinium_faction.gui.sidebar.power": "POWER",
-  "erinium_faction.gui.sidebar.power_format": "%.1f/%.1f"
+  "erinium_faction.gui.sidebar.power_format": "%.1f/%.1f",
+
+  "erinium_faction.cmd.faction.invite.sent": "§6[§bErinium§6/§dFaction§6] §aInvitation sent to §b%s§a.",
+  "erinium_faction.cmd.faction.invite.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to send invitation to §b%s§c.",
+  "erinium_faction.cmd.faction.revoke.success": "§6[§bErinium§6/§dFaction§6] §aInvite revoked for §b%s§a.",
+  "erinium_faction.cmd.faction.revoke.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to revoke invite for §b%s§c."
 }

@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class FactionCommand {
@@ -97,20 +98,49 @@ public class FactionCommand {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_found"));
                 return 0;
             }
-            int cap = FactionManager.getMaxMembersFor(f);
-            if (f.getMembers().size() >= cap) {
-                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.full", cap));
+
+            // Si la faction est ouverte (PUBLIC), on rejoint directement (vérifie capacité)
+            if (f.getMode() == Faction.Mode.PUBLIC) {
+                int cap = FactionManager.getMaxMembersFor(f);
+                if (f.getMembers().size() >= cap) {
+                    ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.full", cap));
+                    return 0;
+                }
+                boolean ok = FactionManager.invite(f, sp.getUUID(), sp.getGameProfile().getName());
+                if (!ok) {
+                    ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.fail"));
+                    return 0;
+                }
+                FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
+                sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
+                ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.join.success", f.getName()), true);
+                return 1;
+            }
+
+            // Si la faction est en mode invite seule
+            if (f.getMode() == Faction.Mode.INVITE_ONLY) {
+                // Si le joueur est invité -> accepter l'invitation
+                if (FactionManager.isInvited(f, sp.getUUID())) {
+                    boolean ok = FactionManager.acceptInvite(f, sp.getUUID(), sp.getGameProfile().getName());
+                    if (!ok) {
+                        ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.fail"));
+                        return 0;
+                    }
+                    FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
+                    sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.join.accepted", f.getName()), true);
+                    return 1;
+                }
+
+                // Sinon, informer le joueur qu'il doit être invité et comment accepter l'invitation
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.invite_only"));
+                // Optionnel: suggérer d'envoyer une demande en tchat ou contacter un membre :/ nudge
                 return 0;
             }
-            boolean ok = FactionManager.invite(f, sp.getUUID(), sp.getGameProfile().getName());
-            if (!ok) {
-                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.fail"));
-                return 0;
-            }
-            FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
-            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
-            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.join.success", f.getName()), true);
-            return 1;
+
+            // Par défaut, échec
+            ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.join.fail"));
+            return 0;
         })));
 
         b.then(Commands.literal("leave").executes(ctx -> {
@@ -458,6 +488,62 @@ public class FactionCommand {
         // finally attach to root
         b.then(claimpermCmd);
 
+        // Invite command: /f invite <player>
+        b.then(Commands.literal("invite").then(Commands.argument("player", StringArgumentType.word()).suggests(FactionCommand::suggestOnlinePlayers).executes(ctx -> {
+            ServerPlayer caller = ctx.getSource().getPlayerOrException();
+            Faction f = FactionManager.getFactionOf(caller.getUUID());
+            if (f == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                return 0;
+            }
+            // permission: either owner or rank with faction.invite
+            if (!Objects.equals(f.getOwner(), caller.getUUID()) && !f.hasPermission(caller.getUUID(), "faction.invite")) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.no_permission"));
+                return 0;
+            }
+            String targetName = StringArgumentType.getString(ctx, "player");
+            ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(targetName);
+            if (target == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.player_not_found"));
+                return 0;
+            }
+            boolean ok = FactionManager.sendInvite(f, target.getUUID());
+            if (!ok) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.invite.fail", target.getGameProfile().getName()));
+                return 0;
+            }
+            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.invite.sent", target.getGameProfile().getName()), true);
+            return 1;
+        })));
+
+        // Revoke invite: /f revokeinvite <player>
+        b.then(Commands.literal("revokeinvite").then(Commands.argument("player", StringArgumentType.word()).suggests(FactionCommand::suggestOnlinePlayers).executes(ctx -> {
+            ServerPlayer caller = ctx.getSource().getPlayerOrException();
+            Faction f = FactionManager.getFactionOf(caller.getUUID());
+            if (f == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                return 0;
+            }
+            if (!Objects.equals(f.getOwner(), caller.getUUID()) && !f.hasPermission(caller.getUUID(), "faction.invite")) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.no_permission"));
+                return 0;
+            }
+            String targetName = StringArgumentType.getString(ctx, "player");
+            ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(targetName);
+            if (target == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.player_not_found"));
+                return 0;
+            }
+            boolean ok = FactionManager.revokeInvite(f, target.getUUID());
+            if (!ok) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.revoke.fail", target.getGameProfile().getName()));
+                return 0;
+            }
+            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.revoke.success", target.getGameProfile().getName()), true);
+            return 1;
+        })));
+
+
         return b;
     }
 
@@ -535,5 +621,13 @@ public class FactionCommand {
         fr.eriniumgroup.erinium_faction.common.network.packets.FactionDataPacketHandler.sendFactionDataToPlayer(sp);
 
         return 1;
+    }
+
+    private static CompletableFuture<Suggestions> suggestOnlinePlayers(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        try {
+            var players = ctx.getSource().getServer().getPlayerList().getPlayers();
+            for (ServerPlayer p : players) builder.suggest(p.getGameProfile().getName());
+        } catch (Exception ignored) {}
+        return builder.buildFuture();
     }
 }
