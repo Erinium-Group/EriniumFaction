@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Classe de base pour les popups modaux
+ * Classe de base pour les popups modals avec scaling automatique
  */
 public abstract class Popup {
     protected final Font font;
@@ -13,14 +13,22 @@ public abstract class Popup {
     protected boolean visible = false;
     protected Runnable onClose;
 
+    // Dimensions de base (comme le GUI principal)
+    protected static final int BASE_WIDTH = 400;
+    protected static final int BASE_HEIGHT = 270;
+
+    // Dimensions réelles (après scaling)
+    protected int baseWidth, baseHeight;
+    protected double scaleX = 1.0, scaleY = 1.0;
+
     // Textures pour le popup (utiliser les textures existantes)
     private static final ResourceLocation POPUP_BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/main-background.png");
     private static final ResourceLocation POPUP_HEADER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/page-header.png");
 
-    public Popup(Font font, int width, int height) {
+    public Popup(Font font, int baseWidth, int baseHeight) {
         this.font = font;
-        this.width = width;
-        this.height = height;
+        this.baseWidth = baseWidth;
+        this.baseHeight = baseHeight;
     }
 
     public void setOnClose(Runnable onClose) {
@@ -70,8 +78,32 @@ public abstract class Popup {
     public void render(GuiGraphics g, int mouseX, int mouseY) {
         if (!visible) return;
 
-        // Overlay semi-transparent
-        g.fill(0, 0, g.guiWidth(), g.guiHeight(), 0x80000000);
+        // Recalculer la position et le scaling pour gérer le redimensionnement
+        var mc = net.minecraft.client.Minecraft.getInstance();
+        if (mc.getWindow() != null) {
+            int screenWidth = mc.getWindow().getGuiScaledWidth();
+            int screenHeight = mc.getWindow().getGuiScaledHeight();
+
+            // Calculer le scaling (même logique que FactionMenuScreen)
+            scaleX = Math.max(1.0, (double) screenWidth / BASE_WIDTH);
+            scaleY = Math.max(1.0, (double) screenHeight / BASE_HEIGHT);
+
+            // Appliquer le scaling aux dimensions
+            width = (int) Math.round(baseWidth * scaleX);
+            height = (int) Math.round(baseHeight * scaleY);
+
+            // Centrer le popup
+            this.x = (screenWidth - width) / 2;
+            this.y = (screenHeight - height) / 2;
+        }
+
+        // Sauvegarder et appliquer une translation pour le z-index
+        var pose = g.pose();
+        pose.pushPose();
+        pose.translate(0, 0, 400); // Monter le z-index pour être au-dessus de tout
+
+        // Overlay semi-transparent sur tout l'écran
+        g.fill(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight(), 0xC0000000);
 
         // Fond du popup (fallback avec rectangles si textures manquantes)
         try {
@@ -85,8 +117,8 @@ public abstract class Popup {
             g.fill(x, y + height - 1, x + width, y + height, 0xFF00d2ff); // Bordure bas
         }
 
-        // Header
-        int headerHeight = 24;
+        // Header (scalé)
+        int headerHeight = sh(24);
         try {
             ImageRenderer.renderScaledImage(g, POPUP_HEADER, x, y, width, headerHeight);
         } catch (Exception e) {
@@ -94,17 +126,30 @@ public abstract class Popup {
             g.fill(x, y, x + width, y + headerHeight, 0xFF2a2a3e);
             g.fill(x, y + headerHeight, x + width, y + headerHeight + 1, 0xFF00d2ff);
         }
-        g.drawString(font, getTitle(), x + 8, y + 8, 0xFFffffff, true);
+        g.drawString(font, getTitle(), x + sw(8), y + sh(8), 0xFFffffff, true);
 
-        // Bouton de fermeture (X)
-        int closeX = x + width - 20;
-        int closeY = y + 6;
-        boolean closeHovered = mouseX >= closeX && mouseX < closeX + 12 &&
-                              mouseY >= closeY && mouseY < closeY + 12;
+        // Bouton de fermeture (X) (scalé)
+        int closeX = x + width - sw(20);
+        int closeY = y + sh(6);
+        int closeSize = sw(12);
+        boolean closeHovered = mouseX >= closeX && mouseX < closeX + closeSize &&
+                              mouseY >= closeY && mouseY < closeY + sh(12);
         g.drawString(font, "X", closeX, closeY, closeHovered ? 0xFFff0000 : 0xFFffffff, false);
 
         // Contenu
         renderContent(g, mouseX, mouseY);
+
+        // Restaurer la transformation
+        pose.popPose();
+    }
+
+    // Helpers pour scaling (comme dans FactionPage)
+    protected int sw(int base) {
+        return (int) Math.round(base * scaleX);
+    }
+
+    protected int sh(int base) {
+        return (int) Math.round(base * scaleY);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

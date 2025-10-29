@@ -36,7 +36,7 @@ public class AllyRequestsPopup extends Popup {
     }
 
     public AllyRequestsPopup(Font font) {
-        super(font, 320, 380);
+        super(font, BASE_WIDTH, BASE_HEIGHT);
     }
 
     /**
@@ -58,9 +58,9 @@ public class AllyRequestsPopup extends Popup {
     protected void onOpen() {
         // Initialiser la liste des demandes
         if (requestList == null) {
-            requestList = new ScrollList<>(font, this::renderRequestEntry, 60);
+            requestList = new ScrollList<>(font, this::renderRequestEntry, sh(60));
         }
-        requestList.setBounds(x + 10, y + 34, width - 20, height - 44);
+        requestList.setBounds(x + sw(10), y + sh(34), width - sw(20), height - sh(44));
         requestList.setItems(new ArrayList<>(requests));
     }
 
@@ -114,8 +114,9 @@ public class AllyRequestsPopup extends Popup {
 
     @Override
     protected void renderContent(GuiGraphics g, int mouseX, int mouseY) {
-        // Liste des demandes
+        // Mettre à jour les positions des composants à chaque frame
         if (requestList != null) {
+            requestList.setBounds(x + sw(10), y + sh(34), width - sw(20), height - sh(44));
             requestList.render(g, mouseX, mouseY);
         }
 
@@ -123,7 +124,7 @@ public class AllyRequestsPopup extends Popup {
         if (requests.isEmpty()) {
             String noRequests = "No pending requests";
             int textWidth = font.width(noRequests);
-            g.drawString(font, noRequests, x + (width - textWidth) / 2, y + 100, 0xFF808080, false);
+            g.drawString(font, noRequests, x + (width - textWidth) / 2, y + sh(100), 0xFF808080, false);
         }
     }
 
@@ -137,14 +138,14 @@ public class AllyRequestsPopup extends Popup {
 
             // Calculer la position de l'item dans la liste
             // TODO: Calculer correctement la position de l'item en tenant compte du scroll
-            int itemY = y + 34 + i * 60;
-            if (itemY < y + 34 || itemY >= y + height - 10) continue; // En dehors de la vue
+            int itemY = y + sh(34) + i * sh(60);
+            if (itemY < y + sh(34) || itemY >= y + height - sh(10)) continue; // En dehors de la vue
 
-            int buttonY = itemY + 34;
-            int buttonWidth = 60;
-            int buttonHeight = 18;
-            int acceptX = x + 10 + width - 20 - 130;
-            int refuseX = x + 10 + width - 20 - 65;
+            int buttonY = itemY + sh(34);
+            int buttonWidth = sw(60);
+            int buttonHeight = sh(18);
+            int acceptX = x + sw(10) + width - sw(20) - sw(130);
+            int refuseX = x + sw(10) + width - sw(20) - sw(65);
 
             // Clic sur Accept
             if (mouseX >= acceptX && mouseX < acceptX + buttonWidth &&
@@ -232,14 +233,7 @@ public class AllyRequestsPopup extends Popup {
         return false;
     }
 
-    @Override
-    public void open(int screenWidth, int screenHeight) {
-        super.open(screenWidth, screenHeight);
-        // Mettre à jour les positions après le calcul du centre
-        if (requestList != null) {
-            requestList.setBounds(x + 10, y + 34, width - 20, height - 44);
-        }
-    }
+    // Les positions sont maintenant recalculées automatiquement à chaque frame dans renderContent()
 
     public int getRequestCount() {
         return requests.size();

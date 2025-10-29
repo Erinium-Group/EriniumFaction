@@ -32,7 +32,7 @@ public class AddAlliancePopup extends Popup {
     }
 
     public AddAlliancePopup(Font font) {
-        super(font, 300, 400);
+        super(font, BASE_WIDTH, BASE_HEIGHT);
     }
 
     /**
@@ -56,14 +56,14 @@ public class AddAlliancePopup extends Popup {
             searchField.setPlaceholder("Search factions...");
             searchField.setOnChange(text -> updateFilter());
         }
-        searchField.setBounds(x + 10, y + 34, width - 20, 20);
+        searchField.setBounds(x + sw(10), y + sh(34), width - sw(20), sh(20));
 
         // Initialiser la liste de factions
         if (factionList == null) {
-            factionList = new ScrollList<>(font, this::renderFactionEntry, 40);
+            factionList = new ScrollList<>(font, this::renderFactionEntry, sh(40));
             factionList.setOnItemClick(this::sendAllianceRequest);
         }
-        factionList.setBounds(x + 10, y + 64, width - 20, height - 74);
+        factionList.setBounds(x + sw(10), y + sh(64), width - sw(20), height - sh(74));
 
         updateFilter();
     }
@@ -126,13 +126,15 @@ public class AddAlliancePopup extends Popup {
 
     @Override
     protected void renderContent(GuiGraphics g, int mouseX, int mouseY) {
-        // Champ de recherche
+        // Mettre à jour les positions des composants à chaque frame
         if (searchField != null) {
+            searchField.setBounds(x + sw(10), y + sh(34), width - sw(20), sh(20));
             searchField.render(g, mouseX, mouseY);
         }
 
         // Liste des factions
         if (factionList != null) {
+            factionList.setBounds(x + sw(10), y + sh(64), width - sw(20), height - sh(74));
             factionList.render(g, mouseX, mouseY);
         }
 
@@ -140,7 +142,7 @@ public class AddAlliancePopup extends Popup {
         if (filteredFactions.isEmpty()) {
             String noResults = "No factions found";
             int textWidth = font.width(noResults);
-            g.drawString(font, noResults, x + (width - textWidth) / 2, y + 100, 0xFF808080, false);
+            g.drawString(font, noResults, x + (width - textWidth) / 2, y + sh(100), 0xFF808080, false);
         }
     }
 
@@ -195,15 +197,5 @@ public class AddAlliancePopup extends Popup {
         return false;
     }
 
-    @Override
-    public void open(int screenWidth, int screenHeight) {
-        super.open(screenWidth, screenHeight);
-        // Mettre à jour les positions après le calcul du centre
-        if (searchField != null) {
-            searchField.setBounds(x + 10, y + 34, width - 20, 20);
-        }
-        if (factionList != null) {
-            factionList.setBounds(x + 10, y + 64, width - 20, height - 74);
-        }
-    }
+    // Les positions sont maintenant recalculées automatiquement à chaque frame dans renderContent()
 }
