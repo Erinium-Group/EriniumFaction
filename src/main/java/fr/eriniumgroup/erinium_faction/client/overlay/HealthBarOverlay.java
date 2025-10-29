@@ -24,6 +24,10 @@ public class HealthBarOverlay {
     private static final ResourceLocation HUNGER_BAR_FILL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/barres/hunger-bar-fill.png");
     private static final ResourceLocation ARMOR_BAR_BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/barres/armor-bar-background.png");
     private static final ResourceLocation ARMOR_BAR_FILL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/barres/armor-bar-fill.png");
+    private static final ResourceLocation ARMOR_TOUGHNESS_BAR_BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/barres/armor-toughness-bar-background.png");
+    private static final ResourceLocation ARMOR_TOUGHNESS_BAR_FILL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/barres/armor-toughness-bar-fill.png");
+    private static final ResourceLocation SATURATION_BAR_BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/barres/saturation-bar-background.png");
+    private static final ResourceLocation SATURATION_BAR_FILL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/barres/saturation-bar-fill.png");
 
     /**
      * Annule le rendu des barres vanilla
@@ -72,7 +76,7 @@ public class HealthBarOverlay {
         float maxHealth = player.getMaxHealth();
 
         int healthX = screenWidth / 2 - 91;
-        int healthY = screenHeight - 39;
+        int healthY = screenHeight - 39; // Position vanilla
 
         graphics.blit(HEALTH_BAR_BACKGROUND, healthX, healthY, 0, 0, barWidth, barHeight, barWidth, barHeight);
 
@@ -97,7 +101,7 @@ public class HealthBarOverlay {
         int maxFood = 20;
 
         int hungerX = screenWidth / 2 + 1;
-        int hungerY = screenHeight - 39;
+        int hungerY = screenHeight - 49; // Remonté de 10px
 
         graphics.blit(HUNGER_BAR_BACKGROUND, hungerX, hungerY, 0, 0, barWidth, barHeight, barWidth, barHeight);
 
@@ -140,6 +144,58 @@ public class HealthBarOverlay {
 
             graphics.drawString(mc.font, armorText, armorTextX + 1, armorTextY + 1, 0x000000, false);
             graphics.drawString(mc.font, armorText, armorTextX, armorTextY, 0xFFFFFFFF, false);
+        }
+
+        // ===== BARRE D'ARMOR TOUGHNESS (au-dessus de l'armure) =====
+        double armorToughness = player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR_TOUGHNESS);
+        int maxArmorToughness = 20;
+
+        if (armorToughness > 0) {
+            int toughnessX = screenWidth / 2 - 91;
+            int toughnessY = screenHeight - 59; // 10px au-dessus de la barre d'armure
+
+            graphics.blit(ARMOR_TOUGHNESS_BAR_BACKGROUND, toughnessX, toughnessY, 0, 0, barWidth, barHeight, barWidth, barHeight);
+
+            float toughnessPercentage = Math.max(0, Math.min(1, (float) armorToughness / maxArmorToughness));
+            int toughnessFillWidth = (int) (88 * toughnessPercentage);
+
+            if (toughnessFillWidth > 0) {
+                graphics.blit(ARMOR_TOUGHNESS_BAR_FILL, toughnessX + 1, toughnessY + 1, 0, 0, toughnessFillWidth, 7, 88, 7);
+            }
+
+            String toughnessText = String.format("%.1f / %d", armorToughness, maxArmorToughness);
+            int toughnessTextWidth = mc.font.width(toughnessText);
+            int toughnessTextX = toughnessX + (barWidth - toughnessTextWidth) / 2;
+            int toughnessTextY = toughnessY + 1;
+
+            graphics.drawString(mc.font, toughnessText, toughnessTextX + 1, toughnessTextY + 1, 0x000000, false);
+            graphics.drawString(mc.font, toughnessText, toughnessTextX, toughnessTextY, 0xFFFFFFFF, false);
+        }
+
+        // ===== BARRE DE SATURATION (en dessous de la faim) =====
+        float saturationLevel = foodData.getSaturationLevel();
+        float maxSaturation = 20.0f;
+
+        if (saturationLevel > 0) {
+            int saturationX = screenWidth / 2 + 1;
+            int saturationY = screenHeight - 39; // 10px en dessous de la barre de faim
+
+            graphics.blit(SATURATION_BAR_BACKGROUND, saturationX, saturationY, 0, 0, barWidth, barHeight, barWidth, barHeight);
+
+            float saturationPercentage = Math.max(0, Math.min(1, saturationLevel / maxSaturation));
+            int saturationFillWidth = (int) (88 * saturationPercentage);
+
+            if (saturationFillWidth > 0) {
+                graphics.blit(SATURATION_BAR_FILL, saturationX + 1, saturationY + 1, 0, 0, saturationFillWidth, 7, 88, 7);
+            }
+
+            String saturationText = String.format("%.1f / %.0f", saturationLevel, maxSaturation);
+            int saturationTextWidth = mc.font.width(saturationText);
+            int saturationTextX = saturationX + (barWidth - saturationTextWidth) / 2;
+            int saturationTextY = saturationY + 1;
+
+            graphics.drawString(mc.font, saturationText, saturationTextX + 1, saturationTextY + 1, 0x000000, false);
+            graphics.drawString(mc.font, saturationText, saturationTextX, saturationTextY, 0xFFFFFFFF, false);
         }
 
         RenderSystem.disableBlend();
