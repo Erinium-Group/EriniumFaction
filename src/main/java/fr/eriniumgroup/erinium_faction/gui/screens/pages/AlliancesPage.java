@@ -297,10 +297,12 @@ public class AlliancesPage extends FactionPage {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers, int leftPos, int topPos, double scaleX, double scaleY) {
         if (addAlliancePopup != null && addAlliancePopup.isVisible()) {
-            return addAlliancePopup.keyPressed(keyCode, scanCode, modifiers);
+            addAlliancePopup.keyPressed(keyCode, scanCode, modifiers);
+            return true; // Toujours consommer l'événement si le popup est visible
         }
         if (allyRequestsPopup != null && allyRequestsPopup.isVisible()) {
-            return allyRequestsPopup.keyPressed(keyCode, scanCode, modifiers);
+            allyRequestsPopup.keyPressed(keyCode, scanCode, modifiers);
+            return true; // Toujours consommer l'événement si le popup est visible
         }
         return false;
     }
@@ -308,10 +310,12 @@ public class AlliancesPage extends FactionPage {
     @Override
     public boolean charTyped(char codePoint, int modifiers, int leftPos, int topPos, double scaleX, double scaleY) {
         if (addAlliancePopup != null && addAlliancePopup.isVisible()) {
-            return addAlliancePopup.charTyped(codePoint, modifiers);
+            addAlliancePopup.charTyped(codePoint, modifiers);
+            return true; // Toujours consommer l'événement si le popup est visible
         }
         if (allyRequestsPopup != null && allyRequestsPopup.isVisible()) {
-            return allyRequestsPopup.charTyped(codePoint, modifiers);
+            allyRequestsPopup.charTyped(codePoint, modifiers);
+            return true; // Toujours consommer l'événement si le popup est visible
         }
         return false;
     }

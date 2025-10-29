@@ -136,6 +136,13 @@ public class AddAlliancePopup extends Popup {
         // Mettre à jour les positions des composants à chaque frame
         if (searchField != null) {
             searchField.setBounds(x + sw(10), y + sh(34), width - sw(20), sh(20));
+            searchField.tick(); // Appeler tick pour le curseur
+
+            // S'assurer que le champ reste focus (important!)
+            if (!searchField.isFocused()) {
+                searchField.setFocused(true);
+            }
+
             searchField.render(g, mouseX, mouseY);
         }
 
@@ -191,6 +198,10 @@ public class AddAlliancePopup extends Popup {
     @Override
     protected boolean handleKeyPress(int keyCode, int scanCode, int modifiers) {
         if (searchField != null) {
+            // Force le focus avant de traiter l'événement
+            if (!searchField.isFocused()) {
+                searchField.setFocused(true);
+            }
             return searchField.keyPressed(keyCode, scanCode, modifiers);
         }
         return false;
@@ -199,6 +210,10 @@ public class AddAlliancePopup extends Popup {
     @Override
     protected boolean handleCharTyped(char codePoint, int modifiers) {
         if (searchField != null) {
+            // Force le focus avant de traiter l'événement
+            if (!searchField.isFocused()) {
+                searchField.setFocused(true);
+            }
             return searchField.charTyped(codePoint, modifiers);
         }
         return false;
