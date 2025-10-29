@@ -11,6 +11,7 @@ public class FactionSnapshot {
     public String id;
     public String name;
     public String displayName;
+    public UUID ownerUUID;
     public int claims;
     public int maxClaims;
     public int membersCount;
@@ -94,6 +95,7 @@ public class FactionSnapshot {
         s.id = f.getId();
         s.name = f.getName();
         s.displayName = f.getName();
+        s.ownerUUID = f.getOwner();
         // claims depuis SavedData
         s.claims = FactionManager.countClaims(f.getId());
         // maxClaims = nombre de membres * power max par joueur
@@ -196,6 +198,10 @@ public class FactionSnapshot {
         buf.writeUtf(s.id == null ? "" : s.id);
         buf.writeUtf(s.name == null ? "" : s.name);
         buf.writeUtf(s.displayName == null ? "" : s.displayName);
+        buf.writeBoolean(s.ownerUUID != null);
+        if (s.ownerUUID != null) {
+            buf.writeUUID(s.ownerUUID);
+        }
         buf.writeVarInt(s.claims);
         buf.writeVarInt(s.maxClaims);
         buf.writeVarInt(s.membersCount);
@@ -265,6 +271,10 @@ public class FactionSnapshot {
         s.id = buf.readUtf();
         s.name = buf.readUtf();
         s.displayName = buf.readUtf();
+        boolean hasOwner = buf.readBoolean();
+        if (hasOwner) {
+            s.ownerUUID = buf.readUUID();
+        }
         s.claims = buf.readVarInt();
         s.maxClaims = buf.readVarInt();
         s.membersCount = buf.readVarInt();

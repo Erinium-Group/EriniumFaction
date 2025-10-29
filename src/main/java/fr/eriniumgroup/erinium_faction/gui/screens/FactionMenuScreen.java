@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Faction Menu Screen - GUI principal pour les menus de faction
@@ -653,15 +654,8 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             case CHEST:
                 return hasPermission(Permission.ACCESS_CHEST);
             case SETTINGS_FACTION:
-                Faction fac = FactionManager.getById(factionData.id);
-                if (fac != null && fac.getOwner().equals(entity.getUUID())) {
-                    return true;
-                }
-                ToastManager.error(
-                    Component.translatable("erinium_faction.gui.toast.error.perm"),
-                    Component.translatable("erinium_faction.gui.toast.error.onlyOwner")
-                );
-                return false;
+                // Vérifier si le joueur est le propriétaire (owner) de la faction
+                return factionData.ownerUUID != null && factionData.ownerUUID.equals(entity.getUUID());
             case SETTINGS_PERMISSIONS:
                 return hasPermission(Permission.MANAGE_PERMISSIONS);
             case ADMINSHOP:
@@ -678,10 +672,35 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     // Méthode originale pour accepter les strings
     private boolean hasPermission(String permission) {
-        Faction fac = FactionManager.getById(factionData.id);
-        if (fac != null && fac.hasPermission(entity.getUUID(), permission)) {
+        // Utiliser les données du snapshot (client-side) au lieu d'appeler le serveur
+        UUID playerUUID = entity.getUUID();
+
+        // Vérifier si le joueur est le owner (a toutes les permissions)
+        if (factionData.ownerUUID != null && factionData.ownerUUID.equals(playerUUID)) {
             return true;
         }
+
+        // Récupérer le rank du joueur depuis le snapshot
+        String rankId = factionData.membersRank.get(playerUUID);
+        if (rankId == null) {
+            ToastManager.error(
+                Component.translatable("erinium_faction.gui.toast.error.perm"),
+                Component.translatable("erinium_faction.gui.toast.error.nopermission", permission)
+            );
+            return false;
+        }
+
+        // Chercher le rank dans les définitions
+        for (FactionSnapshot.RankInfo rank : factionData.ranks) {
+            if (rank.id.equals(rankId)) {
+                // Vérifier si le rank a la permission
+                if (rank.perms.contains(permission)) {
+                    return true;
+                }
+                break;
+            }
+        }
+
         ToastManager.error(
             Component.translatable("erinium_faction.gui.toast.error.perm"),
             Component.translatable("erinium_faction.gui.toast.error.nopermission", permission)
