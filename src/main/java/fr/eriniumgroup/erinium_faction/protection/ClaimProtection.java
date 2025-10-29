@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
 
 /**
  * Handles protection of claimed chunks from unauthorized access
@@ -26,15 +25,6 @@ public class ClaimProtection {
     private static void onBlockBreak(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
         if (player.level().isClientSide()) return;
-
-        // Vérification permission globale player.break
-        if (player instanceof ServerPlayer sp) {
-            if (!EFPerms.canBreak(sp)) {
-                event.setCanceled(true);
-                player.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
-                return;
-            }
-        }
 
         ClaimKey claim = ClaimKey.of(
             player.level().dimension(),
@@ -52,15 +42,6 @@ public class ClaimProtection {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide()) return;
 
-        // Vérification permission globale player.place
-        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
-            if (!EFPerms.canPlace(sp)) {
-                event.setCanceled(true);
-                player.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
-                return;
-            }
-        }
-
         ClaimKey claim = ClaimKey.of(
             player.level().dimension(),
             event.getPos().getX() >> 4,
@@ -77,22 +58,40 @@ public class ClaimProtection {
         Player player = event.getEntity();
         if (player.level().isClientSide()) return;
 
-        // Vérification permission globale player.interact
-        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
-            if (!EFPerms.canInteract(sp)) {
-                event.setCanceled(true);
-                player.sendSystemMessage(Component.translatable("erinium_faction.common.no_permission"));
-                return;
-            }
-        }
-
         ClaimKey claim = ClaimKey.of(
             player.level().dimension(),
             event.getPos().getX() >> 4,
             event.getPos().getZ() >> 4
         );
 
-        if (!canModifyInClaim(player, claim, "block.interact")) {
+        // Récupérer le block cliqué
+        net.minecraft.world.level.block.state.BlockState state = player.level().getBlockState(event.getPos());
+        net.minecraft.world.level.block.Block block = state.getBlock();
+
+        // Déterminer le type d'interaction
+        String permission;
+
+        // 1. Container (coffre, furnace, barrel, etc.)
+        if (block instanceof net.minecraft.world.level.block.BaseEntityBlock baseEntityBlock) {
+            // Vérifier si c'est un container
+            net.minecraft.world.level.block.entity.BlockEntity blockEntity = player.level().getBlockEntity(event.getPos());
+            if (blockEntity instanceof net.minecraft.world.Container) {
+                permission = "faction.use.containers";
+            } else {
+                permission = "block.interact";
+            }
+        }
+        // 2. Placement de block (joueur tient un block dans la main)
+        else if (!player.getItemInHand(event.getHand()).isEmpty() &&
+                 player.getItemInHand(event.getHand()).getItem() instanceof net.minecraft.world.item.BlockItem) {
+            permission = "block.place";
+        }
+        // 3. Interaction normale (porte, bouton, levier, etc.)
+        else {
+            permission = "block.interact";
+        }
+
+        if (!canModifyInClaim(player, claim, permission)) {
             event.setCanceled(true);
             player.sendSystemMessage(Component.translatable("erinium_faction.interact.blocked.other_faction"));
         }

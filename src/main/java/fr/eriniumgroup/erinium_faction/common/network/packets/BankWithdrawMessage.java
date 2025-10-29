@@ -87,14 +87,8 @@ public record BankWithdrawMessage(long amount) implements CustomPacketPayload {
                 // Message de confirmation
                 sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.bank.withdraw", amount));
 
-                // Synchroniser les données de faction avec le client
-                PacketDistributor.sendToPlayer(sp, new FactionDataPacket(FactionSnapshot.of(faction, sp)));
-
-                // Synchroniser l'historique des transactions
-                SyncTransactionHistoryMessage.sendTo(sp, faction.getTransactionHistory());
-
-                // Synchroniser le solde du joueur
-                SyncPlayerBalanceMessage.sendTo(sp, EconomyIntegration.getBalance(sp));
+                // Synchroniser les données de faction avec TOUS les membres
+                FactionDataPacketHandler.sendFactionDataToAllMembers(factionId);
 
                 EFC.log.info("§6Bank", "§a{} withdrew §e{} coins §afrom faction {}", sp.getName().getString(), amount, faction.getName());
             });

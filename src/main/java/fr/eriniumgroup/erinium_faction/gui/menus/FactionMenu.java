@@ -207,6 +207,44 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
     }
 
     @Override
+    public void removed(Player player) {
+        super.removed(player);
+
+        // Sauvegarder les items du coffre de faction côté serveur uniquement
+        if (!this.world.isClientSide() && this.faction != null && this.internal != null) {
+            // Extraire les items des slots du coffre de faction
+            ItemStack[] chestItems = this.faction.getChestItems();
+            for (int i = 0; i < FACTION_CHEST_SLOTS && i < chestItems.length; i++) {
+                ItemStack stack = this.internal.getStackInSlot(i);
+                chestItems[i] = stack.copy();
+            }
+
+            // Sauvegarder la faction
+            if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+                var server = sp.getServer();
+                if (server != null) {
+                    fr.eriniumgroup.erinium_faction.core.faction.FactionManager.save(server);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+
+        // Synchroniser les changements du coffre en temps réel (côté serveur uniquement)
+        if (!this.world.isClientSide() && this.faction != null && this.internal != null) {
+            // Mettre à jour l'inventaire de la faction à chaque changement
+            ItemStack[] chestItems = this.faction.getChestItems();
+            for (int i = 0; i < FACTION_CHEST_SLOTS && i < chestItems.length; i++) {
+                ItemStack stack = this.internal.getStackInSlot(i);
+                chestItems[i] = stack.copy();
+            }
+        }
+    }
+
+    @Override
     public Map<Integer, Slot> getSlots() {
         return Collections.unmodifiableMap(customSlots);
     }

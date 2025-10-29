@@ -39,6 +39,23 @@ public class EFVariables {
                 // mettre à jour les variables depuis le serveur avant sync
                 fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(player, player.getData(PLAYER_VARIABLES));
                 player.getData(PLAYER_VARIABLES).syncPlayerVariables(event.getEntity());
+
+                // Synchroniser la liste des membres pour tous les membres de la faction
+                String factionName = fr.eriniumgroup.erinium_faction.core.faction.FactionManager.getPlayerFaction(player.getUUID());
+                if (factionName != null && !factionName.isEmpty()) {
+                    fr.eriniumgroup.erinium_faction.common.network.packets.FactionDataPacketHandler.sendFactionDataToAllMembers(factionName);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerLoggedOutSync(PlayerEvent.PlayerLoggedOutEvent event) {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                // Synchroniser la liste des membres pour tous les membres de la faction
+                String factionName = fr.eriniumgroup.erinium_faction.core.faction.FactionManager.getPlayerFaction(player.getUUID());
+                if (factionName != null && !factionName.isEmpty()) {
+                    fr.eriniumgroup.erinium_faction.common.network.packets.FactionDataPacketHandler.sendFactionDataToAllMembers(factionName);
+                }
             }
         }
 
