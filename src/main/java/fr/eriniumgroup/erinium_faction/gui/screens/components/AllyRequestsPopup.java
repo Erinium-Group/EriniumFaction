@@ -59,6 +59,8 @@ public class AllyRequestsPopup extends Popup {
         // Initialiser la liste des demandes
         if (requestList == null) {
             requestList = new ScrollList<>(font, this::renderRequestEntry, sh(60));
+            // Utiliser le handler avancé pour détecter les clics sur les boutons
+            requestList.setOnItemClickAdvanced(this::handleRequestClick);
         }
         requestList.setBounds(x + sw(10), y + sh(34), width - sw(20), height - sh(44));
         requestList.setItems(new ArrayList<>(requests));
@@ -128,40 +130,37 @@ public class AllyRequestsPopup extends Popup {
         }
     }
 
+    private boolean handleRequestClick(AllyRequestEntry request, int itemX, int itemY, int itemWidth, int itemHeight, double clickX, double clickY) {
+        // Calculer les positions des boutons (mêmes que dans renderRequestEntry)
+        int buttonY = itemY + 34;
+        int buttonWidth = 60;
+        int buttonHeight = 18;
+        int acceptX = itemX + itemWidth - 130;
+        int refuseX = itemX + itemWidth - 65;
+
+        // Vérifier si on a cliqué sur Accept
+        if (clickX >= acceptX && clickX < acceptX + buttonWidth &&
+            clickY >= buttonY && clickY < buttonY + buttonHeight) {
+            acceptRequest(request);
+            return true;
+        }
+
+        // Vérifier si on a cliqué sur Refuse
+        if (clickX >= refuseX && clickX < refuseX + buttonWidth &&
+            clickY >= buttonY && clickY < buttonY + buttonHeight) {
+            refuseRequest(request);
+            return true;
+        }
+
+        // Clic ailleurs sur l'item = ne rien faire
+        return false;
+    }
+
     @Override
     protected boolean handleMouseClick(double mouseX, double mouseY, int button) {
         if (requestList == null) return false;
 
-        // Vérifier les clics sur les boutons Accept/Refuse
-        for (int i = 0; i < requests.size(); i++) {
-            AllyRequestEntry request = requests.get(i);
-
-            // Calculer la position de l'item dans la liste
-            // TODO: Calculer correctement la position de l'item en tenant compte du scroll
-            int itemY = y + sh(34) + i * sh(60);
-            if (itemY < y + sh(34) || itemY >= y + height - sh(10)) continue; // En dehors de la vue
-
-            int buttonY = itemY + sh(34);
-            int buttonWidth = sw(60);
-            int buttonHeight = sh(18);
-            int acceptX = x + sw(10) + width - sw(20) - sw(130);
-            int refuseX = x + sw(10) + width - sw(20) - sw(65);
-
-            // Clic sur Accept
-            if (mouseX >= acceptX && mouseX < acceptX + buttonWidth &&
-                mouseY >= buttonY && mouseY < buttonY + buttonHeight) {
-                acceptRequest(request);
-                return true;
-            }
-
-            // Clic sur Refuse
-            if (mouseX >= refuseX && mouseX < refuseX + buttonWidth &&
-                mouseY >= buttonY && mouseY < buttonY + buttonHeight) {
-                refuseRequest(request);
-                return true;
-            }
-        }
-
+        // Déléguer au ScrollList qui appellera handleRequestClick
         return requestList.mouseClicked(mouseX, mouseY, button);
     }
 

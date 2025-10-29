@@ -155,11 +155,12 @@ public abstract class Popup {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!visible) return false;
 
-        // Vérifier le clic sur le bouton X
-        int closeX = x + width - 20;
-        int closeY = y + 6;
-        if (mouseX >= closeX && mouseX < closeX + 12 &&
-            mouseY >= closeY && mouseY < closeY + 12) {
+        // Vérifier le clic sur le bouton X (utiliser le scaling comme dans le rendu)
+        int closeX = x + width - sw(20);
+        int closeY = y + sh(6);
+        int closeSize = sw(12);
+        if (mouseX >= closeX && mouseX < closeX + closeSize &&
+            mouseY >= closeY && mouseY < closeY + sh(12)) {
             close();
             return true;
         }

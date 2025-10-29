@@ -29,9 +29,14 @@ public class ScrollList<T> {
     private int scrollStartOffset = 0;
 
     private Consumer<T> onItemClick;
+    private ItemClickHandler<T> onItemClickAdvanced;
 
     public interface ItemRenderer<T> {
         void render(GuiGraphics g, T item, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY);
+    }
+
+    public interface ItemClickHandler<T> {
+        boolean handle(T item, int itemX, int itemY, int itemWidth, int itemHeight, double clickX, double clickY);
     }
 
     public ScrollList(Font font, ItemRenderer<T> renderer, int itemHeight) {
@@ -67,6 +72,10 @@ public class ScrollList<T> {
 
     public void setOnItemClick(Consumer<T> callback) {
         this.onItemClick = callback;
+    }
+
+    public void setOnItemClickAdvanced(ItemClickHandler<T> callback) {
+        this.onItemClickAdvanced = callback;
     }
 
     public List<T> getItems() {
@@ -143,9 +152,26 @@ public class ScrollList<T> {
             int relativeY = (int) mouseY - y + scrollOffset;
             int clickedIndex = relativeY / itemHeight;
 
-            if (clickedIndex >= 0 && clickedIndex < items.size() && onItemClick != null) {
-                onItemClick.accept(items.get(clickedIndex));
-                return true;
+            if (clickedIndex >= 0 && clickedIndex < items.size()) {
+                T clickedItem = items.get(clickedIndex);
+
+                // Calculer les bounds de l'item cliqué
+                int itemX = x;
+                int itemY = y + clickedIndex * itemHeight - scrollOffset;
+                int itemWidth = width - 8; // -8 pour la scrollbar
+                int itemH = itemHeight;
+
+                // Essayer d'abord le handler avancé (avec coordonnées)
+                if (onItemClickAdvanced != null) {
+                    boolean handled = onItemClickAdvanced.handle(clickedItem, itemX, itemY, itemWidth, itemH, mouseX, mouseY);
+                    if (handled) return true;
+                }
+
+                // Sinon utiliser le callback simple
+                if (onItemClick != null) {
+                    onItemClick.accept(clickedItem);
+                    return true;
+                }
             }
         }
 
