@@ -3,6 +3,7 @@ package fr.eriniumgroup.erinium_faction.gui.menus;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
+import fr.eriniumgroup.erinium_faction.core.faction.Permission;
 import fr.eriniumgroup.erinium_faction.init.EFMenus;
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
 import net.minecraft.core.BlockPos;
@@ -129,12 +130,12 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         int baseInvY = baseChestY + FACTION_CHEST_ROWS * 18 + 20; // 74 + 54 + 20 = 148
         int baseHotbarY = baseInvY + 3 * 18 + 8; // 148 + 54 + 8 = 210
 
-        // Add faction chest slots
+        // Add faction chest slots with permission checks
         int slotIndex = 0;
         for (int row = 0; row < FACTION_CHEST_ROWS; row++) {
             for (int col = 0; col < 9; col++) {
-                SlotItemHandler slot = new SlotItemHandler(this.internal, slotIndex,
-                    baseX + col * 18, baseChestY + row * 18);
+                FactionChestSlot slot = new FactionChestSlot(this.internal, slotIndex,
+                    baseX + col * 18, baseChestY + row * 18, entity, faction);
                 this.addSlot(slot);
                 this.customSlots.put(slotIndex, slot);
                 slotIndex++;
@@ -184,13 +185,22 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
             // Faction chest slots: 0 to FACTION_CHEST_SLOTS-1
             // Player inventory: FACTION_CHEST_SLOTS to FACTION_CHEST_SLOTS+35
 
+            // Vérifier la permission MANAGE_CHEST pour les interactions avec le coffre
+            boolean hasPermission = faction != null && faction.hasPermission(playerIn.getUUID(), Permission.MANAGE_CHEST.getServerKey());
+
             if (index < FACTION_CHEST_SLOTS) {
                 // Moving from faction chest to player inventory
+                if (!hasPermission) {
+                    return ItemStack.EMPTY; // Pas de permission pour retirer du coffre
+                }
                 if (!this.moveItemStackTo(currentStack, FACTION_CHEST_SLOTS, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else {
                 // Moving from player inventory to faction chest
+                if (!hasPermission) {
+                    return ItemStack.EMPTY; // Pas de permission pour déposer dans le coffre
+                }
                 if (!this.moveItemStackTo(currentStack, 0, FACTION_CHEST_SLOTS, false)) {
                     return ItemStack.EMPTY;
                 }

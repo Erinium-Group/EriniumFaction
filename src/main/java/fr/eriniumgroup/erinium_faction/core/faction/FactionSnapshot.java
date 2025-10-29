@@ -362,4 +362,45 @@ public class FactionSnapshot {
 
         return s;
     }
+
+    // ===== Permission checks =====
+
+    /**
+     * Vérifie si un joueur a une permission dans la faction
+     * @param playerUUID UUID du joueur
+     * @param permission Enum Permission
+     * @return true si le joueur a la permission
+     */
+    public boolean hasPermission(UUID playerUUID, Permission permission) {
+        return hasPermission(playerUUID, permission.getServerKey());
+    }
+
+    /**
+     * Vérifie si un joueur a une permission dans la faction
+     * @param playerUUID UUID du joueur
+     * @param permission Clé de permission (string)
+     * @return true si le joueur a la permission
+     */
+    public boolean hasPermission(UUID playerUUID, String permission) {
+        // Vérifier si le joueur est le owner (a toutes les permissions)
+        if (ownerUUID != null && ownerUUID.equals(playerUUID)) {
+            return true;
+        }
+
+        // Récupérer le rank du joueur
+        String rankId = membersRank.get(playerUUID);
+        if (rankId == null) {
+            return false; // Joueur pas dans la faction
+        }
+
+        // Chercher le rank dans les définitions
+        for (RankInfo rank : ranks) {
+            if (rank.id.equals(rankId)) {
+                // Vérifier si le rank a la permission
+                return rank.perms.contains(permission);
+            }
+        }
+
+        return false; // Rank introuvable
+    }
 }

@@ -110,12 +110,17 @@ public class AlliancesPage extends FactionPage {
             // Bouton "Requests" (n'apparaît que s'il y a des demandes)
             StyledButton requestsButton = new StyledButton(font, "", () -> {
                 if (allyRequestsPopup != null && data != null) {
-                    // Charger les demandes d'alliance
-                    List<String> requestIds = new ArrayList<>(data.allyRequests);
-                    List<String> requestNames = new ArrayList<>(data.allyRequests); // TODO: Récupérer les vrais noms
+                    // Demander la validation des demandes au serveur
+                    net.neoforged.neoforge.network.PacketDistributor.sendToServer(
+                        new fr.eriniumgroup.erinium_faction.common.network.packets.ValidateAllyRequestsMessage()
+                    );
+
+                    // Charger les données depuis le cache (elles seront remplies par la réponse du serveur)
+                    List<String> requestIds = AllyRequestsCache.getRequestIds();
+                    List<String> requestNames = AllyRequestsCache.getRequestNames();
                     List<Integer> memberCounts = new ArrayList<>();
                     for (int i = 0; i < requestIds.size(); i++) {
-                        memberCounts.add(0); // TODO: Récupérer les vrais nombres
+                        memberCounts.add(0);
                     }
                     allyRequestsPopup.loadRequests(requestIds, requestNames, memberCounts);
 

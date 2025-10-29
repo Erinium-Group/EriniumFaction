@@ -82,6 +82,26 @@ public class ScrollList<T> {
         return items;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getScrollOffset() {
+        return scrollOffset;
+    }
+
     private void updateMaxScroll() {
         int totalHeight = items.size() * itemHeight;
         maxScroll = Math.max(0, totalHeight - height);

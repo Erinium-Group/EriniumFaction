@@ -553,6 +553,28 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     }
 
     @Override
+    protected void slotClicked(net.minecraft.world.inventory.Slot slot, int slotId, int mouseButton, net.minecraft.world.inventory.ClickType clickType) {
+        // Vérifier si on est sur la page Chest et si le slot cliqué est un slot du coffre de faction
+        if (currentPage == PageType.CHEST && slot != null && slotId < FactionMenu.FACTION_CHEST_SLOTS) {
+            // Vérifier si le joueur a la permission MANAGE_CHEST
+            var data = FactionClientData.getFactionData();
+            if (data != null && minecraft != null && minecraft.player != null) {
+                if (!data.hasPermission(minecraft.player.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.MANAGE_CHEST)) {
+                    // Afficher un toast d'erreur
+                    ToastManager.error(
+                        Component.translatable("erinium_faction.gui.chest.title", data.displayName).getString(),
+                        Component.translatable("erinium_faction.gui.chest.no_permission_manage").getString()
+                    );
+                    return; // Bloquer l'interaction
+                }
+            }
+        }
+
+        // Continuer normalement si la permission est OK
+        super.slotClicked(slot, slotId, mouseButton, clickType);
+    }
+
+    @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (button == 0 && navScrollDragging) {
             navScrollDragging = false;
@@ -674,39 +696,19 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     // Méthode originale pour accepter les strings
     private boolean hasPermission(String permission) {
-        // Utiliser les données du snapshot (client-side) au lieu d'appeler le serveur
         UUID playerUUID = entity.getUUID();
 
-        // Vérifier si le joueur est le owner (a toutes les permissions)
-        if (factionData.ownerUUID != null && factionData.ownerUUID.equals(playerUUID)) {
-            return true;
-        }
+        // Utiliser la méthode intégrée de FactionSnapshot
+        boolean hasPermission = factionData.hasPermission(playerUUID, permission);
 
-        // Récupérer le rank du joueur depuis le snapshot
-        String rankId = factionData.membersRank.get(playerUUID);
-        if (rankId == null) {
+        // Afficher un toast d'erreur si la permission est refusée
+        if (!hasPermission) {
             ToastManager.error(
                 Component.translatable("erinium_faction.gui.toast.error.perm"),
                 Component.translatable("erinium_faction.gui.toast.error.nopermission", permission)
             );
-            return false;
         }
 
-        // Chercher le rank dans les définitions
-        for (FactionSnapshot.RankInfo rank : factionData.ranks) {
-            if (rank.id.equals(rankId)) {
-                // Vérifier si le rank a la permission
-                if (rank.perms.contains(permission)) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        ToastManager.error(
-            Component.translatable("erinium_faction.gui.toast.error.perm"),
-            Component.translatable("erinium_faction.gui.toast.error.nopermission", permission)
-        );
-        return false;
+        return hasPermission;
     }
 }

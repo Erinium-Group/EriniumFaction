@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionClientData;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ToastManager;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -56,6 +57,84 @@ public abstract class FactionPage {
      */
     protected String translate(String key, Object... args) {
         return Component.translatable(key, args).getString();
+    }
+
+    // ========== Toast Notifications ==========
+
+    /**
+     * Affiche un toast de succès
+     * @param title Titre du toast
+     * @param message Message du toast
+     */
+    protected void showSuccess(String title, String message) {
+        ToastManager.success(title, message);
+    }
+
+    /**
+     * Affiche un toast de succès avec durée personnalisée
+     * @param title Titre du toast
+     * @param message Message du toast
+     * @param duration Durée d'affichage en millisecondes
+     */
+    protected void showSuccess(String title, String message, int duration) {
+        ToastManager.success(title, message, duration);
+    }
+
+    /**
+     * Affiche un toast d'erreur
+     * @param title Titre du toast
+     * @param message Message du toast
+     */
+    protected void showError(String title, String message) {
+        ToastManager.error(title, message);
+    }
+
+    /**
+     * Affiche un toast d'erreur avec durée personnalisée
+     * @param title Titre du toast
+     * @param message Message du toast
+     * @param duration Durée d'affichage en millisecondes
+     */
+    protected void showError(String title, String message, int duration) {
+        ToastManager.error(title, message, duration);
+    }
+
+    /**
+     * Affiche un toast d'avertissement
+     * @param title Titre du toast
+     * @param message Message du toast
+     */
+    protected void showWarning(String title, String message) {
+        ToastManager.warning(title, message);
+    }
+
+    /**
+     * Affiche un toast d'avertissement avec durée personnalisée
+     * @param title Titre du toast
+     * @param message Message du toast
+     * @param duration Durée d'affichage en millisecondes
+     */
+    protected void showWarning(String title, String message, int duration) {
+        ToastManager.warning(title, message, duration);
+    }
+
+    /**
+     * Affiche un toast d'information
+     * @param title Titre du toast
+     * @param message Message du toast
+     */
+    protected void showInfo(String title, String message) {
+        ToastManager.info(title, message);
+    }
+
+    /**
+     * Affiche un toast d'information avec durée personnalisée
+     * @param title Titre du toast
+     * @param message Message du toast
+     * @param duration Durée d'affichage en millisecondes
+     */
+    protected void showInfo(String title, String message, int duration) {
+        ToastManager.info(title, message, duration);
     }
 
     /**

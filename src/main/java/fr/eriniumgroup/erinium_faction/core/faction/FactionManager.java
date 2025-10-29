@@ -156,15 +156,10 @@ public final class FactionManager {
         if (f.getMembers().size() >= max) return false;
         boolean ok = f.addMember(player, name, "recruit");
         if (ok) {
-            // Additionner le power du joueur à la faction
-            ServerPlayer sp = SERVER.getPlayerList().getPlayer(player);
-            if (sp != null) {
-                PlayerPower pp = PowerManager.get(sp);
-                f.setPower(f.getPower() + pp.getPower());
-                if (EFConfig.FACTION_MAX_POWER_FROM_PLAYERS.get()) {
-                    f.setMaxPower(f.getMaxPower() + pp.getMaxPower());
-                }
-            }
+            // Ajouter FACTION_POWER_PER_MEMBER au power de la faction
+            double powerPerMember = EFConfig.FACTION_POWER_PER_MEMBER.get();
+            f.setPower(f.getPower() + powerPerMember);
+            f.setMaxPower(f.getMaxPower() + powerPerMember);
             FactionSavedData.get(SERVER).setDirty();
         }
         return ok;
@@ -174,14 +169,10 @@ public final class FactionManager {
         if (f == null) return false;
         boolean ok = f.removeMember(player);
         if (ok) {
-            ServerPlayer sp = SERVER.getPlayerList().getPlayer(player);
-            if (sp != null) {
-                PlayerPower pp = PowerManager.get(sp);
-                f.setPower(Math.max(0, f.getPower() - pp.getPower()));
-                if (EFConfig.FACTION_MAX_POWER_FROM_PLAYERS.get()) {
-                    f.setMaxPower(Math.max(0, f.getMaxPower() - pp.getMaxPower()));
-                }
-            }
+            // Soustraire FACTION_POWER_PER_MEMBER du power de la faction
+            double powerPerMember = EFConfig.FACTION_POWER_PER_MEMBER.get();
+            f.setMaxPower(Math.max(0, f.getMaxPower() - powerPerMember));
+            f.setPower(Math.max(0, Math.min(f.getPower(), f.getMaxPower())));
             FactionSavedData.get(SERVER).setDirty();
         }
         return ok;

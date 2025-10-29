@@ -11,6 +11,8 @@ public enum Permission {
     // Permissions de gestion de faction
     INVITE_MEMBERS("faction.invite", "invite_members", "erinium_faction.gui.permissions.invite_members"),
     KICK_MEMBERS("faction.kick", "kick_members", "erinium_faction.gui.permissions.kick_members"),
+    PROMOTE_MEMBERS("faction.promote", "promote_members", "erinium_faction.gui.permissions.promote_members"),
+    DEMOTE_MEMBERS("faction.demote", "demote_members", "erinium_faction.gui.permissions.demote_members"),
     CLAIM_TERRITORY("faction.claim", "claim_territory", "erinium_faction.gui.permissions.claim_territory"),
     UNCLAIM_TERRITORY("faction.unclaim", "unclaim_territory", "erinium_faction.gui.permissions.unclaim_territory"),
 
@@ -23,7 +25,8 @@ public enum Permission {
     // Permissions de gestion avancée
     MANAGE_PERMISSIONS("faction.manage.permissions", "manage_permissions", "erinium_faction.gui.permissions.manage_permissions"),
     MANAGE_ALLIANCES("faction.manage.alliances", "manage_alliances", "erinium_faction.gui.permissions.manage_alliances"),
-    MANAGE_ECONOMY("faction.manage.economy", "manage_economy", "erinium_faction.gui.permissions.manage_economy"),
+    DEPOSTIT_BANK("faction.bank.dep", "bank_deposit", "erinium_faction.gui.permissions.bank.dep"),
+    WITHDRAW_BANK("faction.bank.with", "bank_withdraw", "erinium_faction.gui.permissions.bank.with"),
 
     // Permissions de téléportation
     USE_TELEPORTS("faction.use.teleports", "use_teleports", "erinium_faction.gui.permissions.use_teleports"),

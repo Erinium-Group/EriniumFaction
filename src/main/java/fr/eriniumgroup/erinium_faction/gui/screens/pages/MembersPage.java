@@ -1,13 +1,17 @@
 package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 
+import fr.eriniumgroup.erinium_faction.core.faction.Permission;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ContextMenu;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +22,7 @@ import java.util.UUID;
 public class MembersPage extends FactionPage {
 
     private ScrollList<MemberInfo> memberScrollList;
+    private ContextMenu contextMenu;
 
     // Textures pour les member cards
     private static final ResourceLocation MEMBER_CARD_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/members/member-card-normal.png");
@@ -37,15 +42,21 @@ public class MembersPage extends FactionPage {
 
     // Classe pour les infos de membre
     private static class MemberInfo {
+        UUID uuid;
         String name;
-        String rank;
+        String rankId;
+        String rankDisplay;
+        int rankPriority;
         double power;
         double maxPower;
         boolean online;
 
-        MemberInfo(String name, String rank, double power, double maxPower, boolean online) {
+        MemberInfo(UUID uuid, String name, String rankId, String rankDisplay, int rankPriority, double power, double maxPower, boolean online) {
+            this.uuid = uuid;
             this.name = name;
-            this.rank = rank;
+            this.rankId = rankId;
+            this.rankDisplay = rankDisplay;
+            this.rankPriority = rankPriority;
             this.power = power;
             this.maxPower = maxPower;
             this.online = online;
@@ -54,6 +65,7 @@ public class MembersPage extends FactionPage {
 
     public MembersPage(Font font) {
         super(font);
+        contextMenu = new ContextMenu(font);
     }
 
     private void initComponents(int leftPos, int topPos, double scaleX, double scaleY) {
@@ -70,18 +82,32 @@ public class MembersPage extends FactionPage {
             for (var entry : data.memberNames.entrySet()) {
                 UUID uuid = entry.getKey();
                 String name = entry.getValue();
-                String rank = data.membersRank.getOrDefault(uuid, "Member");
+                String rankId = data.membersRank.getOrDefault(uuid, "member");
+
+                // Trouver les informations du rank (display name et priority)
+                String rankDisplay = rankId;
+                int rankPriority = 0;
+                if (data.ranks != null) {
+                    for (var rankInfo : data.ranks) {
+                        if (rankInfo.id.equals(rankId)) {
+                            rankDisplay = rankInfo.display;
+                            rankPriority = rankInfo.priority;
+                            break;
+                        }
+                    }
+                }
+
                 // Récupérer le power et status en ligne depuis FactionSnapshot
                 double power = data.membersPower.getOrDefault(uuid, 0.0);
                 double maxPower = data.membersMaxPower.getOrDefault(uuid, 100.0);
                 boolean online = data.membersOnline.getOrDefault(uuid, false);
-                members.add(new MemberInfo(name, rank, power, maxPower, online));
+                members.add(new MemberInfo(uuid, name, rankId, rankDisplay, rankPriority, power, maxPower, online));
             }
         }
 
         if (members.isEmpty()) {
             // Ajouter un message si aucun membre
-            members.add(new MemberInfo(translate("erinium_faction.gui.members.none"), translate("erinium_faction.gui.members.rank_na"), 0, 0, false));
+            members.add(new MemberInfo(null, translate("erinium_faction.gui.members.none"), "", translate("erinium_faction.gui.members.rank_na"), 0, 0, 0, false));
         }
 
         memberScrollList.setItems(members);
@@ -111,9 +137,9 @@ public class MembersPage extends FactionPage {
         TextHelper.drawAutoScrollingText(g, font, member.name, x + 12, y + 4, nameMaxWidth, nameColor, false, nameHovered, "member_name_" + member.name);
 
         // Rank (en bas) - auto-scroll on hover
-        int rankColor = getRankColor(member.rank);
+        int rankColor = getRankColor(member.rankDisplay);
         boolean rankHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 12, y + 16, nameMaxWidth, font.lineHeight);
-        TextHelper.drawAutoScrollingText(g, font, member.rank, x + 12, y + 16, nameMaxWidth, rankColor, false, rankHovered, "member_rank_" + member.name);
+        TextHelper.drawAutoScrollingText(g, font, member.rankDisplay, x + 12, y + 16, nameMaxWidth, rankColor, false, rankHovered, "member_rank_" + member.name);
 
         // Power bar (réduite pour petit GUI) - Utiliser les images
         int barX = x + width - 55;
@@ -168,11 +194,30 @@ public class MembersPage extends FactionPage {
 
         // Member list
         memberScrollList.render(g, mouseX, mouseY);
+
+        // Render context menu on top
+        contextMenu.render(g, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button, int leftPos, int topPos, double scaleX, double scaleY) {
+        // Priorité au context menu
+        if (contextMenu.isVisible()) {
+            return contextMenu.mouseClicked(mouseX, mouseY, button);
+        }
+
         if (memberScrollList == null) return false;
+
+        // Clic droit pour ouvrir le menu contextuel
+        if (button == 1) { // Clic droit
+            // Trouver le membre sous la souris
+            MemberInfo clickedMember = findMemberAtPosition(mouseX, mouseY, scaleY);
+            if (clickedMember != null && clickedMember.uuid != null) {
+                openContextMenu(clickedMember, (int) mouseX, (int) mouseY);
+                return true;
+            }
+        }
+
         return memberScrollList.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -192,5 +237,115 @@ public class MembersPage extends FactionPage {
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY, int leftPos, int topPos, double scaleX, double scaleY) {
         if (memberScrollList == null) return false;
         return memberScrollList.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    /**
+     * Trouve le membre à la position de la souris
+     */
+    private MemberInfo findMemberAtPosition(double mouseX, double mouseY, double scaleY) {
+        if (memberScrollList == null) return null;
+
+        List<MemberInfo> items = memberScrollList.getItems();
+        if (items == null || items.isEmpty()) return null;
+
+        // Récupérer les bounds de la scroll list
+        int listX = memberScrollList.getX();
+        int listY = memberScrollList.getY();
+        int listWidth = memberScrollList.getWidth();
+        int listHeight = memberScrollList.getHeight();
+        int itemHeight = sh(30, scaleY); // Utiliser le scaleY correct
+
+        // Calculer l'offset de scroll
+        int scrollOffset = memberScrollList.getScrollOffset();
+
+        for (int i = 0; i < items.size(); i++) {
+            int itemY = listY + i * itemHeight - scrollOffset;
+
+            // Vérifier si la souris est sur cet item et si l'item est visible
+            if (mouseX >= listX && mouseX < listX + listWidth &&
+                mouseY >= itemY && mouseY < itemY + itemHeight &&
+                itemY + itemHeight > listY && itemY < listY + listHeight) {
+                return items.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Ouvre le menu contextuel pour un membre
+     */
+    private void openContextMenu(MemberInfo member, int x, int y) {
+        var data = getFactionData();
+        if (data == null) return;
+
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.player == null) return;
+
+        UUID currentPlayerUUID = minecraft.player.getUUID();
+
+        // Ne pas ouvrir le menu contextuel sur soi-même
+        if (currentPlayerUUID.equals(member.uuid)) {
+            return;
+        }
+
+        // Récupérer les informations du joueur actuel
+        String currentPlayerRankId = data.membersRank.getOrDefault(currentPlayerUUID, "member");
+        int currentPlayerRankPriority = 0;
+        if (data.ranks != null) {
+            for (var rankInfo : data.ranks) {
+                if (rankInfo.id.equals(currentPlayerRankId)) {
+                    currentPlayerRankPriority = rankInfo.priority;
+                    break;
+                }
+            }
+        }
+
+        // Trouver le rank le plus haut et le plus bas
+        int highestRankPriority = Integer.MIN_VALUE;
+        int lowestRankPriority = Integer.MAX_VALUE;
+        if (data.ranks != null && !data.ranks.isEmpty()) {
+            for (var rankInfo : data.ranks) {
+                highestRankPriority = Math.max(highestRankPriority, rankInfo.priority);
+                lowestRankPriority = Math.min(lowestRankPriority, rankInfo.priority);
+            }
+        }
+
+        // Vérifier les permissions du joueur actuel
+        boolean hasPromotePermission = data.hasPermission(currentPlayerUUID, Permission.PROMOTE_MEMBERS);
+        boolean hasDemotePermission = data.hasPermission(currentPlayerUUID, Permission.DEMOTE_MEMBERS);
+        boolean hasKickPermission = data.hasPermission(currentPlayerUUID, Permission.KICK_MEMBERS);
+
+        // Vérifier la hiérarchie: le joueur actuel doit avoir un rank supérieur au membre ciblé
+        boolean canManageMember = currentPlayerRankPriority > member.rankPriority;
+
+        // PROMOTE: Possible si on a la permission, si on peut gérer ce membre, et si le membre n'est pas déjà au rank le plus haut
+        boolean canPromote = hasPromotePermission && canManageMember && member.rankPriority < highestRankPriority;
+
+        // DEMOTE: Possible si on a la permission, si on peut gérer ce membre, et si le membre n'est pas déjà au rank le plus bas
+        boolean canDemote = hasDemotePermission && canManageMember && member.rankPriority > lowestRankPriority;
+
+        // KICK: Possible si on a la permission et si on peut gérer ce membre
+        boolean canKick = hasKickPermission && canManageMember;
+
+        // Créer le menu contextuel
+        contextMenu.clearItems();
+
+        contextMenu.addItem(translate("erinium_faction.gui.members.context.promote"), () -> {
+            // TODO: Envoyer un packet au serveur pour promouvoir le membre
+            showInfo("Promote", "Promoting " + member.name);
+        }, canPromote);
+
+        contextMenu.addItem(translate("erinium_faction.gui.members.context.demote"), () -> {
+            // TODO: Envoyer un packet au serveur pour dégrader le membre
+            showInfo("Demote", "Demoting " + member.name);
+        }, canDemote);
+
+        contextMenu.addItem(translate("erinium_faction.gui.members.context.kick"), () -> {
+            // TODO: Envoyer un packet au serveur pour kicker le membre
+            showInfo("Kick", "Kicking " + member.name);
+        }, canKick);
+
+        contextMenu.open(x, y);
     }
 }

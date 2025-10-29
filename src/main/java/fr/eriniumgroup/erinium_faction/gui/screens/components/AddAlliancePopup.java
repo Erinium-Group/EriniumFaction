@@ -103,13 +103,9 @@ public class AddAlliancePopup extends Popup {
         g.fill(x, y, x + width, y + height, bgColor);
         g.fill(x, y, x + width, y + 1, 0x50667eea);
 
-        // Nom de la faction
+        // Nom de la faction (centré verticalement)
         int maxNameWidth = width - 16;
-        TextHelper.drawScaledText(g, font, faction.name, x + 8, y + 8, maxNameWidth, 0xFF00d2ff, true);
-
-        // Nombre de membres
-        String members = faction.memberCount + " members";
-        g.drawString(font, members, x + 8, y + 22, 0xFFa0a0c0, false);
+        TextHelper.drawScaledText(g, font, faction.name, x + 8, y + height / 2 - 4, maxNameWidth, 0xFF00d2ff, true);
     }
 
     private void sendAllianceRequest(FactionEntry faction) {

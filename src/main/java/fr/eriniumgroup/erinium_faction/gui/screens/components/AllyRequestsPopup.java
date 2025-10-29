@@ -56,6 +56,9 @@ public class AllyRequestsPopup extends Popup {
 
     @Override
     protected void onOpen() {
+        // S'enregistrer pour recevoir les mises à jour
+        AllyRequestsCache.registerPopup(this);
+
         // Initialiser la liste des demandes
         if (requestList == null) {
             requestList = new ScrollList<>(font, this::renderRequestEntry, sh(60));
@@ -68,7 +71,8 @@ public class AllyRequestsPopup extends Popup {
 
     @Override
     protected void onClose() {
-        // Rien à faire
+        // Se désenregistrer
+        AllyRequestsCache.unregisterPopup();
     }
 
     private void renderRequestEntry(GuiGraphics g, AllyRequestEntry request, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
@@ -79,11 +83,7 @@ public class AllyRequestsPopup extends Popup {
 
         // Nom de la faction
         int maxNameWidth = width - 16;
-        TextHelper.drawScaledText(g, font, request.name, x + 8, y + 6, maxNameWidth, 0xFF00d2ff, true);
-
-        // Nombre de membres
-        String members = request.memberCount + " members";
-        g.drawString(font, members, x + 8, y + 18, 0xFFa0a0c0, false);
+        TextHelper.drawScaledText(g, font, request.name, x + 8, y + 12, maxNameWidth, 0xFF00d2ff, true);
 
         // Boutons Accept / Refuse
         int buttonY = y + 34;

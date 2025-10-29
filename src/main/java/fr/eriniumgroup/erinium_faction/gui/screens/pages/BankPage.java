@@ -5,7 +5,9 @@ import fr.eriniumgroup.erinium_faction.common.network.packets.BankDepositMessage
 import fr.eriniumgroup.erinium_faction.common.network.packets.BankWithdrawMessage;
 import fr.eriniumgroup.erinium_faction.common.network.packets.SyncTransactionHistoryMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
+import fr.eriniumgroup.erinium_faction.core.faction.Permission;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionClientData;
+import fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import net.minecraft.client.Minecraft;
@@ -325,42 +327,70 @@ public class BankPage extends FactionPage {
     }
 
     private void handleDeposit() {
-        if (amountInput.length() == 0) return;
+        if (amountInput.length() == 0) {
+            showWarning(translate("erinium_faction.gui.bank.deposit"), translate("erinium_faction.gui.bank.error.empty_amount"));
+            return;
+        }
+        assert Minecraft.getInstance().player != null;
+
+        if (!getFactionData().hasPermission(Minecraft.getInstance().player.getUUID(), Permission.DEPOSTIT_BANK)){
+            showError(translate("erinium_faction.gui.bank.deposit"), translate("erinium_faction.gui.bank.error.no_permission"));
+            return;
+        }
 
         try {
             long amount = Long.parseLong(amountInput.toString());
-            if (amount <= 0) return;
+            if (amount <= 0) {
+                showError(translate("erinium_faction.gui.bank.deposit"), translate("erinium_faction.gui.bank.error.invalid_amount"));
+                return;
+            }
 
             // Envoyer packet au serveur pour déposer
             var minecraft = Minecraft.getInstance();
             if (minecraft.getConnection() != null) {
                 minecraft.getConnection().send(new ServerboundCustomPayloadPacket(new BankDepositMessage(amount)));
+                showSuccess(translate("erinium_faction.gui.bank.deposit"), translate("erinium_faction.gui.bank.success.deposit", amount));
             }
 
             // Réinitialiser l'input
             amountInput.setLength(0);
         } catch (NumberFormatException e) {
             EFC.log.warn("§6Bank", "§cInvalid amount format: {}", amountInput.toString());
+            showError(translate("erinium_faction.gui.bank.deposit"), translate("erinium_faction.gui.bank.error.invalid_format"));
         }
     }
 
     private void handleWithdraw() {
-        if (amountInput.length() == 0) return;
+        if (amountInput.length() == 0) {
+            showWarning(translate("erinium_faction.gui.bank.withdraw"), translate("erinium_faction.gui.bank.error.empty_amount"));
+            return;
+        }
+        assert Minecraft.getInstance().player != null;
+
+        if (!getFactionData().hasPermission(Minecraft.getInstance().player.getUUID(), Permission.WITHDRAW_BANK)){
+            showError(translate("erinium_faction.gui.bank.withdraw"), translate("erinium_faction.gui.bank.error.no_permission"));
+            return;
+        }
 
         try {
             long amount = Long.parseLong(amountInput.toString());
-            if (amount <= 0) return;
+            if (amount <= 0) {
+                showError(translate("erinium_faction.gui.bank.withdraw"), translate("erinium_faction.gui.bank.error.invalid_amount"));
+                return;
+            }
 
             // Envoyer packet au serveur pour retirer
             var minecraft = Minecraft.getInstance();
             if (minecraft.getConnection() != null) {
                 minecraft.getConnection().send(new ServerboundCustomPayloadPacket(new BankWithdrawMessage(amount)));
+                showSuccess(translate("erinium_faction.gui.bank.withdraw"), translate("erinium_faction.gui.bank.success.withdraw", amount));
             }
 
             // Réinitialiser l'input
             amountInput.setLength(0);
         } catch (NumberFormatException e) {
             EFC.log.warn("§6Bank", "§cInvalid amount format: {}", amountInput.toString());
+            showError(translate("erinium_faction.gui.bank.withdraw"), translate("erinium_faction.gui.bank.error.invalid_format"));
         }
     }
 }

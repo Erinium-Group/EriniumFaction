@@ -41,6 +41,9 @@ public record FactionListRequestMessage() implements CustomPacketPayload {
     private static void handleServer(FactionListRequestMessage msg, ServerPlayer sp) {
         if (sp == null) return;
 
+        // Récupérer la faction du joueur pour la filtrer
+        Faction playerFaction = FactionManager.getFactionOf(sp.getUUID());
+
         // Récupérer toutes les factions
         var allFactions = FactionManager.getAllFactions();
 
@@ -49,6 +52,11 @@ public record FactionListRequestMessage() implements CustomPacketPayload {
         List<Integer> memberCounts = new ArrayList<>();
 
         for (Faction faction : allFactions) {
+            // Ne pas inclure la faction du joueur
+            if (playerFaction != null && faction.getId().equals(playerFaction.getId())) {
+                continue;
+            }
+
             factionIds.add(faction.getId());
             factionNames.add(faction.getName());
             memberCounts.add(faction.getMembers().size());
