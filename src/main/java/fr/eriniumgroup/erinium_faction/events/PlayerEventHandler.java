@@ -69,7 +69,7 @@ public class PlayerEventHandler {
                 }
             }
             //EFC.log.debug("PlayerEventHandler", title + " | " + subtitle);
-            PacketDistributor.sendToPlayer(_p, new FactionTitlePacket(title, subtitle, fadeIn, stay, fadeOut));
+            PacketDistributor.sendToPlayer(_p, new FactionTitlePacket(title, subtitle, fadeIn, stay, fadeOut, id));
             vars.syncPlayerVariables(_p);
         }
 

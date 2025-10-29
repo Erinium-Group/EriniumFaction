@@ -2,19 +2,15 @@ package fr.eriniumgroup.erinium_faction.core.faction;
 
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.core.EFC;
-import fr.eriniumgroup.erinium_faction.core.claim.ClaimsSavedData;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
-import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
+import fr.eriniumgroup.erinium_faction.core.claim.ClaimsSavedData;
 import fr.eriniumgroup.erinium_faction.core.power.PlayerPower;
-import net.minecraft.core.registries.Registries;
+import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.ChatFormatting;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
@@ -117,11 +113,7 @@ public final class FactionManager {
                     vars.factionXp = 0;
                     vars.factionInChunk = ""; // force la prochaine détection à wilderness
                     vars.syncPlayerVariables(sp);
-                    PacketDistributor.sendToPlayer(sp,
-                            new fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket(
-                                    Component.translatable("erinium_faction.wilderness.title").getString(),
-                                    Component.translatable("erinium_faction.wilderness.desc").getString(),
-                                    300, 900, 300));
+                    PacketDistributor.sendToPlayer(sp, new fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket(Component.translatable("erinium_faction.wilderness.title").getString(), Component.translatable("erinium_faction.wilderness.desc").getString(), 300, 900, 300, "wilderness"));
                 }
             }
 
@@ -132,18 +124,10 @@ public final class FactionManager {
             }
 
             // 4) Log admin (console) avec couleurs
-            EFC.log.info("Faction", "§cDISBAND §7: §e" + f.getName() + " §7(§6" + removedClaims + " claims§7, §b" + memberCount + " membres§7)");
+            EFC.log.info("§5Faction", "§cDISBAND §7: §e" + f.getName() + " §7(§6" + removedClaims + " claims§7, §b" + memberCount + " membres§7)");
 
             // 5) Message admin aux OPs en jeu (stylé)
-            MutableComponent adminMsg = Component.literal("[Admin] ")
-                    .withStyle(ChatFormatting.DARK_RED)
-                    .append(Component.literal("DISBAND ").withStyle(ChatFormatting.RED))
-                    .append(Component.literal(f.getName()).withStyle(ChatFormatting.GOLD))
-                    .append(Component.literal(" ("))
-                    .append(Component.literal(String.valueOf(removedClaims)).withStyle(ChatFormatting.GOLD))
-                    .append(Component.literal(" claims, "))
-                    .append(Component.literal(String.valueOf(memberCount)).withStyle(ChatFormatting.AQUA))
-                    .append(Component.literal(" membres)"));
+            MutableComponent adminMsg = Component.literal("[Admin] ").withStyle(ChatFormatting.DARK_RED).append(Component.literal("DISBAND ").withStyle(ChatFormatting.RED)).append(Component.literal(f.getName()).withStyle(ChatFormatting.GOLD)).append(Component.literal(" (")).append(Component.literal(String.valueOf(removedClaims)).withStyle(ChatFormatting.GOLD)).append(Component.literal(" claims, ")).append(Component.literal(String.valueOf(memberCount)).withStyle(ChatFormatting.AQUA)).append(Component.literal(" membres)"));
             for (ServerPlayer p : SERVER.getPlayerList().getPlayers()) {
                 if (p.hasPermissions(2)) p.sendSystemMessage(adminMsg);
             }
@@ -311,11 +295,7 @@ public final class FactionManager {
             if (enemyFaction == null) return false; // ✅ Vérification null
 
             // Vérifier si c'est une zone protégée
-            if (enemyFaction.getId().equals("safezone") ||
-                    enemyFaction.getId().equals("warzone") ||
-                    enemyFaction.isAdminFaction() ||
-                    enemyFaction.isSafezone() ||
-                    enemyFaction.isWarzone()) {
+            if (enemyFaction.getId().equals("safezone") || enemyFaction.getId().equals("warzone") || enemyFaction.isAdminFaction() || enemyFaction.isSafezone() || enemyFaction.isWarzone()) {
                 return false;
             }
 
@@ -351,13 +331,17 @@ public final class FactionManager {
         }
     }
 
-    /** --- Récupérer tous les claims d'une faction --- */
+    /**
+     * --- Récupérer tous les claims d'une faction ---
+     */
     public static List<ClaimKey> getClaimsOfFaction(String factionId) {
         if (SERVER == null || factionId == null || factionId.isBlank()) return Collections.emptyList();
         return ClaimsSavedData.get(SERVER).listClaimsForFaction(factionId.toLowerCase(Locale.ROOT));
     }
 
-    /** Variante utilitaire: par objet Faction */
+    /**
+     * Variante utilitaire: par objet Faction
+     */
     public static List<ClaimKey> getClaimsOfFaction(Faction faction) {
         if (faction == null) return Collections.emptyList();
         return getClaimsOfFaction(faction.getId());

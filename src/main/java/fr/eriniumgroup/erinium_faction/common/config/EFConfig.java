@@ -7,6 +7,7 @@ public final class EFConfig {
 
     public static final ModConfigSpec.IntValue FACTION_NAME_MIN;
     public static final ModConfigSpec.IntValue FACTION_NAME_MAX;
+    public static final ModConfigSpec.IntValue FACTION_DESC_MAX;
     public static final ModConfigSpec.IntValue FACTION_MAX_MEMBERS; // plafond global dur
 
     public static final ModConfigSpec.IntValue FACTION_BASE_MAX_PLAYERS; // base par faction
@@ -120,6 +121,7 @@ public final class EFConfig {
         b.push("factions");
         FACTION_NAME_MIN = b.comment("Longueur minimale du nom de faction").defineInRange("nameMin", 3, 2, 32);
         FACTION_NAME_MAX = b.comment("Longueur maximale du nom de faction").defineInRange("nameMax", 16, 3, 32);
+        FACTION_DESC_MAX = b.comment("Longueur maximale de la description de faction").defineInRange("descMax", 150, 0, 500);
         FACTION_MAX_MEMBERS = b.comment("Plafond global dur du nombre de membres par faction").defineInRange("maxMembers", 30, 1, 2000);
         FACTION_BASE_MAX_PLAYERS = b.comment("Nombre de membres autorisés par faction au niveau 0").defineInRange("baseMaxPlayers", 9, 1, 2000);
         FACTION_PLAYERS_PER_LEVEL = b.comment("Augmentation du nombre de membres autorisés par niveau").defineInRange("playersPerLevel", 1, 0, 2000);

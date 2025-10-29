@@ -12,7 +12,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 
-@EventBusSubscriber(modid = "erinium_faction", bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = "erinium_faction", value = Dist.CLIENT)
 public class BlockHpRenderer {
 
 	private static BlockPos lastPos = null;

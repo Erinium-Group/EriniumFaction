@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.eriniumgroup.erinium_faction.client.overlay.FactionTitleOverlay;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -27,6 +29,12 @@ public class EFClient {
     // Zone cliquable du bouton HUD courant
     private static int btnX, btnY, btnS;
     private static boolean mouseOver;
+
+
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent e) {
+        // Rien pour l’instant
+    }
 
     @SubscribeEvent
     public static void onRegisterKeys(RegisterKeyMappingsEvent e) {
@@ -89,9 +97,11 @@ public class EFClient {
                     var mGet = v.getClass().getMethod("get");
                     Object gv = mGet.invoke(v);
                     if (gv instanceof Boolean b2) return b2;
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
             }
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
         try {
             // Tentative 2: mc.gui.getDebugOverlay().showDebugScreen()
             var mGetDbg = mc.gui.getClass().getMethod("getDebugOverlay");
@@ -102,10 +112,12 @@ public class EFClient {
                         var m = dbg.getClass().getMethod(name);
                         Object r = m.invoke(dbg);
                         if (r instanceof Boolean b) return b;
-                    } catch (Throwable ignored) {}
+                    } catch (Throwable ignored) {
+                    }
                 }
             }
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
         // Si non détecté, considérer comme non debug
         return false;
     }
@@ -129,18 +141,37 @@ public class EFClient {
 
         int x = 0, y = 0;
         switch (anchor.toUpperCase(Locale.ROOT)) {
-            case "TOP_LEFT" -> { x = offX; y = offY; }
-            case "TOP_RIGHT" -> { x = w - offX - size; y = offY; }
-            case "BOTTOM_LEFT" -> { x = offX; y = h - offY - size; }
-            case "BOTTOM_RIGHT" -> { x = w - offX - size; y = h - offY - size; }
-            default -> { x = w - offX - size; y = offY; }
+            case "TOP_LEFT" -> {
+                x = offX;
+                y = offY;
+            }
+            case "TOP_RIGHT" -> {
+                x = w - offX - size;
+                y = offY;
+            }
+            case "BOTTOM_LEFT" -> {
+                x = offX;
+                y = h - offY - size;
+            }
+            case "BOTTOM_RIGHT" -> {
+                x = w - offX - size;
+                y = h - offY - size;
+            }
+            default -> {
+                x = w - offX - size;
+                y = offY;
+            }
         }
-        btnX = x; btnY = y; btnS = size;
+        btnX = x;
+        btnY = y;
+        btnS = size;
 
         // Tentative d’afficher une texture personnalisée
         String theme = EFClientConfig.MAP_BUTTON_THEME.get();
         boolean dark = switch (theme.toUpperCase(Locale.ROOT)) {
-            case "LIGHT" -> false; case "DARK" -> true; default -> mc.options.darkMojangStudiosBackground().get();
+            case "LIGHT" -> false;
+            case "DARK" -> true;
+            default -> mc.options.darkMojangStudiosBackground().get();
         };
         String rl = dark ? EFClientConfig.MAP_BUTTON_TEXTURE_DARK.get() : EFClientConfig.MAP_BUTTON_TEXTURE_LIGHT.get();
         try {

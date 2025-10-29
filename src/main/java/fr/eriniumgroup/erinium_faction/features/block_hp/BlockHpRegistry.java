@@ -27,7 +27,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, modid = "erinium_faction")
+@EventBusSubscriber(modid = "erinium_faction")
 public final class BlockHpRegistry extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().create();
     private static final Map<ResourceLocation, Integer> MAP = new HashMap<>();

@@ -26,6 +26,9 @@ public final class EFClientConfig {
 
     public static final ModConfigSpec.BooleanValue AUTO_SCREEN_RESIZE;
 
+    public static final ModConfigSpec.IntValue NAME_MAX_LENGTH;
+    public static final ModConfigSpec.IntValue DESCRIPTION_MAX_LENGTH;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
         b.push("keybinds");
@@ -54,6 +57,11 @@ public final class EFClientConfig {
 
         b.push("Client Screen");
         AUTO_SCREEN_RESIZE = b.comment("Auto resize to 800x600 if you want to put under set false but you may have problem with GUI").define("enabled", true);
+        b.pop();
+
+        b.push("factionFields");
+        NAME_MAX_LENGTH = b.comment("Nombre max de caractères pour le nom de faction").defineInRange("nameMaxLength", 16, 1, 64);
+        DESCRIPTION_MAX_LENGTH = b.comment("Nombre max de caractères pour la description de faction").defineInRange("descriptionMaxLength", 150, 1, 500);
         b.pop();
 
         SPEC = b.build();
