@@ -238,6 +238,10 @@
   "erinium_faction.gui.page.settings": "Paramètres",
   "erinium_faction.gui.page.permissions": "Permissions",
 
+  "erinium_faction.gui.toast.error.perm": "Erreur de permission",
+  "erinium_faction.gui.toast.error.onlyOwner": "Seul le gérant peut accéder à ça",
+  "erinium_faction.gui.toast.error.nopermission": "Vous devez avoir la permission : %s",
+
   "erinium_faction.gui.power": "PUISSANCE",
   "erinium_faction.gui.close": "X",
 

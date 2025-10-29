@@ -2,8 +2,12 @@ package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.eriniumgroup.erinium_faction.core.EFC;
+import fr.eriniumgroup.erinium_faction.core.faction.Faction;
+import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
+import fr.eriniumgroup.erinium_faction.core.faction.Permission;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.ToastManager;
 import fr.eriniumgroup.erinium_faction.gui.screens.pages.*;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
 import fr.eriniumgroup.erinium_faction.init.EFScreens;
@@ -38,6 +42,8 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     private final Player entity;
     private boolean menuStateUpdateActive = false;
 
+    private final ToastManager toastManager = ToastManager.getInstance();
+
     // Taille FIXE du GUI: 400×270 (PAS DE SCALING)
     // Les slots Minecraft ne peuvent pas être scalés car ils ont des positions fixes
     private static final int BASE_W = 400;
@@ -45,6 +51,8 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     private double scaleX = 1.0;
     private double scaleY = 1.0;
+    // Récupérer les données de faction
+    FactionSnapshot factionData;
 
     // Enum des pages (basées sur les SVG existants)
     public enum PageType {
@@ -105,6 +113,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         // Initialiser les données de faction depuis le snapshot du menu
         if (container.snapshot != null) {
             FactionClientData.setFactionData(container.snapshot);
+            factionData = FactionClientData.getFactionData();
         }
     }
 
@@ -229,6 +238,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         if (currentPage == PageType.CHEST) {
             this.renderTooltip(guiGraphics, mouseX, mouseY);
         }
+        toastManager.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -256,6 +266,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         if (page != null) {
             page.tick();
         }
+        toastManager.tick();
     }
 
     @Override
@@ -284,8 +295,6 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         int logoY = sy(28);
         g.fill(logoX - sw(10), logoY - sh(10), logoX + sw(10), logoY + sh(10), 0xCCec4899);
 
-        // Récupérer les données de faction
-        FactionSnapshot factionData = FactionClientData.getFactionData();
         String factionName = factionData != null ? factionData.displayName : "No Faction";
         String factionInitial = factionName.isEmpty() ? "?" : factionName.substring(0, 1).toUpperCase();
 
@@ -474,6 +483,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (toastManager.mouseClicked(mouseX, mouseY, button)) return true;
         if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
 
         // Navigation scrollbar
@@ -641,20 +651,41 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         // Vérifier les permissions selon la page
         switch (page) {
             case CHEST:
-                return hasPermission("ACCESS_CHEST");
+                return hasPermission(Permission.ACCESS_CHEST);
             case SETTINGS_FACTION:
+                Faction fac = FactionManager.getById(factionData.id);
+                if (fac != null && fac.getOwner().equals(entity.getUUID())) {
+                    return true;
+                }
+                ToastManager.error(
+                    Component.translatable("erinium_faction.gui.toast.error.perm"),
+                    Component.translatable("erinium_faction.gui.toast.error.onlyOwner")
+                );
+                return false;
             case SETTINGS_PERMISSIONS:
-                return hasPermission("MANAGE_FACTION");
+                return hasPermission(Permission.MANAGE_PERMISSIONS);
             case ADMINSHOP:
-                return hasPermission("USE_SHOP");
+                return hasPermission(Permission.MANAGE_SHOP);
             default:
                 return true; // Pages publiques
         }
     }
 
+    // Surcharge pour accepter l'enum Permission (recommandé)
+    private boolean hasPermission(Permission permission) {
+        return hasPermission(permission.getServerKey());
+    }
+
+    // Méthode originale pour accepter les strings
     private boolean hasPermission(String permission) {
-        // Récupérer les permissions du joueur depuis FactionManager
-        // return FactionManager.playerHasPermission(entity.getUUID(), permission);
-        return true; // Pour l'instant, toutes les permissions sont accordées
+        Faction fac = FactionManager.getById(factionData.id);
+        if (fac != null && fac.hasPermission(entity.getUUID(), permission)) {
+            return true;
+        }
+        ToastManager.error(
+            Component.translatable("erinium_faction.gui.toast.error.perm"),
+            Component.translatable("erinium_faction.gui.toast.error.nopermission", permission)
+        );
+        return false;
     }
 }

@@ -359,6 +359,10 @@
   "erinium_faction.gui.nav.settings": "Settings",
   "erinium_faction.gui.nav.permissions": "Permissions",
 
+  "erinium_faction.gui.toast.error.perm": "Permissions Error",
+  "erinium_faction.gui.toast.error.onlyOwner": "Only Owner can access to this",
+  "erinium_faction.gui.toast.error.nopermission": "You need to have the permissions : %s",
+
   "erinium_faction.gui.bank.balance": "Balance:",
   "erinium_faction.gui.bank.your_balance": "Your Balance:",
   "erinium_faction.gui.bank.amount": "Amount:",

@@ -3,6 +3,7 @@ package fr.eriniumgroup.erinium_faction.gui.screens.pages;
 import fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
+import fr.eriniumgroup.erinium_faction.core.faction.Permission;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ScrollList;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.StyledButton;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
@@ -47,20 +48,20 @@ public class SettingsPermissionsPage extends FactionPage {
         }
     }
 
-    private static class Permission {
-        String key;         // Clé de traduction (ex: "invite_members")
-        String name;        // Nom traduit (ex: "Inviter des membres")
-        String description; // Description traduite
+    private static class PermissionDisplay {
+        Permission permission; // Permission enum
+        String name;           // Nom traduit (ex: "Inviter des membres")
+        String description;    // Description traduite
 
-        Permission(String key, String name, String description) {
-            this.key = key;
+        PermissionDisplay(Permission permission, String name, String description) {
+            this.permission = permission;
             this.name = name;
             this.description = description;
         }
     }
 
     private Rank selectedRank = Rank.OFFICER;
-    private ScrollList<Permission> permissionScrollList;
+    private ScrollList<PermissionDisplay> permissionScrollList;
     private final Map<Rank, Set<String>> rankPermissions = new HashMap<>();
     private final List<StyledButton> actionButtons = new ArrayList<>();
 
@@ -115,108 +116,36 @@ public class SettingsPermissionsPage extends FactionPage {
     }
 
     private String convertServerPermToGui(String serverPerm) {
-        // Mapping complet de toutes les permissions
-        return switch (serverPerm) {
-            case "faction.invite" -> translate("erinium_faction.gui.permissions.invite_members");
-            case "faction.kick" -> translate("erinium_faction.gui.permissions.kick_members");
-            case "faction.claim" -> translate("erinium_faction.gui.permissions.claim_territory");
-            case "faction.unclaim" -> translate("erinium_faction.gui.permissions.unclaim_territory");
-            case "faction.build", "block.place" -> translate("erinium_faction.gui.permissions.build");
-            case "faction.break", "block.break" -> translate("erinium_faction.gui.permissions.break");
-            case "block.interact" -> translate("erinium_faction.gui.permissions.interact");
-            case "faction.use.doors" -> translate("erinium_faction.gui.permissions.use_doors");
-            case "faction.use.buttons" -> translate("erinium_faction.gui.permissions.use_buttons");
-            case "faction.use.levers" -> translate("erinium_faction.gui.permissions.use_levers");
-            case "faction.use.containers" -> translate("erinium_faction.gui.permissions.use_containers");
-            case "faction.manage.permissions" -> translate("erinium_faction.gui.permissions.manage_permissions");
-            case "faction.manage.alliances" -> translate("erinium_faction.gui.permissions.manage_alliances");
-            case "faction.manage.economy" -> translate("erinium_faction.gui.permissions.manage_economy");
-            case "faction.use.teleports" -> translate("erinium_faction.gui.permissions.use_teleports");
-            case "faction.set.home" -> translate("erinium_faction.gui.permissions.set_home");
-            case "faction.create.warps" -> translate("erinium_faction.gui.permissions.create_warps");
-            case "faction.delete.warps" -> translate("erinium_faction.gui.permissions.delete_warps");
-            case "faction.manage.shop" -> translate("erinium_faction.gui.permissions.manage_shop");
-            case "faction.access.chest" -> translate("erinium_faction.gui.permissions.access_chest");
-            case "faction.manage.chest" -> translate("erinium_faction.gui.permissions.manage_chest");
-            default -> null;
-        };
-    }
+        // Utiliser l'enum pour la conversion
+        Permission perm = Permission.fromServerKey(serverPerm);
+        if (perm != null) {
+            return translate(perm.getTranslationKey());
+        }
 
-    private String convertKeyToServer(String key) {
-        // Convertir la clé de traduction en permission serveur (utiliser les nouveaux noms block.*)
-        return switch (key) {
-            case "invite_members" -> "faction.invite";
-            case "kick_members" -> "faction.kick";
-            case "claim_territory" -> "faction.claim";
-            case "unclaim_territory" -> "faction.unclaim";
-            case "build" -> "block.place";
-            case "break" -> "block.break";
-            case "interact" -> "block.interact";
-            case "use_doors" -> "faction.use.doors";
-            case "use_buttons" -> "faction.use.buttons";
-            case "use_levers" -> "faction.use.levers";
-            case "use_containers" -> "faction.use.containers";
-            case "manage_permissions" -> "faction.manage.permissions";
-            case "manage_alliances" -> "faction.manage.alliances";
-            case "manage_economy" -> "faction.manage.economy";
-            case "use_teleports" -> "faction.use.teleports";
-            case "set_home" -> "faction.set.home";
-            case "create_warps" -> "faction.create.warps";
-            case "delete_warps" -> "faction.delete.warps";
-            case "manage_shop" -> "faction.manage.shop";
-            case "access_chest" -> "faction.access.chest";
-            case "manage_chest" -> "faction.manage.chest";
-            default -> null;
-        };
+        // Compatibilité avec les anciennes clés (faction.build -> block.place, etc.)
+        if ("faction.build".equals(serverPerm)) {
+            perm = Permission.BUILD;
+        } else if ("faction.break".equals(serverPerm)) {
+            perm = Permission.BREAK;
+        }
+
+        if (perm != null) {
+            return translate(perm.getTranslationKey());
+        }
+
+        EFC.log.warn("§6Permissions", "§cUnknown server permission: §e{}", serverPerm);
+        return null;
     }
 
     private String convertGuiPermToServer(String guiPerm) {
-        // Utiliser une approche inverse : tester toutes les traductions
-        String inviteMembers = translate("erinium_faction.gui.permissions.invite_members");
-        String kickMembers = translate("erinium_faction.gui.permissions.kick_members");
-        String claimTerritory = translate("erinium_faction.gui.permissions.claim_territory");
-        String unclaimTerritory = translate("erinium_faction.gui.permissions.unclaim_territory");
-        String build = translate("erinium_faction.gui.permissions.build");
-        String breakPerm = translate("erinium_faction.gui.permissions.break");
-        String interact = translate("erinium_faction.gui.permissions.interact");
-        String useDoors = translate("erinium_faction.gui.permissions.use_doors");
-        String useButtons = translate("erinium_faction.gui.permissions.use_buttons");
-        String useLevers = translate("erinium_faction.gui.permissions.use_levers");
-        String useContainers = translate("erinium_faction.gui.permissions.use_containers");
-        String managePermissions = translate("erinium_faction.gui.permissions.manage_permissions");
-        String manageAlliances = translate("erinium_faction.gui.permissions.manage_alliances");
-        String manageEconomy = translate("erinium_faction.gui.permissions.manage_economy");
-        String useTeleports = translate("erinium_faction.gui.permissions.use_teleports");
-        String setHome = translate("erinium_faction.gui.permissions.set_home");
-        String createWarps = translate("erinium_faction.gui.permissions.create_warps");
-        String deleteWarps = translate("erinium_faction.gui.permissions.delete_warps");
-        String manageShop = translate("erinium_faction.gui.permissions.manage_shop");
-        String accessChest = translate("erinium_faction.gui.permissions.access_chest");
-        String manageChest = translate("erinium_faction.gui.permissions.manage_chest");
+        // Rechercher dans toutes les permissions celle qui correspond à la traduction
+        for (Permission perm : Permission.all()) {
+            String translated = translate(perm.getTranslationKey());
+            if (translated.equals(guiPerm)) {
+                return perm.getServerKey();
+            }
+        }
 
-        if (guiPerm.equals(inviteMembers)) return "faction.invite";
-        if (guiPerm.equals(kickMembers)) return "faction.kick";
-        if (guiPerm.equals(claimTerritory)) return "faction.claim";
-        if (guiPerm.equals(unclaimTerritory)) return "faction.unclaim";
-        if (guiPerm.equals(build)) return "block.place";
-        if (guiPerm.equals(breakPerm)) return "block.break";
-        if (guiPerm.equals(interact)) return "block.interact";
-        if (guiPerm.equals(useDoors)) return "faction.use.doors";
-        if (guiPerm.equals(useButtons)) return "faction.use.buttons";
-        if (guiPerm.equals(useLevers)) return "faction.use.levers";
-        if (guiPerm.equals(useContainers)) return "faction.use.containers";
-        if (guiPerm.equals(managePermissions)) return "faction.manage.permissions";
-        if (guiPerm.equals(manageAlliances)) return "faction.manage.alliances";
-        if (guiPerm.equals(manageEconomy)) return "faction.manage.economy";
-        if (guiPerm.equals(useTeleports)) return "faction.use.teleports";
-        if (guiPerm.equals(setHome)) return "faction.set.home";
-        if (guiPerm.equals(createWarps)) return "faction.create.warps";
-        if (guiPerm.equals(deleteWarps)) return "faction.delete.warps";
-        if (guiPerm.equals(manageShop)) return "faction.manage.shop";
-        if (guiPerm.equals(accessChest)) return "faction.access.chest";
-        if (guiPerm.equals(manageChest)) return "faction.manage.chest";
-
-        // Pas de fallback - retourner null si pas reconnu
         EFC.log.warn("§6Permissions", "§cUnknown permission GUI: §e{}", guiPerm);
         return null;
     }
@@ -233,35 +162,23 @@ public class SettingsPermissionsPage extends FactionPage {
         if (permissionScrollList == null) {
             permissionScrollList = new ScrollList<>(font, this::renderPermissionItem, sh(24, scaleY));
 
-            // Charger les permissions depuis les clés de langue
-            List<Permission> permissions = new ArrayList<>();
-            String[] permKeys = {
-                "invite_members", "kick_members", "claim_territory", "unclaim_territory",
-                "build", "break", "interact", "use_containers",
-                "manage_permissions", "manage_alliances", "manage_economy", "use_teleports",
-                "set_home", "create_warps", "delete_warps", "manage_shop", "access_chest", "manage_chest"
-            };
-
-            for (String key : permKeys) {
-                String name = translate("erinium_faction.gui.permissions." + key);
-                String desc = translate("erinium_faction.gui.permissions." + key + ".desc");
-                permissions.add(new Permission(key, name, desc));
+            // Charger les permissions depuis l'enum
+            List<PermissionDisplay> permissions = new ArrayList<>();
+            for (Permission perm : Permission.all()) {
+                String name = translate(perm.getTranslationKey());
+                String desc = translate(perm.getDescriptionKey());
+                permissions.add(new PermissionDisplay(perm, name, desc));
             }
 
             permissionScrollList.setItems(permissions);
-            permissionScrollList.setOnItemClick(perm -> {
+            permissionScrollList.setOnItemClick(permDisplay -> {
                 Set<String> perms = rankPermissions.get(selectedRank);
                 String rankId = selectedRank.getId();
-                String serverPerm = convertKeyToServer(perm.key);
+                String serverPerm = permDisplay.permission.getServerKey();
 
-                if (serverPerm == null) {
-                    EFC.log.error("§6Permissions", "§cCannot convert permission key §e{} §cto server format", perm.key);
-                    return;
-                }
-
-                if (perms.contains(perm.name)) {
+                if (perms.contains(permDisplay.name)) {
                     // Retirer localement pour feedback immédiat
-                    perms.remove(perm.name);
+                    perms.remove(permDisplay.name);
                     // Envoyer au serveur
                     PacketDistributor.sendToServer(new FactionActionPacket(
                         FactionActionPacket.ActionType.REMOVE_RANK_PERMISSION,
@@ -270,7 +187,7 @@ public class SettingsPermissionsPage extends FactionPage {
                     ));
                 } else {
                     // Ajouter localement pour feedback immédiat
-                    perms.add(perm.name);
+                    perms.add(permDisplay.name);
                     // Envoyer au serveur
                     PacketDistributor.sendToServer(new FactionActionPacket(
                         FactionActionPacket.ActionType.ADD_RANK_PERMISSION,
@@ -299,18 +216,18 @@ public class SettingsPermissionsPage extends FactionPage {
             StyledButton resetBtn = new StyledButton(font, translate("erinium_faction.gui.permissions.button.reset"), () -> {
                 EFC.log.info("§6Permissions", "§aResetting to default permissions");
 
-                // Définir les permissions par défaut pour chaque rang (utiliser les CLÉS)
-                Map<Rank, List<String>> defaultPermKeys = new HashMap<>();
-                defaultPermKeys.put(Rank.OFFICER, Arrays.asList(
-                    "invite_members", "kick_members", "claim_territory", "unclaim_territory",
-                    "build", "break", "interact", "use_containers",
-                    "manage_permissions", "manage_alliances"
+                // Définir les permissions par défaut pour chaque rang (utiliser l'enum)
+                Map<Rank, List<Permission>> defaultPerms = new HashMap<>();
+                defaultPerms.put(Rank.OFFICER, Arrays.asList(
+                    Permission.INVITE_MEMBERS, Permission.KICK_MEMBERS, Permission.CLAIM_TERRITORY, Permission.UNCLAIM_TERRITORY,
+                    Permission.BUILD, Permission.BREAK, Permission.INTERACT, Permission.USE_CONTAINERS,
+                    Permission.MANAGE_PERMISSIONS, Permission.MANAGE_ALLIANCES
                 ));
-                defaultPermKeys.put(Rank.MEMBER, Arrays.asList(
-                    "invite_members", "claim_territory", "build", "break", "interact", "use_containers"
+                defaultPerms.put(Rank.MEMBER, Arrays.asList(
+                    Permission.INVITE_MEMBERS, Permission.CLAIM_TERRITORY, Permission.BUILD, Permission.BREAK, Permission.INTERACT, Permission.USE_CONTAINERS
                 ));
-                defaultPermKeys.put(Rank.RECRUIT, Arrays.asList(
-                    "build", "break", "interact", "use_containers"
+                defaultPerms.put(Rank.RECRUIT, Arrays.asList(
+                    Permission.BUILD, Permission.BREAK, Permission.INTERACT, Permission.USE_CONTAINERS
                 ));
 
                 // Pour chaque rang, supprimer toutes les permissions actuelles puis ajouter les permissions par défaut
@@ -331,19 +248,16 @@ public class SettingsPermissionsPage extends FactionPage {
                     }
 
                     // Ajouter les permissions par défaut
-                    List<String> defaultKeys = defaultPermKeys.getOrDefault(rank, new ArrayList<>());
+                    List<Permission> defaults = defaultPerms.getOrDefault(rank, new ArrayList<>());
                     Set<String> defaultPermsTranslated = new HashSet<>();
-                    for (String key : defaultKeys) {
-                        String serverPerm = convertKeyToServer(key);
-                        if (serverPerm != null) {
-                            PacketDistributor.sendToServer(new FactionActionPacket(
-                                FactionActionPacket.ActionType.ADD_RANK_PERMISSION,
-                                rankId,
-                                serverPerm
-                            ));
-                            // Stocker la traduction pour la mise à jour locale
-                            defaultPermsTranslated.add(translate("erinium_faction.gui.permissions." + key));
-                        }
+                    for (Permission perm : defaults) {
+                        PacketDistributor.sendToServer(new FactionActionPacket(
+                            FactionActionPacket.ActionType.ADD_RANK_PERMISSION,
+                            rankId,
+                            perm.getServerKey()
+                        ));
+                        // Stocker la traduction pour la mise à jour locale
+                        defaultPermsTranslated.add(translate(perm.getTranslationKey()));
                     }
 
                     // Mettre à jour localement pour feedback immédiat
@@ -359,19 +273,16 @@ public class SettingsPermissionsPage extends FactionPage {
                 String rankId = selectedRank.getId();
 
                 // Pour chaque permission dans la liste
-                for (Permission perm : permissionScrollList.getItems()) {
+                for (PermissionDisplay permDisplay : permissionScrollList.getItems()) {
                     // Si la permission n'est pas déjà accordée
-                    if (!rankPermissions.get(selectedRank).contains(perm.name)) {
-                        String serverPerm = convertKeyToServer(perm.key);
-                        if (serverPerm != null) {
-                            PacketDistributor.sendToServer(new FactionActionPacket(
-                                FactionActionPacket.ActionType.ADD_RANK_PERMISSION,
-                                rankId,
-                                serverPerm
-                            ));
-                            // Mettre à jour localement pour feedback immédiat
-                            rankPermissions.get(selectedRank).add(perm.name);
-                        }
+                    if (!rankPermissions.get(selectedRank).contains(permDisplay.name)) {
+                        PacketDistributor.sendToServer(new FactionActionPacket(
+                            FactionActionPacket.ActionType.ADD_RANK_PERMISSION,
+                            rankId,
+                            permDisplay.permission.getServerKey()
+                        ));
+                        // Mettre à jour localement pour feedback immédiat
+                        rankPermissions.get(selectedRank).add(permDisplay.name);
                     }
                 }
             });
@@ -380,7 +291,7 @@ public class SettingsPermissionsPage extends FactionPage {
         }
     }
 
-    private void renderPermissionItem(GuiGraphics g, Permission perm, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
+    private void renderPermissionItem(GuiGraphics g, PermissionDisplay perm, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         boolean hasPermission = rankPermissions.get(selectedRank).contains(perm.name);
         int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
         g.fill(x, y, x + width, y + height, bgColor);

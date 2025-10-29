@@ -8,6 +8,7 @@ import java.util.*;
  * Petit snapshot sérialisable pour UI client.
  */
 public class FactionSnapshot {
+    public String id;
     public String name;
     public String displayName;
     public int claims;
@@ -90,6 +91,7 @@ public class FactionSnapshot {
 
     public static FactionSnapshot of(Faction f, net.minecraft.server.level.ServerPlayer viewer) {
         FactionSnapshot s = new FactionSnapshot();
+        s.id = f.getId();
         s.name = f.getName();
         s.displayName = f.getName();
         // claims depuis SavedData
@@ -191,6 +193,7 @@ public class FactionSnapshot {
     }
 
     public static void write(FactionSnapshot s, FriendlyByteBuf buf) {
+        buf.writeUtf(s.id == null ? "" : s.id);
         buf.writeUtf(s.name == null ? "" : s.name);
         buf.writeUtf(s.displayName == null ? "" : s.displayName);
         buf.writeVarInt(s.claims);
@@ -259,6 +262,7 @@ public class FactionSnapshot {
 
     public static FactionSnapshot read(FriendlyByteBuf buf) {
         FactionSnapshot s = new FactionSnapshot();
+        s.id = buf.readUtf();
         s.name = buf.readUtf();
         s.displayName = buf.readUtf();
         s.claims = buf.readVarInt();

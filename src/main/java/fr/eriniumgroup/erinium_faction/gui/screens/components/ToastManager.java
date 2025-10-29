@@ -59,8 +59,9 @@ public class ToastManager {
         error(Component.literal(title), Component.literal(message));
     }
 
-    public static void error(Component title, Component message) {
+    public static boolean error(Component title, Component message) {
         getInstance().showToast(ToastNotification.ToastType.ERROR, title, message, DEFAULT_DURATION);
+        return false;
     }
 
     public static void error(String title, String message, int duration) {
