@@ -88,10 +88,16 @@ public class AlliancesPage extends FactionPage {
             StyledButton addButton = new StyledButton(font, translate("erinium_faction.gui.alliances.add"), () -> {
                 // Ouvrir le popup
                 if (addAlliancePopup != null) {
-                    // TODO: Charger la liste des factions depuis le serveur
-                    List<String> factionIds = new ArrayList<>();
-                    List<String> factionNames = new ArrayList<>();
-                    List<Integer> memberCounts = new ArrayList<>();
+                    // Demander la liste des factions au serveur
+                    net.neoforged.neoforge.network.PacketDistributor.sendToServer(
+                        new fr.eriniumgroup.erinium_faction.common.network.packets.FactionListRequestMessage()
+                    );
+
+                    // Charger les données depuis le cache (elles seront vides au premier clic, puis remplies après la réponse)
+                    List<String> factionIds = FactionListCache.getFactionIds();
+                    List<String> factionNames = FactionListCache.getFactionNames();
+                    List<Integer> memberCounts = FactionListCache.getMemberCounts();
+
                     addAlliancePopup.loadFactions(factionIds, factionNames, memberCounts);
 
                     var mc = net.minecraft.client.Minecraft.getInstance();

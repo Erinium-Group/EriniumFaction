@@ -50,6 +50,9 @@ public class AddAlliancePopup extends Popup {
 
     @Override
     protected void onOpen() {
+        // S'enregistrer pour recevoir les mises à jour
+        FactionListCache.registerPopup(this);
+
         // Initialiser le champ de recherche
         if (searchField == null) {
             searchField = new StyledTextField(font);
@@ -57,6 +60,7 @@ public class AddAlliancePopup extends Popup {
             searchField.setOnChange(text -> updateFilter());
         }
         searchField.setBounds(x + sw(10), y + sh(34), width - sw(20), sh(20));
+        searchField.setFocused(true); // Auto-focus le champ de recherche
 
         // Initialiser la liste de factions
         if (factionList == null) {
@@ -70,6 +74,9 @@ public class AddAlliancePopup extends Popup {
 
     @Override
     protected void onClose() {
+        // Se désenregistrer pour ne plus recevoir les mises à jour
+        FactionListCache.unregisterPopup();
+
         if (searchField != null) {
             searchField.setText("");
         }

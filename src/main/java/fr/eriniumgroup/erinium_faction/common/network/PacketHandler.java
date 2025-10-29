@@ -49,6 +49,10 @@ public class PacketHandler {
         registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage::handleData);
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage::handleData);
 
+        // Paquets liste des factions
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.FactionListRequestMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionListRequestMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionListRequestMessage::handleData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionListDataMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionListDataMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionListDataMessage::handleData);
+
         // Nouveau paquet clientbound: afficher un titre overlay
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionTitlePacket::handleData);
 
