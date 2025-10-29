@@ -32,6 +32,10 @@ public class EFVariables {
         @SubscribeEvent
         public static void onPlayerLoggedInSyncPlayerVariables(PlayerEvent.PlayerLoggedInEvent event) {
             if (event.getEntity() instanceof ServerPlayer player) {
+                // Assigner le rank "default" si le joueur n'en a pas
+                if (fr.eriniumgroup.erinium_faction.core.rank.EFRManager.get().getPlayerRankId(player.getUUID()) == null) {
+                    fr.eriniumgroup.erinium_faction.core.rank.EFRManager.get().setPlayerRank(player.getUUID(), "default");
+                }
                 // mettre à jour les variables depuis le serveur avant sync
                 fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(player, player.getData(PLAYER_VARIABLES));
                 player.getData(PLAYER_VARIABLES).syncPlayerVariables(event.getEntity());

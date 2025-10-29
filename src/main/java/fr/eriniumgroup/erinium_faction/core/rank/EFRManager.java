@@ -139,9 +139,13 @@ public class EFRManager {
         if (ranks.isEmpty()) {
             Rank def = new Rank("default", "§7Joueur", 0);
             // Permissions de base pour ne pas bloquer l'expérience vanilla
-            def.permissions.add("player.*");
-            def.permissions.add("server.command.*");
+            def.permissions.add("player.*");              // Actions de base (break, place, interact)
+            def.permissions.add("server.command.*");      // Accès aux commandes
+            def.permissions.add("ef.faction.*");          // Accès aux commandes de faction
             Rank vip = new Rank("vip", "§6VIP", 10);
+            vip.permissions.add("player.*");
+            vip.permissions.add("server.command.*");
+            vip.permissions.add("ef.faction.*");
             vip.permissions.add("efr.example.kit.vip");
             ranks.put(def.id, def);
             ranks.put(vip.id, vip);

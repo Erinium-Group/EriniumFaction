@@ -99,14 +99,18 @@ public class ClaimProtection {
     }
 
     private static boolean canModifyInClaim(Player player, ClaimKey claim, String actionNode) {
+        // Wilderness: toujours autorisé
         if (!FactionManager.isClaimed(claim)) return true;
 
         String claimOwner = FactionManager.getClaimOwner(claim);
+
+        // Wilderness retourne "wilderness" depuis getClaimOwner, mais isClaimed a déjà vérifié
+        // Si pas de faction du tout, refuser l'accès aux claims d'autres factions
         Faction playerFaction = FactionManager.getPlayerFactionObject(player.getUUID());
         if (playerFaction == null) return false;
 
         // même faction: appliquer overrides du claim si présents
-        if (claimOwner != null && claimOwner.equalsIgnoreCase(playerFaction.getId())) {
+        if (claimOwner != null && !claimOwner.equals("wilderness") && claimOwner.equalsIgnoreCase(playerFaction.getId())) {
             // Owner de la faction a tous les droits
             if (playerFaction.getOwner() != null && playerFaction.getOwner().equals(player.getUUID())) return true;
             String rankId = playerFaction.getMemberRank(player.getUUID());

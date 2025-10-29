@@ -139,10 +139,6 @@ public class FactionCommand {
                 return 0;
             }
             ClaimKey key = ClaimKey.of(sp.level().dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
-            if (FactionManager.isClaimed(key)) {
-                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claim.already"));
-                return 0;
-            }
             boolean ok = FactionManager.tryClaim(key, f.getId());
             if (!ok) {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claim.limit"));

@@ -68,10 +68,16 @@ public class RankDefaultsSavedData extends SavedData {
         defaults.put("member", new LinkedHashSet<>(List.of(
                 "faction.chat",
                 "faction.use.warp",
-                "faction.bank.deposit"
+                "faction.bank.deposit",
+                "block.break",
+                "block.place",
+                "block.interact"
         )));
         defaults.put("recruit", new LinkedHashSet<>(List.of(
-                "faction.chat"
+                "faction.chat",
+                "block.break",
+                "block.place",
+                "block.interact"
         )));
         setDirty();
     }
