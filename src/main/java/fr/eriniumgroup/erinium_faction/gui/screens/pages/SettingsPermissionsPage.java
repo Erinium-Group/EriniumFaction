@@ -74,6 +74,73 @@ public class SettingsPermissionsPage extends FactionPage {
         }
     }
 
+    /**
+     * Obtient le rang du joueur actuel dans la faction
+     * @return Le rang du joueur ou null si non trouvé
+     */
+    private Rank getPlayerRank() {
+        var data = getFactionData();
+        if (data == null) return null;
+
+        // Obtenir l'UUID du joueur
+        var player = net.minecraft.client.Minecraft.getInstance().player;
+        if (player == null) return null;
+
+        java.util.UUID playerUUID = player.getUUID();
+
+        // Vérifier si le joueur est owner
+        if (data.ownerUUID != null && data.ownerUUID.equals(playerUUID)) {
+            return null; // Owner n'a pas de rang, il peut tout faire
+        }
+
+        // Obtenir le rang du joueur depuis membersRank
+        String rankId = data.membersRank.get(playerUUID);
+        if (rankId == null) return null;
+
+        // Convertir l'ID de rang en enum Rank
+        return getRankByName(rankId);
+    }
+
+    /**
+     * Vérifie si le joueur peut modifier les permissions du rang spécifié
+     * @param targetRank Le rang cible à modifier
+     * @return true si le joueur peut modifier ce rang
+     */
+    private boolean canModifyRank(Rank targetRank) {
+        var data = getFactionData();
+        if (data == null) return false;
+
+        var player = net.minecraft.client.Minecraft.getInstance().player;
+        if (player == null) return false;
+
+        java.util.UUID playerUUID = player.getUUID();
+
+        // Owner peut tout modifier
+        if (data.ownerUUID != null && data.ownerUUID.equals(playerUUID)) {
+            return true;
+        }
+
+        Rank playerRank = getPlayerRank();
+        if (playerRank == null) return false;
+
+        // Recrue ne peut rien modifier
+        if (playerRank == Rank.RECRUIT) {
+            return false;
+        }
+
+        // Officier peut modifier uniquement Membre et Recrue (pas son propre rang)
+        if (playerRank == Rank.OFFICER) {
+            return targetRank == Rank.MEMBER || targetRank == Rank.RECRUIT;
+        }
+
+        // Membre peut modifier uniquement les Recrues
+        if (playerRank == Rank.MEMBER) {
+            return targetRank == Rank.RECRUIT;
+        }
+
+        return false;
+    }
+
     private void loadRealPermissions() {
         // Charger les vraies permissions depuis FactionSnapshot
         var data = getFactionData();
@@ -172,6 +239,12 @@ public class SettingsPermissionsPage extends FactionPage {
 
             permissionScrollList.setItems(permissions);
             permissionScrollList.setOnItemClick(permDisplay -> {
+                // Vérifier si le joueur peut modifier ce rang
+                if (!canModifyRank(selectedRank)) {
+                    EFC.log.warn("§6Permissions", "§cPlayer cannot modify rank §e{}", selectedRank.getDisplayName());
+                    return;
+                }
+
                 Set<String> perms = rankPermissions.get(selectedRank);
                 String rankId = selectedRank.getId();
                 String serverPerm = permDisplay.permission.getServerKey();
@@ -214,6 +287,18 @@ public class SettingsPermissionsPage extends FactionPage {
             actionButtons.add(saveBtn);
 
             StyledButton resetBtn = new StyledButton(font, translate("erinium_faction.gui.permissions.button.reset"), () -> {
+                // Vérifier les droits : seul owner peut reset toutes les permissions
+                var data = getFactionData();
+                if (data == null) return;
+                var player = net.minecraft.client.Minecraft.getInstance().player;
+                if (player == null) return;
+
+                boolean isOwner = data.ownerUUID != null && data.ownerUUID.equals(player.getUUID());
+                if (!isOwner) {
+                    EFC.log.warn("§6Permissions", "§cOnly owner can reset all permissions");
+                    return;
+                }
+
                 EFC.log.info("§6Permissions", "§aResetting to default permissions");
 
                 // Définir les permissions par défaut pour chaque rang (utiliser l'enum)
@@ -269,6 +354,12 @@ public class SettingsPermissionsPage extends FactionPage {
             actionButtons.add(resetBtn);
 
             StyledButton grantAllBtn = new StyledButton(font, translate("erinium_faction.gui.permissions.button.grant_all", selectedRank.getDisplayName()), () -> {
+                // Vérifier si le joueur peut modifier ce rang
+                if (!canModifyRank(selectedRank)) {
+                    EFC.log.warn("§6Permissions", "§cPlayer cannot modify rank §e{}", selectedRank.getDisplayName());
+                    return;
+                }
+
                 EFC.log.info("§6Permissions", "§aGranting all permissions to §e{}", selectedRank.getDisplayName());
                 String rankId = selectedRank.getId();
 
@@ -293,6 +384,8 @@ public class SettingsPermissionsPage extends FactionPage {
 
     private void renderPermissionItem(GuiGraphics g, PermissionDisplay perm, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY) {
         boolean hasPermission = rankPermissions.get(selectedRank).contains(perm.name);
+        boolean canModify = canModifyRank(selectedRank);
+
         int bgColor = hovered ? 0x40667eea : 0xE61e1e2e;
         g.fill(x, y, x + width, y + height, bgColor);
         g.fill(x, y, x + width, y + 1, 0x50667eea);
@@ -306,7 +399,10 @@ public class SettingsPermissionsPage extends FactionPage {
         boolean checkHovered = mouseX >= checkX && mouseX < checkX + checkSize &&
                               mouseY >= checkY && mouseY < checkY + checkSize;
         ResourceLocation checkboxTexture;
-        if (checkHovered) {
+        if (!canModify) {
+            // Si le joueur ne peut pas modifier, afficher la checkbox en grisé
+            checkboxTexture = hasPermission ? CHECKBOX_CHECKED : CHECKBOX_UNCHECKED;
+        } else if (checkHovered) {
             checkboxTexture = CHECKBOX_HOVER;
         } else if (hasPermission) {
             checkboxTexture = CHECKBOX_CHECKED;
@@ -315,13 +411,20 @@ public class SettingsPermissionsPage extends FactionPage {
         }
         ImageRenderer.renderScaledImage(g, checkboxTexture, checkX, checkY, checkSize, checkSize);
 
+        // Si le joueur ne peut pas modifier, appliquer une teinte grise
+        if (!canModify) {
+            g.fill(checkX, checkY, checkX + checkSize, checkY + checkSize, 0x80000000);
+        }
+
         // Permission name with scaling (décalé pour ne pas chevaucher la checkbox)
         int maxNameWidth = width - 22;
-        TextHelper.drawScaledText(g, font, perm.name, x + 18, y + 3, maxNameWidth, 0xFFffffff, false);
+        int nameColor = canModify ? 0xFFffffff : 0xFF808080;
+        TextHelper.drawScaledText(g, font, perm.name, x + 18, y + 3, maxNameWidth, nameColor, false);
 
         // Description with auto-scroll on hover (également décalée)
         boolean descHovered = TextHelper.isPointInBounds(mouseX, mouseY, x + 18, y + 12, maxNameWidth, font.lineHeight);
-        TextHelper.drawAutoScrollingText(g, font, perm.description, x + 18, y + 12, maxNameWidth, 0xFF9a9aae, false, descHovered, "perm_desc_" + perm.name);
+        int descColor = canModify ? 0xFF9a9aae : 0xFF606060;
+        TextHelper.drawAutoScrollingText(g, font, perm.description, x + 18, y + 12, maxNameWidth, descColor, false, descHovered, "perm_desc_" + perm.name);
     }
 
     @Override
@@ -357,22 +460,52 @@ public class SettingsPermissionsPage extends FactionPage {
             boolean isSelected = selectedRank == rank;
             boolean isHovered = mouseX >= rankX && mouseX < rankX + rankBtnWidth &&
                                mouseY >= rankY && mouseY < rankY + rankBtnHeight;
+            boolean canModify = canModifyRank(rank);
 
             int bgColor = isSelected ? rank.color : (isHovered ? 0xFF3a3a4e : 0xCC2a2a3e);
             g.fill(rankX, rankY, rankX + rankBtnWidth, rankY + rankBtnHeight, bgColor);
             g.fill(rankX, rankY, rankX + rankBtnWidth, rankY + 1, rank.color & 0x80FFFFFF);
 
+            // Si le joueur ne peut pas modifier ce rang, ajouter une teinte grise
+            if (!canModify && !isSelected) {
+                g.fill(rankX, rankY, rankX + rankBtnWidth, rankY + rankBtnHeight, 0x60000000);
+            }
+
             // Center text vertically avec troncature
             int maxRankTextWidth = rankBtnWidth - 4;
-            TextHelper.drawCenteredScaledText(g, font, rank.getDisplayName(), rankX + rankBtnWidth / 2, rankY + 2, maxRankTextWidth, 0xFFffffff);
+            int textColor = canModify ? 0xFFffffff : 0xFF808080;
+            TextHelper.drawCenteredScaledText(g, font, rank.getDisplayName(), rankX + rankBtnWidth / 2, rankY + 2, maxRankTextWidth, textColor);
 
             // Show permission count (plus bas et mieux espacé)
             int permCount = rankPermissions.get(rank).size();
-            g.drawCenteredString(font, String.valueOf(permCount), rankX + rankBtnWidth / 2, rankY + 10, 0xFFa0a0c0);
+            int countColor = canModify ? 0xFFa0a0c0 : 0xFF606060;
+            g.drawCenteredString(font, String.valueOf(permCount), rankX + rankBtnWidth / 2, rankY + 10, countColor);
+
+            // Afficher un petit cadenas si le rang ne peut pas être modifié
+            if (!canModify) {
+                String lockIcon = "\uD83D\uDD12"; // Emoji cadenas
+                g.drawString(font, lockIcon, rankX + 2, rankY + 2, 0xFFFF0000, false);
+            }
         }
 
         // Permissions list
         permissionScrollList.render(g, mouseX, mouseY);
+
+        // Mettre à jour l'état des boutons selon les permissions
+        if (actionButtons.size() >= 3) {
+            // Bouton Refresh : toujours activé
+            actionButtons.get(0).setEnabled(true);
+
+            // Bouton Reset : seulement pour l'owner
+            var data = getFactionData();
+            var player = net.minecraft.client.Minecraft.getInstance().player;
+            boolean isOwner = data != null && player != null &&
+                             data.ownerUUID != null && data.ownerUUID.equals(player.getUUID());
+            actionButtons.get(1).setEnabled(isOwner);
+
+            // Bouton Grant All : seulement si on peut modifier le rang sélectionné
+            actionButtons.get(2).setEnabled(canModifyRank(selectedRank));
+        }
 
         // Action buttons
         for (StyledButton btn : actionButtons) {

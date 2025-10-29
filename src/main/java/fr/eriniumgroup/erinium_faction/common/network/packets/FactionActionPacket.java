@@ -42,7 +42,11 @@ public record FactionActionPacket(ActionType action, String data1, String data2)
         UPDATE_DESCRIPTION(1),
         UPDATE_MODE(2),
         ADD_RANK_PERMISSION(3),
-        REMOVE_RANK_PERMISSION(4);
+        REMOVE_RANK_PERMISSION(4),
+        REQUEST_ALLIANCE(5),
+        ACCEPT_ALLIANCE(6),
+        REFUSE_ALLIANCE(7),
+        REMOVE_ALLIANCE(8);
 
         private final int id;
 
@@ -119,6 +123,105 @@ public record FactionActionPacket(ActionType action, String data1, String data2)
                         if (success) {
                             FactionManager.markDirty();
                             player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cPermission removed: " + packet.data2 + " from " + packet.data1));
+                        }
+                    }
+                    break;
+
+                case REQUEST_ALLIANCE:
+                    if (packet.data1 != null && !packet.data1.isEmpty()) {
+                        Faction targetFaction = FactionManager.getFaction(packet.data1);
+                        if (targetFaction == null) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cFaction not found!"));
+                            return;
+                        }
+                        if (targetFaction.getId().equals(faction.getId())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou cannot ally with yourself!"));
+                            return;
+                        }
+                        if (faction.getAllies().contains(targetFaction.getId())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou are already allied with this faction!"));
+                            return;
+                        }
+                        if (targetFaction.getAllyRequests().contains(faction.getId())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou already sent a request to this faction!"));
+                            return;
+                        }
+                        targetFaction.getAllyRequests().add(faction.getId());
+                        FactionManager.markDirty();
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§aAlliance request sent to " + targetFaction.getName()));
+                    }
+                    break;
+
+                case ACCEPT_ALLIANCE:
+                    if (packet.data1 != null && !packet.data1.isEmpty()) {
+                        Faction requestingFaction = FactionManager.getFaction(packet.data1);
+                        if (requestingFaction == null) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cFaction not found!"));
+                            return;
+                        }
+                        if (!faction.getAllyRequests().contains(requestingFaction.getId())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cNo alliance request from this faction!"));
+                            return;
+                        }
+                        // Ajouter l'alliance des deux côtés
+                        faction.getAllies().add(requestingFaction.getId());
+                        requestingFaction.getAllies().add(faction.getId());
+                        // Retirer la demande
+                        faction.getAllyRequests().remove(requestingFaction.getId());
+                        FactionManager.markDirty();
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§aAlliance accepted with " + requestingFaction.getName()));
+
+                        // Notifier l'autre faction
+                        for (var member : requestingFaction.getMembers().keySet()) {
+                            ServerPlayer sp = player.getServer().getPlayerList().getPlayer(member);
+                            if (sp != null) {
+                                sp.sendSystemMessage(net.minecraft.network.chat.Component.literal("§aYour alliance request to " + faction.getName() + " was accepted!"));
+                            }
+                        }
+                    }
+                    break;
+
+                case REFUSE_ALLIANCE:
+                    if (packet.data1 != null && !packet.data1.isEmpty()) {
+                        Faction requestingFaction = FactionManager.getFaction(packet.data1);
+                        if (requestingFaction == null) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cFaction not found!"));
+                            return;
+                        }
+                        if (!faction.getAllyRequests().contains(requestingFaction.getId())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cNo alliance request from this faction!"));
+                            return;
+                        }
+                        // Retirer la demande
+                        faction.getAllyRequests().remove(requestingFaction.getId());
+                        FactionManager.markDirty();
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cAlliance request refused from " + requestingFaction.getName()));
+                    }
+                    break;
+
+                case REMOVE_ALLIANCE:
+                    if (packet.data1 != null && !packet.data1.isEmpty()) {
+                        Faction allyFaction = FactionManager.getFaction(packet.data1);
+                        if (allyFaction == null) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cFaction not found!"));
+                            return;
+                        }
+                        if (!faction.getAllies().contains(allyFaction.getId())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou are not allied with this faction!"));
+                            return;
+                        }
+                        // Retirer l'alliance des deux côtés
+                        faction.getAllies().remove(allyFaction.getId());
+                        allyFaction.getAllies().remove(faction.getId());
+                        FactionManager.markDirty();
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cAlliance removed with " + allyFaction.getName()));
+
+                        // Notifier l'autre faction
+                        for (var member : allyFaction.getMembers().keySet()) {
+                            ServerPlayer sp = player.getServer().getPlayerList().getPlayer(member);
+                            if (sp != null) {
+                                sp.sendSystemMessage(net.minecraft.network.chat.Component.literal("§c" + faction.getName() + " has broken the alliance with your faction!"));
+                            }
                         }
                     }
                     break;

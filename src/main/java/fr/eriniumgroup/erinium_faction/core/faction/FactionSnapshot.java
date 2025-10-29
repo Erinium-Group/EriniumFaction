@@ -45,6 +45,7 @@ public class FactionSnapshot {
 
     // Allies
     public List<String> allies = new ArrayList<>();
+    public List<String> allyRequests = new ArrayList<>(); // Factions qui ont demandé une alliance
 
     // Ranks definitions
     public List<RankInfo> ranks = new ArrayList<>();
@@ -132,6 +133,7 @@ public class FactionSnapshot {
 
         // Allies
         s.allies.addAll(f.getAllies());
+        s.allyRequests.addAll(f.getAllyRequests());
 
         // Ranks definitions
         for (var rank : f.getRanks().values()) {
@@ -241,6 +243,12 @@ public class FactionSnapshot {
             buf.writeUtf(ally);
         }
 
+        // Ally requests
+        buf.writeVarInt(s.allyRequests.size());
+        for (String allyRequest : s.allyRequests) {
+            buf.writeUtf(allyRequest);
+        }
+
         // Ranks definitions
         buf.writeVarInt(s.ranks.size());
         for (RankInfo rank : s.ranks) {
@@ -316,6 +324,12 @@ public class FactionSnapshot {
         int alliesCount = buf.readVarInt();
         for (int i = 0; i < alliesCount; i++) {
             s.allies.add(buf.readUtf());
+        }
+
+        // Ally requests
+        int allyRequestsCount = buf.readVarInt();
+        for (int i = 0; i < allyRequestsCount; i++) {
+            s.allyRequests.add(buf.readUtf());
         }
 
         // Ranks definitions

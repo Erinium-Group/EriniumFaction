@@ -297,7 +297,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
         g.fill(logoX - sw(10), logoY - sh(10), logoX + sw(10), logoY + sh(10), 0xCCec4899);
 
         String factionName = factionData != null ? factionData.displayName : "No Faction";
-        String factionInitial = factionName.isEmpty() ? "?" : factionName.substring(0, 1).toUpperCase();
+        String factionInitial = factionData.id.isEmpty() ? "?" : factionData.id.substring(0, 1).toUpperCase();
 
         g.drawCenteredString(font, factionInitial, logoX, logoY - sh(3), 0xFFffffff);
         g.drawCenteredString(font, factionName, logoX, sy(51) - 10, 0xFF00d2ff);
@@ -655,12 +655,13 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
                 return hasPermission(Permission.ACCESS_CHEST);
             case SETTINGS_FACTION:
                 // Vérifier si le joueur est le propriétaire (owner) de la faction
-                ToastManager.info("caca", "CACA LIQUIDE MANGE PIPI SOLIDE DANS MAISON EN FEU DANS MINECRAFT");
                 return factionData.ownerUUID != null && factionData.ownerUUID.equals(entity.getUUID());
             case SETTINGS_PERMISSIONS:
                 return hasPermission(Permission.MANAGE_PERMISSIONS);
             case ADMINSHOP:
                 return hasPermission(Permission.MANAGE_SHOP);
+            case ALLIANCES:
+                return hasPermission(Permission.MANAGE_ALLIANCES);
             default:
                 return true; // Pages publiques
         }

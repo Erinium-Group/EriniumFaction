@@ -319,6 +319,7 @@ public class Faction {
     // Alliances & invitations (placeholders simples)
     private final Set<String> allies = new HashSet<>();
     private final Set<UUID> invitedPlayers = new HashSet<>();
+    private final Set<String> allyRequests = new HashSet<>(); // Factions qui ont demandé une alliance
 
     // Historique des transactions bancaires
     private TransactionHistory transactionHistory = new TransactionHistory();
@@ -368,6 +369,7 @@ public class Faction {
 
     public Set<String> getAllies() { return allies; }
     public Set<UUID> getInvitedPlayers() { return invitedPlayers; }
+    public Set<String> getAllyRequests() { return allyRequests; }
 
     public TransactionHistory getTransactionHistory() { return transactionHistory; }
 
@@ -484,6 +486,10 @@ public class Faction {
         ListTag invList = new ListTag();
         for (UUID u : invitedPlayers) invList.add(StringTag.valueOf(u.toString()));
         tag.put("invited", invList);
+        // ally requests
+        ListTag allyRequestsList = new ListTag();
+        for (String factionId : allyRequests) allyRequestsList.add(StringTag.valueOf(factionId));
+        tag.put("allyRequests", allyRequestsList);
 
         // transaction history
         if (transactionHistory != null) {
@@ -568,6 +574,10 @@ public class Faction {
         f.invitedPlayers.clear();
         ListTag invList = tag.getList("invited", 8);
         for (int i=0;i<invList.size();i++) { try { f.invitedPlayers.add(UUID.fromString(invList.getString(i))); } catch (Exception ignored) {} }
+        // ally requests
+        f.allyRequests.clear();
+        ListTag allyRequestsList = tag.getList("allyRequests", 8);
+        for (int i=0;i<allyRequestsList.size();i++) f.allyRequests.add(allyRequestsList.getString(i));
 
         // Coffre de faction - Items
         for (int i = 0; i < f.chestItems.length; i++) {
