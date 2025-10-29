@@ -13,9 +13,9 @@ public abstract class Popup {
     protected boolean visible = false;
     protected Runnable onClose;
 
-    // Texture pour le fond du popup
-    private static final ResourceLocation POPUP_BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/popup-background.png");
-    private static final ResourceLocation POPUP_HEADER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/popup-header.png");
+    // Textures pour le popup (utiliser les textures existantes)
+    private static final ResourceLocation POPUP_BACKGROUND = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/main-background.png");
+    private static final ResourceLocation POPUP_HEADER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/common/page-header.png");
 
     public Popup(Font font, int width, int height) {
         this.font = font;
@@ -73,12 +73,27 @@ public abstract class Popup {
         // Overlay semi-transparent
         g.fill(0, 0, g.guiWidth(), g.guiHeight(), 0x80000000);
 
-        // Fond du popup
-        ImageRenderer.renderScaledImage(g, POPUP_BACKGROUND, x, y, width, height);
+        // Fond du popup (fallback avec rectangles si textures manquantes)
+        try {
+            ImageRenderer.renderScaledImage(g, POPUP_BACKGROUND, x, y, width, height);
+        } catch (Exception e) {
+            // Fallback : fond sombre avec bordure
+            g.fill(x, y, x + width, y + height, 0xE61e1e2e);
+            g.fill(x, y, x + width, y + 1, 0xFF00d2ff); // Bordure haut
+            g.fill(x, y, x + 1, y + height, 0xFF00d2ff); // Bordure gauche
+            g.fill(x + width - 1, y, x + width, y + height, 0xFF00d2ff); // Bordure droite
+            g.fill(x, y + height - 1, x + width, y + height, 0xFF00d2ff); // Bordure bas
+        }
 
         // Header
         int headerHeight = 24;
-        ImageRenderer.renderScaledImage(g, POPUP_HEADER, x, y, width, headerHeight);
+        try {
+            ImageRenderer.renderScaledImage(g, POPUP_HEADER, x, y, width, headerHeight);
+        } catch (Exception e) {
+            // Fallback : header avec fond différent
+            g.fill(x, y, x + width, y + headerHeight, 0xFF2a2a3e);
+            g.fill(x, y + headerHeight, x + width, y + headerHeight + 1, 0xFF00d2ff);
+        }
         g.drawString(font, getTitle(), x + 8, y + 8, 0xFFffffff, true);
 
         // Bouton de fermeture (X)

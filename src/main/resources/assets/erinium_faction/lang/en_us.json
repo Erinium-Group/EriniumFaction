@@ -346,6 +346,8 @@
 
   "erinium_faction.gui.alliances.title": "ALLIED FACTIONS",
   "erinium_faction.gui.alliances.members": "Members: %s",
+  "erinium_faction.gui.alliances.add": "Add Alliance",
+  "erinium_faction.gui.alliances.requests": "Requests (%s)",
 
   "erinium_faction.gui.nav.overview": "Overview",
   "erinium_faction.gui.nav.members": "Members",
