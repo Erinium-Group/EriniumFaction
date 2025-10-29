@@ -16,6 +16,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -53,6 +54,9 @@ public class EFCommand {
                     b.suggest("off");
                     return b.buildFuture();
                 }).executes(EFCommand::doFlag)))))
+                // Gestion des permissions de claim
+                // Appliquer les permissions par défaut aux rangs de faction
+                .then(Commands.literal("applydefaults").executes(EFCommand::doApplyDefaults))
                 // Gestion des permissions de claim
                 .then(Commands.literal("claimperm").then(Commands.literal("list").then(Commands.argument("dimension", StringArgumentType.word()).then(Commands.argument("cx", IntegerArgumentType.integer()).then(Commands.argument("cz", IntegerArgumentType.integer()).executes(ctx -> {
                     String dim = StringArgumentType.getString(ctx, "dimension");
@@ -234,6 +238,52 @@ public class EFCommand {
         FactionManager.markDirty();
         ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.flag.set", name, on ? "on" : "off"), true);
         return 1;
+    }
+
+    private static int doApplyDefaults(CommandContext<CommandSourceStack> ctx) {
+        var data = fr.eriniumgroup.erinium_faction.core.faction.RankDefaultsSavedData.get(ctx.getSource().getServer());
+        data.ensureDefaultsInitialized();
+
+        int totalChanges = 0;
+        int factionsUpdated = 0;
+
+        for (Faction f : FactionManager.getAllFactions()) {
+            int changes = applyDefaultsToFaction(f, data);
+            if (changes > 0) {
+                totalChanges += changes;
+                factionsUpdated++;
+            }
+        }
+
+        if (totalChanges > 0) {
+            FactionManager.markDirty();
+            final int finalTotal = totalChanges;
+            final int finalFactions = factionsUpdated;
+            ctx.getSource().sendSuccess(() -> Component.literal("§aAppliqué " + finalTotal + " permissions par défaut à " + finalFactions + " faction(s)"), true);
+        } else {
+            ctx.getSource().sendSuccess(() -> Component.literal("§eAucune permission à ajouter"), false);
+        }
+
+        return 1;
+    }
+
+    private static int applyDefaultsToFaction(Faction faction, fr.eriniumgroup.erinium_faction.core.faction.RankDefaultsSavedData defaults) {
+        int changes = 0;
+        for (Map.Entry<String, Faction.RankDef> e : faction.getRanks().entrySet()) {
+            String rankId = e.getKey();
+            Faction.RankDef rank = e.getValue();
+            java.util.Set<String> defaultPerms = defaults.getDefaultsFor(rankId);
+
+            if (!defaultPerms.isEmpty()) {
+                for (String perm : defaultPerms) {
+                    if (!rank.perms.contains(perm)) {
+                        rank.perms.add(perm);
+                        changes++;
+                    }
+                }
+            }
+        }
+        return changes;
     }
 
     // Suggestions -----------------------------------------------------------
