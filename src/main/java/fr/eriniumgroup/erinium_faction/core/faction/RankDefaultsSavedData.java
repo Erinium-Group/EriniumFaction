@@ -63,7 +63,11 @@ public class RankDefaultsSavedData extends SavedData {
                 "faction.claim",
                 "faction.unclaim",
                 "faction.manage.warps",
-                "faction.bank.withdraw"
+                "faction.bank.withdraw",
+                "block.break",
+                "block.place",
+                "block.interact",
+                "faction.use.containers"
         )));
         defaults.put("member", new LinkedHashSet<>(List.of(
                 "faction.chat",
@@ -71,13 +75,15 @@ public class RankDefaultsSavedData extends SavedData {
                 "faction.bank.deposit",
                 "block.break",
                 "block.place",
-                "block.interact"
+                "block.interact",
+                "faction.use.containers"
         )));
         defaults.put("recruit", new LinkedHashSet<>(List.of(
                 "faction.chat",
                 "block.break",
                 "block.place",
-                "block.interact"
+                "block.interact",
+                "faction.use.containers"
         )));
         setDirty();
     }

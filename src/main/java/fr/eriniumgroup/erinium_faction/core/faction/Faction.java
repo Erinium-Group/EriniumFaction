@@ -86,9 +86,6 @@ public class Faction {
         leader.perms.add("block.break");
         leader.perms.add("block.place");
         leader.perms.add("block.interact");
-        leader.perms.add("faction.use.doors");
-        leader.perms.add("faction.use.buttons");
-        leader.perms.add("faction.use.levers");
         leader.perms.add("faction.use.containers");
         leader.perms.add("faction.manage.permissions");
         leader.perms.add("faction.manage.alliances");
@@ -101,9 +98,6 @@ public class Faction {
         officer.perms.add("block.break");
         officer.perms.add("block.place");
         officer.perms.add("block.interact");
-        officer.perms.add("faction.use.doors");
-        officer.perms.add("faction.use.buttons");
-        officer.perms.add("faction.use.levers");
         officer.perms.add("faction.use.containers");
 
         RankDef member = new RankDef("member", "Member", 10);
@@ -112,16 +106,12 @@ public class Faction {
         member.perms.add("block.break");
         member.perms.add("block.place");
         member.perms.add("block.interact");
-        member.perms.add("faction.use.doors");
-        member.perms.add("faction.use.buttons");
-        member.perms.add("faction.use.levers");
         member.perms.add("faction.use.containers");
 
         RankDef recruit = new RankDef("recruit", "Recruit", 1);
         recruit.perms.add("block.break");
         recruit.perms.add("block.place");
         recruit.perms.add("block.interact");
-        recruit.perms.add("faction.use.doors");
         recruit.perms.add("faction.use.containers");
 
         ranks.put(leader.id, leader);

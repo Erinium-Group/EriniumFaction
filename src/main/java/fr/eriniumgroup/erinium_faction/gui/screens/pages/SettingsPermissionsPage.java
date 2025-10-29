@@ -121,8 +121,9 @@ public class SettingsPermissionsPage extends FactionPage {
             case "faction.kick" -> translate("erinium_faction.gui.permissions.kick_members");
             case "faction.claim" -> translate("erinium_faction.gui.permissions.claim_territory");
             case "faction.unclaim" -> translate("erinium_faction.gui.permissions.unclaim_territory");
-            case "faction.build" -> translate("erinium_faction.gui.permissions.build");
-            case "faction.break" -> translate("erinium_faction.gui.permissions.break");
+            case "faction.build", "block.place" -> translate("erinium_faction.gui.permissions.build");
+            case "faction.break", "block.break" -> translate("erinium_faction.gui.permissions.break");
+            case "block.interact" -> translate("erinium_faction.gui.permissions.interact");
             case "faction.use.doors" -> translate("erinium_faction.gui.permissions.use_doors");
             case "faction.use.buttons" -> translate("erinium_faction.gui.permissions.use_buttons");
             case "faction.use.levers" -> translate("erinium_faction.gui.permissions.use_levers");
@@ -142,14 +143,15 @@ public class SettingsPermissionsPage extends FactionPage {
     }
 
     private String convertKeyToServer(String key) {
-        // Convertir la clé de traduction en permission serveur
+        // Convertir la clé de traduction en permission serveur (utiliser les nouveaux noms block.*)
         return switch (key) {
             case "invite_members" -> "faction.invite";
             case "kick_members" -> "faction.kick";
             case "claim_territory" -> "faction.claim";
             case "unclaim_territory" -> "faction.unclaim";
-            case "build" -> "faction.build";
-            case "break" -> "faction.break";
+            case "build" -> "block.place";
+            case "break" -> "block.break";
+            case "interact" -> "block.interact";
             case "use_doors" -> "faction.use.doors";
             case "use_buttons" -> "faction.use.buttons";
             case "use_levers" -> "faction.use.levers";
@@ -176,6 +178,7 @@ public class SettingsPermissionsPage extends FactionPage {
         String unclaimTerritory = translate("erinium_faction.gui.permissions.unclaim_territory");
         String build = translate("erinium_faction.gui.permissions.build");
         String breakPerm = translate("erinium_faction.gui.permissions.break");
+        String interact = translate("erinium_faction.gui.permissions.interact");
         String useDoors = translate("erinium_faction.gui.permissions.use_doors");
         String useButtons = translate("erinium_faction.gui.permissions.use_buttons");
         String useLevers = translate("erinium_faction.gui.permissions.use_levers");
@@ -195,8 +198,9 @@ public class SettingsPermissionsPage extends FactionPage {
         if (guiPerm.equals(kickMembers)) return "faction.kick";
         if (guiPerm.equals(claimTerritory)) return "faction.claim";
         if (guiPerm.equals(unclaimTerritory)) return "faction.unclaim";
-        if (guiPerm.equals(build)) return "faction.build";
-        if (guiPerm.equals(breakPerm)) return "faction.break";
+        if (guiPerm.equals(build)) return "block.place";
+        if (guiPerm.equals(breakPerm)) return "block.break";
+        if (guiPerm.equals(interact)) return "block.interact";
         if (guiPerm.equals(useDoors)) return "faction.use.doors";
         if (guiPerm.equals(useButtons)) return "faction.use.buttons";
         if (guiPerm.equals(useLevers)) return "faction.use.levers";
@@ -233,7 +237,7 @@ public class SettingsPermissionsPage extends FactionPage {
             List<Permission> permissions = new ArrayList<>();
             String[] permKeys = {
                 "invite_members", "kick_members", "claim_territory", "unclaim_territory",
-                "build", "break", "use_doors", "use_buttons", "use_levers", "use_containers",
+                "build", "break", "interact", "use_containers",
                 "manage_permissions", "manage_alliances", "manage_economy", "use_teleports",
                 "set_home", "create_warps", "delete_warps", "manage_shop", "access_chest", "manage_chest"
             };
@@ -299,15 +303,14 @@ public class SettingsPermissionsPage extends FactionPage {
                 Map<Rank, List<String>> defaultPermKeys = new HashMap<>();
                 defaultPermKeys.put(Rank.OFFICER, Arrays.asList(
                     "invite_members", "kick_members", "claim_territory", "unclaim_territory",
-                    "build", "break", "use_doors", "use_buttons", "use_levers", "use_containers",
+                    "build", "break", "interact", "use_containers",
                     "manage_permissions", "manage_alliances"
                 ));
                 defaultPermKeys.put(Rank.MEMBER, Arrays.asList(
-                    "invite_members", "claim_territory", "build", "break",
-                    "use_doors", "use_buttons", "use_levers", "use_containers"
+                    "invite_members", "claim_territory", "build", "break", "interact", "use_containers"
                 ));
                 defaultPermKeys.put(Rank.RECRUIT, Arrays.asList(
-                    "build", "break", "use_doors", "use_containers"
+                    "build", "break", "interact", "use_containers"
                 ));
 
                 // Pour chaque rang, supprimer toutes les permissions actuelles puis ajouter les permissions par défaut
