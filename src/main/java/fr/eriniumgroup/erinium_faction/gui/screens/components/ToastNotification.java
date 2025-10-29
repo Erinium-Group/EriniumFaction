@@ -25,14 +25,14 @@ public class ToastNotification {
     private boolean closing = false;
     private long closeStartTime = 0;
 
-    private static final int TOAST_WIDTH = 300;
+    private static final int TOAST_WIDTH = 200;
     private static final int MIN_TOAST_HEIGHT = 70;
     private static final int ICON_SIZE = 24;
     private static final int ICON_BG_SIZE = 40;
     private static final int CLOSE_ICON_SIZE = 16;
     private static final int CLOSE_BUTTON_SIZE = 24;
     private static final int PADDING = 12;
-    private static final int PROGRESS_BAR_WIDTH = 276;
+    private static final int PROGRESS_BAR_WIDTH = 176;
     private static final int PROGRESS_BAR_HEIGHT = 3;
     private static final int TEXT_PADDING = 4;
     private static final int LINE_SPACING = 2;
@@ -153,6 +153,8 @@ public class ToastNotification {
         int y = (int) currentY;
 
         graphics.pose().pushPose();
+        // Placer les toasts au tout premier plan (z-index très élevé)
+        graphics.pose().translate(0, 0, 1000);
 
         // Appliquer l'alpha
         int alphaInt = (int) (alpha * 255);

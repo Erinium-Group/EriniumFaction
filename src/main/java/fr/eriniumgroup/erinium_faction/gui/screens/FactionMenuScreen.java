@@ -655,6 +655,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
                 return hasPermission(Permission.ACCESS_CHEST);
             case SETTINGS_FACTION:
                 // Vérifier si le joueur est le propriétaire (owner) de la faction
+                ToastManager.info("caca", "CACA LIQUIDE MANGE PIPI SOLIDE DANS MAISON EN FEU DANS MINECRAFT");
                 return factionData.ownerUUID != null && factionData.ownerUUID.equals(entity.getUUID());
             case SETTINGS_PERMISSIONS:
                 return hasPermission(Permission.MANAGE_PERMISSIONS);
