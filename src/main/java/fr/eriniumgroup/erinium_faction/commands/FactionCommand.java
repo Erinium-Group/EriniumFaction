@@ -138,7 +138,8 @@ public class FactionCommand {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
                 return 0;
             }
-            ClaimKey key = ClaimKey.of(sp.level().dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
+            var lvl = sp.level();
+            ClaimKey key = ClaimKey.of(lvl.dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
             boolean ok = FactionManager.tryClaim(key, f.getId());
             if (!ok) {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claim.limit"));
@@ -155,7 +156,8 @@ public class FactionCommand {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
                 return 0;
             }
-            ClaimKey key = ClaimKey.of(sp.level().dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
+            var lvl = sp.level();
+            ClaimKey key = ClaimKey.of(lvl.dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
             String owner = FactionManager.getClaimOwner(key);
             if (owner == null) {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_claimed"));
@@ -257,7 +259,8 @@ public class FactionCommand {
                 return 0;
             }
             var pos = sp.blockPosition();
-            var dim = sp.level().dimension().location();
+            var lvl = sp.level();
+            var dim = lvl.dimension().location();
             f.setHome(pos.getX(), pos.getY(), pos.getZ(), dim);
             FactionManager.markDirty();
             ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.home.set", pos.getX(), pos.getY(), pos.getZ()), true);
@@ -306,7 +309,8 @@ public class FactionCommand {
             }
             String nm = StringArgumentType.getString(ctx, "name");
             var pos = sp.blockPosition();
-            var dim = sp.level().dimension().location();
+            var lvl = sp.level();
+            var dim = lvl.dimension().location();
             boolean ok = f.addWarp(nm, pos.getX(), pos.getY(), pos.getZ(), dim);
             if (!ok) {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.warp.add.fail"));
@@ -347,70 +351,112 @@ public class FactionCommand {
             return 1;
         })));
 
-        b.then(Commands.literal("claimperm")
-                .then(Commands.literal("list").executes(ctx -> {
-                    ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                    Faction f = FactionManager.getFactionOf(sp.getUUID());
-                    if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                    ClaimKey key = ClaimKey.of(sp.level().dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
-                    String owner = FactionManager.getClaimOwner(key);
-                    if (!f.getId().equalsIgnoreCase(owner)) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner")); return 0; }
-                    var perms = FactionManager.getClaimPerms(key);
-                    if (perms.isEmpty()) { ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.empty"), false); return 1; }
-                    ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.header"), false);
-                    for (var e : perms.entrySet()) {
-                        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.item", e.getKey(), String.join(", ", e.getValue())), false);
-                    }
-                    return 1;
-                }))
-                .then(Commands.literal("add")
-                        .then(Commands.argument("rank", StringArgumentType.word())
-                                .then(Commands.argument("perm", StringArgumentType.greedyString())
-                                        .executes(ctx -> {
-                                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                                            ClaimKey key = ClaimKey.of(sp.level().dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
-                                            String owner = FactionManager.getClaimOwner(key);
-                                            if (!f.getId().equalsIgnoreCase(owner)) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner")); return 0; }
-                                            String rank = StringArgumentType.getString(ctx, "rank").toLowerCase(java.util.Locale.ROOT);
-                                            String perm = StringArgumentType.getString(ctx, "perm");
-                                            boolean ok = FactionManager.addClaimPerm(key, rank, perm);
-                                            if (!ok) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claimperm.add.fail")); return 0; }
-                                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.add.success", rank, perm), true);
-                                            return 1;
-                                        }))))
-                .then(Commands.literal("remove")
-                        .then(Commands.argument("rank", StringArgumentType.word())
-                                .then(Commands.argument("perm", StringArgumentType.greedyString())
-                                        .executes(ctx -> {
-                                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                                            ClaimKey key = ClaimKey.of(sp.level().dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
-                                            String owner = FactionManager.getClaimOwner(key);
-                                            if (!f.getId().equalsIgnoreCase(owner)) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner")); return 0; }
-                                            String rank = StringArgumentType.getString(ctx, "rank").toLowerCase(java.util.Locale.ROOT);
-                                            String perm = StringArgumentType.getString(ctx, "perm");
-                                            boolean ok = FactionManager.removeClaimPerm(key, rank, perm);
-                                            if (!ok) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claimperm.remove.fail")); return 0; }
-                                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.remove.success", rank, perm), true);
-                                            return 1;
-                                        }))))
-                .then(Commands.literal("clear")
-                        .executes(ctx -> {
-                            ServerPlayer sp = ctx.getSource().getPlayerOrException();
-                            Faction f = FactionManager.getFactionOf(sp.getUUID());
-                            if (f == null) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction")); return 0; }
-                            ClaimKey key = ClaimKey.of(sp.level().dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
-                            String owner = FactionManager.getClaimOwner(key);
-                            if (!f.getId().equalsIgnoreCase(owner)) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner")); return 0; }
-                            boolean ok = FactionManager.clearClaimPerms(key);
-                            if (!ok) { ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claimperm.clear.empty")); return 0; }
-                            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.clear.success"), true);
-                            return 1;
-                        }))
-        );
+        // claimperm (réécrit en clair pour éviter les erreurs de parenthésage)
+        var claimpermCmd = Commands.literal("claimperm");
+
+        claimpermCmd.then(Commands.literal("list").executes(ctx -> {
+            ServerPlayer sp = ctx.getSource().getPlayerOrException();
+            Faction f = FactionManager.getFactionOf(sp.getUUID());
+            if (f == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                return 0;
+            }
+            var lvl = sp.level();
+            ClaimKey key = ClaimKey.of(lvl.dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
+            String owner = FactionManager.getClaimOwner(key);
+            if (!f.getId().equalsIgnoreCase(owner)) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner"));
+                return 0;
+            }
+            var perms = FactionManager.getClaimPerms(key);
+            if (perms.isEmpty()) {
+                ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.empty"), false);
+                return 1;
+            }
+            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.header"), false);
+            for (var e : perms.entrySet()) {
+                ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.item", e.getKey(), String.join(", ", e.getValue())), false);
+            }
+            return 1;
+        }));
+
+        // builder pour set
+        var setBuilder = Commands.literal("set");
+        var rankArg = Commands.argument("rank", StringArgumentType.word()).suggests(FactionCommand::suggestRankIds);
+        var permArg = Commands.argument("perm", StringArgumentType.word()).suggests(FactionCommand::suggestPerms);
+        var valueArg = Commands.argument("value", StringArgumentType.word()).suggests(FactionCommand::suggestBooleans);
+
+        valueArg.executes(ctx -> {
+            ServerPlayer sp = ctx.getSource().getPlayerOrException();
+            Faction f = FactionManager.getFactionOf(sp.getUUID());
+            if (f == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                return 0;
+            }
+            var lvl = sp.level();
+            ClaimKey key = ClaimKey.of(lvl.dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
+            String owner = FactionManager.getClaimOwner(key);
+            if (!f.getId().equalsIgnoreCase(owner)) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner"));
+                return 0;
+            }
+
+            String rank = StringArgumentType.getString(ctx, "rank").toLowerCase(java.util.Locale.ROOT);
+            String perm = StringArgumentType.getString(ctx, "perm");
+            String val = StringArgumentType.getString(ctx, "value");
+            boolean set = val.equalsIgnoreCase("true") || val.equalsIgnoreCase("1") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("on");
+
+            boolean ok;
+            if (set) {
+                ok = FactionManager.addClaimPerm(key, rank, perm);
+                if (!ok) {
+                    ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claimperm.add.fail"));
+                    return 0;
+                }
+                FactionManager.markDirty();
+                ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.add.success", rank, perm), true);
+            } else {
+                ok = FactionManager.removeClaimPerm(key, rank, perm);
+                if (!ok) {
+                    ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claimperm.remove.fail"));
+                    return 0;
+                }
+                FactionManager.markDirty();
+                ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.remove.success", rank, perm), true);
+            }
+            return 1;
+        });
+
+        // assembler les arguments
+        setBuilder.then(rankArg.then(permArg.then(valueArg)));
+        claimpermCmd.then(setBuilder);
+
+        // clear
+        claimpermCmd.then(Commands.literal("clear").executes(ctx -> {
+            ServerPlayer sp = ctx.getSource().getPlayerOrException();
+            Faction f = FactionManager.getFactionOf(sp.getUUID());
+            if (f == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                return 0;
+            }
+            var lvl = sp.level();
+            ClaimKey key = ClaimKey.of(lvl.dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
+            String owner = FactionManager.getClaimOwner(key);
+            if (!f.getId().equalsIgnoreCase(owner)) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner"));
+                return 0;
+            }
+            boolean ok = FactionManager.clearClaimPerms(key);
+            if (!ok) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.claimperm.clear.empty"));
+                return 0;
+            }
+            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.claimperm.clear.success"), true);
+            return 1;
+        }));
+
+        // finally attach to root
+        b.then(claimpermCmd);
 
         return b;
     }
@@ -442,6 +488,32 @@ public class FactionCommand {
             }
         } catch (Exception ignored) {
         }
+        return builder.buildFuture();
+    }
+
+    // New suggestions for ranks / permissions / booleans
+    private static CompletableFuture<Suggestions> suggestRankIds(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        try {
+            for (fr.eriniumgroup.erinium_faction.core.rank.EFRManager.Rank r : fr.eriniumgroup.erinium_faction.core.rank.EFRManager.get().listRanksSorted()) {
+                if (r != null && r.id != null) builder.suggest(r.id);
+            }
+        } catch (Exception ignored) {
+        }
+        return builder.buildFuture();
+    }
+
+    private static CompletableFuture<Suggestions> suggestPerms(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        try {
+            for (String p : fr.eriniumgroup.erinium_faction.core.rank.EFRManager.get().getKnownPermissions())
+                builder.suggest(p);
+        } catch (Exception ignored) {
+        }
+        return builder.buildFuture();
+    }
+
+    private static CompletableFuture<Suggestions> suggestBooleans(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        builder.suggest("true");
+        builder.suggest("false");
         return builder.buildFuture();
     }
 
