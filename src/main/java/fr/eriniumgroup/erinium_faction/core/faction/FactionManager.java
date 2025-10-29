@@ -6,11 +6,15 @@ import fr.eriniumgroup.erinium_faction.core.claim.ClaimsSavedData;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
 import fr.eriniumgroup.erinium_faction.core.power.PlayerPower;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
@@ -288,12 +292,43 @@ public final class FactionManager {
 
     public static boolean tryClaim(ClaimKey key, String factionId) {
         if (SERVER == null) return false;
+
+        Faction pfaction = FactionManager.getFaction(factionId);
+        if (pfaction == null) return false; // ✅ Vérification null
+
+        int currentClaims = countClaims(factionId);
+        if (currentClaims + 1 > pfaction.getPower() || currentClaims + 1 > pfaction.getMaxPower()) {
+            return false;
+        }
+
         var data = ClaimsSavedData.get(SERVER);
-        if (data.isClaimed(key)) return false;
-        // Limite config
-        if (countClaims(factionId) >= EFConfig.FACTION_MAX_CLAIMS.get()) return false;
-        boolean ok = data.claim(key, factionId);
-        return ok;
+
+        if (data.isClaimed(key)) {
+            String ownerFactionId = FactionManager.getClaimOwner(key); // ✅ Utilise directement key
+            if (ownerFactionId == null) return false;
+
+            Faction enemyFaction = FactionManager.getFaction(ownerFactionId);
+            if (enemyFaction == null) return false; // ✅ Vérification null
+
+            // Vérifier si c'est une zone protégée
+            if (enemyFaction.getId().equals("safezone") ||
+                    enemyFaction.getId().equals("warzone") ||
+                    enemyFaction.isAdminFaction() ||
+                    enemyFaction.isSafezone() ||
+                    enemyFaction.isWarzone()) {
+                return false;
+            }
+
+            // Si la faction ennemie a moins de power que de claims, on peut overclaim
+            if (enemyFaction.getPower() < countClaims(enemyFaction.getId())) {
+                tryUnclaim(key, enemyFaction.getId());
+                return data.claim(key, factionId); // ✅ Retour direct
+            }
+
+            return false;
+        }
+
+        return data.claim(key, factionId); // ✅ Retour direct
     }
 
     public static boolean tryUnclaim(ClaimKey key, String factionId) {
