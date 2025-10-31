@@ -240,6 +240,66 @@ public class Faction {
         return true;
     }
 
+    /**
+     * Promote un membre au rank supérieur (basé sur priority)
+     * @return true si la promotion a réussi, false sinon
+     */
+    public boolean promoteMember(UUID uuid) {
+        Member m = members.get(uuid);
+        if (m == null) return false;
+
+        RankDef currentRank = ranks.get(m.rankId);
+        if (currentRank == null) return false;
+
+        // Trouver le rank avec la priorité immédiatement supérieure
+        // MAIS ne jamais promouvoir au rang de Leader (priority 100)
+        RankDef nextRank = null;
+        int minDiff = Integer.MAX_VALUE;
+
+        for (RankDef rank : ranks.values()) {
+            int diff = rank.priority - currentRank.priority;
+            // Bloquer la promotion au rang de Leader (priority 100)
+            if (diff > 0 && diff < minDiff && rank.priority < 100) {
+                minDiff = diff;
+                nextRank = rank;
+            }
+        }
+
+        if (nextRank == null) return false; // Déjà au rank max ou ne peut pas promouvoir au Leader
+
+        m.rankId = nextRank.id;
+        return true;
+    }
+
+    /**
+     * Demote un membre au rank inférieur (basé sur priority)
+     * @return true si la dégradation a réussi, false sinon
+     */
+    public boolean demoteMember(UUID uuid) {
+        Member m = members.get(uuid);
+        if (m == null) return false;
+
+        RankDef currentRank = ranks.get(m.rankId);
+        if (currentRank == null) return false;
+
+        // Trouver le rank avec la priorité immédiatement inférieure
+        RankDef prevRank = null;
+        int minDiff = Integer.MAX_VALUE;
+
+        for (RankDef rank : ranks.values()) {
+            int diff = currentRank.priority - rank.priority;
+            if (diff > 0 && diff < minDiff) {
+                minDiff = diff;
+                prevRank = rank;
+            }
+        }
+
+        if (prevRank == null) return false; // Déjà au rank min
+
+        m.rankId = prevRank.id;
+        return true;
+    }
+
     public boolean addMember(UUID uuid, String name, String rankId) {
         if (members.containsKey(uuid)) return false;
         if (!ranks.containsKey(rankId)) rankId = "member";

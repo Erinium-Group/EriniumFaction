@@ -34,7 +34,27 @@ public class EFVariables {
             if (event.getEntity() instanceof ServerPlayer player) {
                 // Assigner le rank "default" si le joueur n'en a pas
                 if (fr.eriniumgroup.erinium_faction.core.rank.EFRManager.get().getPlayerRankId(player.getUUID()) == null) {
-                    fr.eriniumgroup.erinium_faction.core.rank.EFRManager.get().setPlayerRank(player.getUUID(), "default");
+                    // Vérifier que le rank "default" existe, sinon le créer
+                    fr.eriniumgroup.erinium_faction.core.rank.EFRManager manager = fr.eriniumgroup.erinium_faction.core.rank.EFRManager.get();
+                    if (manager.getRank("default") == null) {
+                        fr.eriniumgroup.erinium_faction.core.EFC.log.warn("Ranks", "§cRank 'default' manquant lors de la connexion de {}. Création automatique...", player.getGameProfile().getName());
+                        // Créer le rank default avec les permissions de base
+                        if (manager.createRank("default", "§7Joueur", 0)) {
+                            manager.addPermission("default", "player.*");
+                            manager.addPermission("default", "server.command.*");
+                            manager.addPermission("default", "ef.faction.*");
+                            fr.eriniumgroup.erinium_faction.core.EFC.log.info("Ranks", "§aRank 'default' créé avec succès");
+                        } else {
+                            fr.eriniumgroup.erinium_faction.core.EFC.log.error("Ranks", "§cImpossible de créer le rank 'default'");
+                        }
+                    }
+                    // Attribuer le rank
+                    boolean success = manager.setPlayerRank(player.getUUID(), "default");
+                    if (!success) {
+                        fr.eriniumgroup.erinium_faction.core.EFC.log.error("Ranks", "§cImpossible d'attribuer le rank 'default' au joueur {}", player.getGameProfile().getName());
+                    } else {
+                        fr.eriniumgroup.erinium_faction.core.EFC.log.info("Ranks", "§aRank 'default' attribué à {}", player.getGameProfile().getName());
+                    }
                 }
                 // mettre à jour les variables depuis le serveur avant sync
                 fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(player, player.getData(PLAYER_VARIABLES));

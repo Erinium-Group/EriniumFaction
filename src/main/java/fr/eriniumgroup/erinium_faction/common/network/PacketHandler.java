@@ -76,6 +76,9 @@ public class PacketHandler {
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.SyncTransactionHistoryMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.SyncTransactionHistoryMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.SyncTransactionHistoryMessage::handleData);
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerBalanceMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerBalanceMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerBalanceMessage::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history)");
+        // Packet synchronisation du coffre de faction
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionChestSyncPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionChestSyncPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionChestSyncPacket::handleData);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound)");
     }
 }

@@ -103,11 +103,31 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         this.internal = new ItemStackHandler(FACTION_CHEST_SLOTS) {
             @Override
             protected void onContentsChanged(int slot) {
+                System.out.println("[FactionMenu] onContentsChanged called for slot " + slot + ", client=" + world.isClientSide() + ", faction=" + (faction != null ? faction.getName() : "null"));
                 // Sauvegarder les changements dans la faction côté serveur
                 if (!world.isClientSide() && faction != null) {
                     ItemStack stack = this.getStackInSlot(slot);
+                    System.out.println("[FactionMenu] Saving to faction: slot=" + slot + ", item=" + stack);
                     faction.setChestItem(slot, stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
                     FactionManager.markDirty();
+
+                    // Synchroniser avec tous les joueurs de la faction qui ont le menu ouvert
+                    if (entity instanceof net.minecraft.server.level.ServerPlayer) {
+                        var server = ((net.minecraft.server.level.ServerPlayer) entity).getServer();
+                        if (server != null) {
+                            var packet = new fr.eriniumgroup.erinium_faction.common.network.packets.FactionChestSyncPacket(slot, stack.copy());
+                            for (var memberUUID : faction.getMembers().keySet()) {
+                                var player = server.getPlayerList().getPlayer(memberUUID);
+                                if (player != null && player.containerMenu instanceof FactionMenu) {
+                                    // Ne pas renvoyer au joueur qui a fait le changement (il l'a déjà)
+                                    if (!player.getUUID().equals(entity.getUUID())) {
+                                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, packet);
+                                        System.out.println("[FactionMenu] Sent chest sync to " + player.getName().getString() + ": slot=" + slot);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         };
@@ -135,7 +155,7 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
         for (int row = 0; row < FACTION_CHEST_ROWS; row++) {
             for (int col = 0; col < 9; col++) {
                 FactionChestSlot slot = new FactionChestSlot(this.internal, slotIndex,
-                    baseX + col * 18, baseChestY + row * 18, entity, faction);
+                    baseX + col * 18, baseChestY + row * 18, entity, faction, this);
                 this.addSlot(slot);
                 this.customSlots.put(slotIndex, slot);
                 slotIndex++;
@@ -220,19 +240,14 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
     public void removed(Player player) {
         super.removed(player);
 
-        // Sauvegarder les items du coffre de faction côté serveur uniquement
-        if (!this.world.isClientSide() && this.faction != null && this.internal != null) {
-            // Extraire les items des slots du coffre de faction
-            ItemStack[] chestItems = this.faction.getChestItems();
-            for (int i = 0; i < FACTION_CHEST_SLOTS && i < chestItems.length; i++) {
-                ItemStack stack = this.internal.getStackInSlot(i);
-                chestItems[i] = stack.copy();
-            }
-
-            // Sauvegarder la faction
+        // NE PAS copier les items ici car cela écrase les changements des autres joueurs !
+        // Les items sont déjà sauvegardés en temps réel via onContentsChanged()
+        // On fait juste un flush sur disque
+        if (!this.world.isClientSide() && this.faction != null) {
             if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
                 var server = sp.getServer();
                 if (server != null) {
+                    System.out.println("[FactionMenu] Menu closed by " + player.getName().getString() + ", flushing faction data to disk");
                     fr.eriniumgroup.erinium_faction.core.faction.FactionManager.save(server);
                 }
             }
@@ -242,16 +257,8 @@ public class FactionMenu extends AbstractContainerMenu implements EFMenus.MenuAc
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();
-
-        // Synchroniser les changements du coffre en temps réel (côté serveur uniquement)
-        if (!this.world.isClientSide() && this.faction != null && this.internal != null) {
-            // Mettre à jour l'inventaire de la faction à chaque changement
-            ItemStack[] chestItems = this.faction.getChestItems();
-            for (int i = 0; i < FACTION_CHEST_SLOTS && i < chestItems.length; i++) {
-                ItemStack stack = this.internal.getStackInSlot(i);
-                chestItems[i] = stack.copy();
-            }
-        }
+        // NE PAS copier les items ici, ils sont déjà sauvegardés via onContentsChanged()
+        // Cette méthode s'occupe seulement de synchroniser les slots avec les clients (via super)
     }
 
     @Override

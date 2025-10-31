@@ -485,9 +485,19 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (toastManager.mouseClicked(mouseX, mouseY, button)) return true;
+
+        // Laisser les pages gérer les clics droits AVANT de les bloquer
+        // Delegate to page first pour TOUS les types de clics
+        FactionPage page = pages.get(currentPage);
+        if (page != null) {
+            boolean handled = page.mouseClicked(mouseX, mouseY, button, leftPos, topPos, scaleX, scaleY);
+            if (handled) return true;
+        }
+
+        // Pour les clics non-gauches qui n'ont pas été gérés par les pages, passer au parent
         if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
 
-        // Navigation scrollbar
+        // Navigation scrollbar (seulement pour clic gauche)
         int navX = sx(13);
         int navY = sy(65);
         int navW = sw(68);
@@ -502,7 +512,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             return true;
         }
 
-        // Navigation buttons
+        // Navigation buttons (seulement pour clic gauche)
         PageType[] navPages = PageType.values();
         for (int i = 0; i < navPages.length; i++) {
             int btnX = navX;
@@ -531,7 +541,7 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
             }
         }
 
-        // Close button
+        // Close button (seulement pour clic gauche)
         int closeX = sx(373);
         int closeY = sy(17);
         if (mouseX >= closeX && mouseX < closeX + sw(11) && mouseY >= closeY && mouseY < closeY + sh(11)) {
@@ -539,13 +549,6 @@ public class FactionMenuScreen extends AbstractContainerScreen<FactionMenu> impl
                 this.minecraft.player.closeContainer();
             }
             return true;
-        }
-
-        // Delegate to page first
-        FactionPage page = pages.get(currentPage);
-        if (page != null) {
-            boolean handled = page.mouseClicked(mouseX, mouseY, button, leftPos, topPos, scaleX, scaleY);
-            if (handled) return true;
         }
 
         // Let parent handle slot clicks

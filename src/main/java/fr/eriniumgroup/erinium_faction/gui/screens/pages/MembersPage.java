@@ -210,9 +210,14 @@ public class MembersPage extends FactionPage {
 
         // Clic droit pour ouvrir le menu contextuel
         if (button == 1) { // Clic droit
+            System.out.println("[MembersPage] Right click detected at: " + mouseX + ", " + mouseY);
+
             // Trouver le membre sous la souris
             MemberInfo clickedMember = findMemberAtPosition(mouseX, mouseY, scaleY);
+            System.out.println("[MembersPage] Found member: " + (clickedMember != null ? clickedMember.name : "null"));
+
             if (clickedMember != null && clickedMember.uuid != null) {
+                System.out.println("[MembersPage] Opening context menu for: " + clickedMember.name);
                 openContextMenu(clickedMember, (int) mouseX, (int) mouseY);
                 return true;
             }
@@ -243,10 +248,16 @@ public class MembersPage extends FactionPage {
      * Trouve le membre à la position de la souris
      */
     private MemberInfo findMemberAtPosition(double mouseX, double mouseY, double scaleY) {
-        if (memberScrollList == null) return null;
+        if (memberScrollList == null) {
+            System.out.println("[MembersPage] memberScrollList is null");
+            return null;
+        }
 
         List<MemberInfo> items = memberScrollList.getItems();
-        if (items == null || items.isEmpty()) return null;
+        if (items == null || items.isEmpty()) {
+            System.out.println("[MembersPage] items is null or empty");
+            return null;
+        }
 
         // Récupérer les bounds de la scroll list
         int listX = memberScrollList.getX();
@@ -254,6 +265,8 @@ public class MembersPage extends FactionPage {
         int listWidth = memberScrollList.getWidth();
         int listHeight = memberScrollList.getHeight();
         int itemHeight = sh(30, scaleY); // Utiliser le scaleY correct
+
+        System.out.println("[MembersPage] List bounds: x=" + listX + ", y=" + listY + ", w=" + listWidth + ", h=" + listHeight + ", itemHeight=" + itemHeight);
 
         // Calculer l'offset de scroll
         int scrollOffset = memberScrollList.getScrollOffset();
@@ -265,10 +278,12 @@ public class MembersPage extends FactionPage {
             if (mouseX >= listX && mouseX < listX + listWidth &&
                 mouseY >= itemY && mouseY < itemY + itemHeight &&
                 itemY + itemHeight > listY && itemY < listY + listHeight) {
+                System.out.println("[MembersPage] Found member at index " + i + ": " + items.get(i).name);
                 return items.get(i);
             }
         }
 
+        System.out.println("[MembersPage] No member found at mouse position");
         return null;
     }
 
@@ -332,18 +347,36 @@ public class MembersPage extends FactionPage {
         contextMenu.clearItems();
 
         contextMenu.addItem(translate("erinium_faction.gui.members.context.promote"), () -> {
-            // TODO: Envoyer un packet au serveur pour promouvoir le membre
-            showInfo("Promote", "Promoting " + member.name);
+            // Envoyer le packet au serveur pour promouvoir le membre
+            var packet = new fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket(
+                fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket.ActionType.PROMOTE_MEMBER,
+                member.name,
+                ""
+            );
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(packet);
+            contextMenu.close();
         }, canPromote);
 
         contextMenu.addItem(translate("erinium_faction.gui.members.context.demote"), () -> {
-            // TODO: Envoyer un packet au serveur pour dégrader le membre
-            showInfo("Demote", "Demoting " + member.name);
+            // Envoyer le packet au serveur pour dégrader le membre
+            var packet = new fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket(
+                fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket.ActionType.DEMOTE_MEMBER,
+                member.name,
+                ""
+            );
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(packet);
+            contextMenu.close();
         }, canDemote);
 
         contextMenu.addItem(translate("erinium_faction.gui.members.context.kick"), () -> {
-            // TODO: Envoyer un packet au serveur pour kicker le membre
-            showInfo("Kick", "Kicking " + member.name);
+            // Envoyer le packet au serveur pour kicker le membre
+            var packet = new fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket(
+                fr.eriniumgroup.erinium_faction.common.network.packets.FactionActionPacket.ActionType.KICK_MEMBER,
+                member.name,
+                ""
+            );
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(packet);
+            contextMenu.close();
         }, canKick);
 
         contextMenu.open(x, y);

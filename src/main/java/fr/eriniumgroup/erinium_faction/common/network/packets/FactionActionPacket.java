@@ -46,7 +46,10 @@ public record FactionActionPacket(ActionType action, String data1, String data2)
         REQUEST_ALLIANCE(5),
         ACCEPT_ALLIANCE(6),
         REFUSE_ALLIANCE(7),
-        REMOVE_ALLIANCE(8);
+        REMOVE_ALLIANCE(8),
+        PROMOTE_MEMBER(9),
+        DEMOTE_MEMBER(10),
+        KICK_MEMBER(11);
 
         private final int id;
 
@@ -222,6 +225,182 @@ public record FactionActionPacket(ActionType action, String data1, String data2)
                             if (sp != null) {
                                 sp.sendSystemMessage(net.minecraft.network.chat.Component.literal("§c" + faction.getName() + " has broken the alliance with your faction!"));
                             }
+                        }
+                    }
+                    break;
+
+                case PROMOTE_MEMBER:
+                    if (packet.data1 != null && !packet.data1.isEmpty()) {
+                        // Vérifier la permission
+                        if (!faction.hasPermission(player.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.PROMOTE_MEMBERS.getServerKey())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou don't have permission to promote members!"));
+                            return;
+                        }
+
+                        // Trouver le joueur cible par nom
+                        java.util.UUID targetUUID = null;
+                        String targetName = packet.data1;
+                        for (var entry : faction.getMembers().entrySet()) {
+                            if (entry.getValue().nameCached.equalsIgnoreCase(targetName)) {
+                                targetUUID = entry.getKey();
+                                break;
+                            }
+                        }
+
+                        if (targetUUID == null) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cMember not found!"));
+                            return;
+                        }
+
+                        // Vérifier la hiérarchie (ne peut promouvoir que les membres de rank inférieur)
+                        String callerRankId = faction.getMemberRank(player.getUUID());
+                        String targetRankId = faction.getMemberRank(targetUUID);
+                        if (callerRankId == null || targetRankId == null) return;
+
+                        Faction.RankDef callerRank = faction.getRanks().get(callerRankId);
+                        Faction.RankDef targetRank = faction.getRanks().get(targetRankId);
+                        if (callerRank == null || targetRank == null) return;
+
+                        if (callerRank.priority <= targetRank.priority) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou can only promote members with lower ranks!"));
+                            return;
+                        }
+
+                        // Promouvoir
+                        boolean success = faction.promoteMember(targetUUID);
+                        if (success) {
+                            FactionManager.markDirty();
+                            String newRankId = faction.getMemberRank(targetUUID);
+                            Faction.RankDef newRank = faction.getRanks().get(newRankId);
+                            String newRankDisplay = newRank != null ? newRank.display : newRankId;
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§a" + targetName + " promoted to " + newRankDisplay));
+
+                            // Notifier le joueur promu
+                            ServerPlayer target = player.getServer().getPlayerList().getPlayer(targetUUID);
+                            if (target != null) {
+                                target.sendSystemMessage(net.minecraft.network.chat.Component.literal("§aYou have been promoted to " + newRankDisplay + "!"));
+                            }
+                        } else {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cCannot promote " + targetName + " (already at max rank)"));
+                        }
+                    }
+                    break;
+
+                case DEMOTE_MEMBER:
+                    if (packet.data1 != null && !packet.data1.isEmpty()) {
+                        // Vérifier la permission
+                        if (!faction.hasPermission(player.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.DEMOTE_MEMBERS.getServerKey())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou don't have permission to demote members!"));
+                            return;
+                        }
+
+                        // Trouver le joueur cible par nom
+                        java.util.UUID targetUUID = null;
+                        String targetName = packet.data1;
+                        for (var entry : faction.getMembers().entrySet()) {
+                            if (entry.getValue().nameCached.equalsIgnoreCase(targetName)) {
+                                targetUUID = entry.getKey();
+                                break;
+                            }
+                        }
+
+                        if (targetUUID == null) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cMember not found!"));
+                            return;
+                        }
+
+                        // Vérifier la hiérarchie (ne peut démote que les membres de rank inférieur)
+                        String callerRankId = faction.getMemberRank(player.getUUID());
+                        String targetRankId = faction.getMemberRank(targetUUID);
+                        if (callerRankId == null || targetRankId == null) return;
+
+                        Faction.RankDef callerRank = faction.getRanks().get(callerRankId);
+                        Faction.RankDef targetRank = faction.getRanks().get(targetRankId);
+                        if (callerRank == null || targetRank == null) return;
+
+                        if (callerRank.priority <= targetRank.priority) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou can only demote members with lower ranks!"));
+                            return;
+                        }
+
+                        // Dégrader
+                        boolean success = faction.demoteMember(targetUUID);
+                        if (success) {
+                            FactionManager.markDirty();
+                            String newRankId = faction.getMemberRank(targetUUID);
+                            Faction.RankDef newRank = faction.getRanks().get(newRankId);
+                            String newRankDisplay = newRank != null ? newRank.display : newRankId;
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§c" + targetName + " demoted to " + newRankDisplay));
+
+                            // Notifier le joueur dégradé
+                            ServerPlayer target = player.getServer().getPlayerList().getPlayer(targetUUID);
+                            if (target != null) {
+                                target.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou have been demoted to " + newRankDisplay));
+                            }
+                        } else {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cCannot demote " + targetName + " (already at min rank)"));
+                        }
+                    }
+                    break;
+
+                case KICK_MEMBER:
+                    if (packet.data1 != null && !packet.data1.isEmpty()) {
+                        // Vérifier la permission
+                        if (!faction.hasPermission(player.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.KICK_MEMBERS.getServerKey())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou don't have permission to kick members!"));
+                            return;
+                        }
+
+                        // Trouver le joueur cible par nom
+                        java.util.UUID targetUUID = null;
+                        String targetName = packet.data1;
+                        for (var entry : faction.getMembers().entrySet()) {
+                            if (entry.getValue().nameCached.equalsIgnoreCase(targetName)) {
+                                targetUUID = entry.getKey();
+                                break;
+                            }
+                        }
+
+                        if (targetUUID == null) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cMember not found!"));
+                            return;
+                        }
+
+                        // Ne peut pas kicker le leader
+                        if (targetUUID.equals(faction.getOwner())) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou cannot kick the faction leader!"));
+                            return;
+                        }
+
+                        // Vérifier la hiérarchie (ne peut kick que les membres de rank inférieur)
+                        String callerRankId = faction.getMemberRank(player.getUUID());
+                        String targetRankId = faction.getMemberRank(targetUUID);
+                        if (callerRankId == null || targetRankId == null) return;
+
+                        Faction.RankDef callerRank = faction.getRanks().get(callerRankId);
+                        Faction.RankDef targetRank = faction.getRanks().get(targetRankId);
+                        if (callerRank == null || targetRank == null) return;
+
+                        if (callerRank.priority <= targetRank.priority) {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou can only kick members with lower ranks!"));
+                            return;
+                        }
+
+                        // Kicker
+                        boolean success = faction.removeMember(targetUUID);
+                        if (success) {
+                            FactionManager.markDirty();
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§c" + targetName + " has been kicked from the faction"));
+
+                            // Notifier le joueur kické et mettre à jour ses variables
+                            ServerPlayer target = player.getServer().getPlayerList().getPlayer(targetUUID);
+                            if (target != null) {
+                                target.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou have been kicked from " + faction.getName()));
+                                FactionManager.populatePlayerVariables(target, target.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
+                                target.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(target);
+                            }
+                        } else {
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cFailed to kick " + targetName));
                         }
                     }
                     break;
