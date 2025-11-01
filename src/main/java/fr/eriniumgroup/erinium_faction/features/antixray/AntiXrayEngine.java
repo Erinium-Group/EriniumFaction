@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.core.Direction;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -134,14 +135,28 @@ public class AntiXrayEngine {
                 for (int dz = -radius; dz <= radius; dz++) {
                     BlockPos pos = centerPos.offset(dx, dy, dz);
                     if (!dimConfig.isActiveAtY(pos.getY())) continue;
+                    if (!level.hasChunkAt(pos)) continue;
 
-                    // Marquer comme révélé et retirer du spoof si présent
-                    playerRevealed.add(pos);
-                    playerSpoofed.remove(pos);
+                    // Si une illusion est désormais exposée à l'air, la retirer immédiatement
+                    if (playerSpoofed.contains(pos) && isExposedToAir(level, pos)) {
+                        BlockState real = level.getBlockState(pos);
+                        player.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, real));
+                        playerSpoofed.remove(pos);
+                        continue;
+                    }
 
-                    // Envoyer la vraie valeur du bloc au client
                     BlockState realState = level.getBlockState(pos);
-                    player.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, realState));
+                    if (config.isHiddenBlock(realState.getBlock())) {
+                        playerRevealed.add(pos);
+                        playerSpoofed.remove(pos);
+                        player.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, realState));
+                    } else {
+                        // Sinon (pierre etc): garder l'illusion si déjà spoofé; ne pas restaurer pour éviter le "clignotement"
+                        if (!playerSpoofed.contains(pos)) {
+                            // Optionnel: envoyer l'état réel pour synchroniser si jamais le client a un état invalide
+                            player.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, realState));
+                        }
+                    }
                 }
             }
         }
@@ -153,7 +168,7 @@ public class AntiXrayEngine {
     public void spoofFakeOresAround(ServerLevel level, ServerPlayer player) {
         if (!config.isEnabled()) return;
         if (config.getMode() != AntiXrayConfig.AntiXrayMode.ENGINE_MODE_2) return;
-
+        if (player.tickCount < 40) return; // attendre la fin du chargement initial
         var dimConfig = config.getDimensionConfig(level.dimension().location());
         if (!dimConfig.isEnabled()) return;
 
@@ -194,7 +209,9 @@ public class AntiXrayEngine {
             int dz = rnd.nextInt(radius * 2 + 1) - radius;
             BlockPos pos = base.offset(dx, dy, dz);
             if (!dimConfig.isActiveAtY(pos.getY())) continue;
+            if (!level.hasChunkAt(pos)) continue;
             if (playerSpoofed.contains(pos)) continue;
+            if (isExposedToAir(level, pos)) continue; // ne pas spoof s'il est exposé
 
             BlockState real = level.getBlockState(pos);
             if (real.isAir() || !config.isReplacementBlock(real.getBlock())) continue;
@@ -312,6 +329,7 @@ public class AntiXrayEngine {
     public void onPlayerMoved(ServerPlayer player) {
         if (!config.isEnabled()) return;
         if (config.getMode() == AntiXrayConfig.AntiXrayMode.DISABLED) return;
+        if (player.tickCount < 40) return; // attendre ~2s après login
         BlockPos last = lastSpoofCenter.get(player.getUUID());
         int trigger = Math.max(2, config.getSpoofRadius() / 3); // mouvement significatif
         if (last == null || last.distManhattan(player.blockPosition()) >= trigger) {
@@ -353,6 +371,7 @@ public class AntiXrayEngine {
 
         var dimConfig = config.getDimensionConfig(level.dimension().location());
         if (!dimConfig.isEnabled()) return;
+        if (player.tickCount < 40) return; // garde supplémentaire
 
         UUID pid = player.getUUID();
         Set<BlockPos> spoofed = spoofedPositions.computeIfAbsent(pid, k -> ConcurrentHashMap.newKeySet());
@@ -417,10 +436,21 @@ public class AntiXrayEngine {
             if (spoofed.contains(pos)) continue;
             BlockState real = level.getBlockState(pos);
             if (real.isAir() || !config.isReplacementBlock(real.getBlock())) continue;
+            if (isExposedToAir(level, pos)) continue; // éviter grottes/
             BlockState fake = (rnd.nextInt(5) == 0) ? getRandomHiddenBlock(rnd) : template;
             player.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, fake));
             spoofed.add(pos);
             added++;
         }
+    }
+
+    private boolean isExposedToAir(ServerLevel level, BlockPos pos) {
+        for (Direction dir : Direction.values()) {
+            BlockPos n = pos.relative(dir);
+            if (!level.hasChunkAt(n)) return true; // considérer hors-chunk comme exposé pour éviter glitches
+            BlockState ns = level.getBlockState(n);
+            if (ns.isAir()) return true;
+        }
+        return false;
     }
 }

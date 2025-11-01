@@ -351,5 +351,8 @@
   "erinium_faction.cmd.faction.invite.sent": "§6[§bErinium§6/§dFaction§6] §aInvitation envoyée à §b%s§a.",
   "erinium_faction.cmd.faction.invite.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible d'envoyer l'invitation à §b%s§c.",
   "erinium_faction.cmd.faction.revoke.success": "§6[§bErinium§6/§dFaction§6] §aInvitation révoquée pour §b%s§a.",
-  "erinium_faction.cmd.faction.revoke.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de révoquer l'invitation pour §b%s§c."
+  "erinium_faction.cmd.faction.revoke.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de révoquer l'invitation pour §b%s§c.",
+  "erinium_faction.antixray.not_revealed": "§7Ce bloc n'est pas encore révélé.",
+  "erinium_faction.antixray.preset.hell": "§6[§bErinium§6/§dAntiXray§6] §cPreset HELL appliqué.",
+  "erinium_faction.antixray.preset.perf": "§6[§bErinium§6/§dAntiXray§6] §aPreset PERF appliqué."
 }
