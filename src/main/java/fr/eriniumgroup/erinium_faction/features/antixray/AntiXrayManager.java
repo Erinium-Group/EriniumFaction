@@ -1,7 +1,7 @@
 package fr.eriniumgroup.erinium_faction.features.antixray;
 
 import fr.eriniumgroup.erinium_faction.commands.AntiXrayCommand;
-import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
@@ -53,12 +53,12 @@ public class AntiXrayManager {
 
             initialized = true;
 
-            System.out.println("[Erinium Faction] Anti-Xray initialisé avec succès!");
-            System.out.println("[Erinium Faction] Mode: " + config.getMode().name());
-            System.out.println("[Erinium Faction] Minerais cachés: " + config.getHiddenBlocks().size());
+            EFC.log.debug("§8AntiXray", "Anti-Xray initialisé avec succès!");
+            EFC.log.debug("§8AntiXray", "Mode: " + config.getMode().name());
+            EFC.log.debug("§8AntiXray", "Minerais cachés: " + config.getHiddenBlocks().size());
 
         } catch (Exception e) {
-            System.err.println("[Erinium Faction] Erreur lors de l'initialisation de l'Anti-Xray: " + e.getMessage());
+            EFC.log.error("§8AntiXray", "Erreur lors de l'initialisation de l'Anti-Xray: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -70,7 +70,7 @@ public class AntiXrayManager {
         try {
             configManager.saveConfig(config);
         } catch (Exception e) {
-            System.err.println("[Erinium Faction] Erreur lors de la sauvegarde de la config Anti-Xray: " + e.getMessage());
+            EFC.log.error("§8AntiXray", "Erreur lors de la sauvegarde de la config Anti-Xray: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -81,9 +81,9 @@ public class AntiXrayManager {
     public void reloadConfig() {
         try {
             configManager.loadConfig(config);
-            System.out.println("[Erinium Faction] Configuration Anti-Xray rechargée!");
+            EFC.log.debug("§8AntiXray", "Configuration Anti-Xray rechargée!");
         } catch (Exception e) {
-            System.err.println("[Erinium Faction] Erreur lors du rechargement de la config Anti-Xray: " + e.getMessage());
+            EFC.log.error("§8AntiXray", "Erreur lors du rechargement de la config Anti-Xray: " + e.getMessage());
             e.printStackTrace();
         }
     }
