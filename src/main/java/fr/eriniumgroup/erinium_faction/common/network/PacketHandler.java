@@ -79,6 +79,9 @@ public class PacketHandler {
         // Packet synchronisation du coffre de faction
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionChestSyncPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionChestSyncPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionChestSyncPacket::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound)");
+        // Paquet synchronisation TopLuck
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage::handleData);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound)");
     }
 }

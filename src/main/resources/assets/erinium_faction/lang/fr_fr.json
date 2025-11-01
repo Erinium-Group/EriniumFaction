@@ -354,5 +354,8 @@
   "erinium_faction.cmd.faction.revoke.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible de révoquer l'invitation pour §b%s§c.",
   "erinium_faction.antixray.not_revealed": "§7Ce bloc n'est pas encore révélé.",
   "erinium_faction.antixray.preset.hell": "§6[§bErinium§6/§dAntiXray§6] §cPreset HELL appliqué.",
-  "erinium_faction.antixray.preset.perf": "§6[§bErinium§6/§dAntiXray§6] §aPreset PERF appliqué."
+  "erinium_faction.antixray.preset.perf": "§6[§bErinium§6/§dAntiXray§6] §aPreset PERF appliqué.",
+  "erinium_faction.gui.topluck.title": "TopLuck du joueur",
+  "erinium_faction.gui.topluck.total": "Total miné: %s",
+  "erinium_faction.cmd.only_players": "§cCommande réservée aux joueurs."
 }

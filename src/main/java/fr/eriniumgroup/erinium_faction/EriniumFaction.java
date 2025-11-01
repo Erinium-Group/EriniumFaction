@@ -37,6 +37,10 @@ import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelCommand;
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
 import fr.eriniumgroup.erinium_faction.commands.AntiXrayCommand;
 import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
+import fr.eriniumgroup.erinium_faction.commands.TopLuckCommand;
+import fr.eriniumgroup.erinium_faction.features.topluck.TopLuckAttachments;
+import fr.eriniumgroup.erinium_faction.events.TopLuckEventHandler;
+import fr.eriniumgroup.erinium_faction.commands.TopLuckConfigCommand;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -66,6 +70,7 @@ public class EriniumFaction {
         fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.ATTACHMENTS.register(modEventBus);
         // Système de niveau des joueurs
         PlayerLevelAttachments.ATTACHMENTS.register(modEventBus);
+        TopLuckAttachments.ATTACHMENTS.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
@@ -76,6 +81,8 @@ public class EriniumFaction {
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         // Enregistrer nos handlers anti-xray
         NeoForge.EVENT_BUS.register(AntiXrayEventHandler.class);
+        // Enregistrer TopLuck handler
+        NeoForge.EVENT_BUS.register(TopLuckEventHandler.class);
 
         // Protection systems
         ClaimProtection.register();
@@ -120,6 +127,8 @@ public class EriniumFaction {
         PlayerLevelCommand.register(event.getDispatcher());
         // Commande anti-xray
         AntiXrayCommand.register(event.getDispatcher());
+        TopLuckCommand.register(event.getDispatcher());
+        TopLuckConfigCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
     }

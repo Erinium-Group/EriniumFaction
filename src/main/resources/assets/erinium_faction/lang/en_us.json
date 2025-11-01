@@ -351,5 +351,8 @@
   "erinium_faction.cmd.faction.invite.sent": "§6[§bErinium§6/§dFaction§6] §aInvitation sent to §b%s§a.",
   "erinium_faction.cmd.faction.invite.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to send invitation to §b%s§c.",
   "erinium_faction.cmd.faction.revoke.success": "§6[§bErinium§6/§dFaction§6] §aInvite revoked for §b%s§a.",
-  "erinium_faction.cmd.faction.revoke.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to revoke invite for §b%s§c."
+  "erinium_faction.cmd.faction.revoke.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to revoke invite for §b%s§c.",
+  "erinium_faction.gui.topluck.title": "Player TopLuck",
+  "erinium_faction.gui.topluck.total": "Total mined: %s",
+  "erinium_faction.cmd.only_players": "Command for players only."
 }

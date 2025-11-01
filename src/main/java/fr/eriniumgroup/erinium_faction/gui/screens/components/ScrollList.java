@@ -31,6 +31,8 @@ public class ScrollList<T> {
     private Consumer<T> onItemClick;
     private ItemClickHandler<T> onItemClickAdvanced;
 
+    private boolean texturedBackground = true;
+
     public interface ItemRenderer<T> {
         void render(GuiGraphics g, T item, int x, int y, int width, int height, boolean hovered, Font font, int mouseX, int mouseY);
     }
@@ -78,6 +80,10 @@ public class ScrollList<T> {
         this.onItemClickAdvanced = callback;
     }
 
+    public void setTexturedBackground(boolean value) {
+        this.texturedBackground = value;
+    }
+
     public List<T> getItems() {
         return items;
     }
@@ -109,8 +115,12 @@ public class ScrollList<T> {
     }
 
     public void render(GuiGraphics g, int mouseX, int mouseY) {
-        // Background - Utiliser l'image au lieu de g.fill
-        ImageRenderer.renderScaledImage(g, SCROLLLIST_BACKGROUND, x, y, width, height);
+        // Background
+        if (texturedBackground) {
+            ImageRenderer.renderScaledImage(g, SCROLLLIST_BACKGROUND, x, y, width, height);
+        } else {
+            g.fill(x, y, x + width, y + height, 0xFF121218);
+        }
 
         // Scissor pour clipping
         g.enableScissor(x, y, x + width, y + height);
