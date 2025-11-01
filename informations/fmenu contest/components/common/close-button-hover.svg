@@ -1,5 +1,0 @@
-<svg width="11" height="11" xmlns="http://www.w3.org/2000/svg">
-  <!-- Close button hover state -->
-  <rect width="11" height="11" rx="2" fill="#ff4444"/>
-  <text x="5.5" y="8" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">X</text>
-</svg>

@@ -1,7 +1,0 @@
-<svg width="275" height="37" xmlns="http://www.w3.org/2000/svg">
-  <!-- Alliance card hover state -->
-  <rect width="275" height="37" fill="#1e1e2e" opacity="0.9"/>
-  <rect width="275" height="37" fill="#667eea" opacity="0.25"/>
-  <rect x="0" y="0" width="275" height="1" fill="#00d2ff"/>
-  <rect width="275" height="37" fill="none" stroke="#00d2ff" stroke-width="1" opacity="0.5"/>
-</svg>

@@ -1,7 +1,0 @@
-<svg width="30" height="14" xmlns="http://www.w3.org/2000/svg">
-  <!-- Toggle switch ON state -->
-  <rect width="30" height="14" rx="7" fill="#10b981"/>
-  <rect width="30" height="14" rx="7" fill="none" stroke="#10b981" stroke-width="1"/>
-  <!-- Toggle circle (right position = ON) -->
-  <circle cx="22" cy="7" r="5" fill="#ffffff"/>
-</svg>

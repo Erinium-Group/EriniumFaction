@@ -1,5 +1,0 @@
-<svg width="60" height="4" xmlns="http://www.w3.org/2000/svg">
-  <!-- Progress bar filled 70% (example - can be dynamically rendered) -->
-  <rect width="60" height="4" rx="2" fill="#2a2a3e"/>
-  <rect width="60" height="4" rx="2" fill="#a855f7"/>
-</svg>

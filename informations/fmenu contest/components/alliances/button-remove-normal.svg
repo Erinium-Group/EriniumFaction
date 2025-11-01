@@ -1,7 +1,0 @@
-<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-  <!-- Remove alliance button normal state -->
-  <rect width="16" height="16" rx="2" fill="#2a2a3e" opacity="0.8"/>
-  <rect width="16" height="16" rx="2" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
-  <!-- Minus icon -->
-  <line x1="4" y1="8" x2="12" y2="8" stroke="#ef4444" stroke-width="2" opacity="0.8"/>
-</svg>

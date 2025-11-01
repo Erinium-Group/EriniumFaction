@@ -1,8 +1,0 @@
-<!-- Attribute Box Cyan - 24x26px (pour Vitesse) -->
-<svg width="24" height="26" viewBox="0 0 24 26" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="24" height="26" rx="4" fill="#1a1a2e"/>
-
-  <!-- Border (cyan) -->
-  <rect width="24" height="26" rx="4" fill="none" stroke="#00d2ff" stroke-width="1"/>
-</svg>

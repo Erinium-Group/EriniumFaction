@@ -1,7 +1,0 @@
-<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-  <!-- Remove alliance button hover state -->
-  <rect width="16" height="16" rx="2" fill="#3a3a4e"/>
-  <rect width="16" height="16" rx="2" fill="none" stroke="#ff4444" stroke-width="1"/>
-  <!-- Minus icon -->
-  <line x1="4" y1="8" x2="12" y2="8" stroke="#ff4444" stroke-width="2"/>
-</svg>

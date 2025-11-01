@@ -1,7 +1,0 @@
-<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-  <!-- Demote button hover state -->
-  <rect width="16" height="16" rx="2" fill="#3a3a4e"/>
-  <rect width="16" height="16" rx="2" fill="none" stroke="#fbbf24" stroke-width="1"/>
-  <!-- Down arrow icon -->
-  <path d="M 8 12 L 12 6 L 4 6 Z" fill="#fbbf24"/>
-</svg>

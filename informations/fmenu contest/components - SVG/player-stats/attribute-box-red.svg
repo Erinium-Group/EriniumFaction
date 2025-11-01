@@ -1,8 +1,0 @@
-<!-- Attribute Box Red - 24x26px (pour Vie, Armure, Force, Intelligence) -->
-<svg width="24" height="26" viewBox="0 0 24 26" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="24" height="26" rx="4" fill="#1a1a2e"/>
-
-  <!-- Border (red) -->
-  <rect width="24" height="26" rx="4" fill="none" stroke="#ef4444" stroke-width="1"/>
-</svg>

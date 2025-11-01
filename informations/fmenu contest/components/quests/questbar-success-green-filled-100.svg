@@ -1,5 +1,0 @@
-<svg width="250" height="8" xmlns="http://www.w3.org/2000/svg">
-  <!-- Quest progress bar filled 100% (green - completed) -->
-  <rect width="250" height="8" rx="4" fill="#2a2a3e"/>
-  <rect width="250" height="8" rx="4" fill="#10b981"/>
-</svg>

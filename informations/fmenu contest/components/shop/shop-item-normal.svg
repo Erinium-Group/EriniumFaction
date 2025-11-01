@@ -1,7 +1,0 @@
-<svg width="275" height="52" xmlns="http://www.w3.org/2000/svg">
-  <!-- Shop item normal state -->
-  <rect width="275" height="52" fill="#1e1e2e" opacity="0.9"/>
-  <rect width="275" height="52" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
-  <!-- Icon placeholder -->
-  <rect x="7" y="10" width="32" height="32" rx="4" fill="#a855f7" opacity="0.4"/>
-</svg>

@@ -1,7 +1,0 @@
-<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-  <!-- Promote button normal state -->
-  <rect width="16" height="16" rx="2" fill="#2a2a3e" opacity="0.8"/>
-  <rect width="16" height="16" rx="2" fill="none" stroke="#10b981" stroke-width="1" opacity="0.5"/>
-  <!-- Up arrow icon -->
-  <path d="M 8 4 L 12 10 L 4 10 Z" fill="#10b981" opacity="0.8"/>
-</svg>

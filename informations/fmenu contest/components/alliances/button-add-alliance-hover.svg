@@ -1,8 +1,0 @@
-<svg width="88" height="17" xmlns="http://www.w3.org/2000/svg">
-  <!-- Add alliance button hover state -->
-  <rect width="88" height="17" rx="3" fill="#3a3a4e"/>
-  <rect width="88" height="17" rx="3" fill="none" stroke="#10b981" stroke-width="1"/>
-  <!-- Plus icon -->
-  <line x1="44" y1="5" x2="44" y2="12" stroke="#10b981" stroke-width="2"/>
-  <line x1="40.5" y1="8.5" x2="47.5" y2="8.5" stroke="#10b981" stroke-width="2"/>
-</svg>

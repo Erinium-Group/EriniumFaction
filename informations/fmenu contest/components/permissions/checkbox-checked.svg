@@ -1,7 +1,0 @@
-<svg width="10" height="10" xmlns="http://www.w3.org/2000/svg">
-  <!-- Checkbox checked state -->
-  <rect width="10" height="10" rx="2" fill="#10b981"/>
-  <rect width="10" height="10" rx="2" fill="none" stroke="#10b981" stroke-width="1"/>
-  <!-- Checkmark -->
-  <path d="M 2 5 L 4 7 L 8 3" stroke="#ffffff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
