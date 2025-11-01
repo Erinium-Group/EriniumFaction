@@ -49,7 +49,6 @@ public class AntiXrayManager {
             configManager.loadConfig(config);
 
             // Initialiser les gestionnaires d'événements et commandes
-            AntiXrayEventHandler.init(engine);
             AntiXrayCommand.init(engine);
 
             initialized = true;
