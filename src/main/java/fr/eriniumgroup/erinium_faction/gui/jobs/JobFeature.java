@@ -6,87 +6,63 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 /**
- * Énumération des features débloquées par les jobs
- * Chaque feature contient directement la donnée concrète selon son type:
- * - ITEM → Item (l'item lui-même)
- * - BLOCK → Block (le bloc lui-même)
- * - DIMENSION → String (ResourceLocation en string)
- * - EFFECT → MobEffect (l'effet de potion)
- * - ENCHANT → ResourceLocation (l'enchantement)
- * - ABILITY → String (nom de l'abilité custom)
+ * Énumération des features débloquées par le niveau
+ * Chaque feature contient:
+ * - FeatureType: le type de feature (ITEM, BLOCK, DIMENSION, etc.)
+ * - name: nom d'affichage
+ * - description: description
+ * - requiredLevel: niveau requis pour débloquer
+ * - displayItem: item pour l'affichage GUI
+ * - data: la donnée concrète (Item, Block, String, MobEffect, etc.)
  */
 public enum JobFeature {
     // ========================================
-    // GLOBAL FEATURES
+    // ITEMS - Tools & Equipment
     // ========================================
-    // ITEMS
-    GLOBAL_TOTEM(JobType.GLOBAL, FeatureType.ITEM, "Totem of Undying", "Craft recipe unlocked", 50, Items.TOTEM_OF_UNDYING, Items.TOTEM_OF_UNDYING),
-    GLOBAL_ELYTRA(JobType.GLOBAL, FeatureType.ITEM, "Elytra", "Craft recipe unlocked", 100, Items.ELYTRA, Items.ELYTRA),
-    GLOBAL_NETHERITE(JobType.GLOBAL, FeatureType.ITEM, "Netherite Upgrade", "Smithing recipe unlocked", 150, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
+    ITEM_IRON_TOOLS("Iron Tools", "Craft and use iron tier tools and weapons", 10, Items.IRON_PICKAXE, Items.IRON_PICKAXE),
+    ITEM_DIAMOND_TOOLS("Diamond Tools", "Craft and use diamond tier tools and weapons", 20, Items.DIAMOND_PICKAXE, Items.DIAMOND_PICKAXE),
+    ITEM_NETHERITE_TOOLS("Netherite Tools", "Craft and use netherite tier tools and weapons", 30, Items.NETHERITE_PICKAXE, Items.NETHERITE_PICKAXE),
+    ITEM_IRON_ARMOR("Iron Armor", "Craft and wear iron armor pieces", 15, Items.IRON_CHESTPLATE, Items.IRON_CHESTPLATE),
+    ITEM_DIAMOND_ARMOR("Diamond Armor", "Craft and wear diamond armor pieces", 25, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_CHESTPLATE),
+    ITEM_NETHERITE_ARMOR("Netherite Armor", "Craft and wear netherite armor pieces", 35, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_CHESTPLATE),
+    ITEM_BOW("Bow", "Craft and use bows for ranged combat", 10, Items.BOW, Items.BOW),
+    ITEM_CROSSBOW("Crossbow", "Craft and use crossbows with bolts", 20, Items.CROSSBOW, Items.CROSSBOW),
+    ITEM_TRIDENT("Trident", "Use tridents for melee and ranged attacks", 30, Items.TRIDENT, Items.TRIDENT),
+    ITEM_SHIELD("Shield", "Craft and use shields for defense", 12, Items.SHIELD, Items.SHIELD),
 
-    // DIMENSIONS
-    GLOBAL_NETHER(JobType.GLOBAL, FeatureType.DIMENSION, "The Nether", "Access to Nether dimension", 200, Items.NETHERRACK, "minecraft:the_nether"),
-    GLOBAL_END(JobType.GLOBAL, FeatureType.DIMENSION, "The End", "Access to End dimension", 250, Items.END_STONE, "minecraft:the_end"),
-
-    // ========================================
-    // MINER FEATURES
-    // ========================================
-    // ITEMS
-    MINER_IRON_PICKAXE(JobType.MINER, FeatureType.ITEM, "Iron Pickaxe", "Unlock iron tools", 10, Items.IRON_PICKAXE, Items.IRON_PICKAXE),
-    MINER_DIAMOND_PICKAXE(JobType.MINER, FeatureType.ITEM, "Diamond Pickaxe", "Unlock diamond tools", 20, Items.DIAMOND_PICKAXE, Items.DIAMOND_PICKAXE),
-    MINER_NETHERITE_PICKAXE(JobType.MINER, FeatureType.ITEM, "Netherite Pickaxe", "Unlock netherite tools", 30, Items.NETHERITE_PICKAXE, Items.NETHERITE_PICKAXE),
-
-    // BLOCKS
-    MINER_TNT(JobType.MINER, FeatureType.BLOCK, "TNT", "Craft recipe unlocked", 40, Items.TNT, Blocks.TNT),
-    MINER_DEEPSLATE(JobType.MINER, FeatureType.BLOCK, "Reinforced Deepslate", "Can mine this block", 50, Items.REINFORCED_DEEPSLATE, Blocks.REINFORCED_DEEPSLATE),
+    // Special items
+    ITEM_TOTEM("Totem of Undying", "Craft totems to prevent death once", 40, Items.TOTEM_OF_UNDYING, Items.TOTEM_OF_UNDYING),
+    ITEM_ELYTRA("Elytra", "Craft elytras for flight and gliding", 50, Items.ELYTRA, Items.ELYTRA),
+    ITEM_ENCHANTED_GOLDEN_APPLE("Enchanted Golden Apple", "Craft powerful healing apples", 45, Items.ENCHANTED_GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE),
+    ITEM_NETHERITE_UPGRADE("Netherite Upgrade Template", "Use smithing table to upgrade to netherite", 30, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
+    ITEM_BEACON("Beacon", "Craft beacons for powerful area buffs", 60, Items.BEACON, Items.BEACON),
+    ITEM_CONDUIT("Conduit", "Craft conduits for underwater breathing", 55, Items.CONDUIT, Items.CONDUIT),
 
     // ========================================
-    // FARMER FEATURES
+    // BLOCKS - Building & Utility
     // ========================================
-    // ITEMS
-    FARMER_IRON_HOE(JobType.FARMER, FeatureType.ITEM, "Iron Hoe", "Unlock iron hoes", 10, Items.IRON_HOE, Items.IRON_HOE),
-    FARMER_GOLDEN_CARROT(JobType.FARMER, FeatureType.ITEM, "Golden Carrot", "Craft recipe unlocked", 40, Items.GOLDEN_CARROT, Items.GOLDEN_CARROT),
-    FARMER_ENCHANTED_GOLDEN_APPLE(JobType.FARMER, FeatureType.ITEM, "Enchanted Golden Apple", "Craft recipe unlocked", 50, Items.ENCHANTED_GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE),
-
-    // BLOCKS
-    FARMER_COMPOSTER(JobType.FARMER, FeatureType.BLOCK, "Composter", "Craft recipe unlocked", 20, Items.COMPOSTER, Blocks.COMPOSTER),
-    FARMER_BEEHIVE(JobType.FARMER, FeatureType.BLOCK, "Beehive", "Craft recipe unlocked", 30, Items.BEEHIVE, Blocks.BEEHIVE),
-
-    // ========================================
-    // LUMBERJACK FEATURES
-    // ========================================
-    // ITEMS
-    LUMBER_IRON_AXE(JobType.LUMBERJACK, FeatureType.ITEM, "Iron Axe", "Unlock iron axes", 10, Items.IRON_AXE, Items.IRON_AXE),
-    LUMBER_DIAMOND_AXE(JobType.LUMBERJACK, FeatureType.ITEM, "Diamond Axe", "Unlock diamond axes", 20, Items.DIAMOND_AXE, Items.DIAMOND_AXE),
-    LUMBER_NETHERITE_AXE(JobType.LUMBERJACK, FeatureType.ITEM, "Netherite Axe", "Unlock netherite axes", 30, Items.NETHERITE_AXE, Items.NETHERITE_AXE),
-
-    // BLOCKS
-    LUMBER_SCAFFOLDING(JobType.LUMBERJACK, FeatureType.BLOCK, "Scaffolding", "Craft recipe unlocked", 40, Items.SCAFFOLDING, Blocks.SCAFFOLDING),
-    LUMBER_CARTOGRAPHY_TABLE(JobType.LUMBERJACK, FeatureType.BLOCK, "Cartography Table", "Craft recipe unlocked", 50, Items.CARTOGRAPHY_TABLE, Blocks.CARTOGRAPHY_TABLE),
+    BLOCK_TNT("TNT", "Craft TNT for explosions and mining", 25, Items.TNT, Blocks.TNT),
+    BLOCK_REINFORCED_DEEPSLATE("Reinforced Deepslate", "Mine the strongest block in the game", 70, Items.REINFORCED_DEEPSLATE, Blocks.REINFORCED_DEEPSLATE),
+    BLOCK_ENCHANTING_TABLE("Enchanting Table", "Craft enchanting tables for enchantments", 15, Items.ENCHANTING_TABLE, Blocks.ENCHANTING_TABLE),
+    BLOCK_ANVIL("Anvil", "Craft anvils for repairing and renaming", 18, Items.ANVIL, Blocks.ANVIL),
+    BLOCK_BREWING_STAND("Brewing Stand", "Craft brewing stands for potions", 20, Items.BREWING_STAND, Blocks.BREWING_STAND),
+    BLOCK_BEACON_BLOCK("Beacon Block", "Place and activate beacons", 60, Items.BEACON, Blocks.BEACON),
+    BLOCK_END_PORTAL_FRAME("End Portal Frame", "Obtain and place end portal frames", 80, Items.END_PORTAL_FRAME, Blocks.END_PORTAL_FRAME),
 
     // ========================================
-    // HUNTER FEATURES
+    // DIMENSIONS - World Access
     // ========================================
-    // ITEMS
-    HUNTER_IRON_SWORD(JobType.HUNTER, FeatureType.ITEM, "Iron Sword", "Unlock iron swords", 10, Items.IRON_SWORD, Items.IRON_SWORD),
-    HUNTER_BOW(JobType.HUNTER, FeatureType.ITEM, "Bow", "Can use bows", 20, Items.BOW, Items.BOW),
-    HUNTER_CROSSBOW(JobType.HUNTER, FeatureType.ITEM, "Crossbow", "Craft recipe unlocked", 30, Items.CROSSBOW, Items.CROSSBOW),
-    HUNTER_TRIDENT(JobType.HUNTER, FeatureType.ITEM, "Trident", "Can use tridents", 40, Items.TRIDENT, Items.TRIDENT),
-
-    // EFFECTS
-    HUNTER_NIGHT_VISION(JobType.HUNTER, FeatureType.EFFECT, "Night Vision", "Permanent night vision effect", 50, Items.SPIDER_EYE, MobEffects.NIGHT_VISION),
+    DIM_NETHER("The Nether", "Travel to the dangerous Nether dimension", 5, Items.NETHERRACK, "minecraft:the_nether"),
+    DIM_END("The End", "Access the End dimension and fight the dragon", 40, Items.END_STONE, "minecraft:the_end"),
 
     // ========================================
-    // FISHER FEATURES
+    // EFFECTS - Permanent Buffs
     // ========================================
-    // ITEMS
-    FISHER_FISHING_ROD(JobType.FISHER, FeatureType.ITEM, "Fishing Rod", "Craft recipe unlocked", 10, Items.FISHING_ROD, Items.FISHING_ROD),
-    FISHER_BUCKET(JobType.FISHER, FeatureType.ITEM, "Water Bucket", "Can use buckets", 20, Items.WATER_BUCKET, Items.WATER_BUCKET),
-    FISHER_BOAT(JobType.FISHER, FeatureType.ITEM, "Boat", "Craft recipe unlocked", 30, Items.OAK_BOAT, Items.OAK_BOAT),
-    FISHER_HEART_OF_SEA(JobType.FISHER, FeatureType.ITEM, "Heart of the Sea", "Can find in treasures", 40, Items.HEART_OF_THE_SEA, Items.HEART_OF_THE_SEA),
-
-    // BLOCKS
-    FISHER_CONDUIT(JobType.FISHER, FeatureType.BLOCK, "Conduit", "Craft recipe unlocked", 50, Items.CONDUIT, Blocks.CONDUIT);
+    EFFECT_NIGHT_VISION("Night Vision", "See perfectly in the dark at all times", 50, Items.SPIDER_EYE, MobEffects.NIGHT_VISION),
+    EFFECT_WATER_BREATHING("Water Breathing", "Breathe underwater without drowning", 45, Items.PUFFERFISH, MobEffects.WATER_BREATHING),
+    EFFECT_FIRE_RESISTANCE("Fire Resistance", "Immunity to fire and lava damage", 55, Items.MAGMA_CREAM, MobEffects.FIRE_RESISTANCE),
+    EFFECT_REGENERATION("Regeneration", "Slowly regenerate health over time", 65, Items.GHAST_TEAR, MobEffects.REGENERATION),
+    EFFECT_SATURATION("Saturation", "Never lose hunger or saturation", 75, Items.GOLDEN_CARROT, MobEffects.SATURATION);
 
     /**
      * Type de feature débloquée
@@ -100,7 +76,6 @@ public enum JobFeature {
         ABILITY    // Capacité spéciale → data = String (nom custom)
     }
 
-    private final JobType jobType;
     private final FeatureType featureType;
     private final String name;
     private final String description;
@@ -108,18 +83,30 @@ public enum JobFeature {
     private final net.minecraft.world.item.Item displayItem; // Pour l'affichage GUI
     private final Object data; // La donnée concrète: Item, Block, String, MobEffect, etc.
 
-    JobFeature(JobType jobType, FeatureType featureType, String name, String description, int requiredLevel,
+    JobFeature(String name, String description, int requiredLevel,
                net.minecraft.world.item.Item displayItem, Object data) {
-        this.jobType = jobType;
-        this.featureType = featureType;
         this.name = name;
         this.description = description;
         this.requiredLevel = requiredLevel;
         this.displayItem = displayItem;
         this.data = data;
+
+        // Déterminer automatiquement le type selon la donnée
+        if (data instanceof net.minecraft.world.item.Item) {
+            this.featureType = FeatureType.ITEM;
+        } else if (data instanceof net.minecraft.world.level.block.Block) {
+            this.featureType = FeatureType.BLOCK;
+        } else if (data instanceof String) {
+            this.featureType = FeatureType.DIMENSION;
+        } else if (data instanceof net.minecraft.world.effect.MobEffect) {
+            this.featureType = FeatureType.EFFECT;
+        } else if (data instanceof ResourceLocation) {
+            this.featureType = FeatureType.ENCHANT;
+        } else {
+            this.featureType = FeatureType.ABILITY;
+        }
     }
 
-    public JobType getJobType() { return jobType; }
     public FeatureType getFeatureType() { return featureType; }
     public String getName() { return name; }
     public String getDescription() { return description; }
@@ -154,34 +141,19 @@ public enum JobFeature {
         return featureType == FeatureType.ABILITY ? (String) data : null;
     }
 
+    /**
+     * Vérifie si la feature est débloquée pour un niveau donné
+     */
     public boolean isUnlocked(int playerLevel) {
         return playerLevel >= requiredLevel;
     }
 
     /**
-     * Obtient toutes les features pour un type de job donné
+     * Trouve une feature spécifique basée sur le type de feature et les données
      */
-    public static JobFeature[] getFeaturesForJob(JobType jobType) {
-        java.util.List<JobFeature> features = new java.util.ArrayList<>();
+    public static JobFeature findFeature(FeatureType featureType, Object data) {
         for (JobFeature feature : values()) {
-            if (feature.jobType == jobType) {
-                features.add(feature);
-            }
-        }
-        return features.toArray(new JobFeature[0]);
-    }
-
-    /**
-     * Trouve une feature spécifique basée sur le job, le type de feature et les données
-     *
-     * @param jobType Le type de job (MINER, FARMER, etc.)
-     * @param featureType Le type de feature (ITEM, BLOCK, DIMENSION, etc.)
-     * @param data Les données de la feature (Item, Block, String pour dimension, etc.)
-     * @return La feature correspondante, ou null si non trouvée
-     */
-    public static JobFeature findFeature(JobType jobType, FeatureType featureType, Object data) {
-        for (JobFeature feature : values()) {
-            if (feature.jobType == jobType && feature.featureType == featureType) {
+            if (feature.featureType == featureType) {
                 if (feature.data != null && feature.data.equals(data)) {
                     return feature;
                 }
@@ -193,50 +165,36 @@ public enum JobFeature {
     /**
      * Trouve une feature par son item
      */
-    public static JobFeature findFeatureByItem(JobType jobType, net.minecraft.world.item.Item item) {
-        return findFeature(jobType, FeatureType.ITEM, item);
+    public static JobFeature findFeatureByItem(net.minecraft.world.item.Item item) {
+        return findFeature(FeatureType.ITEM, item);
     }
 
     /**
      * Trouve une feature par son bloc
      */
-    public static JobFeature findFeatureByBlock(JobType jobType, net.minecraft.world.level.block.Block block) {
-        return findFeature(jobType, FeatureType.BLOCK, block);
+    public static JobFeature findFeatureByBlock(net.minecraft.world.level.block.Block block) {
+        return findFeature(FeatureType.BLOCK, block);
     }
 
     /**
      * Trouve une feature par dimension
      */
-    public static JobFeature findFeatureByDimension(JobType jobType, String dimension) {
-        return findFeature(jobType, FeatureType.DIMENSION, dimension);
+    public static JobFeature findFeatureByDimension(String dimension) {
+        return findFeature(FeatureType.DIMENSION, dimension);
     }
 
     /**
      * Trouve une feature par effet
      */
-    public static JobFeature findFeatureByEffect(JobType jobType, net.minecraft.world.effect.MobEffect effect) {
-        return findFeature(jobType, FeatureType.EFFECT, effect);
-    }
-
-    /**
-     * Trouve une feature par enchantement
-     */
-    public static JobFeature findFeatureByEnchantment(JobType jobType, ResourceLocation enchantment) {
-        return findFeature(jobType, FeatureType.ENCHANT, enchantment);
-    }
-
-    /**
-     * Trouve une feature par abilité
-     */
-    public static JobFeature findFeatureByAbility(JobType jobType, String ability) {
-        return findFeature(jobType, FeatureType.ABILITY, ability);
+    public static JobFeature findFeatureByEffect(net.minecraft.world.effect.MobEffect effect) {
+        return findFeature(FeatureType.EFFECT, effect);
     }
 
     /**
      * Vérifie si une feature spécifique est débloquée pour un niveau donné
      */
-    public static boolean isFeatureUnlocked(JobType jobType, FeatureType featureType, Object data, int playerLevel) {
-        JobFeature feature = findFeature(jobType, featureType, data);
+    public static boolean isFeatureUnlocked(FeatureType featureType, Object data, int playerLevel) {
+        JobFeature feature = findFeature(featureType, data);
         if (feature == null) {
             return false;
         }
@@ -246,8 +204,8 @@ public enum JobFeature {
     /**
      * Obtient le niveau requis pour une feature spécifique
      */
-    public static int getRequiredLevelForFeature(JobType jobType, FeatureType featureType, Object data) {
-        JobFeature feature = findFeature(jobType, featureType, data);
+    public static int getRequiredLevelForFeature(FeatureType featureType, Object data) {
+        JobFeature feature = findFeature(featureType, data);
         return feature != null ? feature.requiredLevel : -1;
     }
 

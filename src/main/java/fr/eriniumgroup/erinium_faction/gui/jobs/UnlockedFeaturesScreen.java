@@ -15,17 +15,16 @@ import java.util.List;
  */
 public class UnlockedFeaturesScreen extends Screen {
 
+    private static final ResourceLocation BG_MAIN = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/bg-full-main.png");
+    private static final ResourceLocation BORDER_MAIN = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/border-main.png");
     private static final ResourceLocation PANEL_HEADER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/panel-header.png");
     private static final ResourceLocation PANEL_CARD_MEDIUM = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/panel-card-medium.png");
     private static final ResourceLocation PANEL_TITLE_BAR = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/panel-title-bar.png");
-    private static final ResourceLocation PANEL_SCROLL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/panel-scroll-container.png");
     private static final ResourceLocation BUTTON_CLOSE = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/button-close.png");
     private static final ResourceLocation BUTTON_BACK = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/button-back.png");
     private static final ResourceLocation LEVEL_BADGE_SMALL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/level-badge-small.png");
     private static final ResourceLocation ICON_UNLOCKED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/icon-circle-status-unlocked.png");
     private static final ResourceLocation ICON_LOCKED = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/icon-circle-status-locked.png");
-    private static final ResourceLocation SCROLLBAR_TRACK = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/scrollbar-track.png");
-    private static final ResourceLocation SCROLLBAR_THUMB = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/scrollbar-thumb.png");
 
     private static final int GUI_WIDTH = 400;
     private static final int GUI_HEIGHT = 270;
@@ -33,35 +32,35 @@ public class UnlockedFeaturesScreen extends Screen {
     private int guiLeft;
     private int guiTop;
 
-    private final String jobName;
     private final int level;
     private final int xp;
     private final int maxXP;
-    private final JobType jobType;
 
-    private ScrollList<Feature> featuresList;
+    private ScrollList<FeatureEntry> featuresList;
 
-    public static class Feature {
+    public static class FeatureEntry {
         public String name;
-        public String desc;
+        public String desc; // Pour affichage dans la scroll list (texte rouge si locked)
+        public String fullDescription; // Vraie description pour le tooltip
         public int requiredLevel;
         public boolean unlocked;
+        public net.minecraft.world.item.ItemStack displayItem;
 
-        public Feature(String name, String desc, int requiredLevel, boolean unlocked) {
+        public FeatureEntry(String name, String desc, String fullDescription, int requiredLevel, boolean unlocked, net.minecraft.world.item.ItemStack displayItem) {
             this.name = name;
             this.desc = desc;
+            this.fullDescription = fullDescription;
             this.requiredLevel = requiredLevel;
             this.unlocked = unlocked;
+            this.displayItem = displayItem;
         }
     }
 
-    public UnlockedFeaturesScreen(String jobName, int level, int xp, int maxXP, JobType jobType) {
-        super(Component.literal(jobName + " - Unlocked Features"));
-        this.jobName = jobName;
+    public UnlockedFeaturesScreen(int level, int xp, int maxXP) {
+        super(Component.literal("Unlocked Features"));
         this.level = level;
         this.xp = xp;
         this.maxXP = maxXP;
-        this.jobType = jobType;
     }
 
     @Override
@@ -74,22 +73,24 @@ public class UnlockedFeaturesScreen extends Screen {
         featuresList = new ScrollList<>(this.font, this::renderFeature, 30);
         featuresList.setBounds(guiLeft + 8, guiTop + 110, 384, 148);
 
-        // Ajouter les features d'exemple
-        List<Feature> features = createExampleFeatures();
+        // Ajouter les features depuis l'enum
+        List<FeatureEntry> features = createFeatures();
         featuresList.setItems(features);
     }
 
-    private List<Feature> createExampleFeatures() {
-        List<Feature> features = new ArrayList<>();
+    private List<FeatureEntry> createFeatures() {
+        List<FeatureEntry> features = new ArrayList<>();
 
-        // Récupérer les features depuis l'enum pour ce job
-        JobFeature[] jobFeatures = JobFeature.getFeaturesForJob(jobType);
-        for (JobFeature jobFeature : jobFeatures) {
-            features.add(new Feature(
-                jobFeature.getName(),
-                jobFeature.getFullDescription(level),
-                jobFeature.getRequiredLevel(),
-                jobFeature.isUnlocked(level)
+        for (JobFeature feature : JobFeature.values()) {
+            // Pour la scroll list: utiliser getFullDescription (affiche "Requires Level X" en rouge si locked)
+            // La vraie description sera affichée dans le tooltip
+            features.add(new FeatureEntry(
+                feature.getName(),
+                feature.getFullDescription(level), // Texte pour la scroll list (rouge si locked)
+                feature.getDescription(), // Vraie description pour le tooltip
+                feature.getRequiredLevel(),
+                feature.isUnlocked(level),
+                new net.minecraft.world.item.ItemStack(feature.getDisplayItem())
             ));
         }
 
@@ -99,24 +100,23 @@ public class UnlockedFeaturesScreen extends Screen {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         // Background
-        ImageRenderer.renderScaledImage(g, jobType.getBackground(), guiLeft, guiTop, GUI_WIDTH, GUI_HEIGHT);
-        ImageRenderer.renderScaledImage(g, jobType.getBorder(), guiLeft + 2, guiTop + 2, 396, 266);
+        ImageRenderer.renderScaledImage(g, BG_MAIN, guiLeft, guiTop, GUI_WIDTH, GUI_HEIGHT);
+        ImageRenderer.renderScaledImage(g, BORDER_MAIN, guiLeft + 2, guiTop + 2, 396, 266);
 
         // Header
         ImageRenderer.renderScaledImage(g, PANEL_HEADER, guiLeft + 8, guiTop + 8, 384, 40);
         ImageRenderer.renderScaledImage(g, BUTTON_BACK, guiLeft + 14, guiTop + 16, 24, 24);
-        g.drawCenteredString(this.font, "‹", guiLeft + 26, guiTop + 26, jobType.getColor());
+        g.drawCenteredString(this.font, "‹", guiLeft + 26, guiTop + 26, 0xfbbf24);
 
-        g.fill(guiLeft + 58 - 14, guiTop + 28 - 14, guiLeft + 58 + 14, guiTop + 28 + 14, jobType.getColor());
-        g.drawString(this.font, jobName.toUpperCase() + " - Unlocked Features", guiLeft + 80, guiTop + 20, jobType.getColor(), false);
-        g.drawString(this.font, "Perks and abilities you've earned", guiLeft + 80, guiTop + 32, 0x9ca3af, false);
+        g.drawString(this.font, "UNLOCKED FEATURES", guiLeft + 50, guiTop + 20, 0xfbbf24, false);
+        g.drawString(this.font, "Perks and abilities you've earned", guiLeft + 50, guiTop + 32, 0x9ca3af, false);
         ImageRenderer.renderScaledImage(g, BUTTON_CLOSE, guiLeft + 372, guiTop + 16, 14, 14);
 
         // Level bar
         ImageRenderer.renderScaledImage(g, PANEL_CARD_MEDIUM, guiLeft + 8, guiTop + 54, 384, 30);
         ImageRenderer.renderScaledImage(g, LEVEL_BADGE_SMALL, guiLeft + 18, guiTop + 60, 28, 18);
         g.drawCenteredString(this.font, String.valueOf(level), guiLeft + 32, guiTop + 68, 0xFFFFFF);
-        g.drawString(this.font, "Level " + level + " " + jobName, guiLeft + 54, guiTop + 67, 0xFFFFFF, false);
+        g.drawString(this.font, "Level " + level, guiLeft + 54, guiTop + 67, 0xFFFFFF, false);
 
         // Stats
         int unlockedCount = (int) featuresList.getItems().stream().filter(f -> f.unlocked).count();
@@ -136,17 +136,17 @@ public class UnlockedFeaturesScreen extends Screen {
         super.render(g, mouseX, mouseY, partialTick);
     }
 
-    private void renderFeature(GuiGraphics g, Feature feature, int x, int y, int width, int height, boolean hovered, net.minecraft.client.gui.Font font, int mouseX, int mouseY) {
+    private void renderFeature(GuiGraphics g, FeatureEntry feature, int x, int y, int width, int height, boolean hovered, net.minecraft.client.gui.Font font, int mouseX, int mouseY) {
         float alpha = feature.unlocked ? 1.0f : 0.6f;
-        int borderColor = feature.unlocked ? 0x10b981 : 0xef4444;
 
         // Card
         int bgColor = hovered ? 0xE01e1e2e : 0xFF1e1e2e;
         g.fill(x + 6, y + 2, x + width - 8, y + height - 2, bgColor);
 
-        // Status icon
-        ResourceLocation icon = feature.unlocked ? ICON_UNLOCKED : ICON_LOCKED;
-        ImageRenderer.renderScaledImageWithAlpha(g, icon, x + 20 - 7, y + 14 - 7, 14, 14, alpha);
+        // Item icon
+        if (feature.displayItem != null && !feature.displayItem.isEmpty()) {
+            g.renderItem(feature.displayItem, x + 12, y + 7);
+        }
 
         // Name & desc
         int textColor = feature.unlocked ? 0x10b981 : 0x9ca3af;
@@ -159,6 +159,27 @@ public class UnlockedFeaturesScreen extends Screen {
         int badgeColor = feature.unlocked ? 0x10b981 : 0xef4444;
         g.fill(x + 322, y + 8, x + 357, y + 21, badgeColor);
         g.drawCenteredString(font, "LVL " + feature.requiredLevel, x + 339, y + 14, 0xFFFFFF);
+
+        // Tooltip si hover
+        if (hovered) {
+            List<Component> tooltipComponents = new ArrayList<>();
+            tooltipComponents.add(Component.literal(feature.name).withStyle(style -> style.withColor(feature.unlocked ? 0x10b981 : 0xef4444).withBold(true)));
+            tooltipComponents.add(Component.literal(feature.fullDescription).withStyle(style -> style.withColor(0x9ca3af)));
+            tooltipComponents.add(Component.literal(""));
+            tooltipComponents.add(Component.literal("Required Level: " + feature.requiredLevel).withStyle(style -> style.withColor(0xfbbf24)));
+
+            if (!feature.unlocked) {
+                int levelsToGo = feature.requiredLevel - level;
+                tooltipComponents.add(Component.literal(levelsToGo + " level" + (levelsToGo > 1 ? "s" : "") + " to unlock").withStyle(style -> style.withColor(0xef4444)));
+            }
+
+            // Convertir en FormattedCharSequence
+            List<net.minecraft.util.FormattedCharSequence> tooltip = tooltipComponents.stream()
+                .map(c -> c.getVisualOrderText())
+                .toList();
+
+            g.renderTooltip(font, tooltip, (int)mouseX, (int)mouseY);
+        }
     }
 
     @Override
@@ -171,12 +192,7 @@ public class UnlockedFeaturesScreen extends Screen {
 
         // Back button
         if (isMouseOver(mouseX, mouseY, guiLeft + 14, guiTop + 16, 24, 24)) {
-            // Si c'est le Global Job, retourner au menu principal
-            if (jobName.equals("Global Job")) {
-                minecraft.setScreen(new JobsScreen());
-            } else {
-                minecraft.setScreen(new JobDetailScreen(jobName, level, xp, maxXP, jobType));
-            }
+            minecraft.setScreen(new JobsScreen());
             return true;
         }
 
