@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="270" viewBox="0 0 400 270" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:0.2" />
+      <stop offset="50%" style="stop-color:#a855f7;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:0.2" />
+    </linearGradient>
+
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a2a3e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e1e2e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="270" fill="url(#bgGradient)"/>
+
+  <!-- Border -->
+  <rect x="2" y="2" width="396" height="266" fill="none" stroke="#a855f7" stroke-width="2" rx="4"/>
+
+  <!-- Header -->
+  <rect x="8" y="8" width="384" height="40" fill="url(#headerGradient)" rx="4"/>
+
+  <!-- Back button -->
+  <circle cx="26" cy="28" r="12" fill="#a855f7" opacity="0.2"/>
+  <text x="26" y="34" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#a855f7" text-anchor="middle">‹</text>
+
+  <!-- Title -->
+  <text x="46" y="26" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#a855f7">UNLOCKED FEATURES - MINER</text>
+  <text x="46" y="40" font-family="Arial, sans-serif" font-size="9" fill="#9ca3af">Perks and abilities you've earned</text>
+
+  <!-- Close button -->
+  <rect x="372" y="16" width="14" height="14" fill="#ef4444" rx="2"/>
+  <line x1="375" y1="19" x2="383" y2="27" stroke="white" stroke-width="2"/>
+  <line x1="383" y1="19" x2="375" y2="27" stroke="white" stroke-width="2"/>
+
+  <!-- Level indicator -->
+  <rect x="8" y="54" width="384" height="28" fill="url(#cardGradient)" rx="4"/>
+  <rect x="18" y="60" width="40" height="16" fill="#fbbf24" rx="2"/>
+  <text x="38" y="71" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#1a1a2e" text-anchor="middle">LVL 15</text>
+  <text x="66" y="71" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">Current Level: 15</text>
+  <text x="250" y="71" font-family="Arial, sans-serif" font-size="9" fill="#10b981">3 unlocked • 7 locked</text>
+
+  <!-- Section title -->
+  <rect x="8" y="88" width="384" height="16" fill="#2a2a3e" rx="2"/>
+  <text x="14" y="99" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#a855f7">YOUR UNLOCKED FEATURES</text>
+
+  <!-- Scroll container -->
+  <rect x="8" y="110" width="384" height="148" fill="#0f0f1a" rx="4"/>
+
+  <!-- Feature items -->
+  <!-- Unlocked feature -->
+  <g id="feature-1">
+    <rect x="14" y="116" width="372" height="28" fill="url(#cardGradient)" rx="3" stroke="#10b981" stroke-width="1"/>
+    <!-- Item icon placeholder -->
+    <rect x="20" y="120" width="16" height="16" fill="#3a3a4a" rx="2"/>
+    <text x="28" y="131" font-family="Arial, sans-serif" font-size="10" fill="#10b981" text-anchor="middle">⛏️</text>
+
+    <text x="42" y="128" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#10b981">Iron Pickaxe</text>
+    <text x="42" y="138" font-family="Arial, sans-serif" font-size="8" fill="#9ca3af">Craft and use iron tier tools</text>
+
+    <!-- Level badge -->
+    <rect x="340" y="122" width="36" height="12" fill="#10b981" rx="2"/>
+    <text x="358" y="130" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">LVL 10</text>
+  </g>
+
+  <!-- Unlocked feature -->
+  <g id="feature-2">
+    <rect x="14" y="148" width="372" height="28" fill="url(#cardGradient)" rx="3" stroke="#10b981" stroke-width="1"/>
+    <rect x="20" y="152" width="16" height="16" fill="#3a3a4a" rx="2"/>
+    <text x="28" y="163" font-family="Arial, sans-serif" font-size="10" fill="#10b981" text-anchor="middle">💎</text>
+
+    <text x="42" y="160" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#10b981">Diamond Pickaxe</text>
+    <text x="42" y="170" font-family="Arial, sans-serif" font-size="8" fill="#9ca3af">Craft and use diamond tier tools</text>
+
+    <rect x="340" y="154" width="36" height="12" fill="#10b981" rx="2"/>
+    <text x="358" y="162" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">LVL 15</text>
+  </g>
+
+  <!-- Unlocked feature -->
+  <g id="feature-3">
+    <rect x="14" y="180" width="372" height="28" fill="url(#cardGradient)" rx="3" stroke="#10b981" stroke-width="1"/>
+    <rect x="20" y="184" width="16" height="16" fill="#3a3a4a" rx="2"/>
+    <text x="28" y="195" font-family="Arial, sans-serif" font-size="10" fill="#10b981" text-anchor="middle">✨</text>
+
+    <text x="42" y="192" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#10b981">Efficiency I</text>
+    <text x="42" y="202" font-family="Arial, sans-serif" font-size="8" fill="#9ca3af">Mine blocks 30% faster</text>
+
+    <rect x="340" y="186" width="36" height="12" fill="#10b981" rx="2"/>
+    <text x="358" y="194" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">LVL 5</text>
+  </g>
+
+  <!-- Locked feature (coming soon) -->
+  <g id="feature-4">
+    <rect x="14" y="212" width="372" height="28" fill="url(#cardGradient)" rx="3" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+    <rect x="20" y="216" width="16" height="16" fill="#3a3a4a" rx="2"/>
+    <text x="28" y="227" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">🔒</text>
+
+    <text x="42" y="224" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#9ca3af">Fortune II</text>
+    <text x="42" y="234" font-family="Arial, sans-serif" font-size="8" fill="#ef4444">Requires Level 25 • 10 levels to go</text>
+
+    <rect x="340" y="218" width="36" height="12" fill="#ef4444" rx="2"/>
+    <text x="358" y="226" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">LVL 25</text>
+  </g>
+
+  <!-- Locked feature -->
+  <g id="feature-5">
+    <rect x="14" y="244" width="372" height="28" fill="url(#cardGradient)" rx="3" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+    <rect x="20" y="248" width="16" height="16" fill="#3a3a4a" rx="2"/>
+    <text x="28" y="259" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">🔒</text>
+
+    <text x="42" y="256" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#9ca3af">Netherite Upgrade</text>
+    <text x="42" y="266" font-family="Arial, sans-serif" font-size="8" fill="#ef4444">Requires Level 30 • 15 levels to go</text>
+
+    <rect x="340" y="250" width="36" height="12" fill="#ef4444" rx="2"/>
+    <text x="358" y="258" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">LVL 30</text>
+  </g>
+
+  <!-- Scrollbar -->
+  <rect x="390" y="116" width="4" height="142" fill="#2a2a3e" rx="2"/>
+  <rect x="390" y="116" width="4" height="50" fill="#a855f7" rx="2"/>
+
+  <!-- Progress summary at bottom -->
+  <text x="200" y="268" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#9ca3af">Next unlock at Level 25: Fortune II</text>
+</svg>
