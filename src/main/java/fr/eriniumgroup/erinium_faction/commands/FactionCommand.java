@@ -549,14 +549,13 @@ public class FactionCommand {
 
     // Suggestions -------------------------------------------------------------
     private static CompletableFuture<Suggestions> suggestFactionNames(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
-        for (Faction f : FactionManager.getAllFactions()) builder.suggest(f.getName());
+        for (Faction f : FactionManager.getAllFactions()) builder.suggest(f.getId());
         return builder.buildFuture();
     }
 
     private static CompletableFuture<Suggestions> suggestFactionIds(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
         for (Faction f : FactionManager.getAllFactions()) {
             builder.suggest(f.getId());
-            builder.suggest(f.getName());
         }
         return builder.buildFuture();
     }
