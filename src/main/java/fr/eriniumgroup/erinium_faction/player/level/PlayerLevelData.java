@@ -7,12 +7,10 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import javax.annotation.Nonnull;
 
 /**
- * Données de niveau et d'expérience pour un joueur
+ * Données de niveau pour un joueur (sans système d'XP)
  */
 public class PlayerLevelData implements INBTSerializable<CompoundTag> {
     private int level = 1;
-    private int experience = 0;
-    private int experienceToNextLevel = 100;
 
     // Points d'attributs disponibles
     private int availablePoints = 0;
@@ -31,14 +29,6 @@ public class PlayerLevelData implements INBTSerializable<CompoundTag> {
     // Getters
     public int getLevel() {
         return level;
-    }
-
-    public int getExperience() {
-        return experience;
-    }
-
-    public int getExperienceToNextLevel() {
-        return experienceToNextLevel;
     }
 
     public int getAvailablePoints() {
@@ -72,14 +62,6 @@ public class PlayerLevelData implements INBTSerializable<CompoundTag> {
     // Setters
     public void setLevel(int level) {
         this.level = level;
-    }
-
-    public void setExperience(int experience) {
-        this.experience = experience;
-    }
-
-    public void setExperienceToNextLevel(int experienceToNextLevel) {
-        this.experienceToNextLevel = experienceToNextLevel;
     }
 
     public void setAvailablePoints(int availablePoints) {
@@ -117,8 +99,6 @@ public class PlayerLevelData implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("level", level);
-        tag.putInt("experience", experience);
-        tag.putInt("experienceToNextLevel", experienceToNextLevel);
         tag.putInt("availablePoints", availablePoints);
         tag.putInt("healthPoints", healthPoints);
         tag.putInt("armorPoints", armorPoints);
@@ -131,8 +111,6 @@ public class PlayerLevelData implements INBTSerializable<CompoundTag> {
 
     public void deserializeNBT(CompoundTag tag) {
         level = tag.getInt("level");
-        experience = tag.getInt("experience");
-        experienceToNextLevel = tag.getInt("experienceToNextLevel");
         availablePoints = tag.getInt("availablePoints");
         healthPoints = tag.getInt("healthPoints");
         armorPoints = tag.getInt("armorPoints");
@@ -145,8 +123,6 @@ public class PlayerLevelData implements INBTSerializable<CompoundTag> {
     public PlayerLevelData copy() {
         PlayerLevelData copy = new PlayerLevelData();
         copy.level = this.level;
-        copy.experience = this.experience;
-        copy.experienceToNextLevel = this.experienceToNextLevel;
         copy.availablePoints = this.availablePoints;
         copy.healthPoints = this.healthPoints;
         copy.armorPoints = this.armorPoints;

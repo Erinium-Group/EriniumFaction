@@ -3,12 +3,8 @@ package fr.eriniumgroup.erinium_faction.player.level;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.monster.Monster;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -47,48 +43,7 @@ public class PlayerLevelEvents {
         }
     }
 
-    /**
-     * Donne de l'expérience lors de la mort d'une entité
-     */
-    @SubscribeEvent
-    public static void onLivingDeath(LivingDeathEvent event) {
-        if (event.getSource().getEntity() instanceof ServerPlayer player) {
-            int expGained = calculateExpFromKill(event.getEntity());
-
-            if (expGained > 0) {
-                PlayerLevelManager.addExperience(player, expGained);
-
-                // Synchroniser les données avec le client après le gain d'XP
-                PlayerLevelPacketHandler.syncPlayerData(player);
-            }
-        }
-    }
-
-    /**
-     * Calcule l'expérience gagnée en tuant une entité
-     */
-    private static int calculateExpFromKill(net.minecraft.world.entity.LivingEntity entity) {
-        // Boss
-        if (entity instanceof EnderDragon) {
-            return 5000;
-        }
-        if (entity instanceof WitherBoss) {
-            return 3000;
-        }
-
-        // Monstres
-        if (entity instanceof Monster) {
-            return 10 + (int) (entity.getMaxHealth() * 2);
-        }
-
-        // Joueurs (PvP)
-        if (entity instanceof ServerPlayer) {
-            PlayerLevelData targetData = PlayerLevelManager.getLevelData((ServerPlayer) entity);
-            return 50 + (targetData.getLevel() * 10);
-        }
-
-        return 0;
-    }
+    // Note: Les événements de gain d'XP ont été supprimés car le système utilise maintenant uniquement les niveaux
 
     /**
      * Met à jour périodiquement les attributs (au cas où)

@@ -150,30 +150,7 @@ public class PlayerStatsScreen extends AbstractContainerScreen<PlayerStatsMenu> 
         levelText = levelText.copy().append(Component.literal(String.valueOf(cachedData.getLevel())).withStyle(style -> style.withColor(0xfbbf24).withBold(true)));
         guiGraphics.drawString(this.font, levelText, this.leftPos + 24, this.topPos + 58, 0xfbbf24);
 
-        // XP (y=76) - ajusté pour éviter la barre
-        Component xpLabel = Component.translatable("player_level.xp").append(": ").withStyle(style -> style.withColor(0xa0a0c0));
-        guiGraphics.drawString(this.font, xpLabel, this.leftPos + 24, this.topPos + 68, 0xa0a0c0);
-
-        String xpValue = cachedData.getExperience() + " / " + cachedData.getExperienceToNextLevel();
-        guiGraphics.drawString(this.font, xpValue, this.leftPos + 48, this.topPos + 68, 0x10b981);
-
-        // Barre de progression XP (y=90, width=352, height=10)
-        int barX = this.leftPos + 24;
-        int barY = this.topPos + 82;
-        int barWidth = 352;
-        int barHeight = 10;
-
-        // Fond de la barre (image vide)
-        ImageRenderer.renderScaledImage(guiGraphics, XP_BAR_EMPTY, barX, barY, barWidth, barHeight);
-
-        // Progression (image remplie avec scissor pour couper à la bonne longueur)
-        float progress = (float) cachedData.getExperience() / cachedData.getExperienceToNextLevel();
-        int progressWidth = (int) (barWidth * progress);
-        if (progressWidth > 0) {
-            guiGraphics.enableScissor(barX, barY, barX + progressWidth, barY + barHeight);
-            ImageRenderer.renderScaledImage(guiGraphics, XP_BAR_FILLED, barX, barY, barWidth, barHeight);
-            guiGraphics.disableScissor();
-        }
+        // Note: XP system has been removed - only level-based progression now
 
         // Points disponibles (y=116)
         Component pointsText = Component.translatable("player_level.points_available").append(": ").withStyle(style -> style.withColor(0xfbbf24).withBold(true));

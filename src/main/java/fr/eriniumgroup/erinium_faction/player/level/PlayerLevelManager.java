@@ -27,76 +27,35 @@ public class PlayerLevelManager {
     }
 
     /**
-     * Ajoute de l'expérience à un joueur
+     * Définit le niveau d'un joueur (système sans XP)
      */
-    public static void addExperience(ServerPlayer player, int amount) {
+    public static void setLevel(ServerPlayer player, int newLevel) {
         PlayerLevelData data = getLevelData(player);
-        data.setExperience(data.getExperience() + amount);
+        int oldLevel = data.getLevel();
 
-        // Vérifier si le joueur monte de niveau
-        checkLevelUp(player, data);
-    }
+        if (newLevel < 1) newLevel = 1;
+        if (newLevel > PlayerLevelConfig.MAX_LEVEL.get()) newLevel = PlayerLevelConfig.MAX_LEVEL.get();
 
-    /**
-     * Vérifie et applique les montées de niveau
-     */
-    private static void checkLevelUp(ServerPlayer player, PlayerLevelData data) {
-        while (data.getExperience() >= data.getExperienceToNextLevel() && data.getLevel() < PlayerLevelConfig.MAX_LEVEL.get()) {
+        data.setLevel(newLevel);
 
-            // Soustraire l'expérience nécessaire
-            data.setExperience(data.getExperience() - data.getExperienceToNextLevel());
-
-            // Monter de niveau
-            int oldLevel = data.getLevel();
-            data.setLevel(oldLevel + 1);
-
-            // Ajouter des points d'attributs
-            data.setAvailablePoints(data.getAvailablePoints() + PlayerLevelConfig.POINTS_PER_LEVEL.get());
-
-            // Calculer l'expérience nécessaire pour le prochain niveau
-            data.setExperienceToNextLevel(calculateExpForNextLevel(data.getLevel()));
-
-            // Vérifier si le joueur gagne des cœurs permanents
-            if (data.getLevel() % PlayerLevelConfig.LEVELS_BETWEEN_HEARTS.get() == 0) {
-                applyPermanentHearts(player, data);
-            }
+        // Ajouter des points d'attributs pour chaque niveau gagné
+        if (newLevel > oldLevel) {
+            int levelsGained = newLevel - oldLevel;
+            data.setAvailablePoints(data.getAvailablePoints() + (levelsGained * PlayerLevelConfig.POINTS_PER_LEVEL.get()));
 
             // Notifier le joueur
             player.sendSystemMessage(Component.translatable("player_level.level_up", data.getLevel())
                 .withStyle(style -> style.withColor(0xFFAA00).withBold(true)));
-            player.sendSystemMessage(Component.translatable("player_level.points_gained", PlayerLevelConfig.POINTS_PER_LEVEL.get())
+            player.sendSystemMessage(Component.translatable("player_level.points_gained", levelsGained * PlayerLevelConfig.POINTS_PER_LEVEL.get())
                 .withStyle(style -> style.withColor(0x55FF55)));
 
             EFC.log.info("Player " + player.getName().getString() + " leveled up to " + data.getLevel());
         }
-    }
 
-    /**
-     * Calcule l'expérience nécessaire pour atteindre le niveau suivant
-     */
-    public static int calculateExpForNextLevel(int currentLevel) {
-        if (currentLevel >= PlayerLevelConfig.MAX_LEVEL.get()) {
-            return Integer.MAX_VALUE;
-        }
-
-        int baseExp = PlayerLevelConfig.BASE_EXP_FOR_LEVEL.get();
-        double multiplier = PlayerLevelConfig.EXP_MULTIPLIER_PER_LEVEL.get();
-
-        return (int) (baseExp * Math.pow(multiplier, currentLevel - 1));
-    }
-
-    /**
-     * Applique les cœurs permanents au joueur
-     */
-    private static void applyPermanentHearts(ServerPlayer player, PlayerLevelData data) {
-        double heartsToAdd = PlayerLevelConfig.HEARTS_PER_LEVEL_GAIN.get();
-
-        player.sendSystemMessage(Component.translatable("player_level.hearts_gained", heartsToAdd / 2)
-            .withStyle(style -> style.withColor(0xFF5555)));
-
-        // Recalculer tous les attributs
+        // Mettre à jour les attributs en fonction du nouveau niveau
         updatePlayerAttributes(player, data);
     }
+
 
     /**
      * Distribue un point d'attribut
@@ -239,11 +198,6 @@ public class PlayerLevelManager {
      */
     public static void initializePlayer(ServerPlayer player) {
         PlayerLevelData data = getLevelData(player);
-
-        // Si c'est un nouveau joueur (niveau 1, pas d'xp)
-        if (data.getLevel() == 1 && data.getExperience() == 0 && data.getExperienceToNextLevel() == 0) {
-            data.setExperienceToNextLevel(calculateExpForNextLevel(1));
-        }
 
         // Appliquer les attributs de base
         updatePlayerAttributes(player, data);

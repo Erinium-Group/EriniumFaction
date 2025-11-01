@@ -18,12 +18,31 @@ import java.util.Collection;
 public class PlayerLevelCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("playerlevel").then(Commands.literal("info").executes(ctx -> showInfo(ctx, ctx.getSource().getPlayerOrException())).then(Commands.argument("player", EntityArgument.player()).requires(src -> src.hasPermission(2)).executes(ctx -> showInfo(ctx, EntityArgument.getPlayer(ctx, "player"))))).then(Commands.literal("addxp").requires(src -> src.hasPermission(2)).then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("amount", IntegerArgumentType.integer(0)).executes(ctx -> addExperience(ctx, EntityArgument.getPlayers(ctx, "player"), IntegerArgumentType.getInteger(ctx, "amount")))))).then(Commands.literal("setlevel").requires(src -> src.hasPermission(2)).then(Commands.argument("player", EntityArgument.players()).then(Commands.argument("level", IntegerArgumentType.integer(1, 1000)).executes(ctx -> setLevel(ctx, EntityArgument.getPlayers(ctx, "player"), IntegerArgumentType.getInteger(ctx, "level")))))).then(Commands.literal("distribute").then(Commands.argument("attribute", StringArgumentType.word()).suggests((ctx, builder) -> {
-            for (PlayerLevelManager.AttributeType type : PlayerLevelManager.AttributeType.values()) {
-                builder.suggest(type.name().toLowerCase());
-            }
-            return builder.buildFuture();
-        }).executes(ctx -> distributePoint(ctx, ctx.getSource().getPlayerOrException(), StringArgumentType.getString(ctx, "attribute"))))).then(Commands.literal("reset").executes(ctx -> resetAttributes(ctx, ctx.getSource().getPlayerOrException())).then(Commands.argument("player", EntityArgument.player()).requires(src -> src.hasPermission(2)).executes(ctx -> resetAttributes(ctx, EntityArgument.getPlayer(ctx, "player"))))));
+        dispatcher.register(Commands.literal("playerlevel")
+            .then(Commands.literal("info")
+                .executes(ctx -> showInfo(ctx, ctx.getSource().getPlayerOrException()))
+                .then(Commands.argument("player", EntityArgument.player())
+                    .requires(src -> src.hasPermission(2))
+                    .executes(ctx -> showInfo(ctx, EntityArgument.getPlayer(ctx, "player")))))
+            .then(Commands.literal("setlevel")
+                .requires(src -> src.hasPermission(2))
+                .then(Commands.argument("player", EntityArgument.players())
+                    .then(Commands.argument("level", IntegerArgumentType.integer(1, 1000))
+                        .executes(ctx -> setLevel(ctx, EntityArgument.getPlayers(ctx, "player"), IntegerArgumentType.getInteger(ctx, "level"))))))
+            .then(Commands.literal("distribute")
+                .then(Commands.argument("attribute", StringArgumentType.word())
+                    .suggests((ctx, builder) -> {
+                        for (PlayerLevelManager.AttributeType type : PlayerLevelManager.AttributeType.values()) {
+                            builder.suggest(type.name().toLowerCase());
+                        }
+                        return builder.buildFuture();
+                    })
+                    .executes(ctx -> distributePoint(ctx, ctx.getSource().getPlayerOrException(), StringArgumentType.getString(ctx, "attribute")))))
+            .then(Commands.literal("reset")
+                .executes(ctx -> resetAttributes(ctx, ctx.getSource().getPlayerOrException()))
+                .then(Commands.argument("player", EntityArgument.player())
+                    .requires(src -> src.hasPermission(2))
+                    .executes(ctx -> resetAttributes(ctx, EntityArgument.getPlayer(ctx, "player"))))));
     }
 
     private static int showInfo(CommandContext<CommandSourceStack> ctx, ServerPlayer player) {
@@ -35,14 +54,6 @@ public class PlayerLevelCommand {
             .withStyle(style -> style.withColor(0xFFFF55)), false);
         ctx.getSource().sendSuccess(() -> Component.translatable("player_level.command.info.level",
             data.getLevel(), PlayerLevelConfig.MAX_LEVEL.get())
-            .withStyle(style -> style.withColor(0xFFFF55)), false);
-        ctx.getSource().sendSuccess(() -> Component.translatable("player_level.command.info.xp",
-            data.getExperience(), data.getExperienceToNextLevel())
-            .withStyle(style -> style.withColor(0xFFFF55)), false);
-
-        double progress = (double) data.getExperience() / data.getExperienceToNextLevel() * 100;
-        ctx.getSource().sendSuccess(() -> Component.translatable("player_level.command.info.progress",
-            String.format("%.1f", progress))
             .withStyle(style -> style.withColor(0xFFFF55)), false);
 
         ctx.getSource().sendSuccess(() -> Component.translatable("player_level.command.info.points", data.getAvailablePoints())
@@ -65,34 +76,11 @@ public class PlayerLevelCommand {
         return 1;
     }
 
-    private static int addExperience(CommandContext<CommandSourceStack> ctx, Collection<ServerPlayer> players, int amount) {
-        for (ServerPlayer player : players) {
-            PlayerLevelManager.addExperience(player, amount);
-            ctx.getSource().sendSuccess(() -> Component.translatable("player_level.command.addxp.success", 
-                amount, player.getName().getString())
-                .withStyle(style -> style.withColor(0x55FF55)), true);
-        }
-        return players.size();
-    }
-    
     private static int setLevel(CommandContext<CommandSourceStack> ctx, Collection<ServerPlayer> players, int level) {
         for (ServerPlayer player : players) {
-            PlayerLevelData data = PlayerLevelManager.getLevelData(player);
-            
-            int oldLevel = data.getLevel();
-            data.setLevel(level);
-            data.setExperience(0);
-            data.setExperienceToNextLevel(PlayerLevelManager.calculateExpForNextLevel(level));
-            
-            // Ajouter des points pour les niveaux gagnés
-            if (level > oldLevel) {
-                int pointsToAdd = (level - oldLevel) * PlayerLevelConfig.POINTS_PER_LEVEL.get();
-                data.setAvailablePoints(data.getAvailablePoints() + pointsToAdd);
-            }
-            
-            PlayerLevelManager.updatePlayerAttributes(player, data);
-            
-            ctx.getSource().sendSuccess(() -> Component.translatable("player_level.command.setlevel.success", 
+            PlayerLevelManager.setLevel(player, level);
+
+            ctx.getSource().sendSuccess(() -> Component.translatable("player_level.command.setlevel.success",
                 player.getName().getString(), level)
                 .withStyle(style -> style.withColor(0xFFFF55)), true);
         }
