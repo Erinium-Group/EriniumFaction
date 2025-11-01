@@ -1,23 +1,20 @@
-package fr.eriniumgroup.erinium_faction.gui.jobs;
+package fr.eriniumgroup.erinium_faction.gui.jobs.client;
 
-import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
+import fr.eriniumgroup.erinium_faction.gui.jobs.JobsScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 
 /**
- * Ajoute un bouton dans l'inventaire du joueur pour ouvrir le menu Jobs
+ * Ajoute un bouton dans l'inventaire du joueur pour ouvrir le Jobs System
  */
 @EventBusSubscriber(modid = "erinium_faction", value = Dist.CLIENT)
 public class InventoryJobsButton {
-
-    private static final ResourceLocation BUTTON_NORMAL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/jobs/button-large.png");
 
     private static int buttonX;
     private static int buttonY;
@@ -30,12 +27,12 @@ public class InventoryJobsButton {
             GuiGraphics guiGraphics = event.getGuiGraphics();
             Minecraft mc = Minecraft.getInstance();
 
-            // Position du bouton (en haut à droite de l'inventaire, sous le bouton stats)
+            // Position du bouton (en haut à droite de l'inventaire, sous le bouton Stats)
             int leftPos = (inventoryScreen.width - 176) / 2;
             int topPos = (inventoryScreen.height - 166) / 2;
 
             buttonX = leftPos + 180;
-            buttonY = topPos + 35; // 35 = sous le bouton stats (10 + 20 + 5)
+            buttonY = topPos + 35; // 25 pixels sous le bouton Stats (10 + 20 + 5)
 
             // Vérifier si la souris est sur le bouton
             double mouseX = event.getMouseX();
@@ -43,22 +40,19 @@ public class InventoryJobsButton {
             boolean isHovered = mouseX >= buttonX && mouseX <= buttonX + BUTTON_WIDTH
                              && mouseY >= buttonY && mouseY <= buttonY + BUTTON_HEIGHT;
 
-            // Dessiner le bouton avec texture
-            ImageRenderer.renderScaledImageWithAlpha(
-                guiGraphics,
-                BUTTON_NORMAL,
-                buttonX,
-                buttonY,
-                BUTTON_WIDTH,
-                BUTTON_HEIGHT,
-                isHovered ? 1.0f : 0.9f
-            );
+            // Couleur du bouton (jaune/or pour le Jobs System)
+            int color = isHovered ? 0xFFfbbf24 : 0xFFd97706;
+            int borderColor = isHovered ? 0xFFfcd34d : 0xFFfbbf24;
+
+            // Dessiner le bouton
+            guiGraphics.fill(buttonX, buttonY, buttonX + BUTTON_WIDTH, buttonY + BUTTON_HEIGHT, borderColor);
+            guiGraphics.fill(buttonX + 1, buttonY + 1, buttonX + BUTTON_WIDTH - 1, buttonY + BUTTON_HEIGHT - 1, color);
 
             // Texte du bouton
             Component text = Component.literal("Jobs");
             int textX = buttonX + (BUTTON_WIDTH - mc.font.width(text)) / 2;
             int textY = buttonY + (BUTTON_HEIGHT - 8) / 2;
-            guiGraphics.drawString(mc.font, text, textX, textY, 0xFFFFFF);
+            guiGraphics.drawString(mc.font, text, textX, textY, 0x000000); // Texte noir pour contraste avec fond jaune
         }
     }
 
@@ -72,8 +66,9 @@ public class InventoryJobsButton {
             if (mouseX >= buttonX && mouseX <= buttonX + BUTTON_WIDTH
                 && mouseY >= buttonY && mouseY <= buttonY + BUTTON_HEIGHT) {
 
-                // Ouvrir l'écran Jobs côté client
+                // Ouvrir directement l'écran côté client
                 Minecraft.getInstance().setScreen(new JobsScreen());
+
                 event.setCanceled(true);
             }
         }
