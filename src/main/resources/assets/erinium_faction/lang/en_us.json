@@ -18,7 +18,6 @@
   "erinium_faction.faction.menu.settings": "§6Settings",
   "erinium_faction.faction.menu.open_settings_wip": "§6[§bErinium§6/§dFaction§6] §eOpening settings (WIP)",
   "erinium_faction.faction.menu.title": "§6Faction",
-
   "erinium_faction.rank.create.success": "§6[§bErinium§6/§aRank§6] §aRank §b%s§a created.§r",
   "erinium_faction.rank.create.fail": "§6[§bErinium§6/§aRank§6] §cUnable to create rank (§7already exists or invalid id§c).§r",
   "erinium_faction.rank.delete.success": "§6[§bErinium§6/§aRank§6] §aRank §b%s§a deleted.§r",
@@ -39,13 +38,10 @@
   "erinium_faction.rank.get.none": "§6[§bErinium§6/§aRank§6] §b%s §7has no rank.§r",
   "erinium_faction.rank.get.success": "§6[§bErinium§6/§aRank§6] §7Rank of §b%s§7 = §b%s §7(§e%s§7)§r",
   "erinium_faction.rank.reload.success": "§6[§bErinium§6/§aRank§6] §aRanks reloaded from files.§r",
-
   "erinium_faction.pvp.friendly_fire_blocked": "§6[§bErinium§6/§ePvP§6] §cYou can't attack a member of your faction!",
   "erinium_faction.pvp.ally_damage_blocked": "§6[§bErinium§6/§ePvP§6] §cYou can't attack an ally!",
-
   "erinium_faction.claim.blocked.other_faction": "§6[§bErinium§6/§dFaction§6] §cThis land belongs to another faction!",
   "erinium_faction.interact.blocked.other_faction": "§6[§bErinium§6/§dFaction§6] §cYou can't interact here!",
-
   "erinium_faction.cmd.faction.create.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to create the faction.",
   "erinium_faction.cmd.faction.create.success": "§6[§bErinium§6/§dFaction§6] §aFaction created: §b%s§r",
   "erinium_faction.cmd.faction.delete.success": "§6[§bErinium§6/§dFaction§6] §aFaction deleted.",
@@ -59,30 +55,23 @@
   "erinium_faction.cmd.faction.join.accepted": "§6[§bErinium§6/§dFaction§6] §aYou have joined faction §b%s§a.",
   "erinium_faction.cmd.faction.join.invite_only": "§6[§bErinium§6/§dFaction§6] §cThis faction is invite-only — you must be invited to join.",
   "erinium_faction.cmd.faction.join.full": "§6[§bErinium§6/§dFaction§6] §cFaction is full (cap §e%s§c).",
-
   "erinium_faction.msg.invite.header": "§6[§bErinium§6/§dFaction§6] §aYou have been invited to faction §b%s§a.",
   "erinium_faction.msg.invite.hover": "§7Click to accept the invitation",
-
   "erinium_faction.cmd.faction.not_in_faction": "§6[§bErinium§6/§dFaction§6] §cYou are not in a faction.",
   "erinium_faction.cmd.faction.leave.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to leave.",
   "erinium_faction.cmd.faction.leave.success": "§6[§bErinium§6/§dFaction§6] §aYou left the faction.",
   "erinium_faction.cmd.faction.addxp.success": "§6[§bErinium§6/§dFaction§6] §aXP added.",
   "erinium_faction.cmd.faction.setrank.placeholder": "§6[§bErinium§6/§dFaction§6] §7/!\\ Placeholder setrank.",
-
   "erinium_faction.cmd.faction.claim.already": "§6[§bErinium§6/§dFaction§6] §cChunk already claimed.",
   "erinium_faction.cmd.faction.claim.limit": "§6[§bErinium§6/§dFaction§6] §cUnable to claim (limit reached?).",
   "erinium_faction.cmd.faction.claim.success": "§6[§bErinium§6/§dFaction§6] §aChunk claimed.",
-
   "erinium_faction.cmd.faction.unclaim.not_claimed": "§6[§bErinium§6/§dFaction§6] §cChunk is not claimed.",
   "erinium_faction.cmd.faction.unclaim.not_owner": "§6[§bErinium§6/§dFaction§6] §cThis chunk doesn't belong to your faction.",
   "erinium_faction.cmd.faction.unclaim.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to unclaim.",
   "erinium_faction.cmd.faction.unclaim.success": "§6[§bErinium§6/§dFaction§6] §aChunk unclaimed.",
-
   "erinium_faction.faction.menu.no_faction_hint": "§6[§bErinium§6/§dFaction§6] §7You are not in a faction.",
   "erinium_faction.faction.menu.no_faction": "§6[§bErinium§6/§dFaction§6] §7No Faction",
-
   "erinium_faction.common.no_permission": "§6[§bErinium§6/§dFaction§6] §cYou don't have permission.",
-
   "erinium_faction.cmd.faction.mode.set": "§6[§bErinium§6/§dFaction§6] §aMode set: §b%s",
   "erinium_faction.cmd.faction.mode.invalid": "§6[§bErinium§6/§dFaction§6] §cInvalid mode (PUBLIC/INVITE_ONLY).",
   "erinium_faction.cmd.faction.flag.invalid": "§6[§bErinium§6/§dFaction§6] §cInvalid flag (admin/warzone/safezone).",
@@ -108,41 +97,32 @@
   "erinium_faction.tp.canceled.damage": "§6[§bErinium§6/§dFaction§6] §cTeleportation canceled (damage).",
   "erinium_faction.tp.cooldown": "§6[§bErinium§6/§dFaction§6] §cCooldown remaining: §e%s§cs.",
   "erinium_faction.tp.crossdim_denied": "§6[§bErinium§6/§dFaction§6] §cCross-dimension teleport disabled.",
-
   "erinium_faction.chest.title": "§6%s's Chest",
   "erinium_faction.chest.no_permission": "§6[§bErinium§6/§dFaction§6] §cYou don't have permission to access the faction chest.",
   "erinium_faction.gui.chest.no_permission_manage": "You need MANAGE_CHEST permission to interact with the faction chest",
-
   "erinium_faction.faction.menu.settings.toggle_mode": "Toggle mode (PUBLIC / INVITE_ONLY)",
   "erinium_faction.faction.menu.settings.toggle_safezone": "Toggle SAFEZONE",
   "erinium_faction.faction.map.title": "Claims Map",
   "key.erinium_faction.map": "Open claims map",
   "key.categories.erinium_faction": "Erinium Faction",
-
   "erinium_faction.settings.label.open": "Open",
   "erinium_faction.settings.label.mode": "Mode",
   "erinium_faction.settings.label.safezone": "Safezone",
   "erinium_faction.settings.tooltip.open": "Allow anyone to join the faction",
   "erinium_faction.settings.tooltip.mode": "PUBLIC: anyone can join | INVITE: by invitation",
   "erinium_faction.settings.tooltip.safezone": "Enable Safezone for the faction",
-
   "erinium_faction.settings.tab.general": "General",
   "erinium_faction.settings.tab.ranks": "Ranks",
   "erinium_faction.settings.tab.permissions": "Permissions",
-
   "erinium_faction.settings.display_name": "Display Name",
   "erinium_faction.settings.description": "Description",
   "erinium_faction.settings.mode": "Mode",
   "erinium_faction.settings.open": "Open",
   "erinium_faction.settings.safezone": "Safezone",
-
   "erinium_faction.settings.ranks.title": "Faction Ranks Management",
   "erinium_faction.settings.ranks.manage_perms": "Permissions",
-
   "erinium_faction.settings.perms.info": "Available permissions:",
-
   "erinium_faction.cmd.faction.bank.player_not_enough": "§6[§bErinium§6/§dFaction§6] §cYou don't have enough money.",
-
   "erinium_faction.cmd.economy.balance": "§6[§bErinium§6/§aEco§6] §7Balance: §e%s§6.",
   "erinium_faction.cmd.economy.player_not_found": "§6[§bErinium§6/§aEco§6] §cPlayer not found.",
   "erinium_faction.cmd.economy.invalid_amount": "§6[§bErinium§6/§aEco§6] §cInvalid amount.",
@@ -152,17 +132,13 @@
   "erinium_faction.cmd.economy.give": "§6[§bErinium§6/§aEco§6] §aGave to §b%s§a: §e%s§a.",
   "erinium_faction.cmd.economy.take": "§6[§bErinium§6/§aEco§6] §aTook from §b%s§a: §e%s§a.",
   "erinium_faction.cmd.economy.only_players": "§6[§bErinium§6/§aEco§6] §cPlayers only.",
-
   "erinium_faction.cmd.economy.top.header": "§6[§bErinium§6/§aEco§6] §7Top §e%s§7/§e%s§7 (total: §e%s§7)",
   "erinium_faction.cmd.economy.top.item": "§7#%s §b%s§7 — §e%s",
   "erinium_faction.cmd.economy.top.empty": "§6[§bErinium§6/§aEco§6] §7No players online.",
-
   "erinium_faction.chat.faction_format": "§6[§aFaction§6] §r%s: %s",
   "erinium_faction.chat.ally_format": "§3[§eAlly§3] §r%s: %s",
   "erinium_faction.chat.global_format": "%s§r %s§r §f%s:§r %s",
-
   "erinium_faction.client.resized.message": "§eWindow resized to minimum required size: §a%s §ex §a%s",
-
   "player_level.title": "§6§lPlayer Statistics",
   "player_level.level": "§eLevel",
   "player_level.xp": "§eXP",
@@ -173,14 +149,12 @@
   "player_level.hearts_gained": "§c❤ §c+§e%s §cpermanent heart(s)!",
   "player_level.no_points": "§cYou don't have any attribute points available!",
   "player_level.attributes_reset": "§eYour attributes have been reset!",
-
   "player_level.attribute.health": "Health",
   "player_level.attribute.armor": "Armor",
   "player_level.attribute.speed": "Speed",
   "player_level.attribute.intelligence": "Intelligence",
   "player_level.attribute.strength": "Strength",
   "player_level.attribute.luck": "Luck",
-
   "player_level.button.health": "+ Health",
   "player_level.button.armor": "+ Armor",
   "player_level.button.speed": "+ Speed",
@@ -189,14 +163,12 @@
   "player_level.button.luck": "+ Luck",
   "player_level.button.reset": "§cReset",
   "player_level.button.stats": "§6⚔ §eStats",
-
   "player_level.tooltip.health": "§eIncrease your maximum health points",
   "player_level.tooltip.armor": "§eImprove your damage resistance",
   "player_level.tooltip.speed": "§eIncrease your movement speed",
   "player_level.tooltip.intelligence": "§eIncrease your magic power",
   "player_level.tooltip.strength": "§eIncrease your attack damage",
   "player_level.tooltip.luck": "§eIncrease your loot and critical hit chances",
-
   "player_level.command.info.title": "§6§l=== Level Information ===",
   "player_level.command.info.player": "§ePlayer: §f%s",
   "player_level.command.info.level": "§eLevel: §6%s §7/ §6%s",
@@ -210,22 +182,16 @@
   "player_level.command.info.intelligence_value": "§dIntelligence: §f%s",
   "player_level.command.info.strength_value": "§4Strength: §f%s",
   "player_level.command.info.luck_value": "§aLuck: §f%s",
-
   "player_level.command.addxp.success": "§a+%s XP added to %s",
   "player_level.command.setlevel.success": "§eLevel of %s set to §6%s",
   "player_level.command.reset.success": "§eAttributes of %s reset!",
   "player_level.command.distribute.invalid": "§cInvalid attribute! Use: health, armor, speed, intelligence, strength, luck",
   "player_level.command.distribute.success": "§a+1 §e%s",
-
   "player_level.reset.need_token": "§cYou need a §6Stats Reset Token §cto reset your attributes!",
-
   "erinium_faction.broadcast.disband": "§6[§bErinium§6/§dFaction§6] §cFaction §b%s§c has been disbanded (§6%s claims§c, §b%s members§c).",
-
   "item.erinium_faction.stats_reset_token": "Stats Reset Token",
   "item.erinium_faction.stats_reset_token.tooltip": "§7Use this item to reset your attribute points",
-
   "itemGroup.erinium_faction": "Erinium Faction",
-
   "erinium_faction.cmd.faction.claimperm.header": "§6[§bErinium§6/§dFaction§6] §7Claim permissions:",
   "erinium_faction.cmd.faction.claimperm.item": "§7 - §b%s§7: %s",
   "erinium_faction.cmd.faction.claimperm.empty": "§6[§bErinium§6/§dFaction§6] §7No specific permission set for this claim.",
@@ -235,7 +201,6 @@
   "erinium_faction.cmd.faction.claimperm.remove.fail": "§6[§bErinium§6/§dFaction§6] §cPermission missing or invalid.",
   "erinium_faction.cmd.faction.claimperm.clear.success": "§6[§bErinium§6/§dFaction§6] §aClaim permissions cleared.",
   "erinium_faction.cmd.faction.claimperm.clear.empty": "§6[§bErinium§6/§dFaction§6] §7Nothing to clear.",
-
   "erinium_faction.gui.page.overview": "Overview",
   "erinium_faction.gui.page.members": "Members",
   "erinium_faction.gui.page.territory": "Territory",
@@ -246,10 +211,8 @@
   "erinium_faction.gui.page.shop": "Shop",
   "erinium_faction.gui.page.settings": "Settings",
   "erinium_faction.gui.page.permissions": "Permissions",
-
   "erinium_faction.gui.power": "POWER",
   "erinium_faction.gui.close": "X",
-
   "erinium_faction.gui.members.title": "FACTION MEMBERS",
   "erinium_faction.gui.members.count": "%s Members",
   "erinium_faction.gui.members.none": "No members found",
@@ -257,11 +220,9 @@
   "erinium_faction.gui.members.context.promote": "Promote",
   "erinium_faction.gui.members.context.demote": "Demote",
   "erinium_faction.gui.members.context.kick": "Kick",
-
   "erinium_faction.gui.chest.title": "FACTION CHEST",
   "erinium_faction.gui.chest.info": "%s rows • %s slots",
   "erinium_faction.gui.chest.player_inventory": "Player Inventory",
-
   "erinium_faction.gui.permissions.title": "RANK PERMISSIONS",
   "erinium_faction.gui.permissions.rank.officer": "Officer",
   "erinium_faction.gui.permissions.rank.member": "Member",
@@ -269,7 +230,6 @@
   "erinium_faction.gui.permissions.button.refresh": "Refresh Data",
   "erinium_faction.gui.permissions.button.reset": "Reset to Default",
   "erinium_faction.gui.permissions.button.grant_all": "Grant All to %s",
-
   "erinium_faction.gui.permissions.invite_members": "Invite Members",
   "erinium_faction.gui.permissions.invite_members.desc": "Allow inviting new members to the faction",
   "erinium_faction.gui.permissions.kick_members": "Kick Members",
@@ -312,7 +272,6 @@
   "erinium_faction.gui.permissions.access_chest.desc": "Allow accessing faction chest",
   "erinium_faction.gui.permissions.manage_chest": "Manage Chest",
   "erinium_faction.gui.permissions.manage_chest.desc": "Allow depositing to faction chest",
-
   "erinium_faction.gui.overview.label.name": "Name:",
   "erinium_faction.gui.overview.label.level": "Level:",
   "erinium_faction.gui.overview.label.power": "Power:",
@@ -322,7 +281,6 @@
   "erinium_faction.gui.overview.button.invite": "Invite",
   "erinium_faction.gui.overview.button.manage": "Manage",
   "erinium_faction.gui.overview.button.leave": "Leave",
-
   "erinium_faction.gui.settings_faction.title": "FACTION SETTINGS",
   "erinium_faction.gui.settings_faction.label.name": "Name:",
   "erinium_faction.gui.settings_faction.label.desc": "Desc:",
@@ -334,21 +292,17 @@
   "erinium_faction.gui.settings_faction.button.reset": "Reset to Defaults",
   "erinium_faction.gui.settings_faction.button.save": "Save Changes",
   "erinium_faction.gui.settings_faction.button.disband": "§cDisband Faction",
-
   "erinium_faction.gui.territory.title": "FACTION TERRITORY",
   "erinium_faction.gui.territory.label.dimension": "Dimension: %s",
   "erinium_faction.gui.territory.button.unclaim": "Unclaim",
-
   "erinium_faction.gui.quests.title": "FACTION QUESTS",
   "erinium_faction.gui.quests.info": "%s Daily + %s Weekly",
   "erinium_faction.gui.quests.resets_in": "Resets in %s",
-
   "erinium_faction.gui.shop.title": "FACTION SHOP",
   "erinium_faction.gui.shop.balance": "Balance: $%s",
   "erinium_faction.gui.shop.price": "$%s",
   "erinium_faction.gui.shop.level_required": "Level %s",
   "erinium_faction.gui.shop.button.buy": "Buy",
-
   "erinium_faction.gui.level.label": "LEVEL",
   "erinium_faction.gui.level.faction_level": "Faction Level %s",
   "erinium_faction.gui.level.max_claims": "Max Claims: %s",
@@ -359,12 +313,10 @@
   "erinium_faction.gui.level.benefit.claims": "+%s Claim Slots",
   "erinium_faction.gui.level.benefit.members": "+%s Member Slots",
   "erinium_faction.gui.level.benefit.power": "+%s Max Power",
-
   "erinium_faction.gui.alliances.title": "ALLIED FACTIONS",
   "erinium_faction.gui.alliances.members": "Members: %s",
   "erinium_faction.gui.alliances.add": "Add Alliance",
   "erinium_faction.gui.alliances.requests": "Requests (%s)",
-
   "erinium_faction.gui.nav.overview": "Overview",
   "erinium_faction.gui.nav.members": "Members",
   "erinium_faction.gui.nav.territory": "Territory",
@@ -376,11 +328,9 @@
   "erinium_faction.gui.nav.shop": "Shop",
   "erinium_faction.gui.nav.settings": "Settings",
   "erinium_faction.gui.nav.permissions": "Permissions",
-
   "erinium_faction.gui.toast.error.perm": "Permissions Error",
   "erinium_faction.gui.toast.error.onlyOwner": "Only Owner can access to this",
   "erinium_faction.gui.toast.error.nopermission": "You need to have the permissions : %s",
-
   "erinium_faction.gui.bank.balance": "Balance:",
   "erinium_faction.gui.bank.your_balance": "Your Balance:",
   "erinium_faction.gui.bank.amount": "Amount:",
@@ -395,11 +345,9 @@
   "erinium_faction.gui.bank.error.invalid_format": "Invalid amount format",
   "erinium_faction.gui.bank.success.deposit": "Successfully deposited %s coins",
   "erinium_faction.gui.bank.success.withdraw": "Successfully withdrew %s coins",
-
   "erinium_faction.gui.header.faction": "Faction %s",
   "erinium_faction.gui.sidebar.power": "POWER",
   "erinium_faction.gui.sidebar.power_format": "%.1f/%.1f",
-
   "erinium_faction.cmd.faction.invite.sent": "§6[§bErinium§6/§dFaction§6] §aInvitation sent to §b%s§a.",
   "erinium_faction.cmd.faction.invite.fail": "§6[§bErinium§6/§dFaction§6] §cUnable to send invitation to §b%s§c.",
   "erinium_faction.cmd.faction.revoke.success": "§6[§bErinium§6/§dFaction§6] §aInvite revoked for §b%s§a.",

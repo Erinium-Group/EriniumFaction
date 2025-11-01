@@ -23,7 +23,6 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import fr.eriniumgroup.erinium_faction.init.EFMenus;
 import fr.eriniumgroup.erinium_faction.init.EFItems;
-import fr.eriniumgroup.erinium_faction.init.EFCreativeTabs;
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
 import fr.eriniumgroup.erinium_faction.init.EFArgumentTypes;
 import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
@@ -35,6 +34,9 @@ import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
 import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelAttachments;
 import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelConfig;
 import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelCommand;
+import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
+import fr.eriniumgroup.erinium_faction.commands.AntiXrayCommand;
+import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -44,6 +46,9 @@ public class EriniumFaction {
         EFCC.install();
 
         EFC.log.info("Initializing Erinium Faction - PvP Faction Mod");
+
+        // Initialiser l'Anti-Xray
+        AntiXrayManager.getInstance().init();
 
         // Configuration
         modContainer.registerConfig(ModConfig.Type.SERVER, EFConfig.SPEC);
@@ -69,6 +74,8 @@ public class EriniumFaction {
         NeoForge.EVENT_BUS.addListener(this::onServerStarting);
         NeoForge.EVENT_BUS.addListener(this::onServerStopping);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        // Enregistrer nos handlers anti-xray
+        NeoForge.EVENT_BUS.register(AntiXrayEventHandler.class);
 
         // Protection systems
         ClaimProtection.register();
@@ -97,6 +104,8 @@ public class EriniumFaction {
         EFC.log.info("§2Saving §dfaction §7data...");
         FactionManager.save(event.getServer());
         EFRManager.get().save();
+        // Sauvegarder et arrêter l'anti-xray
+        AntiXrayManager.getInstance().shutdown();
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
@@ -109,6 +118,8 @@ public class EriniumFaction {
         fr.eriniumgroup.erinium_faction.commands.EFCommand.register(event.getDispatcher());
         // Commande système de niveau
         PlayerLevelCommand.register(event.getDispatcher());
+        // Commande anti-xray
+        AntiXrayCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
     }
