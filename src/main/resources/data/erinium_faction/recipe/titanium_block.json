@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "erinium_faction",
+  "group": "titanium_block",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "erinium_faction:titanium_ingot"
+    }
+  },
+  "result": {
+    "id": "erinium_faction:titanium_block"
+  }
+}
+

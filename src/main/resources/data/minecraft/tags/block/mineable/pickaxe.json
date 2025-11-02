@@ -5,6 +5,7 @@
     "erinium_faction:deepslate_silver_ore",
     "erinium_faction:titanium_ore",
     "erinium_faction:deepslate_titanium_ore",
-    "erinium_faction:silver_block"
+    "erinium_faction:silver_block",
+    "erinium_faction:titanium_block"
   ]
 }

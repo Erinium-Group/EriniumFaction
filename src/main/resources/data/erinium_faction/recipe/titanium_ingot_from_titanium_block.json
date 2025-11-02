@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "erinium_faction",
+  "group": "titanium_ingot",
+  "ingredients": [
+    { "item": "erinium_faction:titanium_block" }
+  ],
+  "result": {
+    "id": "erinium_faction:titanium_ingot",
+    "count": 9
+  }
+}
+

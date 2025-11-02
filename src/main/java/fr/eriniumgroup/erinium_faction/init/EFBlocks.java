@@ -5,14 +5,12 @@ import fr.eriniumgroup.erinium_faction.common.block.SilverBlockBlock;
 import fr.eriniumgroup.erinium_faction.common.block.DeepslateTitaniumOreBlock;
 import fr.eriniumgroup.erinium_faction.common.block.SilverOreBlock;
 import fr.eriniumgroup.erinium_faction.common.block.TitaniumOreBlock;
+import fr.eriniumgroup.erinium_faction.common.block.TitaniumBlockBlock;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -25,6 +23,7 @@ public class EFBlocks {
 
     public static final DeferredHolder<Block, Block> TITANIUM_ORE = REGISTER.register("titanium_ore", TitaniumOreBlock::new);
     public static final DeferredHolder<Block, Block> DEEPSLATE_TITANIUM_ORE = REGISTER.register("deepslate_titanium_ore", DeepslateTitaniumOreBlock::new);
+    public static final DeferredHolder<Block, Block> TITANIUM_BLOCK = REGISTER.register("titanium_block", TitaniumBlockBlock::new);
 
     public static void registerBlockItems(DeferredRegister<Item> itemRegister) {
         itemRegister.register("silver_ore", () -> new BlockItem(SILVER_ORE.get(), new Item.Properties()));
@@ -34,6 +33,8 @@ public class EFBlocks {
         itemRegister.register("deepslate_titanium_ore", () -> new BlockItem(DEEPSLATE_TITANIUM_ORE.get(), new Item.Properties()));
         // BlockItem pour le bloc d'argent
         itemRegister.register("silver_block", () -> new BlockItem(SILVER_BLOCK.get(), new Item.Properties()));
+        // BlockItem pour le bloc de titane
+        itemRegister.register("titanium_block", () -> new BlockItem(TITANIUM_BLOCK.get(), new Item.Properties()));
     }
 
     private EFBlocks() {
