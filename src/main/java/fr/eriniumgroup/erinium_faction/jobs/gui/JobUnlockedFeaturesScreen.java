@@ -1,12 +1,19 @@
 package fr.eriniumgroup.erinium_faction.jobs.gui;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import fr.eriniumgroup.erinium_faction.jobs.JobData;
 import fr.eriniumgroup.erinium_faction.jobs.JobType;
+import fr.eriniumgroup.erinium_faction.jobs.config.JobConfig;
+import fr.eriniumgroup.erinium_faction.jobs.config.UnlockingEntry;
+import fr.eriniumgroup.erinium_faction.jobs.network.JobsClientConfig;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Écran "Fonctionnalités Débloquées"
@@ -21,6 +28,11 @@ public class JobUnlockedFeaturesScreen extends Screen {
     private int leftPos;
     private int topPos;
     private int scrollOffset = 0;
+    private List<UnlockingEntry> unlockingEntries = new ArrayList<>();
+    private int unlockedCount = 0;
+    private int lockedCount = 0;
+    private int lastMouseX = 0;
+    private int lastMouseY = 0;
 
     // Assets
     private static final ResourceLocation BG_GRADIENT = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/jobs/bg-gradient.png");
@@ -37,18 +49,30 @@ public class JobUnlockedFeaturesScreen extends Screen {
     private static final ResourceLocation SCROLLBAR_TRACK = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/jobs/scrollbar-track-142.png");
     private static final ResourceLocation SCROLLBAR_THUMB = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/jobs/scrollbar-thumb-purple.png");
 
-    // Données d'exemple des fonctionnalités
-    private static final Feature[] EXAMPLE_FEATURES = {
-        new Feature("⛏️", "Iron Pickaxe", "Craft and use iron tier tools", 10, true),
-        new Feature("💎", "Diamond Pickaxe", "Craft and use diamond tier tools", 15, true),
-        new Feature("✨", "Efficiency I", "Mine blocks 30% faster", 5, true),
-        new Feature("🔒", "Fortune II", "Requires Level 25 • 10 levels to go", 25, false),
-        new Feature("🔒", "Netherite Upgrade", "Requires Level 30 • 15 levels to go", 30, false),
-    };
-
     public JobUnlockedFeaturesScreen(JobData jobData) {
-        super(Component.literal("Unlocked Features"));
+        super(Component.translatable("erinium_faction.jobs.unlocked_features.title"));
         this.jobData = jobData;
+        loadUnlockingEntries();
+    }
+
+    /**
+     * Charge les entrées de débloquage depuis la configuration
+     */
+    private void loadUnlockingEntries() {
+        JobConfig config = JobsClientConfig.getConfig(jobData.getType());
+        if (config != null) {
+            unlockingEntries = config.getUnlocking();
+            // Compter combien sont débloquées/verrouillées au niveau actuel
+            unlockedCount = 0;
+            lockedCount = 0;
+            for (UnlockingEntry entry : unlockingEntries) {
+                if (entry.isUnlockedAtLevel(jobData.getLevel())) {
+                    unlockedCount++;
+                } else {
+                    lockedCount++;
+                }
+            }
+        }
     }
 
     @Override
@@ -61,6 +85,10 @@ public class JobUnlockedFeaturesScreen extends Screen {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);
+
+        // Sauvegarder les positions de la souris
+        this.lastMouseX = mouseX;
+        this.lastMouseY = mouseY;
 
         JobType type = jobData.getType();
 
@@ -81,8 +109,8 @@ public class JobUnlockedFeaturesScreen extends Screen {
         g.drawString(font, "‹", leftPos + 26 - font.width("‹") / 2, topPos + 26, 0xa855f7, false);
 
         // Title
-        g.drawString(font, "UNLOCKED FEATURES - " + type.getDisplayName().toUpperCase(), leftPos + 46, topPos + 18, 0xa855f7, false);
-        g.drawString(font, "Perks and abilities you've earned", leftPos + 46, topPos + 32, 0x9ca3af, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.unlocked_features.title").getString() + " - " + type.getDisplayName().toUpperCase(), leftPos + 46, topPos + 18, 0xa855f7, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.unlocked_features.subtitle").getString(), leftPos + 46, topPos + 32, 0x9ca3af, false);
 
         // Close button
         ImageRenderer.renderScaledImage(g, BUTTON_CLOSE, leftPos + 372, topPos + 16, 14, 14);
@@ -90,17 +118,18 @@ public class JobUnlockedFeaturesScreen extends Screen {
         // Level indicator
         ImageRenderer.renderScaledImage(g, PANEL_LEVEL_INDICATOR, leftPos + 8, topPos + 54, 384, 28);
         ImageRenderer.renderScaledImage(g, BADGE_LEVEL_MEDIUM, leftPos + 18, topPos + 60, 40, 16);
-        g.drawString(font, "LVL " + jobData.getLevel(), leftPos + 38 - font.width("LVL " + jobData.getLevel()) / 2, topPos + 67, 0x1a1a2e, false);
-        g.drawString(font, "Current Level: " + jobData.getLevel(), leftPos + 66, topPos + 67, 0xffffff, false);
+        String lvlText = String.format(Component.translatable("erinium_faction.jobs.badge.level").getString(), jobData.getLevel());
+        g.drawString(font, lvlText, leftPos + 38 - font.width(lvlText) / 2, topPos + 67, 0x1a1a2e, false);
+        String currentLevelText = String.format(Component.translatable("erinium_faction.jobs.unlocked_features.current_level").getString(), jobData.getLevel());
+        g.drawString(font, currentLevelText, leftPos + 66, topPos + 67, 0xffffff, false);
 
         // Stats débloquées
-        int unlockedCount = (int) java.util.Arrays.stream(EXAMPLE_FEATURES).filter(f -> f.unlocked).count();
-        int lockedCount = EXAMPLE_FEATURES.length - unlockedCount;
-        g.drawString(font, unlockedCount + " unlocked • " + lockedCount + " locked", leftPos + 250, topPos + 67, 0x10b981, false);
+        String statsText = String.format(Component.translatable("erinium_faction.jobs.unlocked_features.stats").getString(), unlockedCount, lockedCount);
+        g.drawString(font, statsText, leftPos + 250, topPos + 67, 0x10b981, false);
 
         // Section header
         ImageRenderer.renderScaledImage(g, PANEL_SECTION_HEADER, leftPos + 8, topPos + 88, 384, 16);
-        g.drawString(font, "YOUR UNLOCKED FEATURES", leftPos + 14, topPos + 95, 0xa855f7, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.unlocked_features.your_features").getString(), leftPos + 14, topPos + 95, 0xa855f7, false);
 
         // Scroll container
         ImageRenderer.renderScaledImage(g, PANEL_DARK, leftPos + 8, topPos + 110, 384, 148);
@@ -113,10 +142,11 @@ public class JobUnlockedFeaturesScreen extends Screen {
 
         // Progress summary at bottom (si on veut)
         if (lockedCount > 0) {
-            Feature nextFeature = java.util.Arrays.stream(EXAMPLE_FEATURES).filter(f -> !f.unlocked).findFirst().orElse(null);
-            if (nextFeature != null) {
-                g.drawString(font, "Next unlock at Level " + nextFeature.requiredLevel + ": " + nextFeature.name,
-                    leftPos + 200 - font.width("Next unlock at Level " + nextFeature.requiredLevel + ": " + nextFeature.name) / 2,
+            UnlockingEntry nextUnlock = getNextUnlock();
+            if (nextUnlock != null) {
+                String nextUnlockText = String.format(Component.translatable("erinium_faction.jobs.unlocked_features.next_unlock").getString(), nextUnlock.getLevel(), nextUnlock.getDisplayName());
+                g.drawString(font, nextUnlockText,
+                    leftPos + 200 - font.width(nextUnlockText) / 2,
                     topPos + 264, 0x9ca3af, false);
             }
         }
@@ -129,52 +159,138 @@ public class JobUnlockedFeaturesScreen extends Screen {
 
         g.enableScissor(leftPos + 14, topPos + 116, leftPos + 386, topPos + 258);
 
-        for (int i = 0; i < EXAMPLE_FEATURES.length; i++) {
+        for (int i = 0; i < unlockingEntries.size(); i++) {
             int yOffset = startY + (i * (itemHeight + spacing)) - scrollOffset;
 
             if (yOffset + itemHeight >= topPos + 116 && yOffset < topPos + 258) {
-                renderFeature(g, EXAMPLE_FEATURES[i], leftPos + 14, yOffset);
+                renderFeature(g, unlockingEntries.get(i), leftPos + 14, yOffset);
             }
         }
 
         g.disableScissor();
     }
 
-    private void renderFeature(GuiGraphics g, Feature feature, int x, int y) {
+    private void renderFeature(GuiGraphics g, UnlockingEntry entry, int x, int y) {
+        int playerLevel = jobData.getLevel();
+        boolean isUnlocked = entry.isUnlockedAtLevel(playerLevel);
+
         // Card background
-        if (feature.unlocked) {
+        if (isUnlocked) {
             ImageRenderer.renderScaledImage(g, LISTITEM_SMALL_GREEN, x, y, 372, 28);
         } else {
             ImageRenderer.renderScaledImageWithAlpha(g, LISTITEM_SMALL_RED, x, y, 372, 28, 0.6f);
         }
 
-        // Icon placeholder
-        ImageRenderer.renderScaledImage(g, ICON_PLACEHOLDER_16, x + 6, y + 6, 16, 16);
+        // Icon - afficher l'item si c'est un ITEM ou BLOCK
+        if (entry.getType() == fr.eriniumgroup.erinium_faction.jobs.config.UnlockType.ITEM ||
+            entry.getType() == fr.eriniumgroup.erinium_faction.jobs.config.UnlockType.BLOCK) {
+            try {
+                net.minecraft.world.item.ItemStack itemStack = new net.minecraft.world.item.ItemStack(
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                        net.minecraft.resources.ResourceLocation.parse(entry.getTargetId())
+                    )
+                );
+                g.renderItem(itemStack, x + 6, y + 6);
+            } catch (Exception e) {
+                // Si l'item n'existe pas, utiliser l'emoji par défaut
+                ImageRenderer.renderScaledImage(g, ICON_PLACEHOLDER_16, x + 6, y + 6, 16, 16);
+                String icon = isUnlocked ? getIconForUnlock(entry) : "🔒";
+                int iconColor = isUnlocked ? 0x10b981 : 0x6b7280;
+                g.drawString(font, icon, x + 14 - font.width(icon) / 2, y + 11, iconColor, false);
+            }
+        } else {
+            // Pour DIMENSION et CUSTOM, utiliser l'emoji
+            ImageRenderer.renderScaledImage(g, ICON_PLACEHOLDER_16, x + 6, y + 6, 16, 16);
+            String icon = isUnlocked ? getIconForUnlock(entry) : "🔒";
+            int iconColor = isUnlocked ? 0x10b981 : 0x6b7280;
+            g.drawString(font, icon, x + 14 - font.width(icon) / 2, y + 11, iconColor, false);
+        }
 
-        // Icône (emoji)
-        int iconColor = feature.unlocked ? (feature.icon.equals("🔒") ? 0x10b981 : 0x10b981) : 0x6b7280;
-        g.drawString(font, feature.unlocked ? feature.icon : "🔒", x + 14 - font.width(feature.unlocked ? feature.icon : "🔒") / 2, y + 11, iconColor, false);
+        // Name - remonté de 2 pixels (y + 8 au lieu de y + 10) avec auto-scroll
+        int nameColor = isUnlocked ? 0x10b981 : 0x9ca3af;
+        String name = entry.getDisplayName() != null && !entry.getDisplayName().isEmpty() ? entry.getDisplayName() : formatUnlockName(entry);
+        boolean itemHovered = lastMouseX >= x && lastMouseX <= x + 372 && lastMouseY >= y && lastMouseY <= y + 28;
+        TextHelper.drawAutoScrollingText(g, font, name, x + 28, y + 8, 290, nameColor, false, itemHovered, "feature_name_" + entry.getType() + "_" + entry.getTargetId());
 
-        // Name
-        int nameColor = feature.unlocked ? 0x10b981 : 0x9ca3af;
-        g.drawString(font, feature.name, x + 28, y + 10, nameColor, false);
-
-        // Description
-        int descColor = feature.unlocked ? 0x9ca3af : 0xef4444;
-        g.drawString(font, feature.description, x + 28, y + 20, descColor, false);
+        // Description - remonté de 2 pixels (y + 18 au lieu de y + 20)
+        int descColor = isUnlocked ? 0x9ca3af : 0xef4444;
+        String description = formatUnlockDescription(entry, playerLevel);
+        g.drawString(font, description, x + 28, y + 18, descColor, false);
 
         // Level badge
         int badgeX = x + 326;
         int badgeY = y + 8;
 
-        if (feature.unlocked) {
+        if (isUnlocked) {
             ImageRenderer.renderScaledImage(g, BADGE_LEVEL_TINY_GREEN, badgeX, badgeY, 36, 12);
         } else {
             ImageRenderer.renderScaledImage(g, BADGE_LEVEL_TINY_RED, badgeX, badgeY, 36, 12);
         }
 
-        String levelText = "LVL " + feature.requiredLevel;
+        String levelText = String.format(Component.translatable("erinium_faction.jobs.badge.level").getString(), entry.getLevel());
         g.drawString(font, levelText, badgeX + 18 - font.width(levelText) / 2, badgeY + 4, 0xffffff, false);
+    }
+
+    /**
+     * Obtient une icône emoji pour le débloquage
+     */
+    private String getIconForUnlock(UnlockingEntry entry) {
+        return switch (entry.getType()) {
+            case ITEM -> "📦";
+            case BLOCK -> "🧱";
+            case DIMENSION -> "🌍";
+            case CUSTOM -> "⭐";
+        };
+    }
+
+    /**
+     * Formate le nom du débloquage
+     */
+    private String formatUnlockName(UnlockingEntry entry) {
+        String[] parts = entry.getTargetId().split(":");
+        String itemName = parts.length > 1 ? parts[1] : entry.getTargetId();
+        itemName = itemName.replace("_", " ");
+        return capitalize(itemName);
+    }
+
+    /**
+     * Formate la description du débloquage
+     */
+    private String formatUnlockDescription(UnlockingEntry entry, int playerLevel) {
+        if (playerLevel < entry.getLevel()) {
+            int levelsToGo = entry.getLevel() - playerLevel;
+            String levelsPart = String.format(Component.translatable("erinium_faction.jobs.status.levels_to_go").getString(), levelsToGo, levelsToGo != 1 ? "s" : "", levelsToGo != 1 ? "s" : "");
+            String requiresLevel = String.format(Component.translatable("erinium_faction.jobs.status.requires_level").getString(), entry.getLevel());
+            return requiresLevel + " • " + levelsPart;
+        }
+
+        // Si débloqué, utiliser la description de la config ou une description par défaut
+        if (entry.getDescription() != null && !entry.getDescription().isEmpty()) {
+            return entry.getDescription();
+        }
+        return entry.getType().name() + ": " + entry.getTargetId();
+    }
+
+    /**
+     * Obtient le prochain débloquage
+     */
+    private UnlockingEntry getNextUnlock() {
+        UnlockingEntry next = null;
+        int minLevel = Integer.MAX_VALUE;
+
+        for (UnlockingEntry entry : unlockingEntries) {
+            if (!entry.isUnlockedAtLevel(jobData.getLevel()) && entry.getLevel() < minLevel) {
+                next = entry;
+                minLevel = entry.getLevel();
+            }
+        }
+
+        return next;
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     private void renderScrollbar(GuiGraphics g) {
@@ -183,7 +299,12 @@ public class JobUnlockedFeaturesScreen extends Screen {
 
         ImageRenderer.renderScaledImage(g, SCROLLBAR_TRACK, scrollbarX, scrollbarY, 4, 142);
 
-        int totalHeight = EXAMPLE_FEATURES.length * 32;
+        // Ne pas afficher le thumb si la liste est vide
+        if (unlockingEntries.isEmpty()) {
+            return;
+        }
+
+        int totalHeight = unlockingEntries.size() * 32;
         int visibleHeight = 142;
         int thumbHeight = Math.max(20, (visibleHeight * visibleHeight) / totalHeight);
         int maxScroll = Math.max(0, totalHeight - visibleHeight);
@@ -196,7 +317,7 @@ public class JobUnlockedFeaturesScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        int totalHeight = EXAMPLE_FEATURES.length * 32;
+        int totalHeight = unlockingEntries.size() * 32;
         int visibleHeight = 142;
         int maxScroll = Math.max(0, totalHeight - visibleHeight);
 
@@ -230,22 +351,5 @@ public class JobUnlockedFeaturesScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
-    }
-
-    // Classe interne pour les fonctionnalités
-    private static class Feature {
-        String icon;
-        String name;
-        String description;
-        int requiredLevel;
-        boolean unlocked;
-
-        Feature(String icon, String name, String description, int requiredLevel, boolean unlocked) {
-            this.icon = icon;
-            this.name = name;
-            this.description = description;
-            this.requiredLevel = requiredLevel;
-            this.unlocked = unlocked;
-        }
     }
 }

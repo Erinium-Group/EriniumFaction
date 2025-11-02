@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.jobs.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import fr.eriniumgroup.erinium_faction.jobs.JobData;
 import fr.eriniumgroup.erinium_faction.jobs.JobType;
 import net.minecraft.client.gui.GuiGraphics;
@@ -40,8 +41,28 @@ public class JobsMenuScreen extends Screen {
     private static final int MAX_VISIBLE_JOBS = 2; // Only 2 jobs visible at 72px height each
 
     public JobsMenuScreen() {
-        super(Component.literal("Jobs System"));
-        this.jobs = JobData.createExampleData();
+        super(Component.translatable("erinium_faction.jobs.menu.title"));
+        this.jobs = createJobDataFromPlayer();
+    }
+
+    /**
+     * Crée les JobData à partir des données du joueur
+     */
+    private JobData[] createJobDataFromPlayer() {
+        fr.eriniumgroup.erinium_faction.jobs.JobsData jobsData = fr.eriniumgroup.erinium_faction.jobs.JobsManager.getClientJobsData();
+        JobData[] result = new JobData[6];
+
+        int index = 0;
+        for (fr.eriniumgroup.erinium_faction.jobs.JobType type : fr.eriniumgroup.erinium_faction.jobs.JobType.values()) {
+            int level = jobsData.getLevel(type);
+            int experience = jobsData.getExperience(type);
+            int expToNext = jobsData.getExperienceForNextLevel(level);
+
+            result[index] = new JobData(type, level, experience, expToNext);
+            index++;
+        }
+
+        return result;
     }
 
     @Override
@@ -62,8 +83,8 @@ public class JobsMenuScreen extends Screen {
         ImageRenderer.renderScaledImage(g, PANEL_HEADER, leftPos + 8, topPos + 8, 384, 40);
 
         // Titre
-        g.drawString(font, "JOBS SYSTEM", leftPos + 20, topPos + 20, 0xfbbf24, false);
-        g.drawString(font, "Master different professions and unlock unique abilities",
+        g.drawString(font, Component.translatable("erinium_faction.jobs.menu.title").getString(), leftPos + 20, topPos + 20, 0xfbbf24, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.menu.subtitle").getString(),
                     leftPos + 20, topPos + 34, 0x9ca3af, false);
 
         // Close button
@@ -118,11 +139,13 @@ public class JobsMenuScreen extends Screen {
         // Emoji au centre de l'icône (temporaire)
         g.drawString(font, type.getEmoji(), x + 38 - font.width(type.getEmoji()) / 2, y + 36, type.getColor(), false);
 
-        // Job name
-        g.drawString(font, type.getDisplayName(), x + 78, y + 20, type.getColor(), false);
+        // Job name avec auto-scroll si trop long
+        boolean isHovered = mouseX >= x && mouseX <= x + 372 && mouseY >= y && mouseY <= y + 72;
+        String jobName = type.getDisplayName();
+        TextHelper.drawAutoScrollingText(g, font, jobName, x + 78, y + 20, 220, type.getColor(), false, isHovered, "job_name_" + type.name());
 
         // Level
-        g.drawString(font, "Level " + job.getLevel(), x + 78, y + 36, 0x9ca3af, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.detail.level").getString() + " " + job.getLevel(), x + 78, y + 36, 0x9ca3af, false);
 
         // XP Bar - check if visible in scissor area before rendering
         if (y + 54 > scissorY && y + 46 < scissorY + scissorHeight) {

@@ -1,14 +1,14 @@
 package fr.eriniumgroup.erinium_faction;
 
-import fr.eriniumgroup.erinium_faction.commands.FactionCommand;
-import fr.eriniumgroup.erinium_faction.commands.RankCommand;
-import fr.eriniumgroup.erinium_faction.commands.EconomyCommand;
+import fr.eriniumgroup.erinium_faction.commands.*;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.network.PacketHandler;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.logger.EFCC;
+import fr.eriniumgroup.erinium_faction.events.TopLuckEventHandler;
+import fr.eriniumgroup.erinium_faction.features.topluck.TopLuckAttachments;
 import fr.eriniumgroup.erinium_faction.init.EFCreativeTabs;
 import fr.eriniumgroup.erinium_faction.protection.ClaimProtection;
 import fr.eriniumgroup.erinium_faction.protection.PvpProtection;
@@ -35,12 +35,7 @@ import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelAttachments;
 import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelConfig;
 import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelCommand;
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
-import fr.eriniumgroup.erinium_faction.commands.AntiXrayCommand;
 import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
-import fr.eriniumgroup.erinium_faction.commands.TopLuckCommand;
-import fr.eriniumgroup.erinium_faction.features.topluck.TopLuckAttachments;
-import fr.eriniumgroup.erinium_faction.events.TopLuckEventHandler;
-import fr.eriniumgroup.erinium_faction.commands.TopLuckConfigCommand;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -66,11 +61,13 @@ public class EriniumFaction {
         EFVariables.ATTACHMENT_TYPES.register(modEventBus);
         EFArgumentTypes.REGISTER.register(modEventBus);
         PowerManager.ATTACHMENTS.register(modEventBus);
+        TopLuckAttachments.ATTACHMENTS.register(modEventBus);
         // Enregistrer l'économie (players.dat)
         fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.ATTACHMENTS.register(modEventBus);
         // Système de niveau des joueurs
         PlayerLevelAttachments.ATTACHMENTS.register(modEventBus);
-        TopLuckAttachments.ATTACHMENTS.register(modEventBus);
+        // Système de métiers des joueurs
+        fr.eriniumgroup.erinium_faction.jobs.JobsDataAttachment.ATTACHMENTS.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
@@ -105,6 +102,8 @@ public class EriniumFaction {
         EFRManager.get().load();
         // Initialiser les permissions par défaut (SavedData .dat) et appliquer si nécessaire
         fr.eriniumgroup.erinium_faction.core.faction.RankDefaultsSavedData.bootstrapAndApply(event.getServer());
+        // Charger les configurations des métiers
+        fr.eriniumgroup.erinium_faction.jobs.config.JobsConfigManager.init();
     }
 
     private void onServerStopping(ServerStoppingEvent event) {
@@ -127,9 +126,10 @@ public class EriniumFaction {
         PlayerLevelCommand.register(event.getDispatcher());
         // Commande anti-xray
         AntiXrayCommand.register(event.getDispatcher());
-        TopLuckCommand.register(event.getDispatcher());
-        TopLuckConfigCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
+
+        TopLuckCommand.register(event.getDispatcher());
+        TopLuckConfigCommand.register(event.getDispatcher());
     }
 }

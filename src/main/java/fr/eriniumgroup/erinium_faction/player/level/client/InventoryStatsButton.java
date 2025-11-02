@@ -10,6 +10,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 
+import java.awt.*;
+
 /**
  * Ajoute des boutons au-dessus de l'inventaire du joueur pour ouvrir les stats et les jobs
  */
@@ -70,7 +72,7 @@ public class InventoryStatsButton {
             Component jobsText = Component.literal("Jobs");
             int jobsTextX = jobsButtonX + (BUTTON_WIDTH - mc.font.width(jobsText)) / 2;
             int jobsTextY = jobsButtonY + (BUTTON_HEIGHT - 8) / 2;
-            guiGraphics.drawString(mc.font, jobsText, jobsTextX, jobsTextY, 0xFF1a1a2e);
+            guiGraphics.drawString(mc.font, jobsText, jobsTextX, jobsTextY, Color.WHITE.getRGB());
         }
     }
 

@@ -70,6 +70,10 @@ public class PacketHandler {
         registrar.playToClient(fr.eriniumgroup.erinium_faction.player.level.network.SyncPlayerLevelPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.SyncPlayerLevelPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleSyncPlayerLevel);
         registrar.playToClient(fr.eriniumgroup.erinium_faction.player.level.network.SyncResetTokenPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.SyncResetTokenPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleSyncResetToken);
 
+        // Paquets système de métiers
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.jobs.network.SyncJobsDataPacket.TYPE, fr.eriniumgroup.erinium_faction.jobs.network.SyncJobsDataPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.jobs.network.JobsPacketHandler::handleSyncJobsData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.jobs.network.SyncJobsConfigPacket.TYPE, fr.eriniumgroup.erinium_faction.jobs.network.SyncJobsConfigPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.jobs.network.JobsPacketHandler::handleSyncJobsConfig);
+
         // Paquets système bancaire
         registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.BankDepositMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.BankDepositMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.BankDepositMessage::handleData);
         registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.BankWithdrawMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.BankWithdrawMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.BankWithdrawMessage::handleData);

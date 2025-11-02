@@ -1,12 +1,20 @@
 package fr.eriniumgroup.erinium_faction.jobs.gui;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import fr.eriniumgroup.erinium_faction.jobs.JobData;
 import fr.eriniumgroup.erinium_faction.jobs.JobType;
+import fr.eriniumgroup.erinium_faction.jobs.config.JobConfig;
+import fr.eriniumgroup.erinium_faction.jobs.config.UnlockingEntry;
+import fr.eriniumgroup.erinium_faction.jobs.network.JobsClientConfig;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Écran de détail d'un métier
@@ -20,6 +28,11 @@ public class JobDetailScreen extends Screen {
     private final JobData jobData;
     private int leftPos;
     private int topPos;
+    private int unlockedCount = 0;
+    private int lockedCount = 0;
+    private List<UnlockingEntry> recentUnlocks = new ArrayList<>();
+    private int lastMouseX = 0;
+    private int lastMouseY = 0;
 
     // Assets communs
     private static final ResourceLocation BG_GRADIENT = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/jobs/bg-gradient.png");
@@ -38,8 +51,58 @@ public class JobDetailScreen extends Screen {
     private static final ResourceLocation STATUS_CIRCLE_GRAY = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/jobs/status-circle-gray.png");
 
     public JobDetailScreen(JobData jobData) {
-        super(Component.literal(jobData.getType().getDisplayName()));
+        super(Component.translatable("erinium_faction.jobs.detail.title"));
         this.jobData = jobData;
+        loadConfigData();
+    }
+
+    /**
+     * Charge les statistiques depuis la configuration
+     */
+    private void loadConfigData() {
+        JobConfig config = JobsClientConfig.getConfig(jobData.getType());
+        if (config != null) {
+            // Compter les débloquages
+            unlockedCount = 0;
+            lockedCount = 0;
+            List<UnlockingEntry> allUnlocks = config.getUnlocking();
+
+            for (UnlockingEntry entry : allUnlocks) {
+                if (entry.isUnlockedAtLevel(jobData.getLevel())) {
+                    unlockedCount++;
+                } else {
+                    lockedCount++;
+                }
+            }
+
+            // Obtenir les débloquages récents (derniers 3 débloqués + prochains 2 verrouillés)
+            recentUnlocks = getRecentUnlocks(allUnlocks);
+        }
+    }
+
+    /**
+     * Récupère les débloquages récents à afficher
+     */
+    private List<UnlockingEntry> getRecentUnlocks(List<UnlockingEntry> allUnlocks) {
+        List<UnlockingEntry> result = new ArrayList<>();
+
+        // Débloquages récents (triés par niveau décroissant, max 1)
+        List<UnlockingEntry> unlocked = allUnlocks.stream()
+            .filter(e -> e.isUnlockedAtLevel(jobData.getLevel()))
+            .sorted(Comparator.comparingInt(UnlockingEntry::getLevel).reversed())
+            .limit(1)
+            .toList();
+        result.addAll(unlocked);
+
+        // Prochains débloquages (triés par niveau croissant, max 2)
+        List<UnlockingEntry> locked = allUnlocks.stream()
+            .filter(e -> !e.isUnlockedAtLevel(jobData.getLevel()))
+            .sorted(Comparator.comparingInt(UnlockingEntry::getLevel))
+            .limit(2)
+            .toList();
+        result.addAll(locked);
+
+        return result;
     }
 
     @Override
@@ -52,6 +115,10 @@ public class JobDetailScreen extends Screen {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);
+
+        // Sauvegarder les positions de la souris pour les sous-renders
+        this.lastMouseX = mouseX;
+        this.lastMouseY = mouseY;
 
         JobType type = jobData.getType();
 
@@ -97,12 +164,14 @@ public class JobDetailScreen extends Screen {
         ResourceLocation levelBadge = ResourceLocation.fromNamespaceAndPath("erinium_faction",
             "textures/gui/jobs/badge-level-large-" + type.getColorName() + ".png");
         ImageRenderer.renderScaledImage(g, levelBadge, leftPos + 18, topPos + 64, 50, 26);
-        g.drawString(font, "LEVEL", leftPos + 43 - font.width("LEVEL") / 2, topPos + 68, 0x1a1a2e, false);
+        String levelText = Component.translatable("erinium_faction.jobs.detail.level").getString().toUpperCase();
+        g.drawString(font, levelText, leftPos + 43 - font.width(levelText) / 2, topPos + 68, 0x1a1a2e, false);
         g.drawString(font, String.valueOf(jobData.getLevel()), leftPos + 43 - font.width(String.valueOf(jobData.getLevel())) / 2, topPos + 80, 0x1a1a2e, false);
 
         // XP Info
-        g.drawString(font, "Experience", leftPos + 78, topPos + 66, 0xffffff, false);
-        String xpText = jobData.getExperience() + " / " + jobData.getExperienceToNextLevel() + " XP (" + jobData.getExperiencePercentage() + "%)";
+        g.drawString(font, Component.translatable("erinium_faction.jobs.detail.xp_progress").getString(), leftPos + 78, topPos + 66, 0xffffff, false);
+        String xpFormat = String.format(Component.translatable("erinium_faction.jobs.detail.xp_format").getString(), jobData.getExperience(), jobData.getExperienceToNextLevel());
+        String xpText = xpFormat + " (" + jobData.getExperiencePercentage() + "%)";
         g.drawString(font, xpText, leftPos + 78, topPos + 80, 0x9ca3af, false);
 
         // XP Progress Bar
@@ -132,46 +201,94 @@ public class JobDetailScreen extends Screen {
     private void renderActionButtons(GuiGraphics g, int mouseX, int mouseY) {
         // How to gain XP button
         ImageRenderer.renderScaledImage(g, BUTTON_ACTION_GREEN, leftPos + 8, topPos + 106, 187, 36);
-        g.drawString(font, "How to gain XP", leftPos + 102 - font.width("How to gain XP") / 2, topPos + 116, 0x10b981, false);
-        g.drawString(font, "View all XP sources", leftPos + 102 - font.width("View all XP sources") / 2, topPos + 128, 0x9ca3af, false);
+        String howToXpText = Component.translatable("erinium_faction.jobs.detail.button.how_to_xp").getString();
+        boolean greenButtonHovered = mouseX >= leftPos + 8 && mouseX <= leftPos + 195 && mouseY >= topPos + 106 && mouseY <= topPos + 142;
+        TextHelper.drawAutoScrollingText(g, font, howToXpText, leftPos + 102 - Math.min(font.width(howToXpText), 175) / 2, topPos + 116, 175, 0x10b981, false, greenButtonHovered, "button_how_to_xp");
+        String xpSourcesText = Component.translatable("erinium_faction.jobs.how_to_xp.subtitle").getString();
+        TextHelper.drawAutoScrollingText(g, font, xpSourcesText, leftPos + 102 - Math.min(font.width(xpSourcesText), 175) / 2, topPos + 128, 175, 0x9ca3af, false, greenButtonHovered, "button_xp_subtitle");
 
         // Unlocked Features button
         ImageRenderer.renderScaledImage(g, BUTTON_ACTION_PURPLE, leftPos + 205, topPos + 106, 187, 36);
-        g.drawString(font, "Unlocked Features", leftPos + 298 - font.width("Unlocked Features") / 2, topPos + 116, 0xa855f7, false);
-        g.drawString(font, "3 unlocked • 7 locked", leftPos + 298 - font.width("3 unlocked • 7 locked") / 2, topPos + 128, 0x9ca3af, false);
+        String unlockedText = Component.translatable("erinium_faction.jobs.detail.button.unlocked_features").getString();
+        boolean purpleButtonHovered = mouseX >= leftPos + 205 && mouseX <= leftPos + 392 && mouseY >= topPos + 106 && mouseY <= topPos + 142;
+        TextHelper.drawAutoScrollingText(g, font, unlockedText, leftPos + 298 - Math.min(font.width(unlockedText), 175) / 2, topPos + 116, 175, 0xa855f7, false, purpleButtonHovered, "button_unlocked");
+
+        // Afficher les stats réelles depuis la config
+        String statsText = String.format("%d débloqué • %d verrouillé", unlockedCount, lockedCount);
+        TextHelper.drawAutoScrollingText(g, font, statsText, leftPos + 298 - Math.min(font.width(statsText), 175) / 2, topPos + 128, 175, 0x9ca3af, false, purpleButtonHovered, "button_stats");
     }
 
     private void renderRecentUnlocks(GuiGraphics g) {
         // Section header
         ImageRenderer.renderScaledImage(g, PANEL_SECTION_HEADER, leftPos + 8, topPos + 148, 384, 16);
-        g.drawString(font, "RECENT UNLOCKS", leftPos + 14, topPos + 155, 0xfbbf24, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.unlocked_features.your_features").getString(), leftPos + 14, topPos + 155, 0xfbbf24, false);
 
-        // Unlocked item 1
-        ImageRenderer.renderScaledImage(g, LISTITEM_DETAIL_GREEN, leftPos + 8, topPos + 170, 384, 28);
-        ImageRenderer.renderScaledImage(g, STATUS_CIRCLE_GREEN, leftPos + 14, topPos + 178, 12, 12);
-        g.drawString(font, "✓", leftPos + 20 - font.width("✓") / 2, topPos + 180, 0x10b981, false);
-        g.drawString(font, "Diamond Pickaxe", leftPos + 32, topPos + 177, 0xffffff, false);
-        g.drawString(font, "Unlocked at Level " + jobData.getLevel(), leftPos + 32, topPos + 187, 0x9ca3af, false);
-        ImageRenderer.renderScaledImage(g, BADGE_LEVEL_DETAIL_GREEN, leftPos + 358, topPos + 176, 32, 16);
-        g.drawString(font, "LVL " + jobData.getLevel(), leftPos + 374 - font.width("LVL " + jobData.getLevel()) / 2, topPos + 181, 0xffffff, false);
+        // Afficher les débloquages récents depuis la config
+        int yOffset = 170;
+        for (int i = 0; i < Math.min(3, recentUnlocks.size()); i++) {
+            UnlockingEntry entry = recentUnlocks.get(i);
+            renderUnlockItem(g, entry, leftPos + 8, topPos + yOffset);
+            yOffset += 32;
+        }
+    }
 
-        // Locked item 1
-        ImageRenderer.renderScaledImageWithAlpha(g, LISTITEM_DETAIL_GRAY, leftPos + 8, topPos + 202, 384, 28, 0.5f);
-        ImageRenderer.renderScaledImage(g, STATUS_CIRCLE_GRAY, leftPos + 14, topPos + 210, 12, 12);
-        g.drawString(font, "🔒", leftPos + 20 - font.width("🔒") / 2, topPos + 212, 0x6b7280, false);
-        g.drawString(font, "Netherite Upgrade", leftPos + 32, topPos + 209, 0x9ca3af, false);
-        g.drawString(font, "Requires Level 30", leftPos + 32, topPos + 219, 0x6b7280, false);
-        ImageRenderer.renderScaledImage(g, BADGE_LEVEL_DETAIL_RED, leftPos + 358, topPos + 208, 32, 16);
-        g.drawString(font, "LVL 30", leftPos + 374 - font.width("LVL 30") / 2, topPos + 213, 0xffffff, false);
+    /**
+     * Affiche un item de débloquage
+     */
+    private void renderUnlockItem(GuiGraphics g, UnlockingEntry entry, int x, int y) {
+        boolean isUnlocked = entry.isUnlockedAtLevel(jobData.getLevel());
 
-        // Locked item 2
-        ImageRenderer.renderScaledImageWithAlpha(g, LISTITEM_DETAIL_GRAY, leftPos + 8, topPos + 234, 384, 28, 0.5f);
-        ImageRenderer.renderScaledImage(g, STATUS_CIRCLE_GRAY, leftPos + 14, topPos + 242, 12, 12);
-        g.drawString(font, "🔒", leftPos + 20 - font.width("🔒") / 2, topPos + 244, 0x6b7280, false);
-        g.drawString(font, "Fortune III", leftPos + 32, topPos + 241, 0x9ca3af, false);
-        g.drawString(font, "Requires Level 50", leftPos + 32, topPos + 251, 0x6b7280, false);
-        ImageRenderer.renderScaledImage(g, BADGE_LEVEL_DETAIL_RED, leftPos + 358, topPos + 240, 32, 16);
-        g.drawString(font, "LVL 50", leftPos + 374 - font.width("LVL 50") / 2, topPos + 245, 0xffffff, false);
+        // Card background
+        if (isUnlocked) {
+            ImageRenderer.renderScaledImage(g, LISTITEM_DETAIL_GREEN, x, y, 384, 28);
+            ImageRenderer.renderScaledImage(g, STATUS_CIRCLE_GREEN, x + 6, y + 8, 12, 12);
+            g.drawString(font, "✓", x + 12 - font.width("✓") / 2, y + 10, 0x10b981, false);
+        } else {
+            ImageRenderer.renderScaledImageWithAlpha(g, LISTITEM_DETAIL_GRAY, x, y, 384, 28, 0.5f);
+            ImageRenderer.renderScaledImage(g, STATUS_CIRCLE_GRAY, x + 6, y + 8, 12, 12);
+            g.drawString(font, "🔒", x + 12 - font.width("🔒") / 2, y + 10, 0x6b7280, false);
+        }
+
+        // Name avec auto-scroll
+        String name = entry.getDisplayName() != null && !entry.getDisplayName().isEmpty()
+            ? entry.getDisplayName()
+            : formatUnlockName(entry);
+        int nameColor = isUnlocked ? 0xffffff : 0x9ca3af;
+        // Détecter le hover sur cet item
+        boolean itemHovered = lastMouseX >= x && lastMouseX <= x + 384 && lastMouseY >= y && lastMouseY <= y + 28;
+        TextHelper.drawAutoScrollingText(g, font, name, x + 24, y + 7, 320, nameColor, false, itemHovered, "unlock_name_" + entry.getTargetId());
+
+        // Description
+        String description = isUnlocked
+            ? Component.translatable("erinium_faction.jobs.status.unlocked").getString() + " " + Component.translatable("erinium_faction.jobs.detail.level").getString() + " " + entry.getLevel()
+            : String.format(Component.translatable("erinium_faction.jobs.status.requires_level").getString(), entry.getLevel());
+        int descColor = isUnlocked ? 0x9ca3af : 0x6b7280;
+        g.drawString(font, description, x + 24, y + 17, descColor, false);
+
+        // Level badge
+        if (isUnlocked) {
+            ImageRenderer.renderScaledImage(g, BADGE_LEVEL_DETAIL_GREEN, x + 350, y + 6, 32, 16);
+        } else {
+            ImageRenderer.renderScaledImage(g, BADGE_LEVEL_DETAIL_RED, x + 350, y + 6, 32, 16);
+        }
+
+        String levelText = String.format(Component.translatable("erinium_faction.jobs.badge.level").getString(), entry.getLevel());
+        g.drawString(font, levelText, x + 366 - font.width(levelText) / 2, y + 11, 0xffffff, false);
+    }
+
+    /**
+     * Formate le nom du débloquage
+     */
+    private String formatUnlockName(UnlockingEntry entry) {
+        String[] parts = entry.getTargetId().split(":");
+        String itemName = parts.length > 1 ? parts[1] : entry.getTargetId();
+        itemName = itemName.replace("_", " ");
+        return capitalize(itemName);
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     @Override

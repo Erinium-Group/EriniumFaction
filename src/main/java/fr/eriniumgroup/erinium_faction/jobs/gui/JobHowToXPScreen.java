@@ -1,12 +1,19 @@
 package fr.eriniumgroup.erinium_faction.jobs.gui;
 
 import fr.eriniumgroup.erinium_faction.gui.screens.components.ImageRenderer;
+import fr.eriniumgroup.erinium_faction.gui.screens.components.TextHelper;
 import fr.eriniumgroup.erinium_faction.jobs.JobData;
 import fr.eriniumgroup.erinium_faction.jobs.JobType;
+import fr.eriniumgroup.erinium_faction.jobs.config.JobConfig;
+import fr.eriniumgroup.erinium_faction.jobs.config.XpEarningEntry;
+import fr.eriniumgroup.erinium_faction.jobs.network.JobsClientConfig;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Écran "Comment gagner de l'XP"
@@ -21,6 +28,10 @@ public class JobHowToXPScreen extends Screen {
     private int leftPos;
     private int topPos;
     private int scrollOffset = 0;
+    private List<XpEarningEntry> xpEntries = new ArrayList<>();
+    private int availableCount = 0;
+    private int lastMouseX = 0;
+    private int lastMouseY = 0;
 
     // Assets
     private static final ResourceLocation BG_GRADIENT = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/jobs/bg-gradient.png");
@@ -39,18 +50,31 @@ public class JobHowToXPScreen extends Screen {
     private static final ResourceLocation SCROLLBAR_TRACK = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/jobs/scrollbar-track-142.png");
     private static final ResourceLocation SCROLLBAR_THUMB = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/jobs/scrollbar-thumb-green.png");
 
-    // Données d'exemple des actions XP
-    private static final XPAction[] EXAMPLE_ACTIONS = {
-        new XPAction("💎", "Mine Diamond Ore", "Mine diamond ore blocks", 10, 50, 50, true),
-        new XPAction("⛰️", "Mine Stone", "Mine basic stone blocks", 1, 20, 5, true),
-        new XPAction("🔷", "Mine Ancient Debris", "Requires Level 30 • 15 levels to go", 30, 100, 100, false),
-        new XPAction("⛏️", "Mine Coal Ore", "No longer available (max level 10)", 1, 10, 3, false),
-        new XPAction("⭐", "Mine Emerald Ore", "Mine rare emerald ore", -1, -1, 80, true), // -1 = All Levels
-    };
-
     public JobHowToXPScreen(JobData jobData) {
-        super(Component.literal("How to Gain XP"));
+        super(Component.translatable("erinium_faction.jobs.how_to_xp.title"));
         this.jobData = jobData;
+        loadXpEntries();
+    }
+
+    /**
+     * Charge les entrées XP depuis la configuration
+     */
+    private void loadXpEntries() {
+        JobConfig config = JobsClientConfig.getConfig(jobData.getType());
+        System.out.println("[DEBUG] JobHowToXPScreen - Config for " + jobData.getType() + ": " + config);
+        if (config != null) {
+            xpEntries = config.getXpEarning();
+            System.out.println("[DEBUG] JobHowToXPScreen - XP Entries count: " + xpEntries.size());
+            // Compter combien sont disponibles au niveau actuel
+            availableCount = 0;
+            for (XpEarningEntry entry : xpEntries) {
+                if (entry.isAvailableAtLevel(jobData.getLevel())) {
+                    availableCount++;
+                }
+            }
+        } else {
+            System.out.println("[DEBUG] JobHowToXPScreen - Config is NULL!");
+        }
     }
 
     @Override
@@ -63,6 +87,10 @@ public class JobHowToXPScreen extends Screen {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);
+
+        // Sauvegarder les positions de la souris
+        this.lastMouseX = mouseX;
+        this.lastMouseY = mouseY;
 
         JobType type = jobData.getType();
 
@@ -83,8 +111,8 @@ public class JobHowToXPScreen extends Screen {
         g.drawString(font, "‹", leftPos + 26 - font.width("‹") / 2, topPos + 26, 0x10b981, false);
 
         // Title
-        g.drawString(font, "HOW TO GAIN XP - " + type.getDisplayName().toUpperCase(), leftPos + 46, topPos + 18, 0x10b981, false);
-        g.drawString(font, "Actions that give " + type.getDisplayName().toLowerCase() + " experience", leftPos + 46, topPos + 32, 0x9ca3af, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.how_to_xp.title").getString() + " - " + type.getDisplayName().toUpperCase(), leftPos + 46, topPos + 18, 0x10b981, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.how_to_xp.subtitle").getString(), leftPos + 46, topPos + 32, 0x9ca3af, false);
 
         // Close button
         ImageRenderer.renderScaledImage(g, BUTTON_CLOSE, leftPos + 372, topPos + 16, 14, 14);
@@ -92,13 +120,17 @@ public class JobHowToXPScreen extends Screen {
         // Level indicator
         ImageRenderer.renderScaledImage(g, PANEL_LEVEL_INDICATOR, leftPos + 8, topPos + 54, 384, 28);
         ImageRenderer.renderScaledImage(g, BADGE_LEVEL_MEDIUM, leftPos + 18, topPos + 60, 40, 16);
-        g.drawString(font, "LVL " + jobData.getLevel(), leftPos + 38 - font.width("LVL " + jobData.getLevel()) / 2, topPos + 67, 0x1a1a2e, false);
-        g.drawString(font, "Current Level: " + jobData.getLevel(), leftPos + 66, topPos + 67, 0xffffff, false);
-        g.drawString(font, "12 actions available", leftPos + 280, topPos + 67, 0x10b981, false);
+        String lvlText = String.format(Component.translatable("erinium_faction.jobs.badge.level").getString(), jobData.getLevel());
+        g.drawString(font, lvlText, leftPos + 38 - font.width(lvlText) / 2, topPos + 67, 0x1a1a2e, false);
+        String currentLevelText = String.format(Component.translatable("erinium_faction.jobs.detail.current_level").getString(), jobData.getLevel());
+        g.drawString(font, currentLevelText, leftPos + 66, topPos + 67, 0xffffff, false);
+
+        String availableText = availableCount + " action" + (availableCount != 1 ? "s" : "") + " available";
+        g.drawString(font, availableText, leftPos + 280, topPos + 67, 0x10b981, false);
 
         // Section header
         ImageRenderer.renderScaledImage(g, PANEL_SECTION_HEADER, leftPos + 8, topPos + 88, 384, 16);
-        g.drawString(font, "XP SOURCES", leftPos + 14, topPos + 95, 0x10b981, false);
+        g.drawString(font, Component.translatable("erinium_faction.jobs.how_to_xp.your_actions").getString(), leftPos + 14, topPos + 95, 0x10b981, false);
 
         // Scroll container
         ImageRenderer.renderScaledImage(g, PANEL_DARK, leftPos + 8, topPos + 110, 384, 148);
@@ -117,22 +149,22 @@ public class JobHowToXPScreen extends Screen {
 
         g.enableScissor(leftPos + 14, topPos + 116, leftPos + 386, topPos + 258);
 
-        for (int i = 0; i < EXAMPLE_ACTIONS.length; i++) {
+        for (int i = 0; i < xpEntries.size(); i++) {
             int yOffset = startY + (i * (itemHeight + spacing)) - scrollOffset;
 
             if (yOffset + itemHeight >= topPos + 116 && yOffset < topPos + 258) {
-                renderXPAction(g, EXAMPLE_ACTIONS[i], leftPos + 14, yOffset);
+                renderXPAction(g, xpEntries.get(i), leftPos + 14, yOffset);
             }
         }
 
         g.disableScissor();
     }
 
-    private void renderXPAction(GuiGraphics g, XPAction action, int x, int y) {
+    private void renderXPAction(GuiGraphics g, XpEarningEntry entry, int x, int y) {
         int playerLevel = jobData.getLevel();
-        boolean isAvailable = action.isAvailable(playerLevel);
-        boolean isLocked = action.minLevel > playerLevel;
-        boolean isExpired = !isAvailable && !isLocked && action.maxLevel > 0;
+        boolean isAvailable = entry.isAvailableAtLevel(playerLevel);
+        boolean isLocked = entry.getMinLevel() != -1 && entry.getMinLevel() > playerLevel;
+        boolean isExpired = !isAvailable && !isLocked && entry.getMaxLevel() > 0;
 
         // Card background
         if (isAvailable) {
@@ -141,44 +173,128 @@ public class JobHowToXPScreen extends Screen {
             ImageRenderer.renderScaledImageWithAlpha(g, LISTITEM_SMALL_DIMMED, x, y, 372, 28, 0.4f);
         }
 
-        // Icon placeholder
-        ImageRenderer.renderScaledImage(g, ICON_PLACEHOLDER_16, x + 6, y + 6, 16, 16);
-        g.drawString(font, action.icon, x + 14 - font.width(action.icon) / 2, y + 11, isAvailable ? 0x9ca3af : 0x6b7280, false);
+        // Icon - charger l'item depuis entry.getIconItem()
+        if (entry.getIconItem() != null && !entry.getIconItem().isEmpty()) {
+            try {
+                net.minecraft.world.item.ItemStack itemStack = new net.minecraft.world.item.ItemStack(
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                        net.minecraft.resources.ResourceLocation.parse(entry.getIconItem())
+                    )
+                );
+                g.renderItem(itemStack, x + 6, y + 6);
+            } catch (Exception e) {
+                // Si l'item n'existe pas, utiliser l'emoji par défaut
+                ImageRenderer.renderScaledImage(g, ICON_PLACEHOLDER_16, x + 6, y + 6, 16, 16);
+                String icon = getIconForAction(entry);
+                g.drawString(font, icon, x + 14 - font.width(icon) / 2, y + 11, isAvailable ? 0x9ca3af : 0x6b7280, false);
+            }
+        } else {
+            ImageRenderer.renderScaledImage(g, ICON_PLACEHOLDER_16, x + 6, y + 6, 16, 16);
+            String icon = getIconForAction(entry);
+            g.drawString(font, icon, x + 14 - font.width(icon) / 2, y + 11, isAvailable ? 0x9ca3af : 0x6b7280, false);
+        }
 
-        // Name
+        // Name - remonté de 2 pixels (y + 8 au lieu de y + 10) avec auto-scroll
         int nameColor = isAvailable ? 0xffffff : 0x6b7280;
-        g.drawString(font, action.name, x + 28, y + 10, nameColor, false);
+        String name = formatActionName(entry);
+        boolean itemHovered = lastMouseX >= x && lastMouseX <= x + 372 && lastMouseY >= y && lastMouseY <= y + 28;
+        TextHelper.drawAutoScrollingText(g, font, name, x + 28, y + 8, 190, nameColor, false, itemHovered, "action_name_" + entry.getActionType() + "_" + entry.getTargetId());
 
-        // Description
+        // Description - remonté de 2 pixels (y + 18 au lieu de y + 20)
         int descColor = isAvailable ? 0x9ca3af : (isLocked ? 0xef4444 : 0x9ca3af);
-        g.drawString(font, action.description, x + 28, y + 20, descColor, false);
+        String description = formatActionDescription(entry, playerLevel);
+        g.drawString(font, description, x + 28, y + 18, descColor, false);
 
         // Level badge
         int badgeX = x + 226;
         int badgeY = y + 8;
+        int badgeWidth = 50;
 
-        if (action.minLevel == -1) {
+        // Déterminer le texte du badge
+        String levelText;
+        ResourceLocation badgeTexture;
+
+        if (entry.getMinLevel() == -1 && entry.getMaxLevel() == -1) {
             // All Levels
-            ImageRenderer.renderScaledImage(g, BADGE_LEVEL_SMALL_PURPLE, badgeX, badgeY, 50, 12);
-            g.drawString(font, "All Levels", badgeX + 25 - font.width("All Levels") / 2, badgeY + 4, 0xffffff, false);
+            badgeTexture = BADGE_LEVEL_SMALL_PURPLE;
+            levelText = Component.translatable("erinium_faction.jobs.status.all_levels").getString();
         } else if (isLocked) {
-            ImageRenderer.renderScaledImage(g, BADGE_LEVEL_SMALL_RED, badgeX, badgeY, 50, 12);
-            String levelText = "Lvl " + action.minLevel + "+";
-            g.drawString(font, levelText, badgeX + 25 - font.width(levelText) / 2, badgeY + 4, 0xffffff, false);
+            badgeTexture = BADGE_LEVEL_SMALL_RED;
+            if (entry.getMaxLevel() > 0) {
+                levelText = entry.getMinLevel() + "-" + entry.getMaxLevel();
+            } else {
+                levelText = entry.getMinLevel() + "+";
+            }
         } else if (isExpired) {
-            ImageRenderer.renderScaledImage(g, BADGE_LEVEL_SMALL_GRAY, badgeX, badgeY, 50, 12);
-            String levelText = "Lvl " + action.minLevel + "-" + action.maxLevel;
-            g.drawString(font, levelText, badgeX + 25 - font.width(levelText) / 2, badgeY + 4, 0xffffff, false);
+            badgeTexture = BADGE_LEVEL_SMALL_GRAY;
+            levelText = entry.getMinLevel() + "-" + entry.getMaxLevel();
         } else {
-            ImageRenderer.renderScaledImage(g, BADGE_LEVEL_SMALL_GREEN, badgeX, badgeY, 50, 12);
-            String levelText = action.maxLevel > 0 ? "Lvl " + action.minLevel + "-" + action.maxLevel : "Lvl " + action.minLevel + "+";
-            g.drawString(font, levelText, badgeX + 25 - font.width(levelText) / 2, badgeY + 4, 0xffffff, false);
+            badgeTexture = BADGE_LEVEL_SMALL_GREEN;
+            if (entry.getMaxLevel() > 0) {
+                levelText = entry.getMinLevel() + "-" + entry.getMaxLevel();
+            } else {
+                levelText = entry.getMinLevel() + "+";
+            }
         }
 
-        // XP value
-        String xpText = "+" + action.xpValue + " XP";
+        ImageRenderer.renderScaledImage(g, badgeTexture, badgeX, badgeY, badgeWidth, 12);
+
+        // Utiliser auto-scroll si le texte dépasse
+        boolean badgeHovered = lastMouseX >= badgeX && lastMouseX <= badgeX + badgeWidth && lastMouseY >= badgeY && lastMouseY <= badgeY + 12;
+        TextHelper.drawAutoScrollingText(g, font, levelText, badgeX + badgeWidth / 2 - Math.min(font.width(levelText), badgeWidth - 4) / 2, badgeY + 4, badgeWidth - 4, 0xffffff, false, badgeHovered, "badge_level_" + entry.getTargetId());
+
+        // XP value avec traduction
+        String xpText = String.format(Component.translatable("erinium_faction.jobs.reward.xp").getString(), entry.getXpEarned());
         int xpColor = isAvailable ? 0xfbbf24 : 0x6b7280;
         g.drawString(font, xpText, x + 364 - font.width(xpText), y + 15, xpColor, false);
+    }
+
+    /**
+     * Obtient une icône emoji pour l'action
+     */
+    private String getIconForAction(XpEarningEntry entry) {
+        return switch (entry.getActionType()) {
+            case BREAK -> "⛏";
+            case PLACE -> "🧱";
+            case CRAFT -> "🔨";
+            case SMELT -> "🔥";
+            case KILL -> "⚔";
+            case FISHING -> "🎣";
+            case DRINK -> "🥤";
+            case EAT -> "🍖";
+            case USE -> "✋";
+            case OTHER -> "📦";
+            case CUSTOM -> "⭐";
+        };
+    }
+
+    /**
+     * Formate le nom de l'action
+     */
+    private String formatActionName(XpEarningEntry entry) {
+        String[] parts = entry.getTargetId().split(":");
+        String itemName = parts.length > 1 ? parts[1] : entry.getTargetId();
+        itemName = itemName.replace("_", " ");
+        return entry.getActionType().name() + " " + capitalize(itemName);
+    }
+
+    /**
+     * Formate la description de l'action
+     */
+    private String formatActionDescription(XpEarningEntry entry, int playerLevel) {
+        if (entry.getMinLevel() != -1 && playerLevel < entry.getMinLevel()) {
+            int levelsToGo = entry.getMinLevel() - playerLevel;
+            return "Requires Level " + entry.getMinLevel() + " • " + levelsToGo + " level" + (levelsToGo != 1 ? "s" : "") + " to go";
+        }
+        if (entry.getMaxLevel() != -1 && playerLevel > entry.getMaxLevel()) {
+            return "No longer available (max level " + entry.getMaxLevel() + ")";
+        }
+        return entry.getActionType().name().toLowerCase() + " " + entry.getTargetId();
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     private void renderScrollbar(GuiGraphics g) {
@@ -187,7 +303,12 @@ public class JobHowToXPScreen extends Screen {
 
         ImageRenderer.renderScaledImage(g, SCROLLBAR_TRACK, scrollbarX, scrollbarY, 4, 142);
 
-        int totalHeight = EXAMPLE_ACTIONS.length * 32;
+        // Ne pas afficher le thumb si la liste est vide
+        if (xpEntries.isEmpty()) {
+            return;
+        }
+
+        int totalHeight = xpEntries.size() * 32;
         int visibleHeight = 142;
         int thumbHeight = Math.max(20, (visibleHeight * visibleHeight) / totalHeight);
         int maxScroll = Math.max(0, totalHeight - visibleHeight);
@@ -200,7 +321,7 @@ public class JobHowToXPScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        int totalHeight = EXAMPLE_ACTIONS.length * 32;
+        int totalHeight = xpEntries.size() * 32;
         int visibleHeight = 142;
         int maxScroll = Math.max(0, totalHeight - visibleHeight);
 
@@ -234,33 +355,5 @@ public class JobHowToXPScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
-    }
-
-    // Classe interne pour les actions XP
-    private static class XPAction {
-        String icon;
-        String name;
-        String description;
-        int minLevel; // -1 pour "All Levels"
-        int maxLevel; // -1 pour illimité
-        int xpValue;
-        boolean available;
-
-        XPAction(String icon, String name, String description, int minLevel, int maxLevel, int xpValue, boolean available) {
-            this.icon = icon;
-            this.name = name;
-            this.description = description;
-            this.minLevel = minLevel;
-            this.maxLevel = maxLevel;
-            this.xpValue = xpValue;
-            this.available = available;
-        }
-
-        boolean isAvailable(int playerLevel) {
-            if (minLevel == -1) return true; // All levels
-            if (minLevel > playerLevel) return false; // Trop bas
-            if (maxLevel > 0 && playerLevel > maxLevel) return false; // Trop haut
-            return available;
-        }
     }
 }
