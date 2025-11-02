@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "group": "titanium_ingot",
+  "ingredient": { "tag": "forge:ores/titanium" },
+  "result": "erinium_faction:titanium_ingot",
+  "experience": 0.7,
+  "cookingtime": 100
+}
+

@@ -1,7 +1,9 @@
 package fr.eriniumgroup.erinium_faction.init;
 
 import fr.eriniumgroup.erinium_faction.common.block.DeepslateSilverOreBlock;
+import fr.eriniumgroup.erinium_faction.common.block.DeepslateTitaniumOreBlock;
 import fr.eriniumgroup.erinium_faction.common.block.SilverOreBlock;
+import fr.eriniumgroup.erinium_faction.common.block.TitaniumOreBlock;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
@@ -16,9 +18,15 @@ public class EFBlocks {
     public static final DeferredHolder<Block, Block> SILVER_ORE = REGISTER.register("silver_ore", SilverOreBlock::new);
     public static final DeferredHolder<Block, Block> DEEPSLATE_SILVER_ORE = REGISTER.register("deepslate_silver_ore", DeepslateSilverOreBlock::new);
 
+    public static final DeferredHolder<Block, Block> TITANIUM_ORE = REGISTER.register("titanium_ore", TitaniumOreBlock::new);
+    public static final DeferredHolder<Block, Block> DEEPSLATE_TITANIUM_ORE = REGISTER.register("deepslate_titanium_ore", DeepslateTitaniumOreBlock::new);
+
     public static void registerBlockItems(DeferredRegister<Item> itemRegister) {
         itemRegister.register("silver_ore", () -> new BlockItem(SILVER_ORE.get(), new Item.Properties()));
         itemRegister.register("deepslate_silver_ore", () -> new BlockItem(DEEPSLATE_SILVER_ORE.get(), new Item.Properties()));
+
+        itemRegister.register("titanium_ore", () -> new BlockItem(TITANIUM_ORE.get(), new Item.Properties()));
+        itemRegister.register("deepslate_titanium_ore", () -> new BlockItem(DEEPSLATE_TITANIUM_ORE.get(), new Item.Properties()));
     }
 
     private EFBlocks() {
