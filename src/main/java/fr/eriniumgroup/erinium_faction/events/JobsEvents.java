@@ -1,12 +1,12 @@
 package fr.eriniumgroup.erinium_faction.events;
 
-import fr.eriniumgroup.erinium_faction.features.jobs.type.JobType;
-import fr.eriniumgroup.erinium_faction.features.jobs.JobsManager;
-import fr.eriniumgroup.erinium_faction.features.jobs.type.ActionType;
 import fr.eriniumgroup.erinium_faction.common.config.JobConfig;
 import fr.eriniumgroup.erinium_faction.common.config.JobsConfigManager;
-import fr.eriniumgroup.erinium_faction.features.jobs.type.XpEarningEntry;
 import fr.eriniumgroup.erinium_faction.common.network.packets.JobsPacketHandler;
+import fr.eriniumgroup.erinium_faction.features.jobs.JobsManager;
+import fr.eriniumgroup.erinium_faction.features.jobs.type.ActionType;
+import fr.eriniumgroup.erinium_faction.features.jobs.type.JobType;
+import fr.eriniumgroup.erinium_faction.features.jobs.type.XpEarningEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -27,9 +27,9 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.Map;
 
 /**
  * Gestionnaire d'événements pour le système de métiers
@@ -113,9 +113,7 @@ public class JobsEvents {
 
             // Chercher une entrée XP correspondante
             for (XpEarningEntry entry : config.getXpEarning()) {
-                if (entry.getActionType() == ActionType.BREAK &&
-                    entry.getTargetId().equals(blockId) &&
-                    isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
+                if (entry.getActionType() == ActionType.BREAK && entry.getTargetId().equals(blockId) && isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
 
                     // Ajouter l'XP pour ce métier avec description
                     JobsManager.addJobExperience(player, jobType, entry.getXpEarned(), "Mined " + blockName);
@@ -151,9 +149,7 @@ public class JobsEvents {
             int playerLevel = JobsManager.getJobLevel(player, jobType);
 
             for (XpEarningEntry entry : config.getXpEarning()) {
-                if (entry.getActionType() == ActionType.PLACE &&
-                    entry.getTargetId().equals(blockId) &&
-                    isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
+                if (entry.getActionType() == ActionType.PLACE && entry.getTargetId().equals(blockId) && isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
 
                     JobsManager.addJobExperience(player, jobType, entry.getXpEarned(), "Placed " + blockName);
                 }
@@ -178,9 +174,7 @@ public class JobsEvents {
             int playerLevel = JobsManager.getJobLevel(player, jobType);
 
             for (XpEarningEntry entry : config.getXpEarning()) {
-                if (entry.getActionType() == ActionType.KILL &&
-                    entry.getTargetId().equals(entityId) &&
-                    isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
+                if (entry.getActionType() == ActionType.KILL && entry.getTargetId().equals(entityId) && isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
 
                     JobsManager.addJobExperience(player, jobType, entry.getXpEarned(), "Killed " + entityName);
                 }
@@ -206,9 +200,7 @@ public class JobsEvents {
                 int playerLevel = JobsManager.getJobLevel(player, jobType);
 
                 for (XpEarningEntry entry : config.getXpEarning()) {
-                    if (entry.getActionType() == ActionType.FISHING &&
-                        entry.getTargetId().equals(itemId) &&
-                        isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
+                    if (entry.getActionType() == ActionType.FISHING && entry.getTargetId().equals(itemId) && isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
 
                         JobsManager.addJobExperience(player, jobType, entry.getXpEarned() * stack.getCount(), "Caught " + itemName);
                     }
@@ -234,9 +226,7 @@ public class JobsEvents {
             int playerLevel = JobsManager.getJobLevel(player, jobType);
 
             for (XpEarningEntry entry : config.getXpEarning()) {
-                if (entry.getActionType() == ActionType.CRAFT &&
-                    entry.getTargetId().equals(itemId) &&
-                    isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
+                if (entry.getActionType() == ActionType.CRAFT && entry.getTargetId().equals(itemId) && isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
 
                     JobsManager.addJobExperience(player, jobType, entry.getXpEarned() * crafted.getCount(), "Crafted " + itemName);
                 }
@@ -261,9 +251,7 @@ public class JobsEvents {
             int playerLevel = JobsManager.getJobLevel(player, jobType);
 
             for (XpEarningEntry entry : config.getXpEarning()) {
-                if (entry.getActionType() == ActionType.SMELT &&
-                    entry.getTargetId().equals(itemId) &&
-                    isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
+                if (entry.getActionType() == ActionType.SMELT && entry.getTargetId().equals(itemId) && isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
 
                     JobsManager.addJobExperience(player, jobType, entry.getXpEarned() * smelted.getCount(), "Smelted " + itemName);
                 }
@@ -297,10 +285,7 @@ public class JobsEvents {
 
             for (XpEarningEntry entry : config.getXpEarning()) {
                 // Vérifier si l'item correspond à EAT, DRINK, USE ou OTHER
-                if ((entry.getActionType() == actionType ||
-                     entry.getActionType() == ActionType.OTHER) &&
-                    entry.getTargetId().equals(itemId) &&
-                    isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
+                if ((entry.getActionType() == actionType || entry.getActionType() == ActionType.OTHER) && entry.getTargetId().equals(itemId) && isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
 
                     JobsManager.addJobExperience(player, jobType, entry.getXpEarned(), actionVerb + " " + itemName);
                 }
@@ -318,9 +303,7 @@ public class JobsEvents {
         ItemStack thrownItem = event.getItemStack();
 
         // Vérifier si c'est une bouteille d'XP ou une potion splash
-        if (thrownItem.getItem() == Items.EXPERIENCE_BOTTLE ||
-            thrownItem.getItem().toString().contains("splash_potion") ||
-            thrownItem.getItem().toString().contains("lingering_potion")) {
+        if (thrownItem.getItem() == Items.EXPERIENCE_BOTTLE || thrownItem.getItem().toString().contains("splash_potion") || thrownItem.getItem().toString().contains("lingering_potion")) {
 
             String itemId = BuiltInRegistries.ITEM.getKey(thrownItem.getItem()).toString();
             String itemName = thrownItem.getHoverName().getString();
@@ -331,9 +314,7 @@ public class JobsEvents {
                 int playerLevel = JobsManager.getJobLevel(player, jobType);
 
                 for (XpEarningEntry entry : config.getXpEarning()) {
-                    if (entry.getActionType() == ActionType.THROW &&
-                        entry.getTargetId().equals(itemId) &&
-                        isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
+                    if (entry.getActionType() == ActionType.THROW && entry.getTargetId().equals(itemId) && isLevelInRange(playerLevel, entry.getMinLevel(), entry.getMaxLevel())) {
 
                         JobsManager.addJobExperience(player, jobType, entry.getXpEarned(), "Threw " + itemName);
                     }
@@ -350,9 +331,7 @@ public class JobsEvents {
         if (stack.getFoodProperties(null) != null) {
             // Dans Minecraft, les potions utilisent DRINK, les aliments utilisent EAT
             String itemName = stack.getItem().toString();
-            if (itemName.contains("potion") ||
-                itemName.contains("bottle") ||
-                itemName.contains("milk")) {
+            if (itemName.contains("potion") || itemName.contains("bottle") || itemName.contains("milk")) {
                 return ActionType.DRINK;
             }
             return ActionType.EAT;
@@ -364,9 +343,10 @@ public class JobsEvents {
 
     /**
      * Vérifie si le niveau du joueur est dans la plage requise
+     *
      * @param playerLevel Niveau actuel du joueur
-     * @param minLevel Niveau minimum (-1 = pas de minimum)
-     * @param maxLevel Niveau maximum (-1 = pas de maximum)
+     * @param minLevel    Niveau minimum (-1 = pas de minimum)
+     * @param maxLevel    Niveau maximum (-1 = pas de maximum)
      * @return true si le niveau est dans la plage
      */
     private static boolean isLevelInRange(int playerLevel, int minLevel, int maxLevel) {

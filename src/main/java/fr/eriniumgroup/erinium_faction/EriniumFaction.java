@@ -49,7 +49,7 @@ public class EriniumFaction {
 
         EFC.log.info("§aInitializing §9" + EFC.MOD_NAME + " §7- §ePvP Faction Mod");
         EFC.log.info("§eVersion: §a" + EFC.MOD_VERSION);
-        EFC.log.info("§eAuthors: §a" + EFC.AUTHOR);
+        EFC.log.info("§eAuthors: §a" + EFC.AUTHORS);
         EFC.log.info("§eNeoForge Version: §a" + EFC.NEOFORGE_VERSION);
         EFC.log.info("§eMod ID: §a" + MODID);
 

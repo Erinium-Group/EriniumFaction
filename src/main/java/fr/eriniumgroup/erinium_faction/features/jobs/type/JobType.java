@@ -3,6 +3,7 @@ package fr.eriniumgroup.erinium_faction.features.jobs.type;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Enumération des types de métiers disponibles
@@ -51,7 +52,7 @@ public enum JobType implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NotNull String getSerializedName() {
         return name().toLowerCase();
     }
 

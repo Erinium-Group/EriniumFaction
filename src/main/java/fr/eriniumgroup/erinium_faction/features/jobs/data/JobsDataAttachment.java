@@ -11,13 +11,7 @@ import java.util.function.Supplier;
  * Enregistrement des attachments pour le système de métiers des joueurs
  */
 public class JobsDataAttachment {
-    public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
-        DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, EriniumFaction.MODID);
+    public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, EriniumFaction.MODID);
 
-    public static final Supplier<AttachmentType<JobsData>> JOBS_DATA = ATTACHMENTS.register(
-        "jobs_data",
-        () -> AttachmentType.<JobsData>builder(JobsData::new)
-            .serialize(new JobsData.JobsDataCodec())
-            .build()
-    );
+    public static final Supplier<AttachmentType<JobsData>> JOBS_DATA = ATTACHMENTS.register("jobs_data", () -> AttachmentType.<JobsData>builder(JobsData::new).serialize(new JobsData.JobsDataCodec()).build());
 }

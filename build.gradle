@@ -17,6 +17,7 @@ plugins {
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.sftp.SFTPClient
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier
+import org.gradle.util.GradleVersion
 
 
 version = mod_version
@@ -180,20 +181,114 @@ idea {
     }
 }
 
-def generatedDir = "$buildDir/generated/sources/buildInfo/java"
+// Remplacer la définition GString par une String résolue à la configuration
+// def generatedDir = "$buildDir/generated/sources/buildInfo/java"
+def generatedDirPath = project.layout.buildDirectory.dir("generated/sources/buildInfo/java").get().asFile.absolutePath
+
+tasks.register('generateBuildInfo') {
+    // outputs.dir(generatedDir)
+    outputs.dir(generatedDirPath)
+    inputs.properties([
+            mod_id           : project.findProperty('mod_id') ?: '',
+            mod_name         : project.findProperty('mod_name') ?: '',
+            mod_version      : project.findProperty('mod_version') ?: '',
+            mod_authors      : project.findProperty('mod_authors') ?: '',
+            minecraft_version: project.findProperty('minecraft_version') ?: '',
+            neo_version      : project.findProperty('neo_version') ?: '',
+            mapping_channel  : (project.findProperty('mapping_channel') ?: 'parchment'),
+            mapping_version  : (project.findProperty('mapping_version') ?: project.findProperty('parchment_mappings_version') ?: '')
+    ])
+
+    // Capture des valeurs à la configuration (pas pendant l’exécution)
+    def modIdVal = (project.findProperty('mod_id') ?: '') as String
+    def modNameVal = (project.findProperty('mod_name') ?: '') as String
+    def modVersionVal = (project.findProperty('mod_version') ?: '') as String
+    def modAuthorsVal = (project.findProperty('mod_authors') ?: '') as String
+    def mcVersionVal = (project.findProperty('minecraft_version') ?: '') as String
+    def neoVersionVal = (project.findProperty('neo_version') ?: '') as String
+    def mappingChannelVal = (project.findProperty('mapping_channel') ?: 'parchment') as String
+    def mappingVersionVal = (project.findProperty('mapping_version') ?: project.findProperty('parchment_mappings_version') ?: '') as String
+    def rootDirVal = project.rootDir
+
+    doLast {
+        def pkg = 'fr.eriniumgroup.erinium_faction'
+        // def outDir = new File((String)generatedDir, pkg.replace('.', '/'))
+        def outDir = new File(generatedDirPath, pkg.replace('.', '/'))
+        outDir.mkdirs()
+
+        def mappings  = "${mappingChannelVal}-${mappingVersionVal}"
+        def buildTime = new Date().format("yyyy-MM-dd HH:mm:ssZ")
+
+        // Version de Gradle sans référence au script
+        String gradleVer = 'unknown'
+        try { gradleVer = GradleVersion.current().version } catch (Throwable ignored) {}
+
+        // Lecture Git via ProcessBuilder en utilisant rootDirVal capturé
+        def runGit = { List<String> args ->
+            try {
+                def pb = new ProcessBuilder(args)
+                        .directory(rootDirVal)
+                        .redirectErrorStream(true)
+                        .start()
+                pb.waitFor()
+                def out = pb.getInputStream().getText('UTF-8').trim()
+                return out ?: 'unknown'
+            } catch (Exception ignored) { return 'unknown' }
+        }
+        def gitBranch = runGit(['git','rev-parse','--abbrev-ref','HEAD'])
+        def gitCommit = runGit(['git','rev-parse','--short','HEAD'])
+
+        def f = new File(outDir, 'BuildInfo.java')
+        f.setText("""package ${pkg};
+
+public final class BuildInfo {
+    public static final String MOD_ID = "${modIdVal}";
+    public static final String MOD_NAME = "${modNameVal}";
+    public static final String VERSION = "${modVersionVal}";
+    public static final String AUTHORS = "${modAuthorsVal}";
+    public static final String MINECRAFT = "${mcVersionVal}";
+    // On conserve le nom NEOFORGE pour compatibilité éventuelle, mais la valeur provient de neo_version
+    public static final String NEOFORGE = "${neoVersionVal}";
+    public static final String MAPPINGS = "${mappings}";
+    public static final String BUILD_TIME = "${buildTime}";
+    public static final String GIT_BRANCH = "${gitBranch}";
+    public static final String GIT_COMMIT = "${gitCommit}";
+    public static final String GRADLE = "${gradleVer}";
+    private BuildInfo() {}
+}
+"""
+        , 'UTF-8')
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            // srcDir generatedDir
+            srcDir generatedDirPath
+        }
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn tasks.named('generateBuildInfo')
+}
 
 tasks.register('checkUpdateJson') {
     group = 'verification'
     description = 'Verifies that src/main/resources/update.json matches gradle.properties (mod_version, minecraft_version) and promos.'
+
+    // Capturer le chemin du fichier à la configuration pour éviter project.file() en exécution
+    def updateJsonFile = new File(project.projectDir, 'src/main/resources/update.json')
+
     doLast {
         def modVer = project.findProperty('mod_version')
         def mcVer = project.findProperty('minecraft_version')
         if (!modVer || !mcVer) {
             throw new GradleException("Missing mod_version or minecraft_version in gradle.properties")
         }
-        def f = file('src/main/resources/update.json')
-        if (!f.exists()) throw new GradleException("update.json not found at src/main/resources/update.json")
-        def json = new groovy.json.JsonSlurper().parse(f)
+        if (!updateJsonFile.exists()) throw new GradleException("update.json not found at ${updateJsonFile}")
+        def json = new groovy.json.JsonSlurper().parse(updateJsonFile)
         def allow = (project.findProperty('allowMismatch') ?: 'false').toString().toBoolean()
 
         // Check MC bucket exists
@@ -424,3 +519,4 @@ tasks.register('injectJavadoc') {
         println "injectJavadoc: ${filesChanged} file(s) updated."
     }
 }
+

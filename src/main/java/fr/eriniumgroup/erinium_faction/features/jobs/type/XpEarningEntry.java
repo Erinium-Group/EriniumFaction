@@ -104,13 +104,6 @@ public class XpEarningEntry {
 
     @Override
     public String toString() {
-        return "XpEarningEntry{" +
-                "actionType=" + actionType +
-                ", targetId='" + targetId + '\'' +
-                ", minLevel=" + minLevel +
-                ", maxLevel=" + maxLevel +
-                ", xpEarned=" + xpEarned +
-                ", iconItem='" + iconItem + '\'' +
-                '}';
+        return "XpEarningEntry{" + "actionType=" + actionType + ", targetId='" + targetId + '\'' + ", minLevel=" + minLevel + ", maxLevel=" + maxLevel + ", xpEarned=" + xpEarned + ", iconItem='" + iconItem + '\'' + '}';
     }
 }

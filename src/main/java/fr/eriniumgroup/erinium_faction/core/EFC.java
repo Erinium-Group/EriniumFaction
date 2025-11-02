@@ -17,7 +17,7 @@ public class EFC {
     }
 
     public static final String MOD_VERSION = loadBuildInfo("VERSION", "unknown");
-    public static final String AUTHOR = loadBuildInfo("AUTHORS", "unknown");
+    public static final String AUTHORS = loadBuildInfo("AUTHORS", "unknown");
     public static final String MOD_NAME = loadBuildInfo("MOD_NAME", "Erinium Faction");
     public static final String MOD_ID = loadBuildInfo("MOD_ID", "erinium_faction"); // doit matcher MODID
 

@@ -45,9 +45,9 @@ public class JobsConfigManager {
                 loadConfig(jobType);
             }
 
-            EFC.log.info("Loaded {} job configurations", CONFIGS.size());
+            EFC.log.info("§3Jobs§6/§eConfig","Loaded {} job configurations", CONFIGS.size());
         } catch (IOException e) {
-            EFC.log.error("Failed to initialize jobs config manager", e);
+            EFC.log.error("§3Jobs§6/§eConfig","Failed to initialize jobs config manager", e);
         }
     }
 
@@ -62,15 +62,15 @@ public class JobsConfigManager {
             JobConfig defaultConfig = createDefaultConfig(jobType);
             saveConfig(jobType, defaultConfig);
             CONFIGS.put(jobType, defaultConfig);
-            EFC.log.info("Created default config for job: {}", jobType.name());
+            EFC.log.info("§3Jobs§6/§eConfig","Created default config for job: {}", jobType.name());
         } else {
             // Charger depuis le fichier
             try (FileReader reader = new FileReader(configFile)) {
                 JobConfig config = GSON.fromJson(reader, JobConfig.class);
                 CONFIGS.put(jobType, config);
-                EFC.log.info("Loaded config for job: {}", jobType.name());
+                EFC.log.info("§3Jobs§6/§eConfig","Loaded config for job: {}", jobType.name());
             } catch (IOException e) {
-                EFC.log.error("Failed to load config for job: {}", jobType.name(), e);
+                EFC.log.error("§3Jobs§6/§eConfig","Failed to load config for job: {}", jobType.name(), e);
                 // Utiliser une config par défaut en cas d'erreur
                 CONFIGS.put(jobType, createDefaultConfig(jobType));
             }
@@ -86,7 +86,7 @@ public class JobsConfigManager {
         try (FileWriter writer = new FileWriter(configFile)) {
             GSON.toJson(config, writer);
         } catch (IOException e) {
-            EFC.log.error("Failed to save config for job: {}", jobType.name(), e);
+            EFC.log.error("§3Jobs§6/§eConfig","Failed to save config for job: {}", jobType.name(), e);
         }
     }
 

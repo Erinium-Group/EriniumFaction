@@ -86,12 +86,6 @@ public class UnlockingEntry {
 
     @Override
     public String toString() {
-        return "UnlockingEntry{" +
-                "type=" + type +
-                ", targetId='" + targetId + '\'' +
-                ", level=" + level +
-                ", displayName='" + displayName + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "UnlockingEntry{" + "type=" + type + ", targetId='" + targetId + '\'' + ", level=" + level + ", displayName='" + displayName + '\'' + ", description='" + description + '\'' + '}';
     }
 }

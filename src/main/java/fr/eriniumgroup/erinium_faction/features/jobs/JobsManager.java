@@ -1,8 +1,8 @@
 package fr.eriniumgroup.erinium_faction.features.jobs;
 
-import fr.eriniumgroup.erinium_faction.common.network.packets.ShowJobToastPacket;
 import fr.eriniumgroup.erinium_faction.common.network.packets.JobsClientData;
 import fr.eriniumgroup.erinium_faction.common.network.packets.JobsPacketHandler;
+import fr.eriniumgroup.erinium_faction.common.network.packets.ShowJobToastPacket;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsData;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
 import fr.eriniumgroup.erinium_faction.features.jobs.type.JobType;
@@ -20,6 +20,7 @@ public class JobsManager {
 
     /**
      * Obtient les données de métiers d'un joueur (SERVEUR UNIQUEMENT)
+     *
      * @param player Le joueur (doit être ServerPlayer)
      * @return Les données de métiers
      */
@@ -29,6 +30,7 @@ public class JobsManager {
 
     /**
      * Obtient les données de métiers du joueur local (CLIENT UNIQUEMENT)
+     *
      * @return Les données de métiers stockées côté client
      */
     public static JobsData getClientJobsData() {
@@ -37,6 +39,7 @@ public class JobsManager {
 
     /**
      * Obtient les données de métiers selon le contexte (serveur ou client)
+     *
      * @param player Le joueur
      * @return Les données de métiers
      */
@@ -84,6 +87,7 @@ public class JobsManager {
      * Ajoute de l'XP à un métier (SERVEUR UNIQUEMENT)
      * Gère automatiquement les level ups
      * Envoie une notification toast au client
+     *
      * @param actionDescription Description de l'action effectuée (pour le toast)
      * @return Le nombre de niveaux gagnés
      */
@@ -107,26 +111,10 @@ public class JobsManager {
             }
 
             // Level up toast
-            PacketDistributor.sendToPlayer(player, new ShowJobToastPacket(
-                jobType,
-                newLevel,
-                0,
-                actionDescription,
-                currentXp,
-                xpToNext,
-                true
-            ));
+            PacketDistributor.sendToPlayer(player, new ShowJobToastPacket(jobType, newLevel, 0, actionDescription, currentXp, xpToNext, true));
         } else {
             // XP gain toast
-            PacketDistributor.sendToPlayer(player, new ShowJobToastPacket(
-                jobType,
-                newLevel,
-                amount,
-                actionDescription,
-                currentXp,
-                xpToNext,
-                false
-            ));
+            PacketDistributor.sendToPlayer(player, new ShowJobToastPacket(jobType, newLevel, amount, actionDescription, currentXp, xpToNext, false));
         }
 
         return levelsGained;
@@ -134,6 +122,7 @@ public class JobsManager {
 
     /**
      * Ajoute de l'XP à un métier sans description (pour compatibilité)
+     *
      * @deprecated Utilisez {@link #addJobExperience(ServerPlayer, JobType, int, String)} à la place
      */
     @Deprecated
