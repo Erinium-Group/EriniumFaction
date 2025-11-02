@@ -1,11 +1,15 @@
 package fr.eriniumgroup.erinium_faction.jobs;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
+
+import java.util.function.IntFunction;
 
 /**
  * Enumération des types de métiers disponibles
  */
-public enum JobType {
+public enum JobType implements StringRepresentable {
     MINER(0xfbbf24, "⛏"),
     LUMBERJACK(0x8b4513, "🪓"),
     HUNTER(0xef4444, "🏹"),
@@ -46,5 +50,20 @@ public enum JobType {
             case FARMER -> "green";
             case WIZARD -> "purple";
         };
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase();
+    }
+
+    // Codec pour la serialization réseau
+    public static final Codec<JobType> CODEC = StringRepresentable.fromEnum(JobType::values);
+
+    public static JobType byId(int id) {
+        if (id < 0 || id >= values().length) {
+            return MINER; // Valeur par défaut
+        }
+        return values()[id];
     }
 }

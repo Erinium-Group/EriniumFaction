@@ -263,6 +263,7 @@ public class JobHowToXPScreen extends Screen {
             case DRINK -> "🥤";
             case EAT -> "🍖";
             case USE -> "✋";
+            case THROW -> "🎯";
             case OTHER -> "📦";
             case CUSTOM -> "⭐";
         };

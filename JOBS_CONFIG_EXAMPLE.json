@@ -1,0 +1,90 @@
+{
+  "jobType": "MINER",
+  "xpEarning": [
+    {
+      "actionType": "BREAK",
+      "targetId": "minecraft:stone",
+      "minLevel": -1,
+      "maxLevel": -1,
+      "xpEarned": 5,
+      "iconItem": "minecraft:stone"
+    },
+    {
+      "actionType": "BREAK",
+      "targetId": "minecraft:coal_ore",
+      "minLevel": -1,
+      "maxLevel": -1,
+      "xpEarned": 15,
+      "iconItem": "minecraft:coal_ore"
+    },
+    {
+      "actionType": "BREAK",
+      "targetId": "minecraft:iron_ore",
+      "minLevel": 5,
+      "maxLevel": -1,
+      "xpEarned": 30,
+      "iconItem": "minecraft:iron_ore"
+    },
+    {
+      "actionType": "BREAK",
+      "targetId": "minecraft:diamond_ore",
+      "minLevel": 10,
+      "maxLevel": -1,
+      "xpEarned": 100,
+      "iconItem": "minecraft:diamond_ore"
+    },
+    {
+      "actionType": "BREAK",
+      "targetId": "minecraft:deepslate_diamond_ore",
+      "minLevel": 10,
+      "maxLevel": -1,
+      "xpEarned": 100,
+      "iconItem": "minecraft:deepslate_diamond_ore"
+    },
+    {
+      "actionType": "BREAK",
+      "targetId": "minecraft:ancient_debris",
+      "minLevel": 30,
+      "maxLevel": -1,
+      "xpEarned": 500,
+      "iconItem": "minecraft:ancient_debris"
+    }
+  ],
+  "unlocking": [
+    {
+      "type": "ITEM",
+      "targetId": "minecraft:iron_pickaxe",
+      "level": 5,
+      "displayName": "Iron Pickaxe",
+      "description": "Unlock iron tier mining tools"
+    },
+    {
+      "type": "ITEM",
+      "targetId": "minecraft:diamond_pickaxe",
+      "level": 15,
+      "displayName": "Diamond Pickaxe",
+      "description": "Unlock diamond tier mining tools"
+    },
+    {
+      "type": "ITEM",
+      "targetId": "minecraft:netherite_pickaxe",
+      "level": 30,
+      "displayName": "Netherite Pickaxe",
+      "description": "Unlock netherite tier mining tools"
+    },
+    {
+      "type": "DIMENSION",
+      "targetId": "minecraft:the_nether",
+      "level": 20,
+      "displayName": "The Nether",
+      "description": "Unlock access to the Nether dimension"
+    },
+    {
+      "type": "CUSTOM",
+      "targetId": "miner_fortune_boost",
+      "level": 50,
+      "displayName": "Fortune Boost",
+      "description": "+10% chance to get extra drops"
+    }
+  ]
+}

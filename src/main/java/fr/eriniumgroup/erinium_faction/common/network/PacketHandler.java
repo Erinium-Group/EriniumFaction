@@ -1,7 +1,10 @@
 package fr.eriniumgroup.erinium_faction.common.network;
 
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables.PlayerVariablesSyncMessage;
+import fr.eriniumgroup.erinium_faction.common.network.packets.JobsPacketHandler;
 import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
+import fr.eriniumgroup.erinium_faction.common.network.packets.SyncJobsConfigPacket;
+import fr.eriniumgroup.erinium_faction.common.network.packets.SyncJobsDataPacket;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.features.block_hp.BlockHpSyncMessage;
 import fr.eriniumgroup.erinium_faction.gui.widgets.FactionGuiNetwork;
@@ -71,8 +74,9 @@ public class PacketHandler {
         registrar.playToClient(fr.eriniumgroup.erinium_faction.player.level.network.SyncResetTokenPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.SyncResetTokenPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleSyncResetToken);
 
         // Paquets système de métiers
-        registrar.playToClient(fr.eriniumgroup.erinium_faction.jobs.network.SyncJobsDataPacket.TYPE, fr.eriniumgroup.erinium_faction.jobs.network.SyncJobsDataPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.jobs.network.JobsPacketHandler::handleSyncJobsData);
-        registrar.playToClient(fr.eriniumgroup.erinium_faction.jobs.network.SyncJobsConfigPacket.TYPE, fr.eriniumgroup.erinium_faction.jobs.network.SyncJobsConfigPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.jobs.network.JobsPacketHandler::handleSyncJobsConfig);
+        registrar.playToClient(SyncJobsDataPacket.TYPE, SyncJobsDataPacket.STREAM_CODEC, JobsPacketHandler::handleSyncJobsData);
+        registrar.playToClient(SyncJobsConfigPacket.TYPE, SyncJobsConfigPacket.STREAM_CODEC, JobsPacketHandler::handleSyncJobsConfig);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.ShowJobToastPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ShowJobToastPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ShowJobToastPacket::handle);
 
         // Paquets système bancaire
         registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.BankDepositMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.BankDepositMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.BankDepositMessage::handleData);

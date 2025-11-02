@@ -413,5 +413,9 @@
   "erinium_faction.jobs.status.requires_level": "Requires Level %s",
   "erinium_faction.jobs.status.levels_to_go": "%s level%s to go",
   "erinium_faction.jobs.status.all_levels": "All Levels",
-  "erinium_faction.jobs.reward.xp": "+%s XP"
+  "erinium_faction.jobs.reward.xp": "+%s XP",
+  "erinium_faction.jobs.toast.xp_gained": "+%s XP",
+  "erinium_faction.jobs.toast.levelup": "Reached Level %s",
+  "erinium_faction.jobs.toast.levelup_title": "LEVEL UP!",
+  "erinium_faction.jobs.toast.max_xp": "MAX XP!"
 }

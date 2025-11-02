@@ -31,6 +31,9 @@ public enum ActionType {
     /** Utiliser un item - nécessite item ID */
     USE,
 
+    /** Lancer un item (projectile) - nécessite item ID */
+    THROW,
+
     /** Autre action - nécessite item ID */
     OTHER,
 
