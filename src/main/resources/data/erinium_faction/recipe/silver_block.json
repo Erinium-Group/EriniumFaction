@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "erinium_faction",
+  "group": "silver_block",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "erinium_faction:silver_ingot"
+    }
+  },
+  "result": {
+    "id": "erinium_faction:silver_block"
+  }
+}
