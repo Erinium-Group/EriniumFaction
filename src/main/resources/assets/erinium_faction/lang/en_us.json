@@ -417,5 +417,15 @@
   "erinium_faction.jobs.toast.xp_gained": "+%s XP",
   "erinium_faction.jobs.toast.levelup": "Reached Level %s",
   "erinium_faction.jobs.toast.levelup_title": "LEVEL UP!",
-  "erinium_faction.jobs.toast.max_xp": "MAX XP!"
+  "erinium_faction.jobs.toast.max_xp": "MAX XP!",
+  "player_level.command.fullreset.success": "§e%s's player level, jobs and stats have been reset!",
+  "player_level.command.fullreset.notification": "§cYour player level, jobs and stats have been completely reset!",
+  "player_level.command.jobs.info.title": "§6§l=== Jobs Information ===",
+  "player_level.command.jobs.info.player": "§ePlayer: §f%s",
+  "player_level.command.jobs.info.level": "Level %s",
+  "player_level.command.jobs.info.xp": "(%s/%s XP)",
+  "player_level.command.jobs.setlevel.success": "§e%s's job §6%s §eset to level §6%s",
+  "player_level.command.jobs.addxp.success": "§a+%s XP §eadded to %s's §6%s §ejob",
+  "player_level.command.jobs.addxp.success.levelup": "§a+%s XP §eadded to %s's §6%s §ejob (§a+%s level§e)",
+  "player_level.command.jobs.invalid": "§cInvalid job! Use: miner, lumberjack, hunter, fisher, farmer, wizard"
 }

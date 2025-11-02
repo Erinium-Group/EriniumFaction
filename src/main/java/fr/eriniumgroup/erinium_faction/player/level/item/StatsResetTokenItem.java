@@ -29,15 +29,14 @@ public class StatsResetTokenItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            // Réinitialiser les attributs
-            PlayerLevelManager.resetAttributes(serverPlayer);
+            // Réinitialiser les attributs (le token sera consommé dans la méthode resetAttributes)
+            boolean success = PlayerLevelManager.resetAttributes(serverPlayer);
 
-            // Consommer l'item
-            if (!player.getAbilities().instabuild) {
-                stack.shrink(1);
+            if (success) {
+                return InteractionResultHolder.success(stack);
+            } else {
+                return InteractionResultHolder.fail(stack);
             }
-
-            return InteractionResultHolder.success(stack);
         }
 
         return InteractionResultHolder.consume(stack);

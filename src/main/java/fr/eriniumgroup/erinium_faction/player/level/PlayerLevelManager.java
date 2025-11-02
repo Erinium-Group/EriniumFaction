@@ -117,6 +117,12 @@ public class PlayerLevelManager {
         // Mettre à jour les attributs
         updatePlayerAttributes(player, data);
 
+        // Consommer le token de réinitialisation
+        consumeResetToken(player);
+
+        // Synchroniser avec le client
+        fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler.syncPlayerData(player);
+
         player.sendSystemMessage(Component.translatable("player_level.attributes_reset")
             .withStyle(style -> style.withColor(0xFFFF55)));
 
@@ -129,6 +135,23 @@ public class PlayerLevelManager {
     public static boolean hasResetToken(ServerPlayer player) {
         return player.getInventory().contains(new net.minecraft.world.item.ItemStack(
             fr.eriniumgroup.erinium_faction.init.EFItems.STATS_RESET_TOKEN.get()));
+    }
+
+    /**
+     * Consomme un token de réinitialisation de l'inventaire du joueur
+     */
+    private static void consumeResetToken(ServerPlayer player) {
+        var inventory = player.getInventory();
+        var tokenItem = fr.eriniumgroup.erinium_faction.init.EFItems.STATS_RESET_TOKEN.get();
+
+        // Parcourir l'inventaire pour trouver et consommer le premier token
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            net.minecraft.world.item.ItemStack stack = inventory.getItem(i);
+            if (stack.getItem() == tokenItem) {
+                stack.shrink(1);
+                return;
+            }
+        }
     }
 
     /**
@@ -201,6 +224,29 @@ public class PlayerLevelManager {
 
         // Appliquer les attributs de base
         updatePlayerAttributes(player, data);
+    }
+
+    /**
+     * Réinitialise complètement le joueur: niveau, points, et attributs (commande admin)
+     */
+    public static void fullReset(ServerPlayer player) {
+        PlayerLevelData data = getLevelData(player);
+
+        // Remettre tout à 0
+        data.setLevel(1);
+        data.setAvailablePoints(0);
+        data.setHealthPoints(0);
+        data.setArmorPoints(0);
+        data.setSpeedPoints(0);
+        data.setIntelligencePoints(0);
+        data.setStrengthPoints(0);
+        data.setLuckPoints(0);
+
+        // Mettre à jour les attributs
+        updatePlayerAttributes(player, data);
+
+        // Synchroniser avec le client
+        fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler.syncPlayerData(player);
     }
 
     /**

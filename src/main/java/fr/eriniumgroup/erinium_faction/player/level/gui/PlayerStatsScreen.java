@@ -102,24 +102,11 @@ public class PlayerStatsScreen extends AbstractContainerScreen<PlayerStatsMenu> 
             ICON_LUCK,
             Component.translatable("player_level.tooltip.luck"),
             btn -> distributePoint(PlayerLevelManager.AttributeType.LUCK)));
-
-        // Bouton Réinitialiser (centré en bas)
-        addRenderableWidget(Button.builder(Component.translatable("player_level.button.reset")
-            .withStyle(style -> style.withColor(fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelClientData.hasResetToken() ? 0xEF4444 : 0x555555)),
-            btn -> resetAttributes())
-            .bounds(this.leftPos + 150, this.topPos + 248, 100, 22)
-            .build())
-            .active = fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelClientData.hasResetToken();
     }
 
     private void distributePoint(PlayerLevelManager.AttributeType type) {
         // Envoyer un paquet au serveur pour distribuer le point
         PlayerStatsPacketHandler.sendDistributePoint(type);
-    }
-
-    private void resetAttributes() {
-        // Envoyer un paquet au serveur pour réinitialiser
-        PlayerStatsPacketHandler.sendResetAttributes();
     }
 
     @Override
@@ -138,6 +125,11 @@ public class PlayerStatsScreen extends AbstractContainerScreen<PlayerStatsMenu> 
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        // Rafraîchir les données à chaque frame pour capturer les mises à jour du serveur
+        if (minecraft != null && minecraft.player != null) {
+            cachedData = minecraft.player.getData(fr.eriniumgroup.erinium_faction.player.level.PlayerLevelAttachments.PLAYER_LEVEL_DATA);
+        }
 
         if (cachedData == null) return;
 

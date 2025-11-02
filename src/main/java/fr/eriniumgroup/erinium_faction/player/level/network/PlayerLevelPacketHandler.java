@@ -71,6 +71,9 @@ public class PlayerLevelPacketHandler {
     public static void handleOpenStatsMenu(OpenStatsMenuPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
+                // Synchroniser les données avant d'ouvrir le menu
+                syncPlayerData(player);
+
                 player.openMenu(new net.minecraft.world.SimpleMenuProvider(
                     (id, inventory, p) -> new fr.eriniumgroup.erinium_faction.player.level.gui.PlayerStatsMenu(id, inventory),
                     net.minecraft.network.chat.Component.translatable("player_level.title")

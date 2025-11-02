@@ -3,6 +3,7 @@ package fr.eriniumgroup.erinium_faction.jobs;
 import fr.eriniumgroup.erinium_faction.common.network.packets.ShowJobToastPacket;
 import fr.eriniumgroup.erinium_faction.jobs.network.JobsClientData;
 import fr.eriniumgroup.erinium_faction.common.network.packets.JobsPacketHandler;
+import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -96,6 +97,12 @@ public class JobsManager {
 
         // Envoyer une notification toast
         if (levelsGained > 0) {
+            // Ajouter un niveau au PlayerLevel pour chaque niveau de job gagné
+            for (int i = 0; i < levelsGained; i++) {
+                int currentPlayerLevel = PlayerLevelManager.getLevelData(player).getLevel();
+                PlayerLevelManager.setLevel(player, currentPlayerLevel + 1);
+            }
+
             // Level up toast
             PacketDistributor.sendToPlayer(player, new ShowJobToastPacket(
                 jobType,
@@ -150,6 +157,22 @@ public class JobsManager {
      * Synchronise les données d'un joueur avec son client
      */
     public static void syncPlayer(ServerPlayer player) {
+        JobsPacketHandler.syncJobsData(player);
+    }
+
+    /**
+     * Réinitialise tous les métiers d'un joueur à niveau 1 et 0 XP
+     */
+    public static void resetAllJobs(ServerPlayer player) {
+        JobsData data = getJobsData(player);
+
+        // Réinitialiser chaque métier
+        for (JobType jobType : JobType.values()) {
+            data.setLevel(jobType, 1);
+            data.setExperience(jobType, 0);
+        }
+
+        // Synchroniser avec le client
         JobsPacketHandler.syncJobsData(player);
     }
 }
