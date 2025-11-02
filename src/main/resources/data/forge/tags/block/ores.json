@@ -1,7 +1,8 @@
 {
   "replace": false,
   "values": [
-    "erinium_faction:silver_ore"
+    "erinium_faction:silver_ore",
+    "erinium_faction:titanium_ore"
   ]
 }
 

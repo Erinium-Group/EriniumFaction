@@ -434,4 +434,9 @@
   "block.erinium_faction.deepslate_silver_ore": "Minerai d'argent des abîmes",
   "block.erinium_faction.silver_block": "Bloc d'argent",
   "item.erinium_faction.silver_scrap": "Éclat d'argent"
+  "block.erinium_faction.deepslate_silver_ore": "Minerai d'argent des abîmes",
+  "item.erinium_faction.raw_titanium": "Titane Brut",
+  "item.erinium_faction.titanium_ingot": "L'ingot de Titane",
+  "block.erinium_faction.titanium_ore": "Minerais de Titane",
+  "block.erinium_faction.deepslate_titanium_ore": "Minerais de Titane des abîmes"
 }
