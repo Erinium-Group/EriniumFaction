@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.features.topluck;
 
+import fr.eriniumgroup.erinium_faction.common.config.TopLuckConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

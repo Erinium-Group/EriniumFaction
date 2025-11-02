@@ -5,7 +5,7 @@ import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionClientData;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen;
-import fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration;
+import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;

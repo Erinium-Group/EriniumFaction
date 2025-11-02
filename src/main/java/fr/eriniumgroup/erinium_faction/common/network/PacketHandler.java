@@ -1,10 +1,7 @@
 package fr.eriniumgroup.erinium_faction.common.network;
 
 import fr.eriniumgroup.erinium_faction.common.network.EFVariables.PlayerVariablesSyncMessage;
-import fr.eriniumgroup.erinium_faction.common.network.packets.JobsPacketHandler;
-import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
-import fr.eriniumgroup.erinium_faction.common.network.packets.SyncJobsConfigPacket;
-import fr.eriniumgroup.erinium_faction.common.network.packets.SyncJobsDataPacket;
+import fr.eriniumgroup.erinium_faction.common.network.packets.*;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.features.block_hp.BlockHpSyncMessage;
 import fr.eriniumgroup.erinium_faction.gui.widgets.FactionGuiNetwork;
@@ -67,11 +64,11 @@ public class PacketHandler {
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.FactionDataPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.FactionDataPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.FactionDataPacketHandler::handleFactionData);
 
         // Paquets système de niveau joueur
-        registrar.playToServer(fr.eriniumgroup.erinium_faction.player.level.network.OpenStatsMenuPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.OpenStatsMenuPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleOpenStatsMenu);
-        registrar.playToServer(fr.eriniumgroup.erinium_faction.player.level.network.DistributePointPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.DistributePointPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleDistributePoint);
-        registrar.playToServer(fr.eriniumgroup.erinium_faction.player.level.network.ResetAttributesPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.ResetAttributesPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleResetAttributes);
-        registrar.playToClient(fr.eriniumgroup.erinium_faction.player.level.network.SyncPlayerLevelPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.SyncPlayerLevelPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleSyncPlayerLevel);
-        registrar.playToClient(fr.eriniumgroup.erinium_faction.player.level.network.SyncResetTokenPacket.TYPE, fr.eriniumgroup.erinium_faction.player.level.network.SyncResetTokenPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.player.level.network.PlayerLevelPacketHandler::handleSyncResetToken);
+        registrar.playToServer(OpenStatsMenuPacket.TYPE, OpenStatsMenuPacket.STREAM_CODEC, PlayerLevelPacketHandler::handleOpenStatsMenu);
+        registrar.playToServer(DistributePointPacket.TYPE, DistributePointPacket.STREAM_CODEC, PlayerLevelPacketHandler::handleDistributePoint);
+        registrar.playToServer(ResetAttributesPacket.TYPE, ResetAttributesPacket.STREAM_CODEC, PlayerLevelPacketHandler::handleResetAttributes);
+        registrar.playToClient(SyncPlayerLevelPacket.TYPE, SyncPlayerLevelPacket.STREAM_CODEC, PlayerLevelPacketHandler::handleSyncPlayerLevel);
+        registrar.playToClient(SyncResetTokenPacket.TYPE, SyncResetTokenPacket.STREAM_CODEC, PlayerLevelPacketHandler::handleSyncResetToken);
 
         // Paquets système de métiers
         registrar.playToClient(SyncJobsDataPacket.TYPE, SyncJobsDataPacket.STREAM_CODEC, JobsPacketHandler::handleSyncJobsData);

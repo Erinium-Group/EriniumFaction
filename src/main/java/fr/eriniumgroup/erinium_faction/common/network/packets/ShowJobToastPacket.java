@@ -1,7 +1,7 @@
 package fr.eriniumgroup.erinium_faction.common.network.packets;
 
-import fr.eriniumgroup.erinium_faction.jobs.JobType;
-import fr.eriniumgroup.erinium_faction.jobs.gui.JobToastOverlay;
+import fr.eriniumgroup.erinium_faction.features.jobs.type.JobType;
+import fr.eriniumgroup.erinium_faction.client.overlay.JobToastOverlay;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.VarInt;
 import net.minecraft.network.codec.ByteBufCodecs;

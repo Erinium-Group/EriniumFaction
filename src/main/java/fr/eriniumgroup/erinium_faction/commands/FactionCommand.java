@@ -11,6 +11,7 @@ import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
+import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -228,14 +229,14 @@ public class FactionCommand {
                 return 0;
             }
             int a = IntegerArgumentType.getInteger(ctx, "amount");
-            if (!fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.withdraw(sp, a)) {
+            if (!EconomyIntegration.withdraw(sp, a)) {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.bank.player_not_enough"));
                 return 0;
             }
             f.deposit(a);
             FactionManager.markDirty();
             fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
-            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(sp);
+            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).money = EconomyIntegration.getBalance(sp);
             sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
             ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.bank.deposit", a), true);
             return 1;
@@ -252,10 +253,10 @@ public class FactionCommand {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.bank.not_enough"));
                 return 0;
             }
-            fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.deposit(sp, a);
+            EconomyIntegration.deposit(sp, a);
             FactionManager.markDirty();
             fr.eriniumgroup.erinium_faction.core.faction.FactionManager.populatePlayerVariables(sp, sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES));
-            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(sp);
+            sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).money = EconomyIntegration.getBalance(sp);
             sp.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES).syncPlayerVariables(sp);
             ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.bank.withdraw", a), true);
             return 1;

@@ -3,7 +3,7 @@ package fr.eriniumgroup.erinium_faction.init;
 import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
-import fr.eriniumgroup.erinium_faction.player.level.gui.PlayerStatsMenu;
+import fr.eriniumgroup.erinium_faction.gui.menus.PlayerStatsMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;

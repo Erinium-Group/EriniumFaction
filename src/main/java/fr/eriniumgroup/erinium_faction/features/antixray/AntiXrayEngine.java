@@ -35,6 +35,9 @@ public class AntiXrayEngine {
     // Dernière position utilisée pour déclencher le recalcul par joueur
     private final Map<UUID, BlockPos> lastSpoofCenter = new ConcurrentHashMap<>();
 
+    // File de renvoi de mises à jour fiables (contourne cancel/pertes de paquets)
+    private final Deque<RevealTask> resendQueue = new ArrayDeque<>();
+
     public AntiXrayEngine(AntiXrayConfig config) {
         this.config = config;
     }
@@ -163,63 +166,82 @@ public class AntiXrayEngine {
     }
 
     /**
-     * Envoie des faux minerais autour du joueur (visuel client uniquement)
+     * Révélation ciblée d'un bloc pour un joueur, avant le calcul de vitesse de casse.
+     * Si reliable=true, on re-enverra l'état réel sur quelques ticks.
      */
-    public void spoofFakeOresAround(ServerLevel level, ServerPlayer player) {
+    public void revealForPlayer(ServerLevel level, BlockPos pos, ServerPlayer player, boolean reliable) {
         if (!config.isEnabled()) return;
-        if (config.getMode() != AntiXrayConfig.AntiXrayMode.ENGINE_MODE_2) return;
-        if (player.tickCount < 40) return; // attendre la fin du chargement initial
         var dimConfig = config.getDimensionConfig(level.dimension().location());
-        if (!dimConfig.isEnabled()) return;
+        if (!dimConfig.isEnabled() || !dimConfig.isActiveAtY(pos.getY())) return;
+        if (!level.hasChunkAt(pos)) return;
 
-        UUID playerId = player.getUUID();
-        Set<BlockPos> playerSpoofed = spoofedPositions.computeIfAbsent(playerId, k -> ConcurrentHashMap.newKeySet());
+        UUID pid = player.getUUID();
+        Set<BlockPos> playerRevealed = revealedBlocks.computeIfAbsent(pid, k -> ConcurrentHashMap.newKeySet());
+        Set<BlockPos> playerSpoofed = spoofedPositions.computeIfAbsent(pid, k -> ConcurrentHashMap.newKeySet());
 
-        int radius = Math.max(1, config.getSpoofRadius());
-        int maxCount = Math.max(0, config.getSpoofMaxCount());
-        int budget = Math.max(0, config.getSpoofBudgetPerTick());
+        BlockState real = level.getBlockState(pos);
+        playerRevealed.add(pos);
+        playerSpoofed.remove(pos);
+        player.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, real));
+        if (reliable) enqueueReliableReveal(level, pos, pid, 3);
+    }
 
-        // 1) Retirer les positions en dehors du rayon ou invalides et renvoyer l'état réel pour celles-ci
-        if (!playerSpoofed.isEmpty()) {
-            Iterator<BlockPos> it = playerSpoofed.iterator();
-            while (it.hasNext()) {
-                BlockPos pos = it.next();
-                if (pos.distManhattan(player.blockPosition()) > radius
-                        || !dimConfig.isActiveAtY(pos.getY())) {
-                    BlockState real = level.getBlockState(pos);
-                    player.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, real));
-                    it.remove();
-                }
+    /**
+     * Révéler instantanément les illusions exposées à l'air pour tous les joueurs du niveau.
+     */
+    public void revealExposedAt(ServerLevel level, BlockPos pos) {
+        if (!config.isEnabled()) return;
+        if (!isExposedToAir(level, pos)) return;
+        BlockState real = level.getBlockState(pos);
+        for (ServerPlayer p : level.players()) {
+            if (p.serverLevel() != level) continue;
+            Set<BlockPos> spoofed = spoofedPositions.get(p.getUUID());
+            if (spoofed != null && spoofed.remove(pos)) {
+                p.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, real));
+                enqueueReliableReveal(level, pos, p.getUUID(), 2);
             }
         }
+    }
 
-        // 2) Si on a atteint le max, ne rien ajouter
-        if (playerSpoofed.size() >= maxCount || budget == 0) return;
+    private void enqueueReliableReveal(ServerLevel level, BlockPos pos, UUID playerId, int repeats) {
+        resendQueue.addLast(new RevealTask(level, pos.immutable(), playerId, repeats));
+    }
 
-        Random rnd = new Random(player.tickCount * 31L ^ playerId.getMostSignificantBits());
-        BlockState template = getRandomHiddenBlock(rnd);
-        BlockPos base = player.blockPosition();
-        int dyRange = Math.max(1, radius / 2);
+    /**
+     * Traitement de la file de renvois; à appeler chaque tick serveur.
+     */
+    public void processResendQueue(ServerLevel level) {
+        if (resendQueue.isEmpty()) return;
+        int batch = Math.min(resendQueue.size(), 2048);
+        while (batch-- > 0 && !resendQueue.isEmpty()) {
+            RevealTask t = resendQueue.peekFirst();
+            if (t == null) break;
+            // Si la tâche n'est pas pour ce niveau, repousser en fin pour laisser sa chance au bon niveau
+            if (t.level != level) {
+                resendQueue.addLast(resendQueue.pollFirst());
+                continue;
+            }
+            resendQueue.pollFirst();
+            if (t.repeats <= 0) continue;
+            ServerPlayer target = level.getServer().getPlayerList().getPlayer(t.playerId);
+            if (target != null && target.serverLevel() == level) {
+                BlockState real = level.getBlockState(t.pos);
+                target.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(t.pos, real));
+            }
+            if (--t.repeats > 0) resendQueue.addLast(t);
+        }
+    }
 
-        int toAdd = Math.min(budget, Math.max(0, maxCount - playerSpoofed.size()));
-        int attempts = toAdd * 8; // éviter les boucles infinies si environnement pauvre
-        for (int i = 0, added = 0; i < attempts && added < toAdd; i++) {
-            int dx = rnd.nextInt(radius * 2 + 1) - radius;
-            int dy = rnd.nextInt(dyRange * 2 + 1) - dyRange;
-            int dz = rnd.nextInt(radius * 2 + 1) - radius;
-            BlockPos pos = base.offset(dx, dy, dz);
-            if (!dimConfig.isActiveAtY(pos.getY())) continue;
-            if (!level.hasChunkAt(pos)) continue;
-            if (playerSpoofed.contains(pos)) continue;
-            if (isExposedToAir(level, pos)) continue; // ne pas spoof s'il est exposé
-
-            BlockState real = level.getBlockState(pos);
-            if (real.isAir() || !config.isReplacementBlock(real.getBlock())) continue;
-
-            BlockState fake = (rnd.nextInt(5) == 0) ? getRandomHiddenBlock(rnd) : template;
-            player.connection.send(new net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket(pos, fake));
-            playerSpoofed.add(pos);
-            added++;
+    private static final class RevealTask {
+        final ServerLevel level;
+        final BlockPos pos;
+        final UUID playerId;
+        int repeats;
+        RevealTask(ServerLevel level, BlockPos pos, UUID playerId, int repeats) {
+            this.level = level;
+            this.pos = pos;
+            this.playerId = playerId;
+            this.repeats = repeats;
         }
     }
 

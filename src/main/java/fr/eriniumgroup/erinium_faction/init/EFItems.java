@@ -1,7 +1,7 @@
 package fr.eriniumgroup.erinium_faction.init;
 
 import fr.eriniumgroup.erinium_faction.core.EFC;
-import fr.eriniumgroup.erinium_faction.player.level.item.StatsResetTokenItem;
+import fr.eriniumgroup.erinium_faction.common.item.StatsResetTokenItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;

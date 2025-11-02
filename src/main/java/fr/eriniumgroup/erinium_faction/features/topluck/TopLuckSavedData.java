@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.features.topluck;
 
+import fr.eriniumgroup.erinium_faction.common.config.TopLuckConfig;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;

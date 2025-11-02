@@ -1,7 +1,7 @@
 package fr.eriniumgroup.erinium_faction.common.network.packets;
 
 import fr.eriniumgroup.erinium_faction.EriniumFaction;
-import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsData;
+import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -12,26 +12,26 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nonnull;
 
 /**
- * Paquet pour synchroniser les données de métiers du serveur vers le client
+ * Paquet pour synchroniser les données de niveau du serveur vers le client
  */
-public record SyncJobsDataPacket(JobsData data) implements CustomPacketPayload {
+public record SyncPlayerLevelPacket(PlayerLevelData data) implements CustomPacketPayload {
 
-    public static final Type<SyncJobsDataPacket> TYPE = new Type<>(
-        ResourceLocation.fromNamespaceAndPath(EriniumFaction.MODID, "sync_jobs_data")
+    public static final Type<SyncPlayerLevelPacket> TYPE = new Type<>(
+        ResourceLocation.fromNamespaceAndPath(EriniumFaction.MODID, "sync_player_level")
     );
 
-    public static final StreamCodec<ByteBuf, SyncJobsDataPacket> STREAM_CODEC = new StreamCodec<>() {
+    public static final StreamCodec<ByteBuf, SyncPlayerLevelPacket> STREAM_CODEC = new StreamCodec<>() {
         @Nonnull
         @Override
-        public SyncJobsDataPacket decode(@Nonnull ByteBuf buffer) {
+        public SyncPlayerLevelPacket decode(@Nonnull ByteBuf buffer) {
             CompoundTag tag = ByteBufCodecs.COMPOUND_TAG.decode(buffer);
-            JobsData data = new JobsData();
+            PlayerLevelData data = new PlayerLevelData();
             data.deserializeNBT(tag);
-            return new SyncJobsDataPacket(data);
+            return new SyncPlayerLevelPacket(data);
         }
 
         @Override
-        public void encode(@Nonnull ByteBuf buffer, @Nonnull SyncJobsDataPacket packet) {
+        public void encode(@Nonnull ByteBuf buffer, @Nonnull SyncPlayerLevelPacket packet) {
             CompoundTag tag = packet.data.serializeNBT();
             ByteBufCodecs.COMPOUND_TAG.encode(buffer, tag);
         }
@@ -43,3 +43,4 @@ public record SyncJobsDataPacket(JobsData data) implements CustomPacketPayload {
         return TYPE;
     }
 }
+

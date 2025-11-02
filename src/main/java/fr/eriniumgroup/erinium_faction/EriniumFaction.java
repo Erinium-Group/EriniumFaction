@@ -3,11 +3,14 @@ package fr.eriniumgroup.erinium_faction;
 import fr.eriniumgroup.erinium_faction.commands.*;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
+import fr.eriniumgroup.erinium_faction.common.config.JobsConfigManager;
 import fr.eriniumgroup.erinium_faction.common.network.PacketHandler;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.logger.EFCC;
 import fr.eriniumgroup.erinium_faction.events.TopLuckEventHandler;
+import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
+import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
 import fr.eriniumgroup.erinium_faction.features.topluck.TopLuckAttachments;
 import fr.eriniumgroup.erinium_faction.init.EFCreativeTabs;
 import fr.eriniumgroup.erinium_faction.protection.ClaimProtection;
@@ -31,9 +34,9 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
 import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
-import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelAttachments;
-import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelConfig;
-import fr.eriniumgroup.erinium_faction.player.level.PlayerLevelCommand;
+import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelAttachments;
+import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelConfig;
+import fr.eriniumgroup.erinium_faction.commands.PlayerLevelCommand;
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
 import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
 
@@ -44,7 +47,11 @@ public class EriniumFaction {
     public EriniumFaction(IEventBus modEventBus, ModContainer modContainer) {
         EFCC.install();
 
-        EFC.log.info("Initializing Erinium Faction - PvP Faction Mod");
+        EFC.log.info("§aInitializing §9" + EFC.MOD_NAME + " §7- §ePvP Faction Mod");
+        EFC.log.info("§eVersion: §a" + EFC.MOD_VERSION);
+        EFC.log.info("§eAuthors: §a" + EFC.AUTHOR);
+        EFC.log.info("§eNeoForge Version: §a" + EFC.NEOFORGE_VERSION);
+        EFC.log.info("§eMod ID: §a" + MODID);
 
         // Initialiser l'Anti-Xray
         AntiXrayManager.getInstance().init();
@@ -63,11 +70,11 @@ public class EriniumFaction {
         PowerManager.ATTACHMENTS.register(modEventBus);
         TopLuckAttachments.ATTACHMENTS.register(modEventBus);
         // Enregistrer l'économie (players.dat)
-        fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.ATTACHMENTS.register(modEventBus);
+        EconomyIntegration.ATTACHMENTS.register(modEventBus);
         // Système de niveau des joueurs
         PlayerLevelAttachments.ATTACHMENTS.register(modEventBus);
         // Système de métiers des joueurs
-        fr.eriniumgroup.erinium_faction.jobs.JobsDataAttachment.ATTACHMENTS.register(modEventBus);
+        JobsDataAttachment.ATTACHMENTS.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
@@ -103,7 +110,7 @@ public class EriniumFaction {
         // Initialiser les permissions par défaut (SavedData .dat) et appliquer si nécessaire
         fr.eriniumgroup.erinium_faction.core.faction.RankDefaultsSavedData.bootstrapAndApply(event.getServer());
         // Charger les configurations des métiers
-        fr.eriniumgroup.erinium_faction.jobs.config.JobsConfigManager.init();
+        JobsConfigManager.init();
     }
 
     private void onServerStopping(ServerStoppingEvent event) {

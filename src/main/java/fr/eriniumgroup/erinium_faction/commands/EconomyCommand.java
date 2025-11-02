@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -39,11 +40,11 @@ public class EconomyCommand {
             src.sendFailure(Component.translatable("erinium_faction.cmd.economy.invalid_amount"));
             return 0;
         }
-        if (!fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.withdraw(sender, amount)) {
+        if (!EconomyIntegration.withdraw(sender, amount)) {
             src.sendFailure(Component.translatable("erinium_faction.cmd.economy.not_enough"));
             return 0;
         }
-        fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.deposit(target, amount);
+        EconomyIntegration.deposit(target, amount);
         syncMoney(sender);
         syncMoney(target);
         src.sendSuccess(() -> Component.translatable("erinium_faction.cmd.economy.pay.success", target.getGameProfile().getName(), String.format("%.2f", amount)), true);
@@ -56,7 +57,7 @@ public class EconomyCommand {
             src.sendFailure(Component.translatable("erinium_faction.cmd.economy.player_not_found"));
             return 0;
         }
-        fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.setBalance(target, amount);
+        EconomyIntegration.setBalance(target, amount);
         syncMoney(target);
         src.sendSuccess(() -> Component.translatable("erinium_faction.cmd.economy.set", target.getGameProfile().getName(), String.format("%.2f", amount)), true);
         return 1;
@@ -68,7 +69,7 @@ public class EconomyCommand {
             src.sendFailure(Component.translatable("erinium_faction.cmd.economy.player_not_found"));
             return 0;
         }
-        fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.deposit(target, amount);
+        EconomyIntegration.deposit(target, amount);
         syncMoney(target);
         src.sendSuccess(() -> Component.translatable("erinium_faction.cmd.economy.give", target.getGameProfile().getName(), String.format("%.2f", amount)), true);
         return 1;
@@ -80,7 +81,7 @@ public class EconomyCommand {
             src.sendFailure(Component.translatable("erinium_faction.cmd.economy.player_not_found"));
             return 0;
         }
-        if (!fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.withdraw(target, amount)) {
+        if (!EconomyIntegration.withdraw(target, amount)) {
             src.sendFailure(Component.translatable("erinium_faction.cmd.economy.not_enough"));
             return 0;
         }
@@ -95,7 +96,7 @@ public class EconomyCommand {
     private static int showBalance(CommandSourceStack src) {
         try {
             ServerPlayer sp = src.getPlayerOrException();
-            double bal = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(sp);
+            double bal = EconomyIntegration.getBalance(sp);
             src.sendSuccess(() -> Component.translatable("erinium_faction.cmd.economy.balance", String.format("%.2f", bal)), false);
             // sync var client
             syncMoney(sp);
@@ -111,7 +112,7 @@ public class EconomyCommand {
      */
     private static int showTop(CommandSourceStack src, int page) {
         var server = src.getServer();
-        var entries = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getTop(server);
+        var entries = EconomyIntegration.getTop(server);
         int total = entries.size();
         if (total == 0) {
             src.sendSuccess(() -> Component.translatable("erinium_faction.cmd.economy.top.empty"), false);
@@ -138,7 +139,7 @@ public class EconomyCommand {
      */
     private static void syncMoney(ServerPlayer p) {
         var vars = p.getData(fr.eriniumgroup.erinium_faction.common.network.EFVariables.PLAYER_VARIABLES);
-        vars.money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(p);
+        vars.money = EconomyIntegration.getBalance(p);
         vars.syncPlayerVariables(p);
     }
 

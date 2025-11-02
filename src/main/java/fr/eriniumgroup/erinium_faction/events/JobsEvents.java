@@ -1,11 +1,11 @@
 package fr.eriniumgroup.erinium_faction.events;
 
-import fr.eriniumgroup.erinium_faction.jobs.JobType;
-import fr.eriniumgroup.erinium_faction.jobs.JobsManager;
-import fr.eriniumgroup.erinium_faction.jobs.config.ActionType;
-import fr.eriniumgroup.erinium_faction.jobs.config.JobConfig;
-import fr.eriniumgroup.erinium_faction.jobs.config.JobsConfigManager;
-import fr.eriniumgroup.erinium_faction.jobs.config.XpEarningEntry;
+import fr.eriniumgroup.erinium_faction.features.jobs.type.JobType;
+import fr.eriniumgroup.erinium_faction.features.jobs.JobsManager;
+import fr.eriniumgroup.erinium_faction.features.jobs.type.ActionType;
+import fr.eriniumgroup.erinium_faction.common.config.JobConfig;
+import fr.eriniumgroup.erinium_faction.common.config.JobsConfigManager;
+import fr.eriniumgroup.erinium_faction.features.jobs.type.XpEarningEntry;
 import fr.eriniumgroup.erinium_faction.common.network.packets.JobsPacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,7 +17,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;

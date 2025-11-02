@@ -1,9 +1,7 @@
 package fr.eriniumgroup.erinium_faction.common.network.packets;
 
-import fr.eriniumgroup.erinium_faction.jobs.JobsDataAttachment;
-import fr.eriniumgroup.erinium_faction.jobs.config.JobsConfigManager;
-import fr.eriniumgroup.erinium_faction.jobs.network.JobsClientConfig;
-import fr.eriniumgroup.erinium_faction.jobs.network.JobsClientData;
+import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
+import fr.eriniumgroup.erinium_faction.common.config.JobsConfigManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;

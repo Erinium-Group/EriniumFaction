@@ -6,6 +6,7 @@ import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimsSavedData;
 import fr.eriniumgroup.erinium_faction.core.power.PlayerPower;
 import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
+import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -220,7 +221,7 @@ public final class FactionManager {
         vars.playerPower = pp.getPower();
         vars.playerMaxPower = pp.getMaxPower();
         // argent joueur (attachment)
-        vars.money = fr.eriniumgroup.erinium_faction.integration.economy.EconomyIntegration.getBalance(player);
+        vars.money = EconomyIntegration.getBalance(player);
     }
 
     public static String getPlayerFaction(UUID player) {
