@@ -2,7 +2,7 @@
   "replace": false,
   "values": [
     "erinium_faction:silver_ore",
-    "erinium_faction:deepslate_silver_ore"
+    "erinium_faction:deepslate_silver_ore",
+    "erinium_faction:silver_block"
   ]
 }
-

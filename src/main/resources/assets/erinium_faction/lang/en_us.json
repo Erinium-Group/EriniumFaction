@@ -195,6 +195,8 @@
   "item.erinium_faction.silver_ingot": "Silver Ingot",
   "block.erinium_faction.silver_ore": "Silver Ore",
   "block.erinium_faction.deepslate_silver_ore": "Deepslate Silver Ore",
+  "block.erinium_faction.silver_block": "Silver Block",
+  "item.erinium_faction.silver_scrap": "Silver Scrap",
   "itemGroup.erinium_faction": "Erinium Faction",
   "erinium_faction.cmd.faction.claimperm.header": "§6[§bErinium§6/§dFaction§6] §7Claim permissions:",
   "erinium_faction.cmd.faction.claimperm.item": "§7 - §b%s§7: %s",

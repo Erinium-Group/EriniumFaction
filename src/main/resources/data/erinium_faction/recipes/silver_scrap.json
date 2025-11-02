@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "erinium_faction:silver_ingot"
+    }
+  ],
+  "result": {
+    "item": "erinium_faction:silver_scrap",
+    "count": 2
+  }
+}
+

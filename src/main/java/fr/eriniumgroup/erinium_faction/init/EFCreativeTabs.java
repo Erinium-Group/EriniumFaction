@@ -23,9 +23,11 @@ public class EFCreativeTabs {
             // Blocs
             output.accept(EFBlocks.SILVER_ORE.get());
             output.accept(EFBlocks.DEEPSLATE_SILVER_ORE.get());
+            output.accept(EFBlocks.SILVER_BLOCK.get());
             // Items silver
             output.accept(EFItems.RAW_SILVER.get());
             output.accept(EFItems.SILVER_INGOT.get());
+            output.accept(EFItems.SILVER_SCRAP.get());
         })
         .build());
 }
