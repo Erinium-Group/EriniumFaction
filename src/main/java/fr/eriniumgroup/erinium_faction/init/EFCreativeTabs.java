@@ -20,7 +20,12 @@ public class EFCreativeTabs {
         .displayItems((parameters, output) -> {
             // Ajouter tous les items du mod ici
             output.accept(EFItems.STATS_RESET_TOKEN.get());
+            // Blocs
+            output.accept(EFBlocks.SILVER_ORE.get());
+            output.accept(EFBlocks.DEEPSLATE_SILVER_ORE.get());
+            // Items silver
+            output.accept(EFItems.RAW_SILVER.get());
+            output.accept(EFItems.SILVER_INGOT.get());
         })
         .build());
 }
-

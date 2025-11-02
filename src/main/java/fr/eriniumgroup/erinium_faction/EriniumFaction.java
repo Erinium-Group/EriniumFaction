@@ -39,6 +39,7 @@ import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelConfig;
 import fr.eriniumgroup.erinium_faction.commands.PlayerLevelCommand;
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
 import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
+import fr.eriniumgroup.erinium_faction.init.EFBlocks;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -63,11 +64,21 @@ public class EriniumFaction {
 
         // Register DeferredRegisters (must be before client screen registrations)
         EFMenus.REGISTER.register(modEventBus);
+        // Register blocks
+        EFBlocks.REGISTER.register(modEventBus);
+        // Register items
         EFItems.REGISTER.register(modEventBus);
+        // Register block items from item register
+        EFBlocks.registerBlockItems(EFItems.REGISTER);
+        // Register creative tabs
         EFCreativeTabs.REGISTER.register(modEventBus);
+        // Register network variables
         EFVariables.ATTACHMENT_TYPES.register(modEventBus);
+        // Register argument types
         EFArgumentTypes.REGISTER.register(modEventBus);
+        // Register player power system
         PowerManager.ATTACHMENTS.register(modEventBus);
+        // Register TopLuck system
         TopLuckAttachments.ATTACHMENTS.register(modEventBus);
         // Enregistrer l'économie (players.dat)
         EconomyIntegration.ATTACHMENTS.register(modEventBus);

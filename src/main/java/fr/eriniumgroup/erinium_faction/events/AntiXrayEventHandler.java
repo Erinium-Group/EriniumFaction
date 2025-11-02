@@ -1,7 +1,6 @@
 package fr.eriniumgroup.erinium_faction.events;
 
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,12 +38,13 @@ public class AntiXrayEventHandler {
         BlockState state = level.getBlockState(event.getPos());
         // Anti packet-canceller: interdire la casse d'un minerai non révélé pour ce joueur
         if (engine.getConfig().isEnabled() && engine.getConfig().isHiddenBlock(state.getBlock())) {
+            // Tenter une révélation immédiate du bloc ciblé
+            engine.revealForPlayer(level, event.getPos(), player, true);
             boolean revealed = engine.isBlockRevealed(player.getUUID(), event.getPos());
             if (!revealed) {
-                // Révéler autour et bloquer la casse
+                // Révéler autour puis re-tenter au prochain tick sans spam message
                 engine.revealBlocksAround(level, event.getPos(), player);
                 event.setCanceled(true);
-                player.sendSystemMessage(Component.literal("§7Ce bloc n'est pas encore révélé."));
                 return;
             }
         }

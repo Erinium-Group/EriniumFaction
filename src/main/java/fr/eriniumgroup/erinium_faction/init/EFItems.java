@@ -1,7 +1,9 @@
 package fr.eriniumgroup.erinium_faction.init;
 
-import fr.eriniumgroup.erinium_faction.core.EFC;
+import fr.eriniumgroup.erinium_faction.common.item.RawSilverItem;
+import fr.eriniumgroup.erinium_faction.common.item.SilverIngotItem;
 import fr.eriniumgroup.erinium_faction.common.item.StatsResetTokenItem;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -12,6 +14,8 @@ public class EFItems {
     public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(Registries.ITEM, EFC.MOD_ID);
 
     public static final DeferredHolder<Item, StatsResetTokenItem> STATS_RESET_TOKEN = REGISTER.register("stats_reset_token", () -> new StatsResetTokenItem(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, RawSilverItem> RAW_SILVER = REGISTER.register("raw_silver", () -> new RawSilverItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
+    public static final DeferredHolder<Item, SilverIngotItem> SILVER_INGOT = REGISTER.register("silver_ingot", () -> new SilverIngotItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
 
     private EFItems() {
     }

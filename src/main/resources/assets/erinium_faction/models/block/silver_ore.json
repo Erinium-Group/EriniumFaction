@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "erinium_faction:block/silver_ore"
+  }
+}
+
