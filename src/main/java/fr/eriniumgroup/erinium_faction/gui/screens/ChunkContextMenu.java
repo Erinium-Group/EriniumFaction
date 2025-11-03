@@ -1,137 +1,82 @@
 package fr.eriniumgroup.erinium_faction.gui.screens;
 
-import fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.ChunkPos;
-import net.neoforged.neoforge.network.PacketDistributor;
-
-import java.util.List;
 
 /**
- * Context menu pour les chunks (claim/unclaim)
+ * Menu contextuel pour claim/unclaim un chunk
  */
 public class ChunkContextMenu {
-    private final ChunkPos chunkPos;
-    private final int x;
-    private final int y;
-    private final int width = 120;
-    private final int height = 60;
-    private final MinimapFullscreenScreen parent;
+    private final int x, y;
+    private final int chunkX, chunkZ;
+    private final String dimension;
+    private final FactionMapScreen parent;
+    private boolean visible = true;
 
-    public ChunkContextMenu(MinimapFullscreenScreen parent, ChunkPos chunkPos, int x, int y) {
-        this.parent = parent;
-        this.chunkPos = chunkPos;
+    private static final int MENU_WIDTH = 100;
+    private static final int MENU_HEIGHT = 40;
+    private static final int OPTION_HEIGHT = 20;
+
+    public ChunkContextMenu(int x, int y, int chunkX, int chunkZ, String dimension, FactionMapScreen parent) {
         this.x = x;
         this.y = y;
+        this.chunkX = chunkX;
+        this.chunkZ = chunkZ;
+        this.dimension = dimension;
+        this.parent = parent;
     }
 
-    public void render(GuiGraphics graphics, int mouseX, int mouseY) {
-        Minecraft mc = Minecraft.getInstance();
+    public void render(GuiGraphics g, int mouseX, int mouseY) {
+        if (!visible) return;
 
-        // Fond du menu
-        graphics.fill(x, y, x + width, y + height, 0xDD1a1a1a);
+        var font = Minecraft.getInstance().font;
 
-        // Bordure dorée
-        graphics.fill(x - 1, y - 1, x + width + 1, y, 0xFFd4af37);
-        graphics.fill(x - 1, y + height, x + width + 1, y + height + 1, 0xFFd4af37);
-        graphics.fill(x - 1, y, x, y + height, 0xFFd4af37);
-        graphics.fill(x + width, y, x + width + 1, y + height, 0xFFd4af37);
-
-        // Titre
-        graphics.drawString(mc.font, "Chunk " + chunkPos.x + ", " + chunkPos.z, x + 5, y + 5, 0xFFffd700, false);
+        // Fond
+        g.fill(x, y, x + MENU_WIDTH, y + MENU_HEIGHT, 0xFF2B2B2B);
+        g.fill(x + 1, y + 1, x + MENU_WIDTH - 1, y + MENU_HEIGHT - 1, 0xFF1A1A1A);
 
         // Options
-        int optionY = y + 20;
-        boolean hoverClaim = mouseX >= x + 5 && mouseX <= x + width - 5 && mouseY >= optionY && mouseY < optionY + 10;
-        boolean hoverUnclaim = mouseX >= x + 5 && mouseX <= x + width - 5 && mouseY >= optionY + 15 && mouseY < optionY + 25;
+        boolean hoverClaim = mouseX >= x && mouseX < x + MENU_WIDTH && mouseY >= y && mouseY < y + OPTION_HEIGHT;
+        boolean hoverUnclaim = mouseX >= x && mouseX < x + MENU_WIDTH && mouseY >= y + OPTION_HEIGHT && mouseY < y + MENU_HEIGHT;
 
-        // Option Claim
-        int claimColor = hoverClaim ? 0xFF00FF00 : 0xFFFFFFFF;
-        graphics.drawString(mc.font, "Claim", x + 10, optionY, claimColor, false);
+        if (hoverClaim) {
+            g.fill(x + 2, y + 2, x + MENU_WIDTH - 2, y + OPTION_HEIGHT - 1, 0x55FFFFFF);
+        }
+        g.drawString(font, "Claim", x + 10, y + 6, 0xFFFFFF, false);
 
-        // Option Unclaim
-        int unclaimColor = hoverUnclaim ? 0xFFFF0000 : 0xFFFFFFFF;
-        graphics.drawString(mc.font, "Unclaim", x + 10, optionY + 15, unclaimColor, false);
-
-        // Option Cancel
-        int cancelY = optionY + 30;
-        boolean hoverCancel = mouseX >= x + 5 && mouseX <= x + width - 5 && mouseY >= cancelY && mouseY < cancelY + 10;
-        int cancelColor = hoverCancel ? 0xFFFF8800 : 0xFF888888;
-        graphics.drawString(mc.font, "Cancel", x + 10, cancelY, cancelColor, false);
+        if (hoverUnclaim) {
+            g.fill(x + 2, y + OPTION_HEIGHT + 1, x + MENU_WIDTH - 2, y + MENU_HEIGHT - 2, 0x55FFFFFF);
+        }
+        g.drawString(font, "Unclaim", x + 10, y + OPTION_HEIGHT + 6, 0xFFFFFF, false);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button != 0) return false; // Seulement left click
+        if (!visible) return false;
 
-        int optionY = y + 20;
-
-        // Check Claim
-        if (mouseX >= x + 5 && mouseX <= x + width - 5 && mouseY >= optionY && mouseY < optionY + 10) {
-            onClaim();
+        // Vérifier si on clique dans le menu
+        if (mouseX >= x && mouseX < x + MENU_WIDTH && mouseY >= y && mouseY < y + MENU_HEIGHT) {
+            if (mouseY < y + OPTION_HEIGHT) {
+                // Claim
+                parent.claimChunk(chunkX, chunkZ, dimension);
+            } else {
+                // Unclaim
+                parent.unclaimChunk(chunkX, chunkZ, dimension);
+            }
+            visible = false;
             return true;
         }
 
-        // Check Unclaim
-        if (mouseX >= x + 5 && mouseX <= x + width - 5 && mouseY >= optionY + 15 && mouseY < optionY + 25) {
-            onUnclaim();
-            return true;
-        }
-
-        // Check Cancel
-        int cancelY = optionY + 30;
-        if (mouseX >= x + 5 && mouseX <= x + width - 5 && mouseY >= cancelY && mouseY < cancelY + 10) {
-            parent.closeContextMenu();
-            return true;
-        }
-
-        // Click outside menu = fermer
-        if (mouseX < x || mouseX > x + width || mouseY < y || mouseY > y + height) {
-            parent.closeContextMenu();
-            return true;
-        }
-
+        // Clic en dehors = fermer
+        visible = false;
         return false;
     }
 
-    private void onClaim() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return;
-
-        String dimension = mc.player.level().dimension().location().toString();
-        List<ChunkClaimPacket.ChunkPosition> chunks = List.of(
-            new ChunkClaimPacket.ChunkPosition(chunkPos.x, chunkPos.z)
-        );
-
-        PacketDistributor.sendToServer(new ChunkClaimPacket(
-            ChunkClaimPacket.Action.CLAIM,
-            dimension,
-            chunks
-        ));
-
-        parent.closeContextMenu();
+    public boolean isVisible() {
+        return visible;
     }
 
-    private void onUnclaim() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return;
-
-        String dimension = mc.player.level().dimension().location().toString();
-        List<ChunkClaimPacket.ChunkPosition> chunks = List.of(
-            new ChunkClaimPacket.ChunkPosition(chunkPos.x, chunkPos.z)
-        );
-
-        PacketDistributor.sendToServer(new ChunkClaimPacket(
-            ChunkClaimPacket.Action.UNCLAIM,
-            dimension,
-            chunks
-        ));
-
-        parent.closeContextMenu();
-    }
-
-    public ChunkPos getChunkPos() {
-        return chunkPos;
+    public void close() {
+        visible = false;
     }
 }

@@ -69,6 +69,8 @@
   "erinium_faction.cmd.faction.unclaim.not_owner": "§6[§bErinium§6/§dFaction§6] §cCe chunk n'appartient pas à votre faction.",
   "erinium_faction.cmd.faction.unclaim.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible d'unclaim.",
   "erinium_faction.cmd.faction.unclaim.success": "§6[§bErinium§6/§dFaction§6] §aChunk unclaim.",
+  "erinium_faction.cmd.faction.unclaim.all.success": "§6[§bErinium§6/§dFaction§6] §aTous les claims ont été unclaim: §b%s§a chunks.",
+  "erinium_faction.cmd.faction.unclaim.all.none": "§6[§bErinium§6/§dFaction§6] §cAucun claim à unclaim.",
   "erinium_faction.faction.menu.no_faction_hint": "§6[§bErinium§6/§dFaction§6] §7Vous n'êtes dans aucune faction.",
   "erinium_faction.faction.menu.no_faction": "§6[§bErinium§6/§dFaction§6] §7Aucune faction",
   "erinium_faction.common.no_permission": "§6[§bErinium§6/§dFaction§6] §cVous n'avez pas la permission.",
@@ -104,8 +106,6 @@
   "erinium_faction.faction.menu.settings.toggle_safezone": "Basculer SAFEZONE",
   "erinium_faction.faction.map.title": "Carte des claims",
   "key.erinium_faction.map": "Ouvrir la carte des claims",
-  "key.erinium_faction.minimap.zoom_in": "Minimap Zoom +",
-  "key.erinium_faction.minimap.zoom_out": "Minimap Zoom -",
   "key.categories.erinium_faction": "Erinium Faction",
   "erinium_faction.settings.label.open": "Ouverture",
   "erinium_faction.settings.label.mode": "Mode",
@@ -470,5 +470,9 @@
   "tooltip.erinium_faction.energy_in": "Entrée",
   "tooltip.erinium_faction.energy_out": "Sortie",
   "tooltip.erinium_faction.usage": "Consommation",
-  "tooltip.erinium_faction.progress": "Progression"
+  "tooltip.erinium_faction.progress": "Progression",
+  "key.erinium_faction.minimap_zoom_in": "Minimap: Zoom +",
+  "key.erinium_faction.minimap_zoom_out": "Minimap: Zoom -",
+  "erinium_faction.cmd.faction.map.enabled": "§6[§bErinium§6/§dFaction§6] §aMinimap activée",
+  "erinium_faction.cmd.faction.map.disabled": "§6[§bErinium§6/§dFaction§6] §cMinimap désactivée"
 }

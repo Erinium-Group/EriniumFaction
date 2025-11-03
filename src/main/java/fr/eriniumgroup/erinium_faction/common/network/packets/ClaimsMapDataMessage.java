@@ -11,6 +11,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,18 +57,24 @@ public record ClaimsMapDataMessage(String dimension, int centerCx, int centerCz,
             ctx.enqueueWork(() -> {
                 // Mettre à jour FactionMapScreen
                 fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen.onMapData(message);
-
-                // Mettre à jour le cache de la minimap
-                fr.eriniumgroup.erinium_faction.features.minimap.ClaimRenderHelper.updateClaimsFromPacket(
-                    message.dimension(),
-                    message.centerCx(),
-                    message.centerCz(),
-                    message.relCx(),
-                    message.relCz(),
-                    message.owners()
-                );
+                // Mettre à jour la minimap overlay
+                fr.eriniumgroup.erinium_faction.client.EFClient.updateMinimapData(message);
             });
         }
+    }
+
+    /**
+     * Construit une map des claims absolus (chunkX,chunkZ -> factionName)
+     */
+    public Map<String, String> claims() {
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < relCx.length; i++) {
+            int absX = centerCx + relCx[i];
+            int absZ = centerCz + relCz[i];
+            String key = absX + "," + absZ;
+            map.put(key, owners[i]);
+        }
+        return map;
     }
 
     public static void sendTo(ServerPlayer sp, String dim, int centerCx, int centerCz, int radius, List<Map.Entry<ClaimKey, String>> entries) {

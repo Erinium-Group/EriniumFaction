@@ -87,13 +87,13 @@ public class PacketHandler {
         // Paquet synchronisation TopLuck
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage::handleData);
 
-        // Paquets minimap et waypoints
-        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.WaypointSyncPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.WaypointSyncPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.WaypointSyncPacket::handle);
-        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.WaypointActionPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.WaypointActionPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.WaypointActionPacket::handle);
+        // Paquet claim/unclaim chunk depuis la map
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket::handleData);
 
-        // Paquet claim/unclaim de chunks via minimap
-        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket::handle);
+        // Paquets minimap overlay
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket::handleData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), WaypointSync/Action (minimap), ChunkClaim (serverbound)");
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound)");
     }
 }

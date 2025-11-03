@@ -2,9 +2,12 @@ package fr.eriniumgroup.erinium_faction.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.eriniumgroup.erinium_faction.client.overlay.FactionTitleOverlay;
+import fr.eriniumgroup.erinium_faction.client.overlay.MinimapOverlayRenderer;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
+import fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
-import fr.eriniumgroup.erinium_faction.features.minimap.MinimapConfig;
+import fr.eriniumgroup.erinium_faction.gui.MinimapOverlayConfig;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen;
 import fr.eriniumgroup.erinium_faction.gui.screens.MinimapFullscreenScreen;
 import fr.eriniumgroup.erinium_faction.gui.screens.TitaniumCompressorScreen;
@@ -29,9 +32,14 @@ import java.util.Locale;
 @EventBusSubscriber(modid = EFC.MODID, value = Dist.CLIENT)
 public class EFClient {
     public static KeyMapping OPEN_MAP;
-    public static KeyMapping OPEN_MINIMAP;
-    public static KeyMapping ZOOM_IN_MINIMAP;
-    public static KeyMapping ZOOM_OUT_MINIMAP;
+    public static KeyMapping MINIMAP_ZOOM_IN;
+    public static KeyMapping MINIMAP_ZOOM_OUT;
+
+    // Minimap overlay
+    private static MinimapOverlayConfig minimapConfig;
+    private static MinimapOverlayRenderer minimapRenderer;
+    private static long lastMinimapDataRequest = 0;
+    private static final long MINIMAP_REQUEST_INTERVAL_MS = 1000; // Demander toutes les 1 secondes
 
     // Zone cliquable du bouton HUD courant
     private static int btnX, btnY, btnS;
@@ -55,18 +63,15 @@ public class EFClient {
         InputConstants.Type type = InputConstants.Type.KEYSYM;
         int code = resolveDefaultKeyFromConfig();
         OPEN_MAP = new KeyMapping("key.erinium_faction.map", type, code, "key.categories.erinium_faction");
+        MINIMAP_ZOOM_IN = new KeyMapping("key.erinium_faction.minimap_zoom_in", type, InputConstants.KEY_EQUALS, "key.categories.erinium_faction");
+        MINIMAP_ZOOM_OUT = new KeyMapping("key.erinium_faction.minimap_zoom_out", type, InputConstants.KEY_MINUS, "key.categories.erinium_faction");
         e.register(OPEN_MAP);
+        e.register(MINIMAP_ZOOM_IN);
+        e.register(MINIMAP_ZOOM_OUT);
 
-        // Touche pour ouvrir la minimap fullscreen (par défaut N)
-        OPEN_MINIMAP = new KeyMapping("key.erinium_faction.minimap", type, InputConstants.KEY_N, "key.categories.erinium_faction");
-        e.register(OPEN_MINIMAP);
-
-        // Touches pour zoomer/dézoomer la minimap (par défaut + et -)
-        ZOOM_IN_MINIMAP = new KeyMapping("key.erinium_faction.minimap.zoom_in", type, InputConstants.KEY_EQUALS, "key.categories.erinium_faction");
-        e.register(ZOOM_IN_MINIMAP);
-
-        ZOOM_OUT_MINIMAP = new KeyMapping("key.erinium_faction.minimap.zoom_out", type, InputConstants.KEY_MINUS, "key.categories.erinium_faction");
-        e.register(ZOOM_OUT_MINIMAP);
+        // Initialiser la minimap
+        minimapConfig = MinimapOverlayConfig.load();
+        minimapRenderer = new MinimapOverlayRenderer(minimapConfig);
     }
 
     private static int resolveDefaultKeyFromConfig() {
@@ -108,17 +113,31 @@ public class EFClient {
         if (allowKeyOpen() && OPEN_MAP != null && mc.screen == null && OPEN_MAP.consumeClick()) {
             mc.setScreen(new FactionMapScreen());
         }
-        // Touche minimap
-        if (OPEN_MINIMAP != null && mc.screen == null && OPEN_MINIMAP.consumeClick()) {
-            mc.setScreen(new MinimapFullscreenScreen());
-        }
 
-        // Zoom minimap
-        if (ZOOM_IN_MINIMAP != null && mc.screen == null && ZOOM_IN_MINIMAP.consumeClick()) {
-            MinimapConfig.increaseZoom();
-        }
-        if (ZOOM_OUT_MINIMAP != null && mc.screen == null && ZOOM_OUT_MINIMAP.consumeClick()) {
-            MinimapConfig.decreaseZoom();
+        // Gérer les keybinds de zoom de la minimap
+        if (minimapConfig != null && minimapConfig.enabled && mc.screen == null) {
+            if (MINIMAP_ZOOM_IN != null && MINIMAP_ZOOM_IN.consumeClick()) {
+                minimapConfig.cellSize = Math.min(16, minimapConfig.cellSize + 1);
+                minimapConfig.save();
+            }
+            if (MINIMAP_ZOOM_OUT != null && MINIMAP_ZOOM_OUT.consumeClick()) {
+                minimapConfig.cellSize = Math.max(2, minimapConfig.cellSize - 1);
+                minimapConfig.save();
+            }
+
+            // Demander les données de la minimap au serveur régulièrement
+            long now = System.currentTimeMillis();
+            if (now - lastMinimapDataRequest >= MINIMAP_REQUEST_INTERVAL_MS) {
+                lastMinimapDataRequest = now;
+                int chunkX = mc.player.chunkPosition().x;
+                int chunkZ = mc.player.chunkPosition().z;
+                String dim = mc.player.level().dimension().location().toString();
+                int radius = 16; // Rayon fixe pour la minimap
+
+                fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage req =
+                    new fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage(dim, chunkX, chunkZ, radius);
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(req);
+            }
         }
     }
 
@@ -161,15 +180,24 @@ public class EFClient {
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiEvent.Post e) {
-        if (!allowButtonOpen()) return;
         Minecraft mc = Minecraft.getInstance();
-        if (mc == null || mc.screen != null) return;
+        if (mc == null) return;
         if (mc.player == null) return;
-        if (EFClientConfig.MAP_BUTTON_HIDE_IN_DEBUG.get() && isDebugOverlayActive(mc)) return;
 
         GuiGraphics g = e.getGuiGraphics();
         int w = mc.getWindow().getGuiScaledWidth();
         int h = mc.getWindow().getGuiScaledHeight();
+
+        // Render minimap overlay (même si settings screen est ouvert)
+        boolean isSettingsScreen = mc.screen instanceof fr.eriniumgroup.erinium_faction.gui.screens.MinimapOverlaySettingsScreen;
+        if (minimapRenderer != null && minimapConfig != null && minimapConfig.enabled && (mc.screen == null || isSettingsScreen)) {
+            minimapRenderer.render(g, w, h);
+        }
+
+        // Render map button (seulement si aucun screen)
+        if (mc.screen != null) return;
+        if (!allowButtonOpen()) return;
+        if (EFClientConfig.MAP_BUTTON_HIDE_IN_DEBUG.get() && isDebugOverlayActive(mc)) return;
 
         int size = Math.max(10, Math.min(64, EFClientConfig.MAP_BUTTON_SIZE.get()));
         int offX = Math.max(0, EFClientConfig.MAP_BUTTON_OFFSET_X.get());
@@ -264,29 +292,8 @@ public class EFClient {
         double mx = rawX * gw / Math.max(1, sw);
         double my = rawY * gh / Math.max(1, sh);
 
-        // Drag minimap avec SHIFT + clic gauche
-        if (e.getButton() == 0) { // Left click
-            int minimapX = MinimapConfig.minimapX;
-            int minimapY = MinimapConfig.minimapY;
-            int minimapSize = MinimapConfig.MINIMAP_FRAME_SIZE;
-
-            if (mx >= minimapX && mx < minimapX + minimapSize &&
-                my >= minimapY && my < minimapY + minimapSize) {
-
-                if (mc.options.keyShift.isDown()) { // SHIFT pressed
-                    if (e.getAction() == 1) { // PRESS
-                        MinimapConfig.isDraggingMinimap = true;
-                        MinimapConfig.dragOffsetX = (int) (mx - minimapX);
-                        MinimapConfig.dragOffsetY = (int) (my - minimapY);
-                        e.setCanceled(true);
-                        return;
-                    }
-                }
-            }
-        }
-
         // Map button
-        if (allowButtonOpen() && !MinimapConfig.isDraggingMinimap) {
+        if (allowButtonOpen()) {
             if (EFClientConfig.MAP_BUTTON_HIDE_IN_DEBUG.get() && isDebugOverlayActive(mc)) return;
             if (e.getAction() != 1) return; // GLFW_PRESS
             if (mx >= btnX && mx < btnX + btnS && my >= btnY && my < btnY + btnS) {
@@ -296,37 +303,27 @@ public class EFClient {
         }
     }
 
-    @SubscribeEvent
-    public static void onMouseRelease(InputEvent.MouseButton.Post e) {
-        if (e.getButton() == 0 && e.getAction() == 0) { // Left button released
-            if (MinimapConfig.isDraggingMinimap) {
-                MinimapConfig.isDraggingMinimap = false;
-                MinimapConfig.savePosition();
-            }
+    // Méthodes publiques pour gérer la minimap overlay
+    public static void updateMinimapData(ClaimsMapDataMessage data) {
+        if (minimapRenderer != null) {
+            minimapRenderer.updateData(data);
         }
     }
 
-    @SubscribeEvent
-    public static void onClientTick2(ClientTickEvent.Post e) {
-        if (!MinimapConfig.isDraggingMinimap) return;
+    public static MinimapOverlayConfig getMinimapConfig() {
+        return minimapConfig;
+    }
 
-        Minecraft mc = Minecraft.getInstance();
-        if (mc == null || mc.screen != null) return;
+    public static void reloadMinimapConfig() {
+        minimapConfig = MinimapOverlayConfig.load();
+        if (minimapRenderer != null) {
+            minimapRenderer.setConfig(minimapConfig);
+        }
+    }
 
-        double rawX = mc.mouseHandler.xpos();
-        double rawY = mc.mouseHandler.ypos();
-        int sw = mc.getWindow().getScreenWidth();
-        int sh = mc.getWindow().getScreenHeight();
-        int gw = mc.getWindow().getGuiScaledWidth();
-        int gh = mc.getWindow().getGuiScaledHeight();
-        double mx = rawX * gw / Math.max(1, sw);
-        double my = rawY * gh / Math.max(1, sh);
-
-        MinimapConfig.minimapX = (int) (mx - MinimapConfig.dragOffsetX);
-        MinimapConfig.minimapY = (int) (my - MinimapConfig.dragOffsetY);
-
-        // Limiter aux bords de l'écran
-        MinimapConfig.minimapX = Math.max(0, Math.min(MinimapConfig.minimapX, gw - MinimapConfig.MINIMAP_FRAME_SIZE));
-        MinimapConfig.minimapY = Math.max(0, Math.min(MinimapConfig.minimapY, gh - MinimapConfig.MINIMAP_FRAME_SIZE));
+    public static void reloadMinimapColors() {
+        if (minimapRenderer != null) {
+            minimapRenderer.reloadColors();
+        }
     }
 }

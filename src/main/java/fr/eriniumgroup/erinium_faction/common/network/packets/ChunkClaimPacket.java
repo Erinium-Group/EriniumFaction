@@ -4,155 +4,98 @@ import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Packet client → server pour claim/unclaim des chunks via la minimap
+ * Paquet pour claim/unclaim un chunk depuis la map
  */
-public record ChunkClaimPacket(
-    Action action,
-    String dimension,
-    List<ChunkPosition> chunks
-) implements CustomPacketPayload {
-
+public record ChunkClaimPacket(String dimension, int chunkX, int chunkZ, boolean isClaim) implements CustomPacketPayload {
     public static final Type<ChunkClaimPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(EFC.MODID, "chunk_claim"));
 
-    public static final StreamCodec<ByteBuf, ChunkClaimPacket> STREAM_CODEC = StreamCodec.composite(
-        Action.STREAM_CODEC,
-        ChunkClaimPacket::action,
-        ByteBufCodecs.STRING_UTF8,
-        ChunkClaimPacket::dimension,
-        ChunkPosition.STREAM_CODEC.apply(ByteBufCodecs.list()),
-        ChunkClaimPacket::chunks,
-        ChunkClaimPacket::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChunkClaimPacket> STREAM_CODEC = StreamCodec.of(
+        (buf, msg) -> {
+            buf.writeUtf(msg.dimension);
+            buf.writeInt(msg.chunkX);
+            buf.writeInt(msg.chunkZ);
+            buf.writeBoolean(msg.isClaim);
+        },
+        (buf) -> {
+            String dim = buf.readUtf();
+            int cx = buf.readInt();
+            int cz = buf.readInt();
+            boolean claim = buf.readBoolean();
+            return new ChunkClaimPacket(dim, cx, cz, claim);
+        }
     );
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public Type<ChunkClaimPacket> type() {
         return TYPE;
     }
 
-    public static void handle(ChunkClaimPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            if (context.player() instanceof ServerPlayer sp) {
-                handleServerSide(packet, sp);
-            }
-        });
-    }
+    public static void handleData(final ChunkClaimPacket message, final IPayloadContext ctx) {
+        if (ctx.flow() == PacketFlow.SERVERBOUND) {
+            ctx.enqueueWork(() -> {
+                ServerPlayer sp = (ServerPlayer) ctx.player();
+                if (sp == null) return;
 
-    private static void handleServerSide(ChunkClaimPacket packet, ServerPlayer sp) {
-        Faction faction = FactionManager.getFactionOf(sp.getUUID());
-
-        if (faction == null) {
-            sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
-            return;
-        }
-
-        int successCount = 0;
-        int failCount = 0;
-
-        for (ChunkPosition chunkPos : packet.chunks) {
-            ClaimKey key = ClaimKey.of(
-                sp.level().dimension(),
-                chunkPos.x(),
-                chunkPos.z()
-            );
-
-            boolean success = false;
-
-            if (packet.action == Action.CLAIM) {
-                success = FactionManager.tryClaim(key, faction.getId());
-            } else if (packet.action == Action.UNCLAIM) {
-                String owner = FactionManager.getClaimOwner(key);
-
-                // Vérifier que le chunk appartient à la faction
-                if (owner != null && owner.equalsIgnoreCase(faction.getId())) {
-                    success = FactionManager.tryUnclaim(key, faction.getId());
+                Faction f = FactionManager.getFactionOf(sp.getUUID());
+                if (f == null) {
+                    sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                    return;
                 }
-            }
 
-            if (success) {
-                successCount++;
-            } else {
-                failCount++;
-            }
-        }
+                ResourceKey<Level> dimKey = ResourceKey.create(
+                    net.minecraft.core.registries.Registries.DIMENSION,
+                    ResourceLocation.parse(message.dimension)
+                );
 
-        // Envoyer le résultat au joueur
-        if (successCount > 0) {
-            if (packet.action == Action.CLAIM) {
-                sp.sendSystemMessage(Component.translatable("erinium_faction.minimap.claim.success", successCount));
-            } else {
-                sp.sendSystemMessage(Component.translatable("erinium_faction.minimap.unclaim.success", successCount));
-            }
-        }
+                ClaimKey key = ClaimKey.of(dimKey, message.chunkX, message.chunkZ);
 
-        if (failCount > 0) {
-            if (packet.action == Action.CLAIM) {
-                sp.sendSystemMessage(Component.translatable("erinium_faction.minimap.claim.fail", failCount));
-            } else {
-                sp.sendSystemMessage(Component.translatable("erinium_faction.minimap.unclaim.fail", failCount));
-            }
-        }
-
-        // IMPORTANT: Envoyer immédiatement les claims mis à jour au client
-        int centerCx = sp.blockPosition().getX() >> 4;
-        int centerCz = sp.blockPosition().getZ() >> 4;
-        int radius = 10; // Radius de 10 chunks
-
-        // Récupérer tous les claims dans le rayon
-        List<java.util.Map.Entry<ClaimKey, String>> claims = new ArrayList<>();
-        for (int cx = centerCx - radius; cx <= centerCx + radius; cx++) {
-            for (int cz = centerCz - radius; cz <= centerCz + radius; cz++) {
-                ClaimKey key = ClaimKey.of(sp.level().dimension(), cx, cz);
-                String owner = FactionManager.getClaimOwner(key);
-                // N'ajouter que les vrais claims (pas wilderness, pas vide)
-                if (owner != null && !owner.isEmpty() && !owner.equalsIgnoreCase("wilderness")) {
-                    claims.add(new java.util.AbstractMap.SimpleEntry<>(key, owner));
+                if (message.isClaim) {
+                    // Claim - Vérifier la permission CLAIM_TERRITORY
+                    if (!f.hasPermission(sp.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.CLAIM_TERRITORY.getServerKey())) {
+                        sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.no_permission"));
+                        return;
+                    }
+                    boolean ok = FactionManager.tryClaim(key, f.getId());
+                    if (!ok) {
+                        sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.claim.limit"));
+                    } else {
+                        sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.claim.success"));
+                    }
+                } else {
+                    // Unclaim - Vérifier la permission UNCLAIM_TERRITORY
+                    if (!f.hasPermission(sp.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.UNCLAIM_TERRITORY.getServerKey())) {
+                        sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.no_permission"));
+                        return;
+                    }
+                    String owner = FactionManager.getClaimOwner(key);
+                    if (owner == null) {
+                        sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.unclaim.not_claimed"));
+                        return;
+                    }
+                    if (!owner.equalsIgnoreCase(f.getId())) {
+                        sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.unclaim.not_owner"));
+                        return;
+                    }
+                    boolean ok = FactionManager.tryUnclaim(key, f.getId());
+                    if (!ok) {
+                        sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.unclaim.fail"));
+                    } else {
+                        sp.sendSystemMessage(Component.translatable("erinium_faction.cmd.faction.unclaim.success"));
+                    }
                 }
-            }
+            });
         }
-
-        // Envoyer au client
-        ClaimsMapDataMessage.sendTo(sp, packet.dimension, centerCx, centerCz, radius, claims);
-    }
-
-    public enum Action implements net.minecraft.util.StringRepresentable {
-        CLAIM("claim"),
-        UNCLAIM("unclaim");
-
-        private final String name;
-
-        Action(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getSerializedName() {
-            return name;
-        }
-
-        public static final StreamCodec<ByteBuf, Action> STREAM_CODEC =
-            ByteBufCodecs.fromCodec(net.minecraft.util.StringRepresentable.fromEnum(Action::values));
-    }
-
-    public record ChunkPosition(int x, int z) {
-        public static final StreamCodec<ByteBuf, ChunkPosition> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            ChunkPosition::x,
-            ByteBufCodecs.VAR_INT,
-            ChunkPosition::z,
-            ChunkPosition::new
-        );
     }
 }
