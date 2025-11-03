@@ -69,6 +69,8 @@
   "erinium_faction.cmd.faction.unclaim.not_owner": "§6[§bErinium§6/§dFaction§6] §cCe chunk n'appartient pas à votre faction.",
   "erinium_faction.cmd.faction.unclaim.fail": "§6[§bErinium§6/§dFaction§6] §cImpossible d'unclaim.",
   "erinium_faction.cmd.faction.unclaim.success": "§6[§bErinium§6/§dFaction§6] §aChunk unclaim.",
+  "erinium_faction.cmd.faction.unclaim.all.success": "§6[§bErinium§6/§dFaction§6] §aTous les claims ont été unclaim: §b%s§a chunks.",
+  "erinium_faction.cmd.faction.unclaim.all.none": "§6[§bErinium§6/§dFaction§6] §cAucun claim à unclaim.",
   "erinium_faction.faction.menu.no_faction_hint": "§6[§bErinium§6/§dFaction§6] §7Vous n'êtes dans aucune faction.",
   "erinium_faction.faction.menu.no_faction": "§6[§bErinium§6/§dFaction§6] §7Aucune faction",
   "erinium_faction.common.no_permission": "§6[§bErinium§6/§dFaction§6] §cVous n'avez pas la permission.",
@@ -438,5 +440,9 @@
   "item.erinium_faction.raw_titanium": "Titane Brut",
   "item.erinium_faction.titanium_ingot": "L'ingot de Titane",
   "block.erinium_faction.titanium_ore": "Minerais de Titane",
-  "block.erinium_faction.deepslate_titanium_ore": "Minerais de Titane des abîmes"
+  "block.erinium_faction.deepslate_titanium_ore": "Minerais de Titane des abîmes",
+  "key.erinium_faction.minimap_zoom_in": "Minimap: Zoom +",
+  "key.erinium_faction.minimap_zoom_out": "Minimap: Zoom -",
+  "erinium_faction.cmd.faction.map.enabled": "§6[§bErinium§6/§dFaction§6] §aMinimap activée",
+  "erinium_faction.cmd.faction.map.disabled": "§6[§bErinium§6/§dFaction§6] §cMinimap désactivée"
 }

@@ -169,6 +169,11 @@ public class FactionCommand {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
                 return 0;
             }
+            // Vérifier la permission CLAIM_TERRITORY
+            if (!f.hasPermission(sp.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.CLAIM_TERRITORY.getServerKey())) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.no_permission"));
+                return 0;
+            }
             var lvl = sp.level();
             ClaimKey key = ClaimKey.of(lvl.dimension(), sp.chunkPosition().x, sp.chunkPosition().z);
             boolean ok = FactionManager.tryClaim(key, f.getId());
@@ -185,6 +190,11 @@ public class FactionCommand {
             Faction f = FactionManager.getFactionOf(sp.getUUID());
             if (f == null) {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                return 0;
+            }
+            // Vérifier la permission UNCLAIM_TERRITORY
+            if (!f.hasPermission(sp.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.UNCLAIM_TERRITORY.getServerKey())) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.no_permission"));
                 return 0;
             }
             var lvl = sp.level();
@@ -205,7 +215,38 @@ public class FactionCommand {
             }
             ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.unclaim.success"), true);
             return 1;
-        }));
+        }).then(Commands.literal("all").executes(ctx -> {
+            ServerPlayer sp = ctx.getSource().getPlayerOrException();
+            Faction f = FactionManager.getFactionOf(sp.getUUID());
+            if (f == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.not_in_faction"));
+                return 0;
+            }
+            // Vérifier la permission UNCLAIM_TERRITORY
+            if (!f.hasPermission(sp.getUUID(), fr.eriniumgroup.erinium_faction.core.faction.Permission.UNCLAIM_TERRITORY.getServerKey())) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.no_permission"));
+                return 0;
+            }
+
+            // Récupérer tous les claims de la faction
+            var factionClaims = FactionManager.getClaimsOfFaction(f.getId());
+            int unclaimedCount = 0;
+
+            for (ClaimKey key : factionClaims) {
+                boolean ok = FactionManager.tryUnclaim(key, f.getId());
+                if (ok) {
+                    unclaimedCount++;
+                }
+            }
+
+            final int count = unclaimedCount;
+            if (count > 0) {
+                ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.unclaim.all.success", count), true);
+            } else {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.cmd.faction.unclaim.all.none"));
+            }
+            return 1;
+        })));
 
         b.then(Commands.literal("desc").requires(src -> hasServerPerm(src, "ef.faction.desc")).then(Commands.argument("text", StringArgumentType.greedyString()).executes(ctx -> {
             ServerPlayer sp = ctx.getSource().getPlayerOrException();
@@ -541,6 +582,32 @@ public class FactionCommand {
                 return 0;
             }
             ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.revoke.success", target.getGameProfile().getName()), true);
+            return 1;
+        })));
+
+        // Commandes minimap overlay
+        b.then(Commands.literal("map").then(Commands.literal("on").executes(ctx -> {
+            ServerPlayer sp = ctx.getSource().getPlayerOrException();
+            // Envoyer un packet pour activer la minimap côté client
+            fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket packet =
+                new fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket(true);
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, packet);
+            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.map.enabled"), true);
+            return 1;
+        })).then(Commands.literal("off").executes(ctx -> {
+            ServerPlayer sp = ctx.getSource().getPlayerOrException();
+            // Envoyer un packet pour désactiver la minimap côté client
+            fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket packet =
+                new fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket(false);
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, packet);
+            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.map.disabled"), true);
+            return 1;
+        })).then(Commands.literal("settings").executes(ctx -> {
+            ServerPlayer sp = ctx.getSource().getPlayerOrException();
+            // Envoyer un packet pour ouvrir le GUI de settings côté client
+            fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket packet =
+                new fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket();
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, packet);
             return 1;
         })));
 

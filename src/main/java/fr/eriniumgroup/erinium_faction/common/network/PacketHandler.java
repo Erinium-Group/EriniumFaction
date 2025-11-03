@@ -87,6 +87,13 @@ public class PacketHandler {
         // Paquet synchronisation TopLuck
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.TopLuckSyncMessage::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound)");
+        // Paquet claim/unclaim chunk depuis la map
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ChunkClaimPacket::handleData);
+
+        // Paquets minimap overlay
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket::handleData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket::handleData);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound)");
     }
 }
