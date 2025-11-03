@@ -40,6 +40,9 @@ import fr.eriniumgroup.erinium_faction.commands.PlayerLevelCommand;
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
 import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
 import fr.eriniumgroup.erinium_faction.init.EFBlocks;
+import fr.eriniumgroup.erinium_faction.init.EFBlockEntities;
+import fr.eriniumgroup.erinium_faction.init.EFCapabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -72,6 +75,8 @@ public class EriniumFaction {
         EFBlocks.registerBlockItems(EFItems.REGISTER);
         // Register creative tabs
         EFCreativeTabs.REGISTER.register(modEventBus);
+        // Register block entities
+        EFBlockEntities.REGISTER.register(modEventBus);
         // Register network variables
         EFVariables.ATTACHMENT_TYPES.register(modEventBus);
         // Register argument types
@@ -152,5 +157,9 @@ public class EriniumFaction {
 
         TopLuckCommand.register(event.getDispatcher());
         TopLuckConfigCommand.register(event.getDispatcher());
+    }
+
+    private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        EFCapabilities.register(event);
     }
 }

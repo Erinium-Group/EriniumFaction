@@ -204,6 +204,9 @@
   "item.erinium_faction.titanium_ingot": "Titanium Ingot",
   "block.erinium_faction.titanium_ore": "Titanium Ore",
   "block.erinium_faction.deepslate_titanium_ore": "Deepslate Titanium Ore",
+  "item.erinium_faction.silver_plate": "Silver Plate",
+  "item.erinium_faction.titanium_plate": "Titanium Plate",
+  "block.erinium_faction.titanium_compressor": "Titanium Compressor",
   "itemGroup.erinium_faction": "Erinium Faction",
   "erinium_faction.cmd.faction.claimperm.header": "§6[§bErinium§6/§dFaction§6] §7Claim permissions:",
   "erinium_faction.cmd.faction.claimperm.item": "§7 - §b%s§7: %s",
@@ -460,5 +463,12 @@
   "erinium_faction.minimap.claim.success": "§a%s chunks claimed successfully",
   "erinium_faction.minimap.claim.fail": "§c%s chunks failed to claim",
   "erinium_faction.minimap.unclaim.success": "§a%s chunks unclaimed successfully",
-  "erinium_faction.minimap.unclaim.fail": "§c%s chunks failed to unclaim"
+  "erinium_faction.minimap.unclaim.fail": "§c%s chunks failed to unclaim",
+  "block.erinium_faction.titanium_battery_tier1": "Titanium Battery (Tier 1)",
+  "block.erinium_faction.titanium_creative_battery": "§dTitanium Creative Battery",
+  "tooltip.erinium_faction.energy": "Energy",
+  "tooltip.erinium_faction.energy_in": "In",
+  "tooltip.erinium_faction.energy_out": "Out",
+  "tooltip.erinium_faction.usage": "Usage",
+  "tooltip.erinium_faction.progress": "Progress"
 }

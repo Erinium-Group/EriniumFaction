@@ -441,6 +441,9 @@
   "item.erinium_faction.titanium_ingot": "L'ingot de Titane",
   "block.erinium_faction.titanium_ore": "Minerais de Titane",
   "block.erinium_faction.deepslate_titanium_ore": "Minerais de Titane des abîmes",
+  "item.erinium_faction.silver_plate": "Plaque d'Argent",
+  "item.erinium_faction.titanium_plate": "Plaque de Titane",
+  "block.erinium_faction.titanium_compressor": "Compresseur de Titane",
   "key.erinium_faction.minimap": "Ouvrir la Minimap",
   "gui.erinium_faction.minimap.title": "Carte du Monde",
   "gui.erinium_faction.minimap.waypoints": "Waypoints",
@@ -460,5 +463,12 @@
   "erinium_faction.minimap.claim.success": "§a%s chunks réclamés avec succès",
   "erinium_faction.minimap.claim.fail": "§c%s chunks n'ont pas pu être réclamés",
   "erinium_faction.minimap.unclaim.success": "§a%s chunks abandonnés avec succès",
-  "erinium_faction.minimap.unclaim.fail": "§c%s chunks n'ont pas pu être abandonnés"
+  "erinium_faction.minimap.unclaim.fail": "§c%s chunks n'ont pas pu être abandonnés",
+  "block.erinium_faction.titanium_battery_tier1": "Batterie en Titane (Tier 1)",
+  "block.erinium_faction.titanium_creative_battery": "§dBatterie Créative en Titane",
+  "tooltip.erinium_faction.energy": "Énergie",
+  "tooltip.erinium_faction.energy_in": "Entrée",
+  "tooltip.erinium_faction.energy_out": "Sortie",
+  "tooltip.erinium_faction.usage": "Consommation",
+  "tooltip.erinium_faction.progress": "Progression"
 }

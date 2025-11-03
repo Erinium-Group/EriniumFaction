@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "level=0": { "model": "erinium_faction:block/titanium_battery_tier1_0" },
+    "level=1": { "model": "erinium_faction:block/titanium_battery_tier1_1" },
+    "level=2": { "model": "erinium_faction:block/titanium_battery_tier1_2" },
+    "level=3": { "model": "erinium_faction:block/titanium_battery_tier1_3" },
+    "level=4": { "model": "erinium_faction:block/titanium_battery_tier1_4" }
+  }
+}
+

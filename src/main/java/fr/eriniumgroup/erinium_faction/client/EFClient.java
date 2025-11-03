@@ -2,12 +2,13 @@ package fr.eriniumgroup.erinium_faction.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import fr.eriniumgroup.erinium_faction.client.overlay.FactionTitleOverlay;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.features.minimap.MinimapConfig;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen;
 import fr.eriniumgroup.erinium_faction.gui.screens.MinimapFullscreenScreen;
+import fr.eriniumgroup.erinium_faction.gui.screens.TitaniumCompressorScreen;
+import fr.eriniumgroup.erinium_faction.init.EFMenus;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,6 +22,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.util.Locale;
 
@@ -40,6 +42,12 @@ public class EFClient {
     public static void onClientSetup(FMLClientSetupEvent e) {
         // Charger la position de la minimap
         e.enqueueWork(MinimapConfig::loadPosition);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterMenuScreens(RegisterMenuScreensEvent e) {
+        // Enregistrer l’écran de la machine Titanium Compressor via l’event dédié (1.21+)
+        e.register(EFMenus.TITANIUM_COMPRESSOR_MENU.get(), TitaniumCompressorScreen::new);
     }
 
     @SubscribeEvent

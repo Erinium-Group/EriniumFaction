@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": { "all": "erinium_faction:block/titanium_battery_tier_1_3" }
+}

@@ -22,6 +22,9 @@ public class EFItems {
     public static final DeferredHolder<Item, RawTitaniumItem> RAW_TITANIUM = REGISTER.register("raw_titanium", () -> new RawTitaniumItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
     public static final DeferredHolder<Item, TitaniumIngotItem> TITANIUM_INGOT = REGISTER.register("titanium_ingot", () -> new TitaniumIngotItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
 
+    public static final DeferredHolder<Item, SilverPlateItem> SILVER_PLATE = REGISTER.register("silver_plate", () -> new SilverPlateItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
+    public static final DeferredHolder<Item, TitaniumPlateItem> TITANIUM_PLATE = REGISTER.register("titanium_plate", () -> new TitaniumPlateItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
+
     private EFItems() {
     }
 }

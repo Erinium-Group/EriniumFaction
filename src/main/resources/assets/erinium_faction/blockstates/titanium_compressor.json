@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=north,anim=0": { "model": "erinium_faction:block/titanium_compressor" },
+    "facing=south,anim=0": { "model": "erinium_faction:block/titanium_compressor", "y": 180 },
+    "facing=west,anim=0": { "model": "erinium_faction:block/titanium_compressor", "y": 270 },
+    "facing=east,anim=0": { "model": "erinium_faction:block/titanium_compressor", "y": 90 },
+
+    "facing=north,anim=1": { "model": "erinium_faction:block/titanium_compressor_on1" },
+    "facing=south,anim=1": { "model": "erinium_faction:block/titanium_compressor_on1", "y": 180 },
+    "facing=west,anim=1": { "model": "erinium_faction:block/titanium_compressor_on1", "y": 270 },
+    "facing=east,anim=1": { "model": "erinium_faction:block/titanium_compressor_on1", "y": 90 },
+
+    "facing=north,anim=2": { "model": "erinium_faction:block/titanium_compressor_on2" },
+    "facing=south,anim=2": { "model": "erinium_faction:block/titanium_compressor_on2", "y": 180 },
+    "facing=west,anim=2": { "model": "erinium_faction:block/titanium_compressor_on2", "y": 270 },
+    "facing=east,anim=2": { "model": "erinium_faction:block/titanium_compressor_on2", "y": 90 },
+
+    "facing=north,anim=3": { "model": "erinium_faction:block/titanium_compressor_on3" },
+    "facing=south,anim=3": { "model": "erinium_faction:block/titanium_compressor_on3", "y": 180 },
+    "facing=west,anim=3": { "model": "erinium_faction:block/titanium_compressor_on3", "y": 270 },
+    "facing=east,anim=3": { "model": "erinium_faction:block/titanium_compressor_on3", "y": 90 },
+
+    "facing=north,anim=4": { "model": "erinium_faction:block/titanium_compressor_on4" },
+    "facing=south,anim=4": { "model": "erinium_faction:block/titanium_compressor_on4", "y": 180 },
+    "facing=west,anim=4": { "model": "erinium_faction:block/titanium_compressor_on4", "y": 270 },
+    "facing=east,anim=4": { "model": "erinium_faction:block/titanium_compressor_on4", "y": 90 }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [ { "type": "minecraft:item", "name": "erinium_faction:titanium_battery_tier1" } ]
+    }
+  ]
+}
+

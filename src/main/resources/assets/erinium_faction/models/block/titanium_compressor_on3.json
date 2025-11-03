@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "erinium_faction:block/titanium_compressor_side",
+    "down": "erinium_faction:block/titanium_compressor_down",
+    "up": "erinium_faction:block/titanium_compressor_top",
+    "north": "erinium_faction:block/titanium_compressor_face_on3",
+    "south": "erinium_faction:block/titanium_compressor_side",
+    "west": "erinium_faction:block/titanium_compressor_side",
+    "east": "erinium_faction:block/titanium_compressor_side"
+  }
+}
+
