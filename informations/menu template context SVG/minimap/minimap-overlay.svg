@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+  <!-- Minimap Overlay Design - Style Xaero's/JourneyMap -->
+
+  <!-- Background Frame -->
+  <defs>
+    <!-- Gradient pour le fond -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#0d0d0d;stop-opacity:0.95" />
+    </linearGradient>
+
+    <!-- Ombre portée -->
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.5"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Bordure dorée -->
+    <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4af37;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Cadre principal avec ombre -->
+  <g filter="url(#shadow)">
+    <!-- Bordure extérieure dorée -->
+    <rect x="5" y="5" width="230" height="230" rx="8"
+          fill="url(#borderGradient)" />
+
+    <!-- Bordure intérieure noire -->
+    <rect x="8" y="8" width="224" height="224" rx="6"
+          fill="#0a0a0a" />
+
+    <!-- Fond de la minimap -->
+    <rect x="10" y="10" width="220" height="220" rx="4"
+          fill="url(#bgGradient)" />
+  </g>
+
+  <!-- Zone de la carte (ici sera rendu le terrain) -->
+  <g id="mapArea">
+    <!-- Placeholder pour la carte -->
+    <rect x="15" y="35" width="210" height="180" rx="3"
+          fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+
+    <!-- Grille de référence (optionnelle, peut être désactivée) -->
+    <g opacity="0.1">
+      <line x1="120" y1="35" x2="120" y2="215" stroke="#fff" stroke-width="1"/>
+      <line x1="15" y1="125" x2="225" y2="125" stroke="#fff" stroke-width="1"/>
+    </g>
+
+    <!-- Indicateur de direction N/S/E/W -->
+    <text x="120" y="50" text-anchor="middle" font-family="Minecraft" font-size="10" fill="#ffffff" font-weight="bold">N</text>
+    <text x="120" y="212" text-anchor="middle" font-family="Minecraft" font-size="10" fill="#ffffff">S</text>
+    <text x="220" y="128" text-anchor="end" font-family="Minecraft" font-size="10" fill="#ffffff">E</text>
+    <text x="20" y="128" text-anchor="start" font-family="Minecraft" font-size="10" fill="#ffffff">W</text>
+  </g>
+
+  <!-- Joueur (centre de la minimap) -->
+  <g id="playerMarker">
+    <circle cx="120" cy="125" r="4" fill="#00ff00" stroke="#003300" stroke-width="2"/>
+    <!-- Flèche de direction -->
+    <path d="M 120 118 L 123 125 L 120 122 L 117 125 Z" fill="#00ff00" stroke="#003300" stroke-width="1"/>
+  </g>
+
+  <!-- Header avec infos -->
+  <g id="header">
+    <rect x="15" y="15" width="210" height="18" rx="2" fill="#1a1a1a" opacity="0.8"/>
+
+    <!-- Biome -->
+    <text x="20" y="28" font-family="Minecraft" font-size="9" fill="#87CEEB">
+      Plains
+    </text>
+
+    <!-- FPS Counter (en haut à droite) -->
+    <text x="220" y="28" text-anchor="end" font-family="Minecraft" font-size="9" fill="#00ff00">
+      60 FPS
+    </text>
+  </g>
+
+  <!-- Footer avec coordonnées -->
+  <g id="footer">
+    <rect x="15" y="217" width="210" height="18" rx="2" fill="#1a1a1a" opacity="0.8"/>
+
+    <!-- Coordonnées XYZ -->
+    <text x="20" y="230" font-family="Minecraft" font-size="9" fill="#ffffff">
+      X: 123  Y: 64  Z: -456
+    </text>
+
+    <!-- Dimension -->
+    <text x="220" y="230" text-anchor="end" font-family="Minecraft" font-size="9" fill="#d4af37">
+      Overworld
+    </text>
+  </g>
+
+  <!-- Boutons de contrôle (coin supérieur droit) -->
+  <g id="controls" opacity="0.7">
+    <!-- Bouton Zoom + -->
+    <circle cx="210" cy="45" r="8" fill="#2a2a2a" stroke="#d4af37" stroke-width="1.5"/>
+    <text x="210" y="49" text-anchor="middle" font-family="Arial" font-size="10" fill="#ffffff" font-weight="bold">+</text>
+
+    <!-- Bouton Zoom - -->
+    <circle cx="210" cy="60" r="8" fill="#2a2a2a" stroke="#d4af37" stroke-width="1.5"/>
+    <text x="210" y="64" text-anchor="middle" font-family="Arial" font-size="10" fill="#ffffff" font-weight="bold">-</text>
+
+    <!-- Bouton Menu/Settings -->
+    <circle cx="210" cy="75" r="8" fill="#2a2a2a" stroke="#d4af37" stroke-width="1.5"/>
+    <circle cx="210" cy="75" r="1.5" fill="#ffffff"/>
+    <circle cx="206" cy="75" r="1" fill="#ffffff"/>
+    <circle cx="214" cy="75" r="1" fill="#ffffff"/>
+  </g>
+
+  <!-- Indicateur de profondeur (pour les grottes) -->
+  <g id="depthIndicator">
+    <rect x="20" y="40" width="25" height="6" rx="1" fill="#1a1a1a" opacity="0.8"/>
+    <text x="22" y="45" font-family="Minecraft" font-size="7" fill="#ffff00">
+      Y: 64
+    </text>
+  </g>
+
+  <!-- Waypoints/Markers (exemples) -->
+  <g id="waypoints">
+    <!-- Waypoint 1 - Maison -->
+    <g transform="translate(150, 90)">
+      <circle r="5" fill="#ff0000" stroke="#660000" stroke-width="1.5"/>
+      <text y="15" text-anchor="middle" font-family="Minecraft" font-size="7" fill="#ffffff">Home</text>
+    </g>
+
+    <!-- Waypoint 2 - Mine -->
+    <g transform="translate(90, 160)">
+      <circle r="5" fill="#0066ff" stroke="#003366" stroke-width="1.5"/>
+      <text y="15" text-anchor="middle" font-family="Minecraft" font-size="7" fill="#ffffff">Mine</text>
+    </g>
+  </g>
+
+  <!-- Indicateur de déplacement/drag (handle) -->
+  <g id="dragHandle" opacity="0">
+    <rect x="100" y="5" width="40" height="3" rx="1.5" fill="#d4af37"/>
+    <text x="120" y="7" text-anchor="middle" font-family="Minecraft" font-size="6" fill="#ffffff">DRAG</text>
+  </g>
+
+</svg>

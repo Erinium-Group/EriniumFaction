@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,27 +53,49 @@ public record ClaimsMapDataMessage(String dimension, int centerCx, int centerCz,
 
     public static void handleData(final ClaimsMapDataMessage message, final IPayloadContext ctx) {
         if (ctx.flow() == PacketFlow.CLIENTBOUND) {
-            ctx.enqueueWork(() -> fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen.onMapData(message));
+            ctx.enqueueWork(() -> {
+                // Mettre à jour FactionMapScreen
+                fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen.onMapData(message);
+
+                // Mettre à jour le cache de la minimap
+                fr.eriniumgroup.erinium_faction.features.minimap.ClaimRenderHelper.updateClaimsFromPacket(
+                    message.dimension(),
+                    message.centerCx(),
+                    message.centerCz(),
+                    message.relCx(),
+                    message.relCz(),
+                    message.owners()
+                );
+            });
         }
     }
 
     public static void sendTo(ServerPlayer sp, String dim, int centerCx, int centerCz, int radius, List<Map.Entry<ClaimKey, String>> entries) {
-        int n = entries.size();
+        // Filtrer pour n'envoyer QUE les chunks qui ont vraiment un owner
+        List<Map.Entry<ClaimKey, String>> validClaims = new ArrayList<>();
+        for (var e : entries) {
+            String ownerId = e.getValue();
+            if (ownerId != null && !ownerId.isBlank()) {
+                validClaims.add(e);
+            }
+        }
+
+        int n = validClaims.size();
         int[] rx = new int[n];
         int[] rz = new int[n];
         String[] owners = new String[n];
+
         for (int i = 0; i < n; i++) {
-            var e = entries.get(i);
+            var e = validClaims.get(i);
             rx[i] = e.getKey().chunkX() - centerCx;
             rz[i] = e.getKey().chunkZ() - centerCz;
             String ownerId = e.getValue();
-            String friendly = "";
-            if (ownerId != null && !ownerId.isBlank()) {
-                var f = fr.eriniumgroup.erinium_faction.core.faction.FactionManager.getFaction(ownerId);
-                friendly = (f != null) ? f.getName() : ownerId;
-            }
-            owners[i] = friendly;
+
+            // Récupérer le nom de faction
+            var f = fr.eriniumgroup.erinium_faction.core.faction.FactionManager.getFaction(ownerId);
+            owners[i] = (f != null) ? f.getName() : ownerId;
         }
+
         sp.connection.send(new net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket(new ClaimsMapDataMessage(dim, centerCx, centerCz, radius, rx, rz, owners)));
     }
 }

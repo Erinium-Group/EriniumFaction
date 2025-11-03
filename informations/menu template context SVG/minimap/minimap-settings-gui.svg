@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Minimap Settings GUI - Configuration complète -->
+
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#0d0d0d;stop-opacity:0.98" />
+    </linearGradient>
+
+    <!-- Button gradient -->
+    <linearGradient id="btnGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a4a4a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a2a2a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Gold accent gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4af37;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Shadow filter -->
+    <filter id="panelShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="3" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.6"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Main Background -->
+  <rect width="600" height="400" fill="url(#bgGrad)"/>
+
+  <!-- Border -->
+  <rect x="5" y="5" width="590" height="390" rx="10" fill="none" stroke="url(#goldGrad)" stroke-width="3"/>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="15" y="15" width="570" height="40" rx="5" fill="#2a2a2a" filter="url(#panelShadow)"/>
+    <text x="300" y="42" text-anchor="middle" font-family="Minecraft" font-size="20" fill="#ffd700" font-weight="bold">
+      MINIMAP SETTINGS
+    </text>
+
+    <!-- Close button -->
+    <g id="closeBtn">
+      <rect x="550" y="22" width="25" height="25" rx="3" fill="#8b0000" stroke="#ff0000" stroke-width="2"/>
+      <line x1="556" y1="28" x2="569" y2="41" stroke="#ffffff" stroke-width="2"/>
+      <line x1="569" y1="28" x2="556" y2="41" stroke="#ffffff" stroke-width="2"/>
+    </g>
+  </g>
+
+  <!-- Left Panel - Display Settings -->
+  <g id="leftPanel">
+    <rect x="15" y="65" width="280" height="320" rx="5" fill="#1a1a1a" stroke="#d4af37" stroke-width="2" filter="url(#panelShadow)"/>
+
+    <!-- Panel Title -->
+    <text x="155" y="88" text-anchor="middle" font-family="Minecraft" font-size="14" fill="#ffd700" font-weight="bold">
+      DISPLAY OPTIONS
+    </text>
+
+    <!-- Minimap Size -->
+    <g transform="translate(25, 100)">
+      <text x="0" y="15" font-family="Minecraft" font-size="11" fill="#ffffff">Minimap Size:</text>
+      <rect x="0" y="20" width="260" height="8" rx="4" fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+      <rect x="2" y="22" width="130" height="4" rx="2" fill="url(#goldGrad)"/>
+      <circle cx="132" cy="24" r="6" fill="#ffd700" stroke="#d4af37" stroke-width="2"/>
+      <text x="235" y="27" font-family="Minecraft" font-size="10" fill="#87CEEB">150%</text>
+    </g>
+
+    <!-- Zoom Level -->
+    <g transform="translate(25, 145)">
+      <text x="0" y="15" font-family="Minecraft" font-size="11" fill="#ffffff">Zoom Level:</text>
+      <rect x="0" y="20" width="260" height="8" rx="4" fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+      <rect x="2" y="22" width="80" height="4" rx="2" fill="url(#goldGrad)"/>
+      <circle cx="82" cy="24" r="6" fill="#ffd700" stroke="#d4af37" stroke-width="2"/>
+      <text x="235" y="27" font-family="Minecraft" font-size="10" fill="#87CEEB">2x</text>
+    </g>
+
+    <!-- Shape Selection -->
+    <g transform="translate(25, 190)">
+      <text x="0" y="15" font-family="Minecraft" font-size="11" fill="#ffffff">Shape:</text>
+
+      <!-- Square option -->
+      <g id="shapeSquare">
+        <rect x="10" y="20" width="30" height="30" rx="3" fill="#2a2a2a" stroke="#ffd700" stroke-width="2"/>
+        <rect x="15" y="25" width="20" height="20" fill="#d4af37"/>
+        <text x="25" y="65" text-anchor="middle" font-family="Minecraft" font-size="9" fill="#ffffff">Square</text>
+      </g>
+
+      <!-- Circle option -->
+      <g id="shapeCircle" opacity="0.5">
+        <rect x="90" y="20" width="30" height="30" rx="3" fill="#2a2a2a" stroke="#444" stroke-width="2"/>
+        <circle cx="105" cy="35" r="10" fill="#666"/>
+        <text x="105" y="65" text-anchor="middle" font-family="Minecraft" font-size="9" fill="#888">Circle</text>
+      </g>
+    </g>
+
+    <!-- Toggle Options -->
+    <g transform="translate(25, 270)">
+      <!-- Show Waypoints -->
+      <g>
+        <rect x="0" y="0" width="20" height="12" rx="6" fill="#00aa00" stroke="#006600" stroke-width="2"/>
+        <circle cx="14" cy="6" r="4" fill="#ffffff"/>
+        <text x="25" y="10" font-family="Minecraft" font-size="10" fill="#ffffff">Show Waypoints</text>
+      </g>
+
+      <!-- Show Grid -->
+      <g transform="translate(0, 20)">
+        <rect x="0" y="0" width="20" height="12" rx="6" fill="#aa0000" stroke="#660000" stroke-width="2"/>
+        <circle cx="6" cy="6" r="4" fill="#ffffff"/>
+        <text x="25" y="10" font-family="Minecraft" font-size="10" fill="#ffffff">Show Grid</text>
+      </g>
+
+      <!-- Show Coordinates -->
+      <g transform="translate(0, 40)">
+        <rect x="0" y="0" width="20" height="12" rx="6" fill="#00aa00" stroke="#006600" stroke-width="2"/>
+        <circle cx="14" cy="6" r="4" fill="#ffffff"/>
+        <text x="25" y="10" font-family="Minecraft" font-size="10" fill="#ffffff">Show Coordinates</text>
+      </g>
+
+      <!-- Show Biome -->
+      <g transform="translate(0, 60)">
+        <rect x="0" y="0" width="20" height="12" rx="6" fill="#00aa00" stroke="#006600" stroke-width="2"/>
+        <circle cx="14" cy="6" r="4" fill="#ffffff"/>
+        <text x="25" y="10" font-family="Minecraft" font-size="10" fill="#ffffff">Show Biome</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right Panel - Advanced Settings -->
+  <g id="rightPanel">
+    <rect x="305" y="65" width="280" height="320" rx="5" fill="#1a1a1a" stroke="#d4af37" stroke-width="2" filter="url(#panelShadow)"/>
+
+    <!-- Panel Title -->
+    <text x="445" y="88" text-anchor="middle" font-family="Minecraft" font-size="14" fill="#ffd700" font-weight="bold">
+      ADVANCED OPTIONS
+    </text>
+
+    <!-- Cave Rendering -->
+    <g transform="translate(315, 100)">
+      <text x="0" y="15" font-family="Minecraft" font-size="11" fill="#ffffff">Cave Rendering:</text>
+
+      <g transform="translate(0, 20)">
+        <rect x="0" y="0" width="20" height="12" rx="6" fill="#00aa00" stroke="#006600" stroke-width="2"/>
+        <circle cx="14" cy="6" r="4" fill="#ffffff"/>
+        <text x="25" y="10" font-family="Minecraft" font-size="10" fill="#ffffff">Show Caves Underground</text>
+      </g>
+
+      <g transform="translate(0, 25)">
+        <text x="0" y="15" font-family="Minecraft" font-size="9" fill="#87CEEB">
+          Depth Layers: 5
+        </text>
+      </g>
+    </g>
+
+    <!-- Update Frequency -->
+    <g transform="translate(315, 165)">
+      <text x="0" y="15" font-family="Minecraft" font-size="11" fill="#ffffff">Update Frequency:</text>
+      <rect x="0" y="20" width="260" height="8" rx="4" fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+      <rect x="2" y="22" width="200" height="4" rx="2" fill="url(#goldGrad)"/>
+      <circle cx="202" cy="24" r="6" fill="#ffd700" stroke="#d4af37" stroke-width="2"/>
+      <text x="235" y="27" font-family="Minecraft" font-size="10" fill="#87CEEB">60 FPS</text>
+    </g>
+
+    <!-- Render Distance -->
+    <g transform="translate(315, 205)">
+      <text x="0" y="15" font-family="Minecraft" font-size="11" fill="#ffffff">Render Distance:</text>
+      <rect x="0" y="20" width="260" height="8" rx="4" fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+      <rect x="2" y="22" width="100" height="4" rx="2" fill="url(#goldGrad)"/>
+      <circle cx="102" cy="24" r="6" fill="#ffd700" stroke="#d4af37" stroke-width="2"/>
+      <text x="235" y="27" font-family="Minecraft" font-size="10" fill="#87CEEB">128 blocks</text>
+    </g>
+
+    <!-- Performance Mode -->
+    <g transform="translate(315, 245)">
+      <text x="0" y="15" font-family="Minecraft" font-size="11" fill="#ffffff">Performance:</text>
+
+      <g transform="translate(0, 20)">
+        <rect x="0" y="0" width="20" height="12" rx="6" fill="#00aa00" stroke="#006600" stroke-width="2"/>
+        <circle cx="14" cy="6" r="4" fill="#ffffff"/>
+        <text x="25" y="10" font-family="Minecraft" font-size="10" fill="#ffffff">High Performance Mode</text>
+      </g>
+
+      <g transform="translate(0, 25)">
+        <text x="0" y="15" font-family="Minecraft" font-size="8" fill="#888">
+          Uses chunk caching and async rendering
+        </text>
+      </g>
+    </g>
+
+    <!-- Position Lock -->
+    <g transform="translate(315, 300)">
+      <g>
+        <rect x="0" y="0" width="20" height="12" rx="6" fill="#aa0000" stroke="#660000" stroke-width="2"/>
+        <circle cx="6" cy="6" r="4" fill="#ffffff"/>
+        <text x="25" y="10" font-family="Minecraft" font-size="10" fill="#ffffff">Lock Position</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Bottom Buttons -->
+  <g id="bottomButtons">
+    <!-- Reset to Default -->
+    <g id="resetBtn">
+      <rect x="150" y="350" width="120" height="30" rx="4" fill="url(#btnGrad)" stroke="#aa0000" stroke-width="2"/>
+      <text x="210" y="372" text-anchor="middle" font-family="Minecraft" font-size="12" fill="#ffffff">RESET</text>
+    </g>
+
+    <!-- Save & Apply -->
+    <g id="saveBtn">
+      <rect x="330" y="350" width="120" height="30" rx="4" fill="url(#btnGrad)" stroke="#00aa00" stroke-width="2"/>
+      <text x="390" y="372" text-anchor="middle" font-family="Minecraft" font-size="12" fill="#ffffff">APPLY</text>
+    </g>
+  </g>
+
+  <!-- Preview Panel (mini) -->
+  <g id="preview">
+    <text x="300" y="345" text-anchor="middle" font-family="Minecraft" font-size="9" fill="#87CEEB">
+      Preview updates in real-time
+    </text>
+  </g>
+
+</svg>

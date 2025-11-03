@@ -2,14 +2,14 @@ package fr.eriniumgroup.erinium_faction.common.network.packets;
 
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.init.EFMenus;
-import fr.eriniumgroup.erinium_faction.init.EFScreens;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record MenuStateUpdateMessage(int elementType, String name, Object elementState) implements CustomPacketPayload {
@@ -60,13 +60,22 @@ public record MenuStateUpdateMessage(int elementType, String name, Object elemen
         context.enqueueWork(() -> {
             if (context.player().containerMenu instanceof EFMenus.MenuAccessor menu) {
                 menu.getMenuState().put(message.elementType + ":" + message.name, message.elementState);
-                if (context.flow() == PacketFlow.CLIENTBOUND && Minecraft.getInstance().screen instanceof EFScreens.ScreenAccessor accessor) {
-                    accessor.updateMenuState(message.elementType, message.name, message.elementState);
+                if (context.flow() == PacketFlow.CLIENTBOUND && FMLEnvironment.dist == Dist.CLIENT) {
+                    ClientHandler.updateScreen(message.elementType, message.name, message.elementState);
                 }
             }
         }).exceptionally(e -> {
             context.connection().disconnect(Component.literal(e.getMessage()));
             return null;
         });
+    }
+
+    // Classe interne statique qui ne sera chargée que côté client
+    private static class ClientHandler {
+        static void updateScreen(int elementType, String name, Object elementState) {
+            if (net.minecraft.client.Minecraft.getInstance().screen instanceof fr.eriniumgroup.erinium_faction.init.EFScreens.ScreenAccessor accessor) {
+                accessor.updateMenuState(elementType, name, elementState);
+            }
+        }
     }
 }

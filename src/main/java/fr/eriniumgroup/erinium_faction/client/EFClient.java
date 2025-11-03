@@ -5,7 +5,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import fr.eriniumgroup.erinium_faction.client.overlay.FactionTitleOverlay;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.core.EFC;
+import fr.eriniumgroup.erinium_faction.features.minimap.MinimapConfig;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen;
+import fr.eriniumgroup.erinium_faction.gui.screens.MinimapFullscreenScreen;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,6 +27,9 @@ import java.util.Locale;
 @EventBusSubscriber(modid = EFC.MODID, value = Dist.CLIENT)
 public class EFClient {
     public static KeyMapping OPEN_MAP;
+    public static KeyMapping OPEN_MINIMAP;
+    public static KeyMapping ZOOM_IN_MINIMAP;
+    public static KeyMapping ZOOM_OUT_MINIMAP;
 
     // Zone cliquable du bouton HUD courant
     private static int btnX, btnY, btnS;
@@ -33,7 +38,8 @@ public class EFClient {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent e) {
-        // Rien pour l’instant
+        // Charger la position de la minimap
+        e.enqueueWork(MinimapConfig::loadPosition);
     }
 
     @SubscribeEvent
@@ -42,6 +48,17 @@ public class EFClient {
         int code = resolveDefaultKeyFromConfig();
         OPEN_MAP = new KeyMapping("key.erinium_faction.map", type, code, "key.categories.erinium_faction");
         e.register(OPEN_MAP);
+
+        // Touche pour ouvrir la minimap fullscreen (par défaut N)
+        OPEN_MINIMAP = new KeyMapping("key.erinium_faction.minimap", type, InputConstants.KEY_N, "key.categories.erinium_faction");
+        e.register(OPEN_MINIMAP);
+
+        // Touches pour zoomer/dézoomer la minimap (par défaut + et -)
+        ZOOM_IN_MINIMAP = new KeyMapping("key.erinium_faction.minimap.zoom_in", type, InputConstants.KEY_EQUALS, "key.categories.erinium_faction");
+        e.register(ZOOM_IN_MINIMAP);
+
+        ZOOM_OUT_MINIMAP = new KeyMapping("key.erinium_faction.minimap.zoom_out", type, InputConstants.KEY_MINUS, "key.categories.erinium_faction");
+        e.register(ZOOM_OUT_MINIMAP);
     }
 
     private static int resolveDefaultKeyFromConfig() {
@@ -82,6 +99,18 @@ public class EFClient {
         if (mc.player == null) return;
         if (allowKeyOpen() && OPEN_MAP != null && mc.screen == null && OPEN_MAP.consumeClick()) {
             mc.setScreen(new FactionMapScreen());
+        }
+        // Touche minimap
+        if (OPEN_MINIMAP != null && mc.screen == null && OPEN_MINIMAP.consumeClick()) {
+            mc.setScreen(new MinimapFullscreenScreen());
+        }
+
+        // Zoom minimap
+        if (ZOOM_IN_MINIMAP != null && mc.screen == null && ZOOM_IN_MINIMAP.consumeClick()) {
+            MinimapConfig.increaseZoom();
+        }
+        if (ZOOM_OUT_MINIMAP != null && mc.screen == null && ZOOM_OUT_MINIMAP.consumeClick()) {
+            MinimapConfig.decreaseZoom();
         }
     }
 
@@ -213,12 +242,10 @@ public class EFClient {
 
     @SubscribeEvent
     public static void onMouseButton(InputEvent.MouseButton.Pre e) {
-        if (!allowButtonOpen()) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null) return;
         if (mc.screen != null) return;
-        if (EFClientConfig.MAP_BUTTON_HIDE_IN_DEBUG.get() && isDebugOverlayActive(mc)) return;
-        if (e.getAction() != 1) return; // GLFW_PRESS
+
         // Convertir les coordonnées curseur -> espace GUI
         double rawX = mc.mouseHandler.xpos();
         double rawY = mc.mouseHandler.ypos();
@@ -228,9 +255,70 @@ public class EFClient {
         int gh = mc.getWindow().getGuiScaledHeight();
         double mx = rawX * gw / Math.max(1, sw);
         double my = rawY * gh / Math.max(1, sh);
-        if (mx >= btnX && mx < btnX + btnS && my >= btnY && my < btnY + btnS) {
-            mc.setScreen(new FactionMapScreen());
-            e.setCanceled(true);
+
+        // Drag minimap avec SHIFT + clic gauche
+        if (e.getButton() == 0) { // Left click
+            int minimapX = MinimapConfig.minimapX;
+            int minimapY = MinimapConfig.minimapY;
+            int minimapSize = MinimapConfig.MINIMAP_FRAME_SIZE;
+
+            if (mx >= minimapX && mx < minimapX + minimapSize &&
+                my >= minimapY && my < minimapY + minimapSize) {
+
+                if (mc.options.keyShift.isDown()) { // SHIFT pressed
+                    if (e.getAction() == 1) { // PRESS
+                        MinimapConfig.isDraggingMinimap = true;
+                        MinimapConfig.dragOffsetX = (int) (mx - minimapX);
+                        MinimapConfig.dragOffsetY = (int) (my - minimapY);
+                        e.setCanceled(true);
+                        return;
+                    }
+                }
+            }
         }
+
+        // Map button
+        if (allowButtonOpen() && !MinimapConfig.isDraggingMinimap) {
+            if (EFClientConfig.MAP_BUTTON_HIDE_IN_DEBUG.get() && isDebugOverlayActive(mc)) return;
+            if (e.getAction() != 1) return; // GLFW_PRESS
+            if (mx >= btnX && mx < btnX + btnS && my >= btnY && my < btnY + btnS) {
+                mc.setScreen(new FactionMapScreen());
+                e.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMouseRelease(InputEvent.MouseButton.Post e) {
+        if (e.getButton() == 0 && e.getAction() == 0) { // Left button released
+            if (MinimapConfig.isDraggingMinimap) {
+                MinimapConfig.isDraggingMinimap = false;
+                MinimapConfig.savePosition();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onClientTick2(ClientTickEvent.Post e) {
+        if (!MinimapConfig.isDraggingMinimap) return;
+
+        Minecraft mc = Minecraft.getInstance();
+        if (mc == null || mc.screen != null) return;
+
+        double rawX = mc.mouseHandler.xpos();
+        double rawY = mc.mouseHandler.ypos();
+        int sw = mc.getWindow().getScreenWidth();
+        int sh = mc.getWindow().getScreenHeight();
+        int gw = mc.getWindow().getGuiScaledWidth();
+        int gh = mc.getWindow().getGuiScaledHeight();
+        double mx = rawX * gw / Math.max(1, sw);
+        double my = rawY * gh / Math.max(1, sh);
+
+        MinimapConfig.minimapX = (int) (mx - MinimapConfig.dragOffsetX);
+        MinimapConfig.minimapY = (int) (my - MinimapConfig.dragOffsetY);
+
+        // Limiter aux bords de l'écran
+        MinimapConfig.minimapX = Math.max(0, Math.min(MinimapConfig.minimapX, gw - MinimapConfig.MINIMAP_FRAME_SIZE));
+        MinimapConfig.minimapY = Math.max(0, Math.min(MinimapConfig.minimapY, gh - MinimapConfig.MINIMAP_FRAME_SIZE));
     }
 }

@@ -4,6 +4,8 @@ import fr.eriniumgroup.erinium_faction.common.config.JobsConfigManager;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -16,12 +18,20 @@ public class JobsPacketHandler {
      * Handler pour la synchronisation des données (Serveur -> Client)
      */
     public static void handleSyncJobsData(SyncJobsDataPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            if (context.player() != null) {
-                // Mettre à jour les données côté client
-                JobsClientData.setClientData(packet.data());
-            }
-        });
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            context.enqueueWork(() -> ClientHandler.handleJobsData(packet));
+        }
+    }
+
+    // Classe interne statique qui ne sera chargée que côté client
+    private static class ClientHandler {
+        static void handleJobsData(SyncJobsDataPacket packet) {
+            // Désérialiser les données depuis le CompoundTag
+            fr.eriniumgroup.erinium_faction.features.jobs.data.JobsData data = new fr.eriniumgroup.erinium_faction.features.jobs.data.JobsData();
+            data.deserializeNBT(packet.dataTag());
+            // Mettre à jour les données côté client
+            JobsClientData.setClientData(data);
+        }
     }
 
     /**
@@ -43,7 +53,9 @@ public class JobsPacketHandler {
      */
     public static void syncJobsData(ServerPlayer player) {
         var data = player.getData(JobsDataAttachment.JOBS_DATA);
-        PacketDistributor.sendToPlayer(player, new SyncJobsDataPacket(data.copy()));
+        // Sérialiser en NBT pour éviter les problèmes de classloading
+        var nbt = data.copy().serializeNBT();
+        PacketDistributor.sendToPlayer(player, new SyncJobsDataPacket(nbt));
     }
 
     /**

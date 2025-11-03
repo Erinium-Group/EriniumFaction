@@ -1,7 +1,6 @@
 package fr.eriniumgroup.erinium_faction.common.network.packets;
 
 import fr.eriniumgroup.erinium_faction.EriniumFaction;
-import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -13,29 +12,19 @@ import javax.annotation.Nonnull;
 
 /**
  * Paquet pour synchroniser les données de métiers du serveur vers le client
+ * Transmet les données sous forme de CompoundTag brut pour éviter les problèmes de classloading
  */
-public record SyncJobsDataPacket(JobsData data) implements CustomPacketPayload {
+public record SyncJobsDataPacket(CompoundTag dataTag) implements CustomPacketPayload {
 
     public static final Type<SyncJobsDataPacket> TYPE = new Type<>(
         ResourceLocation.fromNamespaceAndPath(EriniumFaction.MODID, "sync_jobs_data")
     );
 
-    public static final StreamCodec<ByteBuf, SyncJobsDataPacket> STREAM_CODEC = new StreamCodec<>() {
-        @Nonnull
-        @Override
-        public SyncJobsDataPacket decode(@Nonnull ByteBuf buffer) {
-            CompoundTag tag = ByteBufCodecs.COMPOUND_TAG.decode(buffer);
-            JobsData data = new JobsData();
-            data.deserializeNBT(tag);
-            return new SyncJobsDataPacket(data);
-        }
-
-        @Override
-        public void encode(@Nonnull ByteBuf buffer, @Nonnull SyncJobsDataPacket packet) {
-            CompoundTag tag = packet.data.serializeNBT();
-            ByteBufCodecs.COMPOUND_TAG.encode(buffer, tag);
-        }
-    };
+    public static final StreamCodec<ByteBuf, SyncJobsDataPacket> STREAM_CODEC = StreamCodec.composite(
+        ByteBufCodecs.COMPOUND_TAG,
+        SyncJobsDataPacket::dataTag,
+        SyncJobsDataPacket::new
+    );
 
     @Nonnull
     @Override

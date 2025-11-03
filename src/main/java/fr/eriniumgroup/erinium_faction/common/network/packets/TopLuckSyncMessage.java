@@ -1,12 +1,13 @@
 package fr.eriniumgroup.erinium_faction.common.network.packets;
 
 import fr.eriniumgroup.erinium_faction.core.EFC;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -73,10 +74,18 @@ public record TopLuckSyncMessage(List<CategoryEntry> categories, List<BlockEntry
 
     public static void handleData(final TopLuckSyncMessage msg, final IPayloadContext ctx) {
         if (ctx.flow() == PacketFlow.CLIENTBOUND) {
-            ctx.enqueueWork(() -> {
-                Minecraft mc = Minecraft.getInstance();
-                mc.setScreen(new fr.eriniumgroup.erinium_faction.gui.screens.TopLuckScreen(msg));
-            });
+            // Appeler le handler client via une classe séparée pour éviter de charger Screen sur le serveur
+            if (FMLEnvironment.dist == Dist.CLIENT) {
+                ctx.enqueueWork(() -> ClientHandler.handle(msg));
+            }
+        }
+    }
+
+    // Classe interne statique qui ne sera chargée que côté client
+    private static class ClientHandler {
+        static void handle(TopLuckSyncMessage msg) {
+            net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+            mc.setScreen(new fr.eriniumgroup.erinium_faction.gui.screens.TopLuckScreen(msg));
         }
     }
 

@@ -3,11 +3,10 @@ package fr.eriniumgroup.erinium_faction.common.network.packets;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionSnapshot;
-import fr.eriniumgroup.erinium_faction.gui.screens.FactionClientData;
-import fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen;
 import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -20,16 +19,23 @@ public class FactionDataPacketHandler {
      * Handler côté client pour recevoir les données de faction
      */
     public static void handleFactionData(FactionDataPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            context.enqueueWork(() -> ClientHandler.handle(packet));
+        }
+    }
+
+    // Classe interne statique qui ne sera chargée que côté client
+    private static class ClientHandler {
+        static void handle(FactionDataPacket packet) {
             // Stocker les données dans le système client
-            FactionClientData.setFactionData(packet.snapshot());
+            fr.eriniumgroup.erinium_faction.gui.screens.FactionClientData.setFactionData(packet.snapshot());
 
             // Si le GUI de faction est ouvert, le mettre à jour
-            var minecraft = Minecraft.getInstance();
-            if (minecraft.screen instanceof FactionMenuScreen screen) {
+            var minecraft = net.minecraft.client.Minecraft.getInstance();
+            if (minecraft.screen instanceof fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen screen) {
                 screen.updateFactionData(packet.snapshot());
             }
-        });
+        }
     }
 
     /**

@@ -122,6 +122,9 @@ public class EriniumFaction {
         fr.eriniumgroup.erinium_faction.core.faction.RankDefaultsSavedData.bootstrapAndApply(event.getServer());
         // Charger les configurations des métiers
         JobsConfigManager.init();
+        // Charger les waypoints
+        fr.eriniumgroup.erinium_faction.features.minimap.WaypointServerManager.load(event.getServer());
+        EFC.log.info("§aWaypoint system §7initialized");
     }
 
     private void onServerStopping(ServerStoppingEvent event) {
