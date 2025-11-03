@@ -1,13 +1,13 @@
 {
   "type": "minecraft:blasting",
   "category": "erinium_faction",
-  "group": "silver_ingot",
+  "group": "titanium_ingot",
   "ingredient": {
-    "tag": "forge:ores/silver"
+    "tag": "forge:ores/titanium"
   },
   "result": {
-    "id": "erinium_faction:silver_ingot"
+    "id": "erinium_faction:titanium_ingot"
   },
-  "experience": 1.0,
+  "experience": 1.1,
   "cookingtime": 100
 }

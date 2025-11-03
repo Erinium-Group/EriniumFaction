@@ -1,12 +1,14 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "erinium_faction",
+  "group": "silver_ingot",
   "ingredients": [
     {
       "item": "erinium_faction:silver_block"
     }
   ],
   "result": {
-    "item": "erinium_faction:silver_ingot",
+    "id": "erinium_faction:silver_ingot",
     "count": 9
   }
 }

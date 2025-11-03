@@ -3,10 +3,10 @@
   "category": "erinium_faction",
   "group": "silver_ingot",
   "ingredient": {
-    "item": "erinum_faction:raw_silver"
+    "item": "erinium_faction:raw_silver"
   },
   "result": {
-    "item": "erinium_faction:silver_ingot"
+    "id": "erinium_faction:silver_ingot"
   },
   "experience": 1.0,
   "cookingtime": 100

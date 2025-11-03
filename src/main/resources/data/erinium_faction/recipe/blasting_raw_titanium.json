@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "erinium_faction",
+  "group": "titanium_ingot",
+  "ingredient": {
+    "item": "erinium_faction:raw_titanium"
+  },
+  "result": {
+    "id": "erinium_faction:titanium_ingot"
+  },
+  "experience": 1.1,
+  "cookingtime": 100
+}
