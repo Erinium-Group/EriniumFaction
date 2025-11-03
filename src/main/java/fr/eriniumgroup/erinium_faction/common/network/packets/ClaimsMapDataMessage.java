@@ -56,16 +56,6 @@ public record ClaimsMapDataMessage(String dimension, int centerCx, int centerCz,
             ctx.enqueueWork(() -> {
                 // Mettre à jour FactionMapScreen
                 fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen.onMapData(message);
-
-                // Mettre à jour le cache de la minimap
-                fr.eriniumgroup.erinium_faction.features.minimap.ClaimRenderHelper.updateClaimsFromPacket(
-                    message.dimension(),
-                    message.centerCx(),
-                    message.centerCz(),
-                    message.relCx(),
-                    message.relCz(),
-                    message.owners()
-                );
             });
         }
     }

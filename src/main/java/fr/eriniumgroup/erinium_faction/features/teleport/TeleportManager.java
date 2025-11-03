@@ -31,5 +31,4 @@ public class TeleportManager {
     // - Cancel on movement
     // - Teleport requests between players
     // - Random teleportation
-    // - Waypoints system
 }
