@@ -29,6 +29,9 @@ public final class EFClientConfig {
     public static final ModConfigSpec.IntValue NAME_MAX_LENGTH;
     public static final ModConfigSpec.IntValue DESCRIPTION_MAX_LENGTH;
 
+    // Waypoints
+    public static final ModConfigSpec.IntValue WAYPOINT_MAX_OVERLAY_DISTANCE;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
         b.push("keybinds");
@@ -62,6 +65,11 @@ public final class EFClientConfig {
         b.push("factionFields");
         NAME_MAX_LENGTH = b.comment("Nombre max de caractères pour le nom de faction").defineInRange("nameMaxLength", 16, 1, 64);
         DESCRIPTION_MAX_LENGTH = b.comment("Nombre max de caractères pour la description de faction").defineInRange("descriptionMaxLength", 150, 1, 500);
+        b.pop();
+
+        b.push("waypoints");
+        WAYPOINT_MAX_OVERLAY_DISTANCE = b.comment("Distance maximale (en blocs) pour afficher les waypoints dans l'overlay HUD")
+                .defineInRange("maxOverlayDistance", 500, 0, 10000);
         b.pop();
 
         SPEC = b.build();

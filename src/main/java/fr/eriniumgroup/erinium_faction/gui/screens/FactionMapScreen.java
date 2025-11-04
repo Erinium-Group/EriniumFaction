@@ -1,6 +1,8 @@
 package fr.eriniumgroup.erinium_faction.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.eriniumgroup.erinium_faction.client.waypoint.Waypoint;
+import fr.eriniumgroup.erinium_faction.client.waypoint.WaypointManager;
 import fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage;
 import fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage;
 import net.minecraft.ChatFormatting;
@@ -82,9 +84,22 @@ public class FactionMapScreen extends Screen {
     protected void init() {
         super.init();
 
-        // Bouton settings en haut à droite du cadre
+        // Mettre à jour le layout pour avoir les bonnes coordonnées
         updateLayoutCache();
         int btnSize = 20;
+
+        // Bouton waypoints sur le côté gauche
+        int waypointBtnX = cachedX0 - 90;
+        int waypointBtnY = cachedY0;
+        Button waypointBtn = Button.builder(Component.literal("Waypoints"), b -> {
+            WaypointManager manager = fr.eriniumgroup.erinium_faction.client.EFClient.getWaypointManager();
+            if (manager != null) {
+                this.minecraft.setScreen(new WaypointListScreen(this, manager));
+            }
+        }).bounds(waypointBtnX, waypointBtnY, 80, 20).build();
+        this.addRenderableWidget(waypointBtn);
+
+        // Bouton settings en haut à droite du cadre
         int btnX = cachedX0 + cachedMapWidth - btnSize - 4;
         int btnY = cachedY0 - 24;
 
@@ -453,6 +468,43 @@ public class FactionMapScreen extends Screen {
         // Afficher le menu contextuel
         if (contextMenu != null && contextMenu.isVisible()) {
             contextMenu.render(g, mouseX, mouseY);
+        }
+
+        // Render waypoints
+        WaypointManager waypointManager = fr.eriniumgroup.erinium_faction.client.EFClient.getWaypointManager();
+        if (waypointManager != null && p != null) {
+            String dimension = p.level().dimension().location().toString();
+            List<Waypoint> waypoints = waypointManager.getVisibleWaypointsForDimension(dimension);
+
+            for (Waypoint wp : waypoints) {
+                // Convertir position monde vers position chunk
+                int wpChunkX = wp.getX() >> 4;
+                int wpChunkZ = wp.getZ() >> 4;
+
+                // Position relative au centre
+                int relX = wpChunkX - cx0;
+                int relZ = wpChunkZ - cz0;
+
+                // Position dans la grille
+                int gx = relX + halfVisibleX;
+                int gz = relZ + halfVisibleZ;
+
+                // Vérifier si visible dans le cadre
+                if (gx >= 0 && gx < visibleChunksX && gz >= 0 && gz < visibleChunksZ) {
+                    int wx = gridX0 + gx * cell + cell / 2;
+                    int wy = gridY0 + gz * cell + cell / 2;
+
+                    // Dessiner un point
+                    int dotSize = Math.max(4, cell / 3);
+                    g.fill(wx - dotSize / 2, wy - dotSize / 2, wx + dotSize / 2, wy + dotSize / 2, wp.getColorARGB());
+
+                    // Bordure noire pour contraste
+                    g.fill(wx - dotSize / 2 - 1, wy - dotSize / 2 - 1, wx + dotSize / 2 + 1, wy - dotSize / 2, 0xFF000000);
+                    g.fill(wx - dotSize / 2 - 1, wy + dotSize / 2, wx + dotSize / 2 + 1, wy + dotSize / 2 + 1, 0xFF000000);
+                    g.fill(wx - dotSize / 2 - 1, wy - dotSize / 2, wx - dotSize / 2, wy + dotSize / 2, 0xFF000000);
+                    g.fill(wx + dotSize / 2, wy - dotSize / 2, wx + dotSize / 2 + 1, wy + dotSize / 2, 0xFF000000);
+                }
+            }
         }
 
         RenderSystem.disableBlend();
