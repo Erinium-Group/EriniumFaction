@@ -37,7 +37,7 @@ public class EFRManager {
         public String id;                // identifiant unique (ex: "default", "vip")
         public String displayName;       // nom visible (ex: "VIP")
         public int priority;             // plus grand = plus haut
-        public Set<String> permissions;  // ex: ["ef.rank.manage", "kit.vip"]
+        public Set<String> permissions;  // ex: ["ef.rank.manage", "kit.vip", "ef.home.max:3"]
         public String prefix;            // optionnel pour futur affichage
         public String suffix;            // optionnel
 
@@ -316,14 +316,93 @@ public class EFRManager {
         if (!overrides.isEmpty()) {
             if (overrides.contains("*")) return true;
             if (overrides.contains(node)) return true;
+            if (hasPermissionWithValue(overrides, node)) return true;
             if (matchWildcard(overrides, node)) return true;
         }
         // Check rank
         if (r == null) return false;
         if (r.permissions.contains("*")) return true;
         if (r.permissions.contains(node)) return true;
+        if (hasPermissionWithValue(r.permissions, node)) return true;
         if (matchWildcard(r.permissions, node)) return true;
         return false;
+    }
+
+    /**
+     * Vérifie si une permission avec une valeur existe dans l'ensemble de permissions.
+     * Par exemple, si perms contient "ef.home.max:3" et node est "ef.home.max", retourne true.
+     */
+    private boolean hasPermissionWithValue(Set<String> perms, String node) {
+        for (String perm : perms) {
+            if (perm.startsWith(node + ":")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Récupère la valeur d'une permission sous forme de Double.
+     * Retourne null si la permission n'existe pas ou n'a pas de valeur.
+     *
+     * @param player Le joueur
+     * @param node Le nœud de permission (ex: "ef.home.max")
+     * @return La valeur en Double, ou null si non trouvée
+     */
+    public Double getPermissionValueDouble(ServerPlayer player, String node) {
+        if (player == null || node == null || node.isBlank()) return null;
+
+        Rank r;
+        Set<String> overrides;
+        synchronized (this) {
+            r = getPlayerRank(player.getUUID());
+            overrides = listPlayerPermissions(player.getUUID());
+        }
+
+        // Check overrides joueur d'abord (priorité)
+        if (!overrides.isEmpty()) {
+            Double val = extractPermissionValue(overrides, node);
+            if (val != null) return val;
+        }
+
+        // Check rank
+        if (r != null) {
+            Double val = extractPermissionValue(r.permissions, node);
+            if (val != null) return val;
+        }
+
+        return null;
+    }
+
+    /**
+     * Récupère la valeur d'une permission sous forme d'Integer.
+     * Retourne null si la permission n'existe pas ou n'a pas de valeur.
+     *
+     * @param player Le joueur
+     * @param node Le nœud de permission (ex: "ef.home.max")
+     * @return La valeur en Integer, ou null si non trouvée
+     */
+    public Integer getPermissionValueInt(ServerPlayer player, String node) {
+        Double val = getPermissionValueDouble(player, node);
+        return val == null ? null : val.intValue();
+    }
+
+    /**
+     * Extrait la valeur numérique d'une permission depuis un ensemble de permissions.
+     * Cherche une permission au format "node:valeur" (ex: "ef.home.max:3")
+     */
+    private Double extractPermissionValue(Set<String> perms, String node) {
+        for (String perm : perms) {
+            if (perm.startsWith(node + ":")) {
+                String valuePart = perm.substring(node.length() + 1);
+                try {
+                    return Double.parseDouble(valuePart);
+                } catch (NumberFormatException e) {
+                    // Ignorer les valeurs non numériques
+                }
+            }
+        }
+        return null;
     }
 
     private boolean matchWildcard(Set<String> perms, String node) {
@@ -356,11 +435,44 @@ public class EFRManager {
         Set<String> set = new HashSet<>();
         for (Rank r : ranks.values()) if (r.permissions != null) set.addAll(r.permissions);
         for (Set<String> s : playerOverrides.values()) set.addAll(s);
-        // quelques bases utiles
+
+        // Permissions de base joueur
         set.add("player.place");
         set.add("player.break");
         set.add("player.interact");
+        set.add("player.*");
+
+        // Permissions de commandes serveur
         set.add("server.command.*");
+
+        // Permissions EF Admin
+        set.add("ef.admin");
+        set.add("ef.rank.admin");
+        set.add("ef.economy.admin");
+        set.add("ef.playerlevel.admin");
+        set.add("ef.topluck.admin");
+        set.add("ef.topluck.config");
+        set.add("ef.antixray.admin");
+
+        // Permissions faction
+        set.add("ef.faction.*");
+        set.add("ef.faction.desc");
+        set.add("ef.faction.bank.deposit");
+        set.add("ef.faction.bank.withdraw");
+        set.add("ef.faction.home.tp");
+        set.add("ef.faction.home.set");
+        set.add("ef.faction.warp.tp");
+        set.add("ef.faction.warp.add");
+        set.add("ef.faction.warp.del");
+
+        // Permissions avec valeurs (exemples)
+        set.add("ef.home.max:3");
+        set.add("ef.warp.max:5");
+        set.add("ef.xp.multiplier:1.5");
+
+        // Permissions exemple kits
+        set.add("efr.example.kit.vip");
+
         return set;
     }
 }

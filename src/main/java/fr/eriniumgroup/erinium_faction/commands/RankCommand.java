@@ -15,8 +15,19 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class RankCommand {
+    private static boolean hasServerPerm(CommandSourceStack src, String node) {
+        try {
+            if (src.hasPermission(2)) return true; // OP
+            net.minecraft.server.level.ServerPlayer sp = src.getPlayer();
+            if (sp == null) return true; // console autorisée
+            return fr.eriniumgroup.erinium_faction.core.permissions.EFPerms.has(sp, node);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> d) {
-        d.register(Commands.literal("rank").requires(src -> src.hasPermission(2))
+        d.register(Commands.literal("rank").requires(src -> hasServerPerm(src, "ef.rank.admin"))
                 .then(Commands.literal("create").then(Commands.argument("id", StringArgumentType.word()).then(Commands.argument("display", StringArgumentType.greedyString()).executes(ctx -> {
                     String id = StringArgumentType.getString(ctx, "id").toLowerCase(Locale.ROOT);
                     String display = StringArgumentType.getString(ctx, "display");

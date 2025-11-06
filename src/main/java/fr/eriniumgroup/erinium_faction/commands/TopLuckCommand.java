@@ -12,9 +12,20 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TopLuckCommand {
+    private static boolean hasServerPerm(CommandSourceStack src, String node) {
+        try {
+            if (src.hasPermission(2)) return true; // OP
+            ServerPlayer sp = src.getPlayer();
+            if (sp == null) return true; // console autorisée
+            return fr.eriniumgroup.erinium_faction.core.permissions.EFPerms.has(sp, node);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("topluck")
-            .requires(src -> src.hasPermission(2)) // admin only
+            .requires(src -> hasServerPerm(src, "ef.topluck.admin")) // admin only
             .executes(ctx -> {
                 var src = ctx.getSource();
                 if (!(src.getEntity() instanceof ServerPlayer viewer)) {

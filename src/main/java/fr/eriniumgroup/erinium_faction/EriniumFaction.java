@@ -144,6 +144,8 @@ public class EriniumFaction {
         PlayerLevelCommand.register(event.getDispatcher());
         // Commande anti-xray
         AntiXrayCommand.register(event.getDispatcher());
+        // Commande report de chat
+        ReportChatCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 

@@ -9,9 +9,20 @@ import net.minecraft.network.chat.Component;
 import java.nio.file.Path;
 
 public class TopLuckConfigCommand {
+    private static boolean hasServerPerm(CommandSourceStack src, String node) {
+        try {
+            if (src.hasPermission(2)) return true; // OP
+            net.minecraft.server.level.ServerPlayer sp = src.getPlayer();
+            if (sp == null) return true; // console autorisée
+            return fr.eriniumgroup.erinium_faction.core.permissions.EFPerms.has(sp, node);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("topluckconfig")
-            .requires(src -> src.hasPermission(2))
+            .requires(src -> hasServerPerm(src, "ef.topluck.config"))
             .then(Commands.literal("export")
                 .executes(ctx -> {
                     var src = ctx.getSource();
