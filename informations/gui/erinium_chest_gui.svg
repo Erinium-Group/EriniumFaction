@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="176" height="222" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e27;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1f3a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="slotGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1229;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1f3a;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background gradient -->
+  <rect fill="url(#bgGradient)" x="0" y="0" width="176" height="222"/>
+  
+  <!-- Cyber neon borders -->
+  <rect x="0" y="0" width="176" height="222" fill="none" stroke="#00d9ff" stroke-width="2" opacity="0.6" filter="url(#glow)"/>
+  <rect x="2" y="2" width="172" height="218" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.4"/>
+
+  <!-- Separation line between chest and inventory -->
+  <line x1="8" y1="130" x2="168" y2="130" stroke="#00d9ff" stroke-width="1" opacity="0.3"/>
+
+  <!-- Chest slots (6 rows) -->
+  <rect fill="url(#slotGradient)" x="8" y="18" width="16" height="16" rx="2"/>
+  <rect x="8" y="18" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="19" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="18" width="16" height="16" rx="2"/>
+  <rect x="26" y="18" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="19" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="18" width="16" height="16" rx="2"/>
+  <rect x="44" y="18" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="19" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="18" width="16" height="16" rx="2"/>
+  <rect x="62" y="18" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="19" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="18" width="16" height="16" rx="2"/>
+  <rect x="80" y="18" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="19" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="18" width="16" height="16" rx="2"/>
+  <rect x="98" y="18" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="19" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="18" width="16" height="16" rx="2"/>
+  <rect x="116" y="18" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="19" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="18" width="16" height="16" rx="2"/>
+  <rect x="134" y="18" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="19" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="18" width="16" height="16" rx="2"/>
+  <rect x="152" y="18" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="19" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="8" y="36" width="16" height="16" rx="2"/>
+  <rect x="8" y="36" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="37" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="36" width="16" height="16" rx="2"/>
+  <rect x="26" y="36" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="37" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="36" width="16" height="16" rx="2"/>
+  <rect x="44" y="36" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="37" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="36" width="16" height="16" rx="2"/>
+  <rect x="62" y="36" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="37" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="36" width="16" height="16" rx="2"/>
+  <rect x="80" y="36" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="37" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="36" width="16" height="16" rx="2"/>
+  <rect x="98" y="36" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="37" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="36" width="16" height="16" rx="2"/>
+  <rect x="116" y="36" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="37" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="36" width="16" height="16" rx="2"/>
+  <rect x="134" y="36" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="37" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="36" width="16" height="16" rx="2"/>
+  <rect x="152" y="36" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="37" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="8" y="54" width="16" height="16" rx="2"/>
+  <rect x="8" y="54" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="55" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="54" width="16" height="16" rx="2"/>
+  <rect x="26" y="54" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="55" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="54" width="16" height="16" rx="2"/>
+  <rect x="44" y="54" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="55" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="54" width="16" height="16" rx="2"/>
+  <rect x="62" y="54" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="55" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="54" width="16" height="16" rx="2"/>
+  <rect x="80" y="54" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="55" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="54" width="16" height="16" rx="2"/>
+  <rect x="98" y="54" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="55" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="54" width="16" height="16" rx="2"/>
+  <rect x="116" y="54" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="55" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="54" width="16" height="16" rx="2"/>
+  <rect x="134" y="54" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="55" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="54" width="16" height="16" rx="2"/>
+  <rect x="152" y="54" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="55" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="8" y="72" width="16" height="16" rx="2"/>
+  <rect x="8" y="72" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="73" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="72" width="16" height="16" rx="2"/>
+  <rect x="26" y="72" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="73" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="72" width="16" height="16" rx="2"/>
+  <rect x="44" y="72" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="73" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="72" width="16" height="16" rx="2"/>
+  <rect x="62" y="72" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="73" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="72" width="16" height="16" rx="2"/>
+  <rect x="80" y="72" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="73" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="72" width="16" height="16" rx="2"/>
+  <rect x="98" y="72" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="73" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="72" width="16" height="16" rx="2"/>
+  <rect x="116" y="72" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="73" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="72" width="16" height="16" rx="2"/>
+  <rect x="134" y="72" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="73" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="72" width="16" height="16" rx="2"/>
+  <rect x="152" y="72" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="73" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="8" y="90" width="16" height="16" rx="2"/>
+  <rect x="8" y="90" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="91" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="90" width="16" height="16" rx="2"/>
+  <rect x="26" y="90" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="91" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="90" width="16" height="16" rx="2"/>
+  <rect x="44" y="90" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="91" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="90" width="16" height="16" rx="2"/>
+  <rect x="62" y="90" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="91" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="90" width="16" height="16" rx="2"/>
+  <rect x="80" y="90" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="91" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="90" width="16" height="16" rx="2"/>
+  <rect x="98" y="90" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="91" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="90" width="16" height="16" rx="2"/>
+  <rect x="116" y="90" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="91" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="90" width="16" height="16" rx="2"/>
+  <rect x="134" y="90" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="91" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="90" width="16" height="16" rx="2"/>
+  <rect x="152" y="90" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="91" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="8" y="108" width="16" height="16" rx="2"/>
+  <rect x="8" y="108" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="109" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="108" width="16" height="16" rx="2"/>
+  <rect x="26" y="108" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="109" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="108" width="16" height="16" rx="2"/>
+  <rect x="44" y="108" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="109" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="108" width="16" height="16" rx="2"/>
+  <rect x="62" y="108" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="109" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="108" width="16" height="16" rx="2"/>
+  <rect x="80" y="108" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="109" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="108" width="16" height="16" rx="2"/>
+  <rect x="98" y="108" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="109" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="108" width="16" height="16" rx="2"/>
+  <rect x="116" y="108" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="109" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="108" width="16" height="16" rx="2"/>
+  <rect x="134" y="108" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="109" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="108" width="16" height="16" rx="2"/>
+  <rect x="152" y="108" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="109" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- Player inventory (3 rows) -->
+  <rect fill="url(#slotGradient)" x="8" y="140" width="16" height="16" rx="2"/>
+  <rect x="8" y="140" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="141" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="140" width="16" height="16" rx="2"/>
+  <rect x="26" y="140" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="141" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="140" width="16" height="16" rx="2"/>
+  <rect x="44" y="140" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="141" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="140" width="16" height="16" rx="2"/>
+  <rect x="62" y="140" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="141" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="140" width="16" height="16" rx="2"/>
+  <rect x="80" y="140" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="141" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="140" width="16" height="16" rx="2"/>
+  <rect x="98" y="140" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="141" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="140" width="16" height="16" rx="2"/>
+  <rect x="116" y="140" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="141" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="140" width="16" height="16" rx="2"/>
+  <rect x="134" y="140" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="141" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="140" width="16" height="16" rx="2"/>
+  <rect x="152" y="140" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="141" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="8" y="158" width="16" height="16" rx="2"/>
+  <rect x="8" y="158" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="159" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="158" width="16" height="16" rx="2"/>
+  <rect x="26" y="158" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="159" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="158" width="16" height="16" rx="2"/>
+  <rect x="44" y="158" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="159" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="158" width="16" height="16" rx="2"/>
+  <rect x="62" y="158" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="159" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="158" width="16" height="16" rx="2"/>
+  <rect x="80" y="158" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="159" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="158" width="16" height="16" rx="2"/>
+  <rect x="98" y="158" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="159" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="158" width="16" height="16" rx="2"/>
+  <rect x="116" y="158" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="159" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="158" width="16" height="16" rx="2"/>
+  <rect x="134" y="158" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="159" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="158" width="16" height="16" rx="2"/>
+  <rect x="152" y="158" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="159" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="8" y="176" width="16" height="16" rx="2"/>
+  <rect x="8" y="176" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="9" y="177" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="26" y="176" width="16" height="16" rx="2"/>
+  <rect x="26" y="176" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="27" y="177" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="44" y="176" width="16" height="16" rx="2"/>
+  <rect x="44" y="176" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="45" y="177" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="62" y="176" width="16" height="16" rx="2"/>
+  <rect x="62" y="176" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="63" y="177" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="80" y="176" width="16" height="16" rx="2"/>
+  <rect x="80" y="176" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="81" y="177" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="98" y="176" width="16" height="16" rx="2"/>
+  <rect x="98" y="176" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="99" y="177" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="116" y="176" width="16" height="16" rx="2"/>
+  <rect x="116" y="176" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="117" y="177" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="134" y="176" width="16" height="16" rx="2"/>
+  <rect x="134" y="176" width="16" height="16" rx="2" fill="none" stroke="#7b2ff7" stroke-width="1" opacity="0.5"/>
+  <rect x="135" y="177" width="14" height="14" rx="1" fill="none" stroke="#7b2ff7" stroke-width="0.5" opacity="0.3"/>
+  <rect fill="url(#slotGradient)" x="152" y="176" width="16" height="16" rx="2"/>
+  <rect x="152" y="176" width="16" height="16" rx="2" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5"/>
+  <rect x="153" y="177" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- Hotbar with special effect -->
+  <rect fill="url(#slotGradient)" x="8" y="198" width="16" height="16" rx="2"/>
+  <rect x="8" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="9" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+  <rect fill="url(#slotGradient)" x="26" y="198" width="16" height="16" rx="2"/>
+  <rect x="26" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="27" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+  <rect fill="url(#slotGradient)" x="44" y="198" width="16" height="16" rx="2"/>
+  <rect x="44" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="45" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+  <rect fill="url(#slotGradient)" x="62" y="198" width="16" height="16" rx="2"/>
+  <rect x="62" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="63" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+  <rect fill="url(#slotGradient)" x="80" y="198" width="16" height="16" rx="2"/>
+  <rect x="80" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="81" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+  <rect fill="url(#slotGradient)" x="98" y="198" width="16" height="16" rx="2"/>
+  <rect x="98" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="99" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+  <rect fill="url(#slotGradient)" x="116" y="198" width="16" height="16" rx="2"/>
+  <rect x="116" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="117" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+  <rect fill="url(#slotGradient)" x="134" y="198" width="16" height="16" rx="2"/>
+  <rect x="134" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="135" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+  <rect fill="url(#slotGradient)" x="152" y="198" width="16" height="16" rx="2"/>
+  <rect x="152" y="198" width="16" height="16" rx="2" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+  <rect x="153" y="199" width="14" height="14" rx="1" fill="none" stroke="#00d9ff" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Astral stars -->
+  <circle cx="168" cy="33" r="0.5375161328340003" fill="#ffffff" opacity="0.3650175910214716"/>
+  <circle cx="62" cy="40" r="1.6047068212460185" fill="#ffffff" opacity="0.6060196924537469"/>
+  <circle cx="144" cy="27" r="1.3857387686735594" fill="#ffffff" opacity="0.21906960768907016"/>
+  <circle cx="28" cy="60" r="0.8489913400861093" fill="#ffffff" opacity="0.5612112374299882"/>
+  <circle cx="148" cy="55" r="1.574029419383605" fill="#ffffff" opacity="0.6207949841541416"/>
+  <circle cx="112" cy="61" r="1.1738135694257803" fill="#ffffff" opacity="0.36691442493839765"/>
+  <circle cx="6" cy="199" r="1.7087288777492118" fill="#ffffff" opacity="0.6188836369929362"/>
+  <circle cx="92" cy="76" r="0.7332192497176724" fill="#ffffff" opacity="0.7743278433240688"/>
+  <circle cx="91" cy="31" r="0.6391187650702219" fill="#ffffff" opacity="0.2580298261000784"/>
+  <circle cx="93" cy="159" r="0.8967813008330197" fill="#ffffff" opacity="0.22607026575385833"/>
+  <circle cx="122" cy="142" r="0.6872392442798141" fill="#ffffff" opacity="0.753377223216896"/>
+  <circle cx="25" cy="146" r="0.9397674221106393" fill="#ffffff" opacity="0.5771838796966661"/>
+  <circle cx="97" cy="152" r="0.7884328853849898" fill="#ffffff" opacity="0.24173308929424459"/>
+  <circle cx="63" cy="202" r="0.9340819454031608" fill="#ffffff" opacity="0.24787518615417653"/>
+  <circle cx="64" cy="30" r="1.0701893375587492" fill="#ffffff" opacity="0.47204618142106136"/>
+  <circle cx="98" cy="46" r="1.055271450675324" fill="#ffffff" opacity="0.32570421846289266"/>
+  <circle cx="73" cy="184" r="1.904981881568741" fill="#ffffff" opacity="0.5888212311479561"/>
+  <circle cx="160" cy="167" r="0.7567079722971455" fill="#ffffff" opacity="0.6374760787702096"/>
+  <circle cx="46" cy="123" r="1.0691831626364716" fill="#ffffff" opacity="0.7937140103819573"/>
+  <circle cx="168" cy="181" r="1.3354246156619693" fill="#ffffff" opacity="0.6107685505939249"/>
+  <circle cx="19" cy="63" r="1.7327038910102126" fill="#ffffff" opacity="0.6830274804627288"/>
+  <circle cx="107" cy="73" r="0.5992829078173209" fill="#ffffff" opacity="0.747881674511327"/>
+  <circle cx="150" cy="188" r="0.9720168211977169" fill="#ffffff" opacity="0.5932631991769282"/>
+  <circle cx="106" cy="169" r="1.188277778881098" fill="#ffffff" opacity="0.3589280998988315"/>
+  <circle cx="68" cy="195" r="1.3420522012447262" fill="#ffffff" opacity="0.3576449651137612"/>
+  <circle cx="154" cy="114" r="1.8467343254037154" fill="#ffffff" opacity="0.4396403030842384"/>
+  <circle cx="61" cy="40" r="1.2642894405146967" fill="#ffffff" opacity="0.25454564730427637"/>
+  <circle cx="17" cy="33" r="0.7292619790223915" fill="#ffffff" opacity="0.29598920103347015"/>
+  <circle cx="113" cy="157" r="0.5952915592279358" fill="#ffffff" opacity="0.4289715719039221"/>
+  <circle cx="124" cy="140" r="0.8771211799727198" fill="#ffffff" opacity="0.5319355377291726"/>
+</svg>

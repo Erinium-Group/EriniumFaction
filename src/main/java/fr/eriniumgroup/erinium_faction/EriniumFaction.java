@@ -40,6 +40,7 @@ import fr.eriniumgroup.erinium_faction.commands.PlayerLevelCommand;
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
 import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
 import fr.eriniumgroup.erinium_faction.init.EFBlocks;
+import fr.eriniumgroup.erinium_faction.init.EFBlockEntities;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -66,6 +67,8 @@ public class EriniumFaction {
         EFMenus.REGISTER.register(modEventBus);
         // Register blocks
         EFBlocks.REGISTER.register(modEventBus);
+        // Register block entities
+        EFBlockEntities.REGISTER.register(modEventBus);
         // Register items
         EFItems.REGISTER.register(modEventBus);
         // Register block items from item register

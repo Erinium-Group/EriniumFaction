@@ -466,5 +466,7 @@
   "erinium_faction.waypoint.error.invalid_number": "Invalid numeric values",
   "erinium_faction.waypoint.error.invalid_rgb": "RGB must be between 0 and 255",
   "erinium_faction.waypoint.error.no_player": "Player not found",
-  "erinium_faction.waypoint.error.limit": "Waypoint limit reached (%s)"
+  "erinium_faction.waypoint.error.limit": "Waypoint limit reached (%s)",
+  "block.erinium_faction.erinium_chest": "Erinium Chest",
+  "container.erinium_faction.erinium_chest": "Erinium Chest"
 }

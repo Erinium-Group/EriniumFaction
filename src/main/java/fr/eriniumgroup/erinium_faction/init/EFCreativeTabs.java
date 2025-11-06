@@ -27,6 +27,8 @@ public class EFCreativeTabs {
             output.accept(EFBlocks.TITANIUM_ORE.get());
             output.accept(EFBlocks.DEEPSLATE_TITANIUM_ORE.get());
             output.accept(EFBlocks.TITANIUM_BLOCK.get());
+            // Coffre Erinium
+            output.accept(EFBlocks.ERINIUM_CHEST.get());
             // Items silver
             output.accept(EFItems.RAW_SILVER.get());
             output.accept(EFItems.SILVER_INGOT.get());

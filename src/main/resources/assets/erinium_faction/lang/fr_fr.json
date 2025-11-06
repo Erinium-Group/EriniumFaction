@@ -466,5 +466,7 @@
   "erinium_faction.waypoint.error.invalid_number": "Valeurs numériques invalides",
   "erinium_faction.waypoint.error.invalid_rgb": "RGB doit être entre 0 et 255",
   "erinium_faction.waypoint.error.no_player": "Joueur introuvable",
-  "erinium_faction.waypoint.error.limit": "Limite de waypoints atteinte (%s)"
+  "erinium_faction.waypoint.error.limit": "Limite de waypoints atteinte (%s)",
+  "block.erinium_faction.erinium_chest": "Coffre d'Erinium",
+  "container.erinium_faction.erinium_chest": "Coffre d'Erinium"
 }

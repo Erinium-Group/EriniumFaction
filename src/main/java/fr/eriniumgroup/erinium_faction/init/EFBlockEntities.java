@@ -1,0 +1,20 @@
+package fr.eriniumgroup.erinium_faction.init;
+
+import fr.eriniumgroup.erinium_faction.common.block.entity.EriniumChestBlockEntity;
+import fr.eriniumgroup.erinium_faction.core.EFC;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public class EFBlockEntities {
+    public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, EFC.MOD_ID);
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EriniumChestBlockEntity>> ERINIUM_CHEST = REGISTER.register(
+            "erinium_chest",
+            () -> BlockEntityType.Builder.of(EriniumChestBlockEntity::new, EFBlocks.ERINIUM_CHEST.get()).build(null)
+    );
+
+    private EFBlockEntities() {
+    }
+}
