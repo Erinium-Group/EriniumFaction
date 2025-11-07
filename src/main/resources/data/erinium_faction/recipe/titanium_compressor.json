@@ -1,15 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "erinium_faction",
+  "group": "titanium_compressor",
   "pattern": [
     "TTT",
     "CFC",
     "TTT"
   ],
   "key": {
-    "T": { "item": "erinium_faction:titanium_ingot" },
-    "C": { "item": "minecraft:piston" },
-    "F": { "item": "minecraft:blast_furnace" }
+    "T": {
+      "tag": "forge:item/titanium_ingot"
+    },
+    "C": {
+      "item": "minecraft:piston"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    }
   },
-  "result": { "item": "erinium_faction:titanium_compressor", "count": 1 }
+  "result": {
+    "id": "erinium_faction:titanium_compressor"
+  }
 }
 

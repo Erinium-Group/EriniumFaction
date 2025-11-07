@@ -13,8 +13,14 @@ import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElementHelper;
 
 public class EnergyAndMachineProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+    private final ResourceLocation uid;
+
+    public EnergyAndMachineProvider(ResourceLocation uid) {
+        this.uid = uid;
+    }
+
     @Override
-    public ResourceLocation getUid() { return EFJadePlugin.BATTERY; }
+    public ResourceLocation getUid() { return uid; }
 
     private static String fmtFE(int v) {
         if (v >= 1_000_000) return String.format("%.1f MFE", v / 1_000_000.0);
@@ -32,28 +38,50 @@ public class EnergyAndMachineProvider implements IBlockComponentProvider, IServe
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         var be = accessor.getBlockEntity();
         var helper = IElementHelper.get();
+
         if (be instanceof TitaniumBatteryTier1BlockEntity batt) {
             var storage = batt.getEnergy(null);
             int cur = storage.getEnergyStored();
             int max = storage.getMaxEnergyStored();
             float pct = max > 0 ? (float) cur / (float) max : 0f;
-            tooltip.add(Component.translatable("tooltip.erinium_faction.energy").append(": ").append(Component.literal(fmtFE(cur) + "/" + fmtFE(max))));
+
+            tooltip.add(Component.literal("⚡ ").append(Component.translatable("tooltip.erinium_faction.energy")).append(": ").append(Component.literal(fmtFE(cur) + "/" + fmtFE(max))));
             tooltip.add(helper.progress(pct));
-            tooltip.add(Component.translatable("tooltip.erinium_faction.energy_out").append(": ").append(Component.literal(fmtRate(batt.getLastOutPerTick()))));
-            tooltip.add(Component.translatable("tooltip.erinium_faction.energy_in").append(": ").append(Component.literal(fmtRate(batt.getLastInPerTick()))));
+            if (batt.getLastOutPerTick() > 0) {
+                tooltip.add(Component.translatable("tooltip.erinium_faction.energy_out").append(": ").append(Component.literal(fmtRate(batt.getLastOutPerTick()))));
+            }
+            if (batt.getLastInPerTick() > 0) {
+                tooltip.add(Component.translatable("tooltip.erinium_faction.energy_in").append(": ").append(Component.literal(fmtRate(batt.getLastInPerTick()))));
+            }
         } else if (be instanceof TitaniumCreativeBatteryBlockEntity battC) {
-            tooltip.add(Component.translatable("tooltip.erinium_faction.energy").append(": ").append(Component.literal("∞ FE")));
+            tooltip.add(Component.literal("♻️ ").append(Component.translatable("tooltip.erinium_faction.energy")).append(": ").append(Component.literal("∞ FE")));
             tooltip.add(helper.progress(1.0f));
-            tooltip.add(Component.translatable("tooltip.erinium_faction.energy_out").append(": ").append(Component.literal(fmtRate(battC.getLastOutPerTick()))));
+            if (battC.getLastOutPerTick() > 0) {
+                tooltip.add(Component.translatable("tooltip.erinium_faction.energy_out").append(": ").append(Component.literal(fmtRate(battC.getLastOutPerTick()))));
+            }
         } else if (be instanceof TitaniumCompressorBlockEntity comp) {
+            var storage = comp.getEnergyCapability(null);
+            int cur = storage.getEnergyStored();
+            int max = storage.getMaxEnergyStored();
+            float pctEnergy = max > 0 ? (float) cur / (float) max : 0f;
+
             int prog = comp.getProgress();
             int total = comp.getMaxProgress();
-            float pct = total > 0 ? (float) prog / (float) total : 0f;
+            float pctProgress = total > 0 ? (float) prog / (float) total : 0f;
+
             tooltip.add(Component.translatable("block.erinium_faction.titanium_compressor"));
-            tooltip.add(helper.progress(pct));
-            tooltip.add(Component.translatable("tooltip.erinium_faction.progress").append(": ").append(Component.literal(Math.round(pct * 100) + "%")));
-            tooltip.add(Component.translatable("tooltip.erinium_faction.energy_in").append(": ").append(Component.literal(fmtRate(comp.getLastInPerTick()))));
-            tooltip.add(Component.translatable("tooltip.erinium_faction.usage").append(": ").append(Component.literal(fmtRate(comp.getLastUsePerTick()))));
+            tooltip.add(Component.literal("⚡ ").append(Component.translatable("tooltip.erinium_faction.energy")).append(": ").append(Component.literal(fmtFE(cur) + "/" + fmtFE(max))));
+            tooltip.add(helper.progress(pctEnergy));
+            tooltip.add(Component.translatable("tooltip.erinium_faction.progress").append(": ").append(Component.literal(Math.round(pctProgress * 100) + "%")));
+            if (pctProgress > 0) {
+                tooltip.add(helper.progress(pctProgress));
+            }
+            if (comp.getLastInPerTick() > 0) {
+                tooltip.add(Component.translatable("tooltip.erinium_faction.energy_in").append(": ").append(Component.literal(fmtRate(comp.getLastInPerTick()))));
+            }
+            if (comp.getLastUsePerTick() > 0) {
+                tooltip.add(Component.translatable("tooltip.erinium_faction.usage").append(": ").append(Component.literal(fmtRate(comp.getLastUsePerTick()))));
+            }
         }
     }
 

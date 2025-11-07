@@ -15,6 +15,8 @@ public class EFScreens {
     public static void clientLoad(RegisterMenuScreensEvent event) {
         event.register(EFMenus.FACTION_MENU.get(), FactionMenuScreen::new);
         event.register(EFMenus.TITANIUM_COMPRESSOR_MENU.get(), TitaniumCompressorScreen::new);
+        event.register(EFMenus.BATTERY_MENU.get(), fr.eriniumgroup.erinium_faction.gui.screens.BatteryScreen::new);
+        event.register(EFMenus.CREATIVE_BATTERY_MENU.get(), fr.eriniumgroup.erinium_faction.gui.screens.CreativeBatteryScreen::new);
         event.register(EFMenus.ERINIUM_CHEST.get(), EriniumChestScreen::new);
     }
 

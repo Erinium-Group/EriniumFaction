@@ -2,7 +2,6 @@ package fr.eriniumgroup.erinium_faction.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import fr.eriniumgroup.erinium_faction.client.overlay.FactionTitleOverlay;
 import fr.eriniumgroup.erinium_faction.client.overlay.MinimapOverlayRenderer;
 import fr.eriniumgroup.erinium_faction.client.overlay.WaypointOverlayRenderer;
 import fr.eriniumgroup.erinium_faction.client.waypoint.WaypointManager;
@@ -11,9 +10,6 @@ import fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessa
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.MinimapOverlayConfig;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionMapScreen;
-import fr.eriniumgroup.erinium_faction.gui.screens.MinimapFullscreenScreen;
-import fr.eriniumgroup.erinium_faction.gui.screens.TitaniumCompressorScreen;
-import fr.eriniumgroup.erinium_faction.init.EFMenus;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +23,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.Locale;
 
@@ -50,54 +46,25 @@ public class EFClient {
     private static int btnX, btnY, btnS;
     private static boolean mouseOver;
 
-
-    @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent e) {
-        // Charger la position de la minimap
-        e.enqueueWork(MinimapConfig::loadPosition);
-    }
-
-    @SubscribeEvent
-    public static void onRegisterMenuScreens(RegisterMenuScreensEvent e) {
-        // Enregistrer l’écran de la machine Titanium Compressor via l’event dédié (1.21+)
-        e.register(EFMenus.TITANIUM_COMPRESSOR_MENU.get(), TitaniumCompressorScreen::new);
-    }
-
-    @SubscribeEvent
-    public static void onRegisterKeys(RegisterKeyMappingsEvent e) {
-        InputConstants.Type type = InputConstants.Type.KEYSYM;
-        int code = resolveDefaultKeyFromConfig();
-        OPEN_MAP = new KeyMapping("key.erinium_faction.map", type, code, "key.categories.erinium_faction");
-        MINIMAP_ZOOM_IN = new KeyMapping("key.erinium_faction.minimap_zoom_in", type, InputConstants.KEY_EQUALS, "key.categories.erinium_faction");
-        MINIMAP_ZOOM_OUT = new KeyMapping("key.erinium_faction.minimap_zoom_out", type, InputConstants.KEY_MINUS, "key.categories.erinium_faction");
-        e.register(OPEN_MAP);
-        e.register(MINIMAP_ZOOM_IN);
-        e.register(MINIMAP_ZOOM_OUT);
-
-        // Initialiser la minimap
-        minimapConfig = MinimapOverlayConfig.load();
-        minimapRenderer = new MinimapOverlayRenderer(minimapConfig);
-    }
-
     private static int resolveDefaultKeyFromConfig() {
         String conf = EFClientConfig.MAP_DEFAULT_KEY.get();
-        if (conf == null || conf.isBlank()) return InputConstants.KEY_M;
+        if (conf == null || conf.isBlank()) return GLFW.GLFW_KEY_M;
         String s = conf.trim();
         try {
             String id = s.toLowerCase(Locale.ROOT);
             if (id.startsWith("key.")) {
                 InputConstants.Key k = InputConstants.getKey(id);
-                return k != null ? k.getValue() : InputConstants.KEY_M;
+                return k != null ? k.getValue() : GLFW.GLFW_KEY_M;
             }
             if (s.length() == 1) {
                 char c = Character.toLowerCase(s.charAt(0));
                 InputConstants.Key k = InputConstants.getKey("key.keyboard." + c);
-                return k != null ? k.getValue() : InputConstants.KEY_M;
+                return k != null ? k.getValue() : GLFW.GLFW_KEY_M;
             }
             InputConstants.Key k = InputConstants.getKey("key.keyboard." + id);
-            return k != null ? k.getValue() : InputConstants.KEY_M;
+            return k != null ? k.getValue() : GLFW.GLFW_KEY_M;
         } catch (Throwable t) {
-            return InputConstants.KEY_M;
+            return GLFW.GLFW_KEY_M;
         }
     }
 
@@ -144,8 +111,7 @@ public class EFClient {
                 String dim = mc.player.level().dimension().location().toString();
                 int radius = 16; // Rayon fixe pour la minimap
 
-                fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage req =
-                    new fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage(dim, chunkX, chunkZ, radius);
+                fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage req = new fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapRequestMessage(dim, chunkX, chunkZ, radius);
                 net.neoforged.neoforge.network.PacketDistributor.sendToServer(req);
             }
         }
@@ -344,5 +310,31 @@ public class EFClient {
 
     public static WaypointManager getWaypointManager() {
         return waypointManager;
+    }
+
+    @EventBusSubscriber(modid = EFC.MODID, value = Dist.CLIENT)
+    public static class ModClientEvents {
+        @SubscribeEvent
+        public static void onRegisterKeys(RegisterKeyMappingsEvent event) {
+            int mapKeyCode = resolveDefaultKeyFromConfig();
+            OPEN_MAP = new KeyMapping("key.erinium_faction.map", mapKeyCode, "key.categories.erinium_faction");
+
+            int zoomIn = GLFW.GLFW_KEY_EQUAL;
+            int zoomOut = GLFW.GLFW_KEY_MINUS;
+            MINIMAP_ZOOM_IN = new KeyMapping("key.erinium_faction.minimap_zoom_in", zoomIn, "key.categories.erinium_faction");
+            MINIMAP_ZOOM_OUT = new KeyMapping("key.erinium_faction.minimap_zoom_out", zoomOut, "key.categories.erinium_faction");
+
+            event.register(OPEN_MAP);
+            event.register(MINIMAP_ZOOM_IN);
+            event.register(MINIMAP_ZOOM_OUT);
+        }
+
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            event.enqueueWork(() -> {
+                minimapConfig = MinimapOverlayConfig.load();
+                minimapRenderer = new MinimapOverlayRenderer(minimapConfig);
+            });
+        }
     }
 }

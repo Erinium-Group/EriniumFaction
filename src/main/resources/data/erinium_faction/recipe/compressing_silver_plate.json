@@ -1,0 +1,13 @@
+{
+  "type": "erinium_faction:compressing",
+  "ingredient": {
+    "item": "erinium_faction:silver_ingot"
+  },
+  "result": {
+    "id": "erinium_faction:silver_plate",
+    "count": 1
+  },
+  "processingTime": 80,
+  "energyCost": 150
+}
+

@@ -35,9 +35,9 @@ public class TitaniumBatteryItem extends BlockItem {
             return;
         }
         int energy = 0;
-        CustomData beData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
-        if (beData != null && !beData.isEmpty()) {
-            var tag = beData.copyTag();
+        CustomData customData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (customData != null && !customData.isEmpty()) {
+            var tag = customData.copyTag();
             if (tag.contains("energy")) {
                 energy = tag.getInt("energy");
             }

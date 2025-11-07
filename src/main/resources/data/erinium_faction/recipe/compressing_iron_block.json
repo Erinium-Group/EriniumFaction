@@ -1,0 +1,14 @@
+{
+  "type": "erinium_faction:compressing",
+  "ingredient": {
+    "item": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "minecraft:iron_block",
+    "count": 1
+  },
+  "processingTime": 200,
+  "energyCost": 500
+}
+
+

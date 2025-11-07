@@ -49,6 +49,10 @@ public class TitaniumCompressorMenu extends AbstractContainerMenu {
         return stillValid(this.access, player, this.blockEntity.getBlockState().getBlock());
     }
 
+    public TitaniumCompressorBlockEntity getBlockEntity() {
+        return this.blockEntity;
+    }
+
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;

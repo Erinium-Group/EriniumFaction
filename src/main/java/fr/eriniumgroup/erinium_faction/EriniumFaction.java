@@ -10,6 +10,7 @@ import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.logger.EFCC;
 import fr.eriniumgroup.erinium_faction.events.TopLuckEventHandler;
 import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
+import fr.eriniumgroup.erinium_faction.features.homes.HomeTeleportService;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
 import fr.eriniumgroup.erinium_faction.features.topluck.TopLuckAttachments;
 import fr.eriniumgroup.erinium_faction.init.EFCreativeTabs;
@@ -42,8 +43,8 @@ import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
 import fr.eriniumgroup.erinium_faction.init.EFBlocks;
 import fr.eriniumgroup.erinium_faction.init.EFBlockEntities;
 import fr.eriniumgroup.erinium_faction.init.EFCapabilities;
+import fr.eriniumgroup.erinium_faction.init.EFRecipes;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import fr.eriniumgroup.erinium_faction.init.EFBlockEntities;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -78,8 +79,9 @@ public class EriniumFaction {
         EFBlocks.registerBlockItems(EFItems.REGISTER);
         // Register creative tabs
         EFCreativeTabs.REGISTER.register(modEventBus);
-        // Register block entities
-        EFBlockEntities.REGISTER.register(modEventBus);
+        // Register recipes
+        EFRecipes.RECIPE_TYPES.register(modEventBus);
+        EFRecipes.RECIPE_SERIALIZERS.register(modEventBus);
         // Register network variables
         EFVariables.ATTACHMENT_TYPES.register(modEventBus);
         // Register argument types
@@ -97,6 +99,8 @@ public class EriniumFaction {
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
+        // Capabilities
+        modEventBus.addListener(this::onRegisterCapabilities);
 
         // Register event listeners
         NeoForge.EVENT_BUS.addListener(this::onServerStarting);
@@ -121,6 +125,7 @@ public class EriniumFaction {
         PacketHandler.register();
         // Link custom argument class to its info so server can sync command tree to clients
         event.enqueueWork(() -> ArgumentTypeInfos.registerByClass(FactionArgumentType.class, (ArgumentTypeInfo<FactionArgumentType, ?>) EFArgumentTypes.FACTION.get()));
+        HomeTeleportService.init();
     }
 
     private void onServerStarting(ServerStartingEvent event) {
@@ -148,7 +153,7 @@ public class EriniumFaction {
         RankCommand.register(event.getDispatcher());
         // Commandes économie
         EconomyCommand.register(event.getDispatcher());
-        // Commande ef (perm per-player)
+        // Commande ef (perm per-player + homes admin)
         fr.eriniumgroup.erinium_faction.commands.EFCommand.register(event.getDispatcher());
         // Commande système de niveau
         PlayerLevelCommand.register(event.getDispatcher());
@@ -158,6 +163,8 @@ public class EriniumFaction {
         ReportChatCommand.register(event.getDispatcher());
         // Commande vanish
         VanishCommand.register(event.getDispatcher());
+        // Commandes de homes joueur (/home, /sethome, /homes)
+        HomeCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 

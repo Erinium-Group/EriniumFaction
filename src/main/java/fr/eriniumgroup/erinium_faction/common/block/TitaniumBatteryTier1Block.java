@@ -2,6 +2,9 @@ package fr.eriniumgroup.erinium_faction.common.block;
 
 import fr.eriniumgroup.erinium_faction.common.block.entity.TitaniumBatteryTier1BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -14,6 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TitaniumBatteryTier1Block extends Block implements EntityBlock {
@@ -30,16 +35,32 @@ public class TitaniumBatteryTier1Block extends Block implements EntityBlock {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) { return RenderShape.MODEL; }
+
+    @Override
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof TitaniumBatteryTier1BlockEntity battery && player instanceof ServerPlayer sp) {
+            sp.openMenu(battery, buf -> buf.writeBlockPos(pos));
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
+    }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new TitaniumBatteryTier1BlockEntity(pos, state); }
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) { return new TitaniumBatteryTier1BlockEntity(pos, state); }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return (lvl, p, st, be) -> { if (be instanceof TitaniumBatteryTier1BlockEntity batt) batt.onTick(); };
+        return level.isClientSide ? null : (l, p, s, be) -> {
+            if (be instanceof TitaniumBatteryTier1BlockEntity batt) batt.onTick();
+        };
     }
 }
 

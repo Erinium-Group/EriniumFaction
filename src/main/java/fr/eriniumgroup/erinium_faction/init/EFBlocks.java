@@ -13,6 +13,7 @@ import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -52,7 +53,7 @@ public class EFBlocks {
 
         // Battery items
         itemRegister.register("titanium_battery_tier1", () -> new TitaniumBatteryItem(TITANIUM_BATTERY_TIER1.get(), new Item.Properties(), 100000, false));
-        itemRegister.register("titanium_creative_battery", () -> new TitaniumBatteryItem(TITANIUM_CREATIVE_BATTERY.get(), new Item.Properties(), Integer.MAX_VALUE, true));
+        itemRegister.register("titanium_creative_battery", () -> new TitaniumBatteryItem(TITANIUM_CREATIVE_BATTERY.get(), new Item.Properties().rarity(Rarity.EPIC), Integer.MAX_VALUE, true));
         // BlockItem pour le coffre Erinium
         itemRegister.register("erinium_chest", () -> new BlockItem(ERINIUM_CHEST.get(), new Item.Properties()));
     }
