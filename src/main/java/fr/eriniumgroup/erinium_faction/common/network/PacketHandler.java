@@ -103,6 +103,9 @@ public class PacketHandler {
         // Paquet synchronisation mode vanish
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.VanishSyncPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.VanishSyncPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.VanishSyncPacket::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound), PlayerNameplateData (clientbound), VanishSync (clientbound)");
+        // Paquet synchronisation rang joueur
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerRankPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerRankPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerRankPacket::handleData);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound), PlayerNameplateData (clientbound), VanishSync (clientbound), PlayerRankSync (clientbound)");
     }
 }

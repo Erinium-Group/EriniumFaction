@@ -265,7 +265,29 @@ public class EFRManager {
         if (!ranks.containsKey(key)) return false;
         playerRanks.put(uuid, key);
         savePlayers();
+
+        // Synchroniser vers tous les clients
+        syncPlayerRankToClients(uuid);
+
         return true;
+    }
+
+    /**
+     * Synchronise le rang d'un joueur vers tous les clients connectés
+     */
+    private void syncPlayerRankToClients(UUID playerUUID) {
+        try {
+            // Trouver le joueur par son UUID
+            net.minecraft.server.MinecraftServer server = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
+            if (server != null) {
+                ServerPlayer player = server.getPlayerList().getPlayer(playerUUID);
+                if (player != null) {
+                    fr.eriniumgroup.erinium_faction.events.RankSyncEventHandler.syncPlayerRankToAll(player);
+                }
+            }
+        } catch (Exception e) {
+            // Ignore si le serveur n'est pas disponible ou si le joueur n'est pas connecté
+        }
     }
 
     public synchronized String getPlayerRankId(UUID uuid) {

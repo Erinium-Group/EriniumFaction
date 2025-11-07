@@ -2,8 +2,8 @@ package fr.eriniumgroup.erinium_faction.client.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import fr.eriniumgroup.erinium_faction.client.data.PlayerRankCache;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
-import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,7 +23,13 @@ import java.util.List;
  */
 public class CustomTabListRenderer {
 
-    private static final ResourceLocation PING_ICONS = ResourceLocation.withDefaultNamespace("textures/gui/icons.png");
+    // Textures individuelles pour les icônes de ping
+    // INVERSÉ: ping_1.png contient 1 barre, ping_5.png contient 5 barres
+    private static final ResourceLocation PING_1 = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/icon/ping_5.png"); // 5 barres
+    private static final ResourceLocation PING_2 = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/icon/ping_4.png"); // 4 barres
+    private static final ResourceLocation PING_3 = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/icon/ping_3.png"); // 3 barres
+    private static final ResourceLocation PING_4 = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/icon/ping_2.png"); // 2 barres
+    private static final ResourceLocation PING_5 = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/icon/ping_1.png"); // 1 barre
     private static final int PLAYER_HEAD_SIZE = 8;
     private static final int ENTRY_HEIGHT = 12;
     private static final int COLUMN_WIDTH = 150;
@@ -148,9 +154,11 @@ public class CustomTabListRenderer {
             info.append("§7TPS: ").append(tpsColor).append(String.format("%.1f", tps));
         }
 
-        if (EFClientConfig.TAB_LIST_SHOW_PING.get() && minecraft.player != null) {
+        if (EFClientConfig.TAB_LIST_SHOW_PING.get() && minecraft.player != null && minecraft.getConnection() != null) {
             if (info.length() > 0) info.append(" §8| ");
-            int ping = minecraft.getConnection().getPlayerInfo(minecraft.player.getUUID()).getLatency();
+            // Récupérer le ping du joueur local via PlayerInfo
+            PlayerInfo localPlayerInfo = minecraft.getConnection().getPlayerInfo(minecraft.player.getUUID());
+            int ping = localPlayerInfo != null ? localPlayerInfo.getLatency() : 0;
             String pingColor = ping < 100 ? "§a" : ping < 200 ? "§e" : "§c";
             info.append("§7Ping: ").append(pingColor).append(ping).append("ms");
         }
@@ -182,13 +190,14 @@ public class CustomTabListRenderer {
                 // Fond de l'entrée
                 guiGraphics.fill(columnX, entryY, columnX + COLUMN_WIDTH, entryY + ENTRY_HEIGHT - 1, playerBg);
 
-                // Rendu de l'icône de ping
+                // Rendu de l'icône de ping (8px de large)
+                // Le ping de PlayerInfo.getLatency() est correct même pour le joueur local
                 renderPingIcon(guiGraphics, columnX + 2, entryY + 2, playerInfo.getLatency());
 
-                // Rendu de la tête du joueur
+                // Rendu de la tête du joueur (après ping + 2px d'espace)
                 renderPlayerHead(guiGraphics, columnX + 12, entryY + 2, playerInfo);
 
-                // Rendu du rang
+                // Rendu du rang (après tête + 2px d'espace)
                 int textX = columnX + 22;
                 String rankPrefix = getRankPrefix(playerInfo);
                 if (!rankPrefix.isEmpty()) {
@@ -208,12 +217,25 @@ public class CustomTabListRenderer {
      * Rendu de l'icône de ping
      */
     private void renderPingIcon(GuiGraphics guiGraphics, int x, int y, int ping) {
-        RenderSystem.setShaderTexture(0, PING_ICONS);
+        // Sélectionner la texture appropriée selon le ping
+        // ping_1.png = 5 barres (meilleur), ping_5.png = 1 barre (pire)
+        ResourceLocation pingTexture;
+        if (ping < 0) {
+            pingTexture = PING_5; // Déconnecté (1 barre grise)
+        } else if (ping < 150) {
+            pingTexture = PING_1; // Excellent (5 barres vertes)
+        } else if (ping < 300) {
+            pingTexture = PING_2; // Bon (4 barres)
+        } else if (ping < 600) {
+            pingTexture = PING_3; // Moyen (3 barres)
+        } else if (ping < 1000) {
+            pingTexture = PING_4; // Mauvais (2 barres)
+        } else {
+            pingTexture = PING_5; // Très mauvais (1 barre rouge)
+        }
 
-        int u = 0;
-        int v = ping < 0 ? 5 : ping < 150 ? 0 : ping < 300 ? 1 : ping < 600 ? 2 : ping < 1000 ? 3 : 4;
-
-        guiGraphics.blit(PING_ICONS, x, y, 0, 176 + v * 8, 10, 8);
+        // Utiliser blit() direct avec la texture (8x8 pixels pour ne pas décaler)
+        guiGraphics.blit(pingTexture, x, y, 0, 0, 8, 8, 10, 8);
     }
 
     /**
@@ -230,16 +252,12 @@ public class CustomTabListRenderer {
     }
 
     /**
-     * Récupère le préfixe de rang du joueur
+     * Récupère le nom d'affichage du rang du joueur
      */
     private String getRankPrefix(PlayerInfo playerInfo) {
-        try {
-            var rank = EFRManager.get().getPlayerRank(playerInfo.getProfile().getId());
-            if (rank != null && rank.prefix != null && !rank.prefix.isEmpty()) {
-                return rank.prefix + " ";
-            }
-        } catch (Exception e) {
-            // Ignore
+        String displayName = PlayerRankCache.getDisplayName(playerInfo.getProfile().getId());
+        if (displayName != null && !displayName.isEmpty()) {
+            return displayName + " ";
         }
         return "";
     }
