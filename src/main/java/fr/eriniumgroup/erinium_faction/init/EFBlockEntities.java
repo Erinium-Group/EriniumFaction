@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.init;
 
 import fr.eriniumgroup.erinium_faction.common.block.entity.*;
+import fr.eriniumgroup.erinium_faction.common.block.entity.EriniumChestBlockEntity;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -18,10 +19,18 @@ public class EFBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TitaniumBatteryTier1BlockEntity>> TITANIUM_BATTERY_TIER1 = REGISTER.register(
         "titanium_battery_tier1",
         () -> BlockEntityType.Builder.of(TitaniumBatteryTier1BlockEntity::new, EFBlocks.TITANIUM_BATTERY_TIER1.get()).build(null)
+    };
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EriniumChestBlockEntity>> ERINIUM_CHEST = REGISTER.register(
+            "erinium_chest",
+            () -> BlockEntityType.Builder.of(EriniumChestBlockEntity::new, EFBlocks.ERINIUM_CHEST.get()).build(null)
     );
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TitaniumCreativeBatteryBlockEntity>> TITANIUM_CREATIVE_BATTERY = REGISTER.register(
-        "titanium_creative_battery",
-        () -> BlockEntityType.Builder.of(TitaniumCreativeBatteryBlockEntity::new, EFBlocks.TITANIUM_CREATIVE_BATTERY.get()).build(null)
+            "titanium_creative_battery",
+            () -> BlockEntityType.Builder.of(TitaniumCreativeBatteryBlockEntity::new, EFBlocks.TITANIUM_CREATIVE_BATTERY.get()).build(null)
     );
+
+    private EFBlockEntities() {
+    }
+
 }

@@ -29,6 +29,21 @@ public final class EFClientConfig {
     public static final ModConfigSpec.IntValue NAME_MAX_LENGTH;
     public static final ModConfigSpec.IntValue DESCRIPTION_MAX_LENGTH;
 
+    // Waypoints
+    public static final ModConfigSpec.IntValue WAYPOINT_MAX_OVERLAY_DISTANCE;
+
+    // Nameplates
+    public static final ModConfigSpec.BooleanValue NAMEPLATE_SHOW_FACTION;
+    public static final ModConfigSpec.BooleanValue NAMEPLATE_SHOW_LEVEL;
+    public static final ModConfigSpec.IntValue NAMEPLATE_BACKGROUND_COLOR;
+    public static final ModConfigSpec.IntValue NAMEPLATE_NAME_COLOR;
+    public static final ModConfigSpec.IntValue NAMEPLATE_HEALTH_BAR_COLOR;
+    public static final ModConfigSpec.IntValue NAMEPLATE_HEALTH_BAR_BACKGROUND_COLOR;
+    public static final ModConfigSpec.IntValue NAMEPLATE_HEALTH_TEXT_COLOR;
+    public static final ModConfigSpec.IntValue NAMEPLATE_FACTION_COLOR;
+    public static final ModConfigSpec.IntValue NAMEPLATE_LEVEL_COLOR;
+    public static final ModConfigSpec.IntValue NAMEPLATE_MAX_WIDTH;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
         b.push("keybinds");
@@ -62,6 +77,34 @@ public final class EFClientConfig {
         b.push("factionFields");
         NAME_MAX_LENGTH = b.comment("Nombre max de caractères pour le nom de faction").defineInRange("nameMaxLength", 16, 1, 64);
         DESCRIPTION_MAX_LENGTH = b.comment("Nombre max de caractères pour la description de faction").defineInRange("descriptionMaxLength", 150, 1, 500);
+        b.pop();
+
+        b.push("waypoints");
+        WAYPOINT_MAX_OVERLAY_DISTANCE = b.comment("Distance maximale (en blocs) pour afficher les waypoints dans l'overlay HUD")
+                .defineInRange("maxOverlayDistance", 500, 0, 10000);
+        b.pop();
+
+        b.push("nameplates");
+        NAMEPLATE_SHOW_FACTION = b.comment("Afficher le nom de faction au-dessus des joueurs")
+                .define("showFaction", true);
+        NAMEPLATE_SHOW_LEVEL = b.comment("Afficher le niveau du joueur")
+                .define("showLevel", true);
+        NAMEPLATE_MAX_WIDTH = b.comment("Largeur maximale de la nameplate en pixels")
+                .defineInRange("maxWidth", 80, 40, 200);
+        NAMEPLATE_BACKGROUND_COLOR = b.comment("Couleur de fond (ARGB hex, ex: 0xAA000000)")
+                .defineInRange("backgroundColor", 0xAA000000, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        NAMEPLATE_NAME_COLOR = b.comment("Couleur du nom du joueur (ARGB hex)")
+                .defineInRange("nameColor", 0xFFFFFFFF, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        NAMEPLATE_HEALTH_BAR_COLOR = b.comment("Couleur de la barre de vie (ARGB hex)")
+                .defineInRange("healthBarColor", 0xFF00FF00, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        NAMEPLATE_HEALTH_BAR_BACKGROUND_COLOR = b.comment("Couleur de fond de la barre de vie (ARGB hex)")
+                .defineInRange("healthBarBackgroundColor", 0xFF333333, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        NAMEPLATE_HEALTH_TEXT_COLOR = b.comment("Couleur du texte de vie (ARGB hex)")
+                .defineInRange("healthTextColor", 0xFFFFFFFF, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        NAMEPLATE_FACTION_COLOR = b.comment("Couleur du nom de faction (ARGB hex)")
+                .defineInRange("factionColor", 0xFFFFAA00, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        NAMEPLATE_LEVEL_COLOR = b.comment("Couleur du niveau (ARGB hex)")
+                .defineInRange("levelColor", 0xFF55FF55, Integer.MIN_VALUE, Integer.MAX_VALUE);
         b.pop();
 
         SPEC = b.build();

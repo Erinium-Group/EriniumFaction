@@ -180,12 +180,27 @@ public class MAC {
         executorService.submit(() -> {
             System.out.println(String.format("[AC] %s - %s (Total: %d)",
                     player.getName().getString(), type, data.violations));
+
+            // Envoyer le rapport Discord (toutes les 5 violations ou plus de 15 violations)
+            if (data.violations % 5 == 0 || data.violations >= 15) {
+                String details = String.format("Sévérité: %d | Violations totales: %d", severity, data.violations);
+                fr.eriniumgroup.erinium_faction.integration.discord.DiscordWebhookManager
+                        .sendAntiCheatReport(player, type, data.violations, details);
+            }
         });
 
         // Actions (main thread)
         if (data.violations >= currentMaxViolationsBan) {
+            // Rapport Discord avant ban
+            String banDetails = String.format("JOUEUR BANNI - Violations: %d | Type: %s", data.violations, type);
+            fr.eriniumgroup.erinium_faction.integration.discord.DiscordWebhookManager
+                    .sendAntiCheatReport(player, "BAN - " + type, data.violations, banDetails);
             player.connection.disconnect(net.minecraft.network.chat.Component.literal("§cAntiCheat"));
         } else if (data.violations >= currentMaxViolationsKick) {
+            // Rapport Discord avant kick
+            String kickDetails = String.format("JOUEUR KICK - Violations: %d | Type: %s", data.violations, type);
+            fr.eriniumgroup.erinium_faction.integration.discord.DiscordWebhookManager
+                    .sendAntiCheatReport(player, "KICK - " + type, data.violations, kickDetails);
             player.connection.disconnect(net.minecraft.network.chat.Component.literal("§cSuspicious Activity"));
         }
     }

@@ -44,6 +44,8 @@ public class EFCreativeTabs {
             tag.putString("id", EFBlockEntities.TITANIUM_BATTERY_TIER1.getId().toString());
             fullBatt.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
             output.accept(fullBatt);
+            // Coffre Erinium
+            output.accept(EFBlocks.ERINIUM_CHEST.get());
             // Items silver
             output.accept(EFItems.RAW_SILVER.get());
             output.accept(EFItems.SILVER_INGOT.get());

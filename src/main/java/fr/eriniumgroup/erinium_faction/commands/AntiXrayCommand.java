@@ -17,8 +17,19 @@ public class AntiXrayCommand {
         engine = instance;
     }
 
+    private static boolean hasServerPerm(CommandSourceStack src, String node) {
+        try {
+            if (src.hasPermission(2)) return true; // OP
+            net.minecraft.server.level.ServerPlayer sp = src.getPlayer();
+            if (sp == null) return true; // console autorisée
+            return fr.eriniumgroup.erinium_faction.core.permissions.EFPerms.has(sp, node);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("antixray").requires(s -> s.hasPermission(2)).then(Commands.literal("enable").executes(ctx -> setEnabled(ctx.getSource(), true))).then(Commands.literal("disable").executes(ctx -> setEnabled(ctx.getSource(), false))).then(Commands.literal("mode").then(Commands.argument("mode", StringArgumentType.word()).suggests((c, b) -> {
+        dispatcher.register(Commands.literal("antixray").requires(s -> hasServerPerm(s, "ef.antixray.admin")).then(Commands.literal("enable").executes(ctx -> setEnabled(ctx.getSource(), true))).then(Commands.literal("disable").executes(ctx -> setEnabled(ctx.getSource(), false))).then(Commands.literal("mode").then(Commands.argument("mode", StringArgumentType.word()).suggests((c, b) -> {
             for (AntiXrayConfig.AntiXrayMode m : AntiXrayConfig.AntiXrayMode.values())
                 b.suggest(m.name());
             return b.buildFuture();

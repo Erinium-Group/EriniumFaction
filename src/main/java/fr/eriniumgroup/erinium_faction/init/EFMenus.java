@@ -5,6 +5,7 @@ import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
 import fr.eriniumgroup.erinium_faction.gui.menus.PlayerStatsMenu;
 import fr.eriniumgroup.erinium_faction.gui.menus.TitaniumCompressorMenu;
+import fr.eriniumgroup.erinium_faction.gui.menus.EriniumChestMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +23,7 @@ public class EFMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<FactionMenu>> FACTION_MENU = REGISTER.register("faction_menu", () -> IMenuTypeExtension.create(FactionMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<PlayerStatsMenu>> PLAYER_STATS_MENU = REGISTER.register("player_stats_menu", () -> IMenuTypeExtension.create(PlayerStatsMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<TitaniumCompressorMenu>> TITANIUM_COMPRESSOR_MENU = REGISTER.register("titanium_compressor_menu", () -> IMenuTypeExtension.create(TitaniumCompressorMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<EriniumChestMenu>> ERINIUM_CHEST = REGISTER.register("erinium_chest", () -> IMenuTypeExtension.create(EriniumChestMenu::new));
 
     public interface MenuAccessor {
         Map<String, Object> getMenuState();

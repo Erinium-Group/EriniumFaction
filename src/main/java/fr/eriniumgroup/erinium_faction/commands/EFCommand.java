@@ -28,7 +28,16 @@ import java.util.concurrent.CompletableFuture;
 public class EFCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> d) {
-        d.register(Commands.literal("ef").requires(src -> src.hasPermission(2))
+        d.register(Commands.literal("ef").requires(src -> {
+            if (src.hasPermission(2)) return true; // OP
+            try {
+                ServerPlayer sp = src.getPlayer();
+                if (sp == null) return true; // console
+                return fr.eriniumgroup.erinium_faction.core.permissions.EFPerms.has(sp, "ef.admin");
+            } catch (Exception e) {
+                return false;
+            }
+        })
                 // Gestion des permissions joueurs
                 .then(Commands.literal("perm").then(Commands.literal("list").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).executes(ctx -> doList(ctx)))).then(Commands.literal("add").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).then(Commands.argument("permission", StringArgumentType.greedyString()).suggests(EFCommand::suggestKnownPermissions).executes(EFCommand::doAdd)))).then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).then(Commands.argument("permission", StringArgumentType.greedyString()).suggests(EFCommand::suggestPlayerPermissions).executes(EFCommand::doRemove)))))
                 // Suppression de faction
@@ -193,7 +202,32 @@ public class EFCommand {
     }
 
     private static int doSetRank(CommandContext<CommandSourceStack> ctx) {
-        ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.faction.setrank.placeholder"), false);
+        String playerName = StringArgumentType.getString(ctx, "player");
+        String rankId = StringArgumentType.getString(ctx, "rankId");
+
+        ServerPlayer target = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
+        if (target == null) {
+            ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.player_not_found"));
+            return 0;
+        }
+
+        // Vérifier que le rank existe
+        EFRManager.Rank rank = EFRManager.get().getRank(rankId);
+        if (rank == null) {
+            ctx.getSource().sendFailure(Component.literal("§cLe rang '" + rankId + "' n'existe pas."));
+            return 0;
+        }
+
+        // Attribuer le rank au joueur
+        boolean success = EFRManager.get().setPlayerRank(target.getUUID(), rankId);
+        if (!success) {
+            ctx.getSource().sendFailure(Component.literal("§cImpossible d'attribuer le rang."));
+            return 0;
+        }
+
+        ctx.getSource().sendSuccess(() -> Component.literal("§aRang '" + rank.displayName + "§a' attribué à " + target.getGameProfile().getName()), true);
+        target.sendSystemMessage(Component.literal("§aVotre rang a été changé en " + rank.displayName));
+
         return 1;
     }
 

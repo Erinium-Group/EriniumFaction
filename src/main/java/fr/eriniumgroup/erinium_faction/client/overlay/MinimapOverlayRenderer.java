@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import fr.eriniumgroup.erinium_faction.client.waypoint.Waypoint;
+import fr.eriniumgroup.erinium_faction.client.waypoint.WaypointManager;
 import fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage;
 import fr.eriniumgroup.erinium_faction.gui.MinimapOverlayConfig;
 import fr.eriniumgroup.erinium_faction.gui.screens.MapConfig;
@@ -17,6 +19,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -136,6 +139,9 @@ public class MinimapOverlayRenderer {
         // Seulement render les éléments dynamiques (flèche + cardinaux)
         renderCardinals(g, x, y, actualGridSize);
         renderPlayerMarker(g, x, y, actualGridSize, player);
+
+        // Render waypoints sur la minimap
+        renderWaypoints(g, x, y, actualGridSize, visibleChunks, player);
     }
 
     private void regenerateTexture(int playerChunkX, int playerChunkZ, int size, int visibleChunks) {
@@ -372,5 +378,48 @@ public class MinimapOverlayRenderer {
             int b = 64 + (Math.abs(h >> 16) % 192);
             return 0xFF000000 | (r << 16) | (g << 8) | b; // Opaque
         });
+    }
+
+    private void renderWaypoints(GuiGraphics g, int x, int y, int size, int visibleChunks, Player player) {
+        WaypointManager waypointManager = fr.eriniumgroup.erinium_faction.client.EFClient.getWaypointManager();
+        if (waypointManager == null || player == null) return;
+
+        String dimension = player.level().dimension().location().toString();
+        List<Waypoint> waypoints = waypointManager.getVisibleWaypointsForDimension(dimension);
+
+        int playerChunkX = player.chunkPosition().x;
+        int playerChunkZ = player.chunkPosition().z;
+        int halfChunks = visibleChunks / 2;
+        int cellSize = config.cellSize;
+
+        for (Waypoint wp : waypoints) {
+            // Convertir position monde vers position chunk
+            int wpChunkX = wp.getX() >> 4;
+            int wpChunkZ = wp.getZ() >> 4;
+
+            // Position relative au joueur
+            int dx = wpChunkX - playerChunkX;
+            int dz = wpChunkZ - playerChunkZ;
+
+            // Pour forme ronde, skip waypoints hors du cercle
+            if (config.roundShape && dx * dx + dz * dz > halfChunks * halfChunks) continue;
+
+            // Vérifier si visible dans le cadre
+            if (Math.abs(dx) > halfChunks || Math.abs(dz) > halfChunks) continue;
+
+            // Position dans la minimap
+            int wx = x + (dx + halfChunks) * cellSize + cellSize / 2;
+            int wy = y + (dz + halfChunks) * cellSize + cellSize / 2;
+
+            // Dessiner un point
+            int dotSize = Math.max(3, cellSize / 2);
+            g.fill(wx - dotSize / 2, wy - dotSize / 2, wx + dotSize / 2, wy + dotSize / 2, wp.getColorARGB());
+
+            // Bordure noire pour contraste
+            g.fill(wx - dotSize / 2 - 1, wy - dotSize / 2 - 1, wx + dotSize / 2 + 1, wy - dotSize / 2, 0xFF000000);
+            g.fill(wx - dotSize / 2 - 1, wy + dotSize / 2, wx + dotSize / 2 + 1, wy + dotSize / 2 + 1, 0xFF000000);
+            g.fill(wx - dotSize / 2 - 1, wy - dotSize / 2, wx - dotSize / 2, wy + dotSize / 2, 0xFF000000);
+            g.fill(wx + dotSize / 2, wy - dotSize / 2, wx + dotSize / 2 + 1, wy + dotSize / 2, 0xFF000000);
+        }
     }
 }

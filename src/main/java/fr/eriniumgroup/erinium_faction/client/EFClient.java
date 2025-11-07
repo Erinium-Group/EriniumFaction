@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.eriniumgroup.erinium_faction.client.overlay.FactionTitleOverlay;
 import fr.eriniumgroup.erinium_faction.client.overlay.MinimapOverlayRenderer;
+import fr.eriniumgroup.erinium_faction.client.overlay.WaypointOverlayRenderer;
+import fr.eriniumgroup.erinium_faction.client.waypoint.WaypointManager;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.common.network.packets.ClaimsMapDataMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
@@ -40,6 +42,9 @@ public class EFClient {
     private static MinimapOverlayRenderer minimapRenderer;
     private static long lastMinimapDataRequest = 0;
     private static final long MINIMAP_REQUEST_INTERVAL_MS = 1000; // Demander toutes les 1 secondes
+
+    // Waypoint manager
+    private static WaypointManager waypointManager;
 
     // Zone cliquable du bouton HUD courant
     private static int btnX, btnY, btnS;
@@ -110,6 +115,11 @@ public class EFClient {
     public static void onClientTick(ClientTickEvent.Post e) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
+
+        // Initialiser le waypoint manager si nécessaire
+        if (waypointManager == null && mc.player.getGameProfile() != null) {
+            waypointManager = new WaypointManager(mc.player.getGameProfile().getId().toString());
+        }
         if (allowKeyOpen() && OPEN_MAP != null && mc.screen == null && OPEN_MAP.consumeClick()) {
             mc.setScreen(new FactionMapScreen());
         }
@@ -192,6 +202,11 @@ public class EFClient {
         boolean isSettingsScreen = mc.screen instanceof fr.eriniumgroup.erinium_faction.gui.screens.MinimapOverlaySettingsScreen;
         if (minimapRenderer != null && minimapConfig != null && minimapConfig.enabled && (mc.screen == null || isSettingsScreen)) {
             minimapRenderer.render(g, w, h);
+        }
+
+        // Render waypoint overlay (seulement si aucun screen)
+        if (mc.screen == null) {
+            WaypointOverlayRenderer.render(g, w, h);
         }
 
         // Render map button (seulement si aucun screen)
@@ -325,5 +340,9 @@ public class EFClient {
         if (minimapRenderer != null) {
             minimapRenderer.reloadColors();
         }
+    }
+
+    public static WaypointManager getWaypointManager() {
+        return waypointManager;
     }
 }

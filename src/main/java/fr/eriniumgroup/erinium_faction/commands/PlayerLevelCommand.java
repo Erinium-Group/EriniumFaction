@@ -22,15 +22,26 @@ import java.util.Collection;
  */
 public class PlayerLevelCommand {
 
+    private static boolean hasServerPerm(CommandSourceStack src, String node) {
+        try {
+            if (src.hasPermission(2)) return true; // OP
+            ServerPlayer sp = src.getPlayer();
+            if (sp == null) return true; // console autorisée
+            return fr.eriniumgroup.erinium_faction.core.permissions.EFPerms.has(sp, node);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("playerlevel")
             .then(Commands.literal("info")
                 .executes(ctx -> showInfo(ctx, ctx.getSource().getPlayerOrException()))
                 .then(Commands.argument("player", EntityArgument.player())
-                    .requires(src -> src.hasPermission(2))
+                    .requires(src -> hasServerPerm(src, "ef.playerlevel.admin"))
                     .executes(ctx -> showInfo(ctx, EntityArgument.getPlayer(ctx, "player")))))
             .then(Commands.literal("setlevel")
-                .requires(src -> src.hasPermission(2))
+                .requires(src -> hasServerPerm(src, "ef.playerlevel.admin"))
                 .then(Commands.argument("player", EntityArgument.players())
                     .then(Commands.argument("level", IntegerArgumentType.integer(1, 1000))
                         .executes(ctx -> setLevel(ctx, EntityArgument.getPlayers(ctx, "player"), IntegerArgumentType.getInteger(ctx, "level"))))))
@@ -44,23 +55,23 @@ public class PlayerLevelCommand {
                     })
                     .executes(ctx -> distributePoint(ctx, ctx.getSource().getPlayerOrException(), StringArgumentType.getString(ctx, "attribute")))))
             .then(Commands.literal("reset")
-                .requires(src -> src.hasPermission(2))
+                .requires(src -> hasServerPerm(src, "ef.playerlevel.admin"))
                 .executes(ctx -> fullReset(ctx, ctx.getSource().getPlayerOrException()))
                 .then(Commands.argument("player", EntityArgument.player())
                     .executes(ctx -> fullReset(ctx, EntityArgument.getPlayer(ctx, "player")))))
             .then(Commands.literal("resetattributes")
                 .executes(ctx -> resetAttributes(ctx, ctx.getSource().getPlayerOrException()))
                 .then(Commands.argument("player", EntityArgument.player())
-                    .requires(src -> src.hasPermission(2))
+                    .requires(src -> hasServerPerm(src, "ef.playerlevel.admin"))
                     .executes(ctx -> resetAttributes(ctx, EntityArgument.getPlayer(ctx, "player")))))
             .then(Commands.literal("jobs")
                 .then(Commands.literal("info")
                     .executes(ctx -> showJobsInfo(ctx, ctx.getSource().getPlayerOrException()))
                     .then(Commands.argument("player", EntityArgument.player())
-                        .requires(src -> src.hasPermission(2))
+                        .requires(src -> hasServerPerm(src, "ef.playerlevel.admin"))
                         .executes(ctx -> showJobsInfo(ctx, EntityArgument.getPlayer(ctx, "player")))))
                 .then(Commands.literal("setlevel")
-                    .requires(src -> src.hasPermission(2))
+                    .requires(src -> hasServerPerm(src, "ef.playerlevel.admin"))
                     .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("job", StringArgumentType.word())
                             .suggests((ctx, builder) -> {
@@ -75,7 +86,7 @@ public class PlayerLevelCommand {
                                     StringArgumentType.getString(ctx, "job"),
                                     IntegerArgumentType.getInteger(ctx, "level")))))))
                 .then(Commands.literal("addxp")
-                    .requires(src -> src.hasPermission(2))
+                    .requires(src -> hasServerPerm(src, "ef.playerlevel.admin"))
                     .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("job", StringArgumentType.word())
                             .suggests((ctx, builder) -> {

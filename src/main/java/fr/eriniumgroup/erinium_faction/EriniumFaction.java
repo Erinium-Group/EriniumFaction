@@ -43,6 +43,7 @@ import fr.eriniumgroup.erinium_faction.init.EFBlocks;
 import fr.eriniumgroup.erinium_faction.init.EFBlockEntities;
 import fr.eriniumgroup.erinium_faction.init.EFCapabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import fr.eriniumgroup.erinium_faction.init.EFBlockEntities;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -69,6 +70,8 @@ public class EriniumFaction {
         EFMenus.REGISTER.register(modEventBus);
         // Register blocks
         EFBlocks.REGISTER.register(modEventBus);
+        // Register block entities
+        EFBlockEntities.REGISTER.register(modEventBus);
         // Register items
         EFItems.REGISTER.register(modEventBus);
         // Register block items from item register
@@ -149,6 +152,8 @@ public class EriniumFaction {
         PlayerLevelCommand.register(event.getDispatcher());
         // Commande anti-xray
         AntiXrayCommand.register(event.getDispatcher());
+        // Commande report de chat
+        ReportChatCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 
