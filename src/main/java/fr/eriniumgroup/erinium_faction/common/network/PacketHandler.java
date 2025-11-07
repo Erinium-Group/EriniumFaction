@@ -106,6 +106,16 @@ public class PacketHandler {
         // Paquet synchronisation rang joueur
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerRankPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerRankPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerRankPacket::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound), PlayerNameplateData (clientbound), VanishSync (clientbound), PlayerRankSync (clientbound)");
+        // Paquets système de bannière faction
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.SaveBannerPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.SaveBannerPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.SaveBannerPacket::handleData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.OpenBannerEditorPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.OpenBannerEditorPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.OpenBannerEditorPacket::handleData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.BannerImageDataPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.BannerImageDataPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.BannerImageDataPacket::handleData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.SyncBannerTexturePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.SyncBannerTexturePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.SyncBannerTexturePacket::handleData);
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.SyncAllBannersPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.SyncAllBannersPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.SyncAllBannersPacket::handleData);
+
+        // Paquet achat shop
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ShopPurchasePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ShopPurchasePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ShopPurchasePacket::handleData);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound), PlayerNameplateData (clientbound), VanishSync (clientbound), PlayerRankSync (clientbound), BannerSystem (save/open/data)");
     }
 }

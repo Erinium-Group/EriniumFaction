@@ -89,6 +89,9 @@ public class Faction {
         leader.perms.add("faction.use.containers");
         leader.perms.add("faction.manage.permissions");
         leader.perms.add("faction.manage.alliances");
+        leader.perms.add("faction.banner.edit");
+        leader.perms.add("faction.banner.get");
+        leader.perms.add("faction.shop.buy");
 
         RankDef officer = new RankDef("officer", "Officer", 80);
         officer.perms.add("faction.invite");
@@ -384,6 +387,9 @@ public class Faction {
     // Historique des transactions bancaires
     private TransactionHistory transactionHistory = new TransactionHistory();
 
+    // Système de bannière custom
+    private boolean hasCustomBanner = false;
+
     // Accessors --------------------------------------------------------------
     public boolean isAdminFaction() { return adminFaction; }
     public void setAdminFaction(boolean v) { this.adminFaction = v; }
@@ -525,6 +531,7 @@ public class Faction {
         tag.putString("mode", mode.name());
         tag.putString("desc", description);
         tag.putDouble("bank", bankBalance);
+        tag.putBoolean("hasCustomBanner", hasCustomBanner);
         if (hasHome) {
             tag.putInt("homeX", homeX); tag.putInt("homeY", homeY); tag.putInt("homeZ", homeZ); tag.putBoolean("hasHome", true);
             if (homeDim != null) tag.putString("homeDim", homeDim.toString());
@@ -626,6 +633,7 @@ public class Faction {
         }
         f.description = tag.getString("desc");
         f.bankBalance = tag.getDouble("bank");
+        f.hasCustomBanner = tag.getBoolean("hasCustomBanner");
         f.hasHome = tag.getBoolean("hasHome");
         if (f.hasHome) {
             f.homeX = tag.getInt("homeX"); f.homeY = tag.getInt("homeY"); f.homeZ = tag.getInt("homeZ");
@@ -697,5 +705,18 @@ public class Faction {
     // Fournit un gestionnaire des rangs pour cette faction.
     public RankManager ranks() {
         return new RankManager(this);
+    }
+
+    // Bannière custom
+    public boolean hasCustomBanner() {
+        return hasCustomBanner;
+    }
+
+    public void setHasCustomBanner(boolean hasCustomBanner) {
+        this.hasCustomBanner = hasCustomBanner;
+    }
+
+    public void setCustomBanner(boolean value) {
+        this.hasCustomBanner = value;
     }
 }

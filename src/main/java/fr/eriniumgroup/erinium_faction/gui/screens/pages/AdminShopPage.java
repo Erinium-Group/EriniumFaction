@@ -29,16 +29,25 @@ public class AdminShopPage extends FactionPage {
     private static final ResourceLocation BUTTON_PURCHASE_HOVER = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/components/shop/button-purchase-hover.png");
 
     private static class ShopItem {
+        String id; // ID unique pour l'achat
         String name;
         int price;
         int requiredLevel;
         String description;
+        boolean purchased; // Si l'item est déjà acheté (pour les achats uniques)
 
-        ShopItem(String name, int price, int requiredLevel, String description) {
+        ShopItem(String id, String name, int price, int requiredLevel, String description) {
+            this.id = id;
             this.name = name;
             this.price = price;
             this.requiredLevel = requiredLevel;
             this.description = description;
+            this.purchased = false;
+        }
+
+        ShopItem setPurchased(boolean purchased) {
+            this.purchased = purchased;
+            return this;
         }
     }
 
@@ -52,26 +61,40 @@ public class AdminShopPage extends FactionPage {
 
             List<ShopItem> items = new ArrayList<>();
 
+            // Fonctionnalité Bannière Custom (achat unique)
+            var data = getFactionData();
+            boolean hasBanner = data != null && data.hasCustomBanner;
+            items.add(new ShopItem("custom_banner", "Bannière Custom", 50000, 1,
+                "Permet de créer une bannière personnalisée 64x32 pixels pour votre faction. Achat unique.")
+                .setPurchased(hasBanner));
+
             // Placeholder items
-            items.add(new ShopItem("{{SHOP_ITEM_1_NAME}}", 1000, 1, "{{SHOP_ITEM_1_DESC}}"));
-            items.add(new ShopItem("{{SHOP_ITEM_2_NAME}}", 2500, 3, "{{SHOP_ITEM_2_DESC}}"));
-            items.add(new ShopItem("{{SHOP_ITEM_3_NAME}}", 5000, 5, "{{SHOP_ITEM_3_DESC}}"));
-            items.add(new ShopItem("{{SHOP_ITEM_4_NAME}}", 10000, 8, "{{SHOP_ITEM_4_DESC}}"));
-            items.add(new ShopItem("{{SHOP_ITEM_5_NAME}}", 25000, 10, "{{SHOP_ITEM_5_DESC}}"));
+            items.add(new ShopItem("placeholder_1", "{{SHOP_ITEM_1_NAME}}", 1000, 1, "{{SHOP_ITEM_1_DESC}}"));
+            items.add(new ShopItem("placeholder_2", "{{SHOP_ITEM_2_NAME}}", 2500, 3, "{{SHOP_ITEM_2_DESC}}"));
+            items.add(new ShopItem("placeholder_3", "{{SHOP_ITEM_3_NAME}}", 5000, 5, "{{SHOP_ITEM_3_DESC}}"));
+            items.add(new ShopItem("placeholder_4", "{{SHOP_ITEM_4_NAME}}", 10000, 8, "{{SHOP_ITEM_4_DESC}}"));
 
             // Examples with varying prices and levels
-            items.add(new ShopItem("Iron Ingot x64", 500, 1, "Basic resource pack"));
-            items.add(new ShopItem("Diamond x16", 2000, 3, "Precious gems"));
-            items.add(new ShopItem("Netherite Ingot x4", 8000, 5, "Rare upgrade material"));
-            items.add(new ShopItem("Enchanted Book (Mending)", 15000, 7, "Rare enchantment"));
-            items.add(new ShopItem("Totem of Undying", 20000, 8, "Life-saving item"));
-            items.add(new ShopItem("Elytra", 30000, 10, "Wings of flight"));
-            items.add(new ShopItem("Beacon", 40000, 12, "Power beacon"));
-            items.add(new ShopItem("Dragon Egg", 100000, 15, "Ultimate trophy"));
+            items.add(new ShopItem("iron_64", "Iron Ingot x64", 500, 1, "Basic resource pack"));
+            items.add(new ShopItem("diamond_16", "Diamond x16", 2000, 3, "Precious gems"));
+            items.add(new ShopItem("netherite_4", "Netherite Ingot x4", 8000, 5, "Rare upgrade material"));
+            items.add(new ShopItem("book_mending", "Enchanted Book (Mending)", 15000, 7, "Rare enchantment"));
+            items.add(new ShopItem("totem", "Totem of Undying", 20000, 8, "Life-saving item"));
+            items.add(new ShopItem("elytra", "Elytra", 30000, 10, "Wings of flight"));
+            items.add(new ShopItem("beacon", "Beacon", 40000, 12, "Power beacon"));
+            items.add(new ShopItem("dragon_egg", "Dragon Egg", 100000, 15, "Ultimate trophy"));
 
             shopScrollList.setItems(items);
             shopScrollList.setOnItemClick(item -> {
+                if (item.purchased) {
+                    EFC.log.info("§6Shop", "§cItem already purchased: §e{}", item.name);
+                    return;
+                }
                 EFC.log.info("§6Shop", "§aAttempting to purchase §e{} §afor §e${} §a(requires level §e{}§a)", item.name, item.price, item.requiredLevel);
+                // Envoyer le paquet d'achat
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(
+                    new fr.eriniumgroup.erinium_faction.common.network.packets.ShopPurchasePacket(item.id)
+                );
             });
         }
 
@@ -120,10 +143,16 @@ public class AdminShopPage extends FactionPage {
         int levelColor = 0xFF00d2ff;
         g.drawString(font, levelText, textStartX, y + (int) Math.round(35 * scale), levelColor, false);
 
-        // Buy button indicator
-        String buyText = translate("erinium_faction.gui.shop.button.buy");
-        int buyX = x + width - buyTextWidth - (int) Math.round(16 * scale);
-        g.drawString(font, buyText, buyX, y + height / 2 - 4, hovered ? 0xFF10b981 : 0xFF6a6a7e, false);
+        // Buy button indicator ou status "Acheté"
+        if (item.purchased) {
+            String purchasedText = "§l✓ ACHETÉ";
+            int purchasedX = x + width - font.width(purchasedText) - (int) Math.round(12 * scale);
+            g.drawString(font, purchasedText, purchasedX, y + height / 2 - 4, 0xFF10b981, false);
+        } else {
+            String buyText = translate("erinium_faction.gui.shop.button.buy");
+            int buyX = x + width - buyTextWidth - (int) Math.round(16 * scale);
+            g.drawString(font, buyText, buyX, y + height / 2 - 4, hovered ? 0xFF10b981 : 0xFF6a6a7e, false);
+        }
     }
 
     @Override

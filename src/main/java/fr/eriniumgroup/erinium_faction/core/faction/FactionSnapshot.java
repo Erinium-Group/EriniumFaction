@@ -33,6 +33,8 @@ public class FactionSnapshot {
 
     public int factionChestSize;
 
+    public boolean hasCustomBanner; // Si la faction a acheté la fonctionnalité bannière
+
     public Map<UUID, String> membersRank = new HashMap<>();
     public Map<UUID, String> memberNames = new HashMap<>();
     public Map<UUID, Double> membersPower = new HashMap<>(); // Power de chaque membre
@@ -120,6 +122,7 @@ public class FactionSnapshot {
         s.maxWarps = f.getMaxWarps();
         s.bank = (int) Math.round(f.getBankBalance());
         s.factionChestSize = f.getChestSize();
+        s.hasCustomBanner = f.hasCustomBanner();
 
         var server = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
         var profileCache = server != null ? server.getProfileCache() : null;
@@ -221,6 +224,7 @@ public class FactionSnapshot {
         buf.writeVarInt(s.warpsCount);
         buf.writeVarInt(s.maxWarps);
         buf.writeVarInt(s.bank);
+        buf.writeBoolean(s.hasCustomBanner);
         buf.writeVarInt(s.membersRank.size());
         for (var e : s.membersRank.entrySet()) {
             UUID uuid = e.getKey();
@@ -300,6 +304,7 @@ public class FactionSnapshot {
         s.warpsCount = buf.readVarInt();
         s.maxWarps = buf.readVarInt();
         s.bank = buf.readVarInt();
+        s.hasCustomBanner = buf.readBoolean();
         int n = buf.readVarInt();
         for (int i = 0; i < n; i++) {
             UUID id = buf.readUUID();

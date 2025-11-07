@@ -24,69 +24,17 @@
   - Liste des bounties visible dans un GUI
   - Ajoute de la motivation pour le PvP
 
-  4. Guerre de Faction Programmée
-
-  - Les factions peuvent déclarer une "guerre officielle" (vote des deux côtés)
-  - Pendant la guerre (1-3 jours) :
-    - Double XP de faction pour les kills
-    - Réduction de cooldown de téléportation
-    - Pas de perte de power permanente
-  - À la fin : faction gagnante reçoit un trophée + récompenses
-
-  5. Système de Bannières de Guerre
-
-  - Chaque faction peut créer une bannière personnalisée
-  - Placer une bannière en territoire ennemi donne des buffs à l'équipe
-  - Les ennemis doivent la détruire pour stopper le buff
-  - Encourage les raids coordonnés
-
   ---
   🏆 PROGRESSION & RÉCOMPENSES
-
-  6. Système d'Achievements Faction
-
-  - Succès de faction (ex: "Posséder 50 chunks", "Gagner 100 combats PvP")
-  - Récompenses : titres, cosmétiques, petits bonus
-  - Visible dans le GUI faction
-
-  7. Prestige System pour Jobs
-
-  - Après niveau 100, possibilité de "prestige" (recommencer à 1)
-  - Chaque prestige débloque un cosmétique ou petit perk
-  - Garde la motivation sur le long terme
-
-  8. Système de Réputation Personnelle
-
-  - Chaque joueur a une réputation (Honorable, Neutre, Bandit)
-  - Basée sur les actions (tuer des alliés = malus, respecter les trêves = bonus)
-  - Affecte les prix en shop, accès à certaines quêtes
-
-  9. Coffres de Guerre Hebdomadaires
-
-  - Chaque semaine, un coffre spécial apparaît dans une zone PvP
-  - Les factions doivent se battre pour l'ouvrir
-  - Contient des ressources rares + items cosmétiques
 
   10. Classement Saison
 
   - Système de "saisons" (1-3 mois)
   - Classement des factions par power, territoires, kills
-  - Fin de saison : récompenses cosmétiques pour le top 3
+  - Fin de saison : récompenses pour le top 3
 
   ---
   🛠️ UTILITAIRES & QUALITÉ DE VIE
-
-  11. Système de Parcelles Privées
-
-  - Chaque joueur peut avoir 1-2 parcelles privées dans le territoire faction
-  - Seul le joueur peut y construire/accéder
-  - Protège les coffres personnels des vols internes
-
-  12. Faction Warps (Points de Téléportation Multiples)
-
-  - En plus du home, les factions peuvent définir 2-3 warps
-  - Ex: "base", "farm", "pvp"
-  - Coût en power ou argent pour définir un warp
 
   13. Système de Signaux de Ralliement
 
@@ -97,15 +45,10 @@
 
   14. Logs d'Activité Faction
 
+  - Dans une commande /f log et une permissions ajoutés
   - Historique des actions importantes (claims, dépôts bank, promotions)
   - Visible dans le GUI faction
   - Aide à détecter les traîtres ou vols internes
-
-  15. Coffre de Faction avec Permissions
-
-  - Extension du système actuel : plusieurs types de coffres
-  - Ex: "Coffre Officiers" (rank Officer+), "Coffre Public" (tous)
-  - Gestion fine des ressources
 
   ---
   ⚔️ COMBAT & PVP AMÉLIORÉ
@@ -124,32 +67,10 @@
 
   18. Système de Duel
 
-  - Commande /duel <joueur> pour défier en 1v1
-  - Zone de duel sécurisée (pas de perte de power, items)
-  - Purement pour le fun et l'entraînement
-
-  19. Buffs de Territoire
-
-  - Les factions peuvent "améliorer" leurs chunks avec des buffs
-  - Ex: "Régénération +10%", "Résistance aux explosions +20%"
-  - Coût en ressources + power
-  - Durée limitée (1 semaine)
-
-  20. Système de Trêve Temporaire
-
-  - Les factions peuvent proposer une trêve (24h-7j)
-  - Pendant la trêve, PvP désactivé entre les deux factions
-  - Utile pour les périodes de construction/farming
+  - une dimension de duel ou tu perd pas de power et de stuff, en revanche les armures peuvent être abimés.
 
   ---
   🌍 MONDE & EXPLORATION
-
-  21. Zones PvP Dynamiques
-
-  - Des zones "hot spots" apparaissent aléatoirement (ex: "Ruines Anciennes")
-  - Drop de ressources rares + XP bonus
-  - Risque : zone en PvP forcé
-  - Encourage l'exploration et le combat
 
   22. Événements Météo PvP
 
@@ -159,55 +80,8 @@
 
   23. Système de Outpost
 
-  - Des "avant-postes" neutres disséminés sur la map
-  - Les factions peuvent les capturer et les tenir
-  - Génèrent des ressources passives (argent, XP)
-  - Peuvent être recapturés par d'autres factions
-
-  24. Portails Inter-Faction
-
-  - Les factions alliées peuvent créer des portails liés entre leurs bases
-  - Coût élevé en ressources + maintenance
-  - Facilite la coordination entre alliés
-
-  25. Système de Beacon Faction
-
-  - Les factions peuvent placer des "beacons" spéciaux
-  - Génèrent un buff dans un rayon (ex: Speed II, Haste I)
-  - Visibles sur la map pour les ennemis
-  - Peuvent être détruits lors des raids
-
-  ---
-  💰 ÉCONOMIE & COMMERCE
-
-  26. Marché Inter-Faction
-
-  - GUI où les joueurs peuvent vendre/acheter des items entre factions
-  - Système d'enchères possible
-  - Taxe pour la faction sur les ventes
-
-  27. Contrats de Mercenariat
-
-  - Les factions peuvent poster des "contrats" (ex: "Tuer le leader de faction X")
-  - Récompenses payées par la faction commanditaire
-  - Visible dans un GUI "Job Board"
-
-  28. Système de Taxes Faction
-
-  - Les leaders peuvent définir une taxe sur les ventes/gains des membres
-  - L'argent va dans la bank faction
-  - Configurable par rank
-
-  29. Prêts entre Factions
-
-  - Système de prêts d'argent entre factions alliées
-  - Intérêts configurables + durée de remboursement
-  - Si non remboursé, relations automatiquement changées en "ennemi"
-
-  30. Coffre du Trésor de Guerre
-
-  - Un coffre spécial qui se remplit automatiquement avec 5% des ressources minées par les membres
-  - Utilisé pour financer les guerres, buffs, constructions faction
+  - Des claims achetables en bordure de warzones
+  - utile pour créer des pièges
 
   ---
   🎨 COSMÉTIQUES & PERSONNALISATION
@@ -218,28 +92,13 @@
   - Affichés sous le pseudo du joueur
   - Ex: "Le Mineur", "Chasseur de Primes", "Seigneur de Guerre"
 
-  32. Couleurs de Faction Personnalisées
-
-  - Les factions peuvent choisir leur couleur sur la map
-  - Évite les confusions et ajoute de l'identité
-
-  33. Émotes & Gestures
-
-  - Commandes comme /emote wave, /emote salute
-  - Animations visibles par tous les joueurs proches
-  - Purement cosmétique et fun
-
   34. Capes de Faction
 
+  - Propose un canva avec selecteur de couleur graphique, ils peuvent dessiner et sauvegarder, ça sera enregistrer dans un fichier png dans un dossier coté serveur.
+  - puis sera charger au render de la cape
   - Chaque faction peut avoir une cape unique
   - Design personnalisable (couleurs, motifs)
   - Visible dans le jeu
-
-  35. Statues de Héros
-
-  - Les factions peuvent ériger des statues de leurs meilleurs joueurs
-  - Basé sur les statistiques (kills, claims, donations)
-  - Visible en base
 
   ---
   📊 STATISTIQUES & LEADERBOARDS
@@ -250,63 +109,8 @@
   - Visible dans un GUI personnel
   - Classements par catégorie
 
-  37. Hall of Fame Faction
-
-  - Mur virtuel des meilleurs joueurs de chaque faction
-  - Catégories : "Most kills", "Most claims", "Top donor"
-
-  38. Classement Multi-Critères
-
-  - Extension du TopLuck actuel
-  - Classements par : wealth, claims, kills, job levels
-  - Récompenses hebdomadaires pour les top 10
-
-  39. Journal de Guerre
-
-  - Log automatique des combats importants (guerres, sièges)
-  - Accessible via GUI
-  - Génère une "histoire" de la faction
-
-  ---
-  🔧 SYSTÈMES TECHNIQUES
-
-  40. Système de Vote
-
-  - Les membres peuvent voter pour des décisions importantes
-  - Ex: "Déclarer la guerre à faction X", "Allouer 10k$ pour un projet"
-  - Seuls certains ranks peuvent lancer des votes
-
-  41. Système d'Alerte Territoire
-
-  - Notification automatique si un ennemi entre dans le territoire
-  - Option pour activer/désactiver par chunk
-  - Aide à la défense
-
-  42. Backup Automatique d'Inventaire
-
-  - Si un joueur meurt en territoire allié/home, son inventaire est sauvegardé
-  - Peut être récupéré moyennant un coût
-  - Évite la frustration totale
-
-  43. Système de Coffre-fort Temps Réel
-
-  - Un coffre qui ne peut être ouvert que par le joueur pendant 5 minutes après y avoir déposé des items
-  - Après 5 min, accessible selon les permissions faction
-  - Protège contre les vols rapides
-
-  44. Système de Construction Partagée
-
-  - Mode "build" où plusieurs membres peuvent construire ensemble avec permissions temporaires
-  - Facilite les grands projets
-
   ---
   🎁 ÉVÉNEMENTS & MINI-JEUX
-
-  45. Événement "King of the Hill"
-
-  - Une colline apparaît toutes les X heures
-  - La faction qui tient la colline le plus longtemps gagne
-  - Récompenses importantes
 
   46. Événement "Raid Boss"
 
@@ -320,42 +124,5 @@
   - Les factions doivent résoudre des énigmes pour trouver un trésor caché
   - Encourage l'exploration et la collaboration
 
-  48. Arène PvP Faction
-
-  - Système de tournoi 5v5 ou 10v10
-  - Matchmaking automatique
-  - Classement ELO pour les factions
-
-  ---
-  🚀 BONUS : IDÉES AVANCÉES
-
-  49. Système de Vassalité
-
-  - Les petites factions peuvent devenir "vassales" de plus grandes
-  - Avantages : protection, ressources partagées
-  - Inconvénients : obligation de participer aux guerres
-
-  50. Monnaie Faction Personnalisée
-
-  - Chaque faction peut créer sa propre monnaie interne
-  - Utilisable uniquement entre membres
-  - Ajoute une dimension économique RP
-
-  ---
-  🎯 MES RECOMMANDATIONS TOP 10 (À IMPLÉMENTER EN PRIORITÉ)
-
-  1. Système de Siège (#1) - Ajoute de la profondeur stratégique
-  2. Bounty System (#3) - Motivant et fun
-  3. Points de Capture (#2) - Encourage le PvP organisé
-  4. Faction Warps (#12) - QoL essentiel
-  5. Logs d'Activité (#14) - Transparence et confiance
-  6. Combat Logging (#16) - Empêche les abus
-  7. Zones PvP Dynamiques (#21) - Exploration + PvP
-  8. Système de Titres (#31) - Progression personnelle
-  9. Système d'Alerte Territoire (#41) - Défense améliorée
-  10. King of the Hill (#45) - Événement fédérateur
-
   ---
   Toutes ces idées sont équilibrées, compréhensibles, et s'intègrent naturellement avec vos systèmes existants (power, jobs, economy, territory). Elles ajoutent du gameplay sans créer de "pay-to-win" ou d'avantages écrasants.
-
-  Dites-moi quelles idées vous intéressent le plus, et je peux vous aider à les planifier et implémenter ! 🚀

@@ -6,10 +6,12 @@
   "mixins": [
   ],
   "client": [
+    "BannerRendererMixin",
     "EntityRendererMixin",
     "HumanoidArmorLayerMixin",
     "ItemInHandLayerMixin",
-    "PlayerTabOverlayMixin"
+    "PlayerTabOverlayMixin",
+    "ShieldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
