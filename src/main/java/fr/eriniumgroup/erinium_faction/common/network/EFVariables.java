@@ -113,6 +113,7 @@ public class EFVariables {
             clone.playerPower = original.playerPower;
             clone.playerMaxPower = original.playerMaxPower;// money
             clone.money = original.money;
+            clone.factionCapeEnabled = original.factionCapeEnabled;
             event.getEntity().setData(PLAYER_VARIABLES, clone);
         }
     }
@@ -134,6 +135,8 @@ public class EFVariables {
         public double playerMaxPower = 0;
         // économie joueur
         public double money = 0;
+        // cape de faction
+        public boolean factionCapeEnabled = false;
 
         @Override
         public CompoundTag serializeNBT(HolderLookup.Provider lookupProvider) {
@@ -152,6 +155,7 @@ public class EFVariables {
             nbt.putDouble("playerPower", playerPower);
             nbt.putDouble("playerMaxPower", playerMaxPower);
             nbt.putDouble("money", money);
+            nbt.putBoolean("factionCapeEnabled", factionCapeEnabled);
             return nbt;
         }
 
@@ -171,6 +175,7 @@ public class EFVariables {
             playerPower = nbt.getDouble("playerPower");
             playerMaxPower = nbt.getDouble("playerMaxPower");
             money = nbt.contains("money") ? nbt.getDouble("money") : 0;
+            factionCapeEnabled = nbt.contains("factionCapeEnabled") ? nbt.getBoolean("factionCapeEnabled") : false;
         }
 
         public void syncPlayerVariables(Entity entity) {

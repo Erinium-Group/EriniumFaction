@@ -167,6 +167,8 @@ public class EriniumFaction {
         HomeCommand.register(event.getDispatcher());
         // Commandes de bannière faction
         fr.eriniumgroup.erinium_faction.commands.BannerCommand.register(event.getDispatcher());
+        // Commandes de cape faction
+        fr.eriniumgroup.erinium_faction.commands.CapeCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 
