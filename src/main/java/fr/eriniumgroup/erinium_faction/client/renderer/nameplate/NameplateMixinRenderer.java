@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import fr.eriniumgroup.erinium_faction.client.data.PlayerFactionCache;
 import fr.eriniumgroup.erinium_faction.client.data.PlayerLevelCache;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
+import fr.eriniumgroup.erinium_faction.features.vanish.VanishClientData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -52,6 +53,11 @@ public class NameplateMixinRenderer {
      * Point d'entrée principal - appelé par le mixin
      */
     public static boolean renderCustomNameplate(Player player, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        // Ne pas afficher la nameplate si le joueur est en vanish
+        if (VanishClientData.isVanished(player.getUUID())) {
+            return true; // Cancel le rendu vanilla aussi
+        }
+
         Minecraft mc = Minecraft.getInstance();
         Player clientPlayer = mc.player;
 

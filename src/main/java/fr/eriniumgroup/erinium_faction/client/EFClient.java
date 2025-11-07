@@ -42,7 +42,7 @@ public class EFClient {
     // Waypoint manager
     private static WaypointManager waypointManager;
 
-    // Zone cliquable du bouton HUD courant
+    // Zone cliquable du bouton HUD courant ok
     private static int btnX, btnY, btnS;
     private static boolean mouseOver;
 

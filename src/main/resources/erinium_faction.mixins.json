@@ -6,7 +6,10 @@
   "mixins": [
   ],
   "client": [
-    "EntityRendererMixin"
+    "EntityRendererMixin",
+    "HumanoidArmorLayerMixin",
+    "ItemInHandLayerMixin",
+    "PlayerTabOverlayMixin"
   ],
   "injectors": {
     "defaultRequire": 1

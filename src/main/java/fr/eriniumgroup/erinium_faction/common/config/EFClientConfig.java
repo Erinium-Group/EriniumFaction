@@ -44,6 +44,25 @@ public final class EFClientConfig {
     public static final ModConfigSpec.IntValue NAMEPLATE_LEVEL_COLOR;
     public static final ModConfigSpec.IntValue NAMEPLATE_MAX_WIDTH;
 
+    // Tab List
+    public static final ModConfigSpec.BooleanValue TAB_LIST_ENABLED;
+    public static final ModConfigSpec.IntValue TAB_LIST_MAX_COLUMNS;
+    public static final ModConfigSpec.IntValue TAB_LIST_ROWS_PER_COLUMN;
+    public static final ModConfigSpec.IntValue TAB_LIST_BACKGROUND_COLOR;
+    public static final ModConfigSpec.IntValue TAB_LIST_HEADER_BACKGROUND_COLOR;
+    public static final ModConfigSpec.IntValue TAB_LIST_BORDER_COLOR;
+    public static final ModConfigSpec.IntValue TAB_LIST_ACCENT_COLOR;
+    public static final ModConfigSpec.IntValue TAB_LIST_TEXT_COLOR;
+    public static final ModConfigSpec.IntValue TAB_LIST_TEXT_SHADOW_COLOR;
+    public static final ModConfigSpec.IntValue TAB_LIST_PLAYER_BACKGROUND_COLOR;
+    public static final ModConfigSpec.IntValue TAB_LIST_PLAYER_HOVER_COLOR;
+    public static final ModConfigSpec.BooleanValue TAB_LIST_SHOW_SERVER_NAME;
+    public static final ModConfigSpec.ConfigValue<String> TAB_LIST_SERVER_NAME;
+    public static final ModConfigSpec.BooleanValue TAB_LIST_SHOW_PLAYER_COUNT;
+    public static final ModConfigSpec.BooleanValue TAB_LIST_SHOW_TPS;
+    public static final ModConfigSpec.BooleanValue TAB_LIST_SHOW_PING;
+    public static final ModConfigSpec.IntValue TAB_LIST_PLAYER_NAME_MAX_LENGTH;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
         b.push("keybinds");
@@ -105,6 +124,47 @@ public final class EFClientConfig {
                 .defineInRange("factionColor", 0xFFFFAA00, Integer.MIN_VALUE, Integer.MAX_VALUE);
         NAMEPLATE_LEVEL_COLOR = b.comment("Couleur du niveau (ARGB hex)")
                 .defineInRange("levelColor", 0xFF55FF55, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        b.pop();
+
+        b.push("tabList");
+        TAB_LIST_ENABLED = b.comment("Activer la tab list custom")
+                .define("enabled", true);
+        TAB_LIST_MAX_COLUMNS = b.comment("Nombre maximum de colonnes (1-4)")
+                .defineInRange("maxColumns", 4, 1, 4);
+        TAB_LIST_ROWS_PER_COLUMN = b.comment("Nombre de lignes par colonne")
+                .defineInRange("rowsPerColumn", 15, 5, 25);
+
+        // Couleurs - Thème Cyber Astral par défaut
+        TAB_LIST_BACKGROUND_COLOR = b.comment("Couleur de fond de la tab list (ARGB hex)")
+                .defineInRange("backgroundColor", 0xCC0A0A1E, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        TAB_LIST_HEADER_BACKGROUND_COLOR = b.comment("Couleur de fond de l'en-tête (ARGB hex)")
+                .defineInRange("headerBackgroundColor", 0xE6141432, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        TAB_LIST_BORDER_COLOR = b.comment("Couleur des bordures (ARGB hex)")
+                .defineInRange("borderColor", 0xFF4A00E0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        TAB_LIST_ACCENT_COLOR = b.comment("Couleur d'accentuation (ARGB hex)")
+                .defineInRange("accentColor", 0xFF8E2DE2, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        TAB_LIST_TEXT_COLOR = b.comment("Couleur du texte principal (ARGB hex)")
+                .defineInRange("textColor", 0xFFE0E0FF, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        TAB_LIST_TEXT_SHADOW_COLOR = b.comment("Couleur de l'ombre du texte (ARGB hex)")
+                .defineInRange("textShadowColor", 0x80000000, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        TAB_LIST_PLAYER_BACKGROUND_COLOR = b.comment("Couleur de fond des entrées de joueurs (ARGB hex)")
+                .defineInRange("playerBackgroundColor", 0x66141432, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        TAB_LIST_PLAYER_HOVER_COLOR = b.comment("Couleur de fond au survol des joueurs (ARGB hex)")
+                .defineInRange("playerHoverColor", 0x881E1E46, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+        TAB_LIST_SHOW_SERVER_NAME = b.comment("Afficher le nom du serveur")
+                .define("showServerName", true);
+        TAB_LIST_SERVER_NAME = b.comment("Nom du serveur à afficher")
+                .define("serverName", "§5§lErinium §d§lFaction");
+        TAB_LIST_SHOW_PLAYER_COUNT = b.comment("Afficher le nombre de joueurs")
+                .define("showPlayerCount", true);
+        TAB_LIST_SHOW_TPS = b.comment("Afficher le TPS du serveur")
+                .define("showTPS", true);
+        TAB_LIST_SHOW_PING = b.comment("Afficher le ping dans l'en-tête")
+                .define("showHeaderPing", true);
+
+        TAB_LIST_PLAYER_NAME_MAX_LENGTH = b.comment("Longueur maximale du nom de joueur avant troncature")
+                .defineInRange("playerNameMaxLength", 16, 5, 32);
         b.pop();
 
         SPEC = b.build();
