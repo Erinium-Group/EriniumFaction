@@ -61,7 +61,7 @@ public class BannerEditorScreen extends Screen {
     private boolean isDrawing = false;
 
     public BannerEditorScreen() {
-        super(Component.literal("Éditeur de Bannière"));
+        super(Component.translatable("erinium_faction.gui.banner_editor.title"));
     }
 
     @Override
@@ -124,15 +124,15 @@ public class BannerEditorScreen extends Screen {
         int buttonWidth = (int)(70 * scale);
         int buttonHeight = (int)(20 * scale);
 
-        addRenderableWidget(Button.builder(Component.literal("Sauvegarder"), btn -> save())
+        addRenderableWidget(Button.builder(Component.translatable("erinium_faction.gui.banner_editor.button.save"), btn -> save())
             .bounds(guiLeft + guiWidth / 2 - buttonWidth - 5, buttonY, buttonWidth, buttonHeight)
             .build());
 
-        addRenderableWidget(Button.builder(Component.literal("Effacer"), btn -> clear())
+        addRenderableWidget(Button.builder(Component.translatable("erinium_faction.gui.banner_editor.button.clear"), btn -> clear())
             .bounds(guiLeft + guiWidth / 2 + 5, buttonY, buttonWidth, buttonHeight)
             .build());
 
-        addRenderableWidget(Button.builder(Component.literal("Annuler"), btn -> onClose())
+        addRenderableWidget(Button.builder(Component.translatable("erinium_faction.gui.banner_editor.button.cancel"), btn -> onClose())
             .bounds(guiLeft + (guiWidth - buttonWidth) / 2, buttonY + buttonHeight + 5, buttonWidth, buttonHeight)
             .build());
     }
@@ -161,7 +161,7 @@ public class BannerEditorScreen extends Screen {
         renderPalette(graphics, mouseX, mouseY);
 
         // Couleur actuelle
-        graphics.drawString(font, "Couleur:", paletteX, paletteY - 15, 0xFFFFFF);
+        graphics.drawString(font, Component.translatable("erinium_faction.gui.banner_editor.color"), paletteX, paletteY - 15, 0xFFFFFF);
 
         // Appeler super.render() SANS renderBackground
         // On rend juste les widgets (boutons)

@@ -46,25 +46,25 @@ public class BannerCommand {
             // Vérifier que le joueur est dans une faction
             String factionId = FactionManager.getPlayerFaction(player.getUUID());
             if (factionId == null) {
-                player.sendSystemMessage(Component.literal("§cVous devez être dans une faction!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.no_faction"));
                 return 0;
             }
 
             Faction faction = FactionManager.getFaction(factionId);
             if (faction == null) {
-                player.sendSystemMessage(Component.literal("§cFaction introuvable!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.faction_not_found"));
                 return 0;
             }
 
             // Vérifier les permissions
             if (!faction.hasPermission(player.getUUID(), "faction.banner.edit")) {
-                player.sendSystemMessage(Component.literal("§cVous n'avez pas la permission d'éditer la bannière!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.no_permission_edit"));
                 return 0;
             }
 
             // Vérifier que la faction a acheté la fonctionnalité
             if (!faction.hasCustomBanner()) {
-                player.sendSystemMessage(Component.literal("§cVotre faction doit d'abord acheter la fonctionnalité de bannière custom dans l'AdminShop!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.not_purchased"));
                 return 0;
             }
 
@@ -83,7 +83,7 @@ public class BannerCommand {
 
             return 1;
         } catch (Exception e) {
-            context.getSource().sendFailure(Component.literal("§cErreur: " + e.getMessage()));
+            context.getSource().sendFailure(Component.translatable("erinium_faction.command.error", e.getMessage()));
             return 0;
         }
     }
@@ -99,32 +99,32 @@ public class BannerCommand {
             // Vérifier que le joueur est dans une faction
             String factionId = FactionManager.getPlayerFaction(player.getUUID());
             if (factionId == null) {
-                player.sendSystemMessage(Component.literal("§cVous devez être dans une faction!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.no_faction"));
                 return 0;
             }
 
             Faction faction = FactionManager.getFaction(factionId);
             if (faction == null) {
-                player.sendSystemMessage(Component.literal("§cFaction introuvable!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.faction_not_found"));
                 return 0;
             }
 
             // Vérifier les permissions
             if (!faction.hasPermission(player.getUUID(), "faction.banner.get")) {
-                player.sendSystemMessage(Component.literal("§cVous n'avez pas la permission de récupérer la bannière!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.no_permission_get"));
                 return 0;
             }
 
             // Vérifier que la faction a acheté la fonctionnalité
             if (!faction.hasCustomBanner()) {
-                player.sendSystemMessage(Component.literal("§cVotre faction doit d'abord acheter la fonctionnalité de bannière custom!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.not_purchased"));
                 return 0;
             }
 
             // Charger l'image
             BufferedImage image = BannerManager.loadBanner(faction.getId());
             if (image == null) {
-                player.sendSystemMessage(Component.literal("§cAucune bannière trouvée! Utilisez /f banner edit pour en créer une."));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.not_found"));
                 return 0;
             }
 
@@ -141,10 +141,10 @@ public class BannerCommand {
             image.getRGB(0, 0, 32, 64, pixels, 0, 32);
             PacketDistributor.sendToPlayer(player, new fr.eriniumgroup.erinium_faction.common.network.packets.SyncBannerTexturePacket(faction.getId(), pixels));
 
-            player.sendSystemMessage(Component.literal("§aBannière de faction obtenue!"));
+            player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.success"));
             return 1;
         } catch (Exception e) {
-            context.getSource().sendFailure(Component.literal("§cErreur: " + e.getMessage()));
+            context.getSource().sendFailure(Component.translatable("erinium_faction.command.error", e.getMessage()));
             return 0;
         }
     }

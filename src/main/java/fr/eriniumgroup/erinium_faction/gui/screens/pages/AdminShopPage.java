@@ -145,7 +145,7 @@ public class AdminShopPage extends FactionPage {
 
         // Buy button indicator ou status "Acheté"
         if (item.purchased) {
-            String purchasedText = "§l✓ ACHETÉ";
+            String purchasedText = translate("erinium_faction.gui.shop.purchased");
             int purchasedX = x + width - font.width(purchasedText) - (int) Math.round(12 * scale);
             g.drawString(font, purchasedText, purchasedX, y + height / 2 - 4, 0xFF10b981, false);
         } else {
