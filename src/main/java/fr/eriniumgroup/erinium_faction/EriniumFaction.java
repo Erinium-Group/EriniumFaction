@@ -106,6 +106,8 @@ public class EriniumFaction {
         NeoForge.EVENT_BUS.register(AntiXrayEventHandler.class);
         // Enregistrer TopLuck handler
         NeoForge.EVENT_BUS.register(TopLuckEventHandler.class);
+        // Enregistrer Vanish handler
+        NeoForge.EVENT_BUS.register(fr.eriniumgroup.erinium_faction.events.VanishEventHandler.class);
 
         // Protection systems
         ClaimProtection.register();
@@ -154,6 +156,8 @@ public class EriniumFaction {
         AntiXrayCommand.register(event.getDispatcher());
         // Commande report de chat
         ReportChatCommand.register(event.getDispatcher());
+        // Commande vanish
+        VanishCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 
