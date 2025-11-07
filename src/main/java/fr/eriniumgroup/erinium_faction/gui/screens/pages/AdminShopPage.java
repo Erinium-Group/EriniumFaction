@@ -64,25 +64,11 @@ public class AdminShopPage extends FactionPage {
             // Fonctionnalité Bannière Custom (achat unique)
             var data = getFactionData();
             boolean hasBanner = data != null && data.hasCustomBanner;
-            items.add(new ShopItem("custom_banner", "Bannière Custom", 50000, 1,
-                "Permet de créer une bannière personnalisée 64x32 pixels pour votre faction. Achat unique.")
+            items.add(new ShopItem("custom_banner",
+                translate("erinium_faction.gui.shop.item.custom_banner.name"),
+                50000, 1,
+                translate("erinium_faction.gui.shop.item.custom_banner.desc"))
                 .setPurchased(hasBanner));
-
-            // Placeholder items
-            items.add(new ShopItem("placeholder_1", "{{SHOP_ITEM_1_NAME}}", 1000, 1, "{{SHOP_ITEM_1_DESC}}"));
-            items.add(new ShopItem("placeholder_2", "{{SHOP_ITEM_2_NAME}}", 2500, 3, "{{SHOP_ITEM_2_DESC}}"));
-            items.add(new ShopItem("placeholder_3", "{{SHOP_ITEM_3_NAME}}", 5000, 5, "{{SHOP_ITEM_3_DESC}}"));
-            items.add(new ShopItem("placeholder_4", "{{SHOP_ITEM_4_NAME}}", 10000, 8, "{{SHOP_ITEM_4_DESC}}"));
-
-            // Examples with varying prices and levels
-            items.add(new ShopItem("iron_64", "Iron Ingot x64", 500, 1, "Basic resource pack"));
-            items.add(new ShopItem("diamond_16", "Diamond x16", 2000, 3, "Precious gems"));
-            items.add(new ShopItem("netherite_4", "Netherite Ingot x4", 8000, 5, "Rare upgrade material"));
-            items.add(new ShopItem("book_mending", "Enchanted Book (Mending)", 15000, 7, "Rare enchantment"));
-            items.add(new ShopItem("totem", "Totem of Undying", 20000, 8, "Life-saving item"));
-            items.add(new ShopItem("elytra", "Elytra", 30000, 10, "Wings of flight"));
-            items.add(new ShopItem("beacon", "Beacon", 40000, 12, "Power beacon"));
-            items.add(new ShopItem("dragon_egg", "Dragon Egg", 100000, 15, "Ultimate trophy"));
 
             shopScrollList.setItems(items);
             shopScrollList.setOnItemClick(item -> {

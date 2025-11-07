@@ -319,6 +319,8 @@
   "erinium_faction.gui.shop.level_required": "Level %s",
   "erinium_faction.gui.shop.button.buy": "Buy",
   "erinium_faction.gui.shop.purchased": "§l✓ PURCHASED",
+  "erinium_faction.gui.shop.item.custom_banner.name": "Custom Banner",
+  "erinium_faction.gui.shop.item.custom_banner.desc": "Allows you to create a custom 32x64 pixel banner for your faction. One-time purchase.",
   "erinium_faction.gui.banner_editor.title": "Banner Editor",
   "erinium_faction.gui.banner_editor.color": "Color:",
   "erinium_faction.gui.banner_editor.button.save": "Save",
