@@ -1,13 +1,13 @@
 package fr.eriniumgroup.erinium_faction.common.network.packets;
 
 import fr.eriniumgroup.erinium_faction.core.EFC;
-import fr.eriniumgroup.erinium_faction.gui.screens.MinimapOverlaySettingsScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
@@ -27,10 +27,18 @@ public record MinimapSettingsPacket() implements CustomPacketPayload {
     }
 
     public static void handleData(final MinimapSettingsPacket message, final IPayloadContext ctx) {
-        if (ctx.flow() == PacketFlow.CLIENTBOUND) {
-            ctx.enqueueWork(() -> {
-                Minecraft.getInstance().setScreen(new MinimapOverlaySettingsScreen());
-            });
+        if (ctx.flow() != PacketFlow.CLIENTBOUND) {
+            return;
         }
+
+        // Vérifier qu'on est côté client
+        if (FMLEnvironment.dist != Dist.CLIENT) {
+            return;
+        }
+
+        ctx.enqueueWork(() -> {
+            // Déléguer à une classe client-only
+            ClientMinimapScreenHandler.openSettingsScreen();
+        });
     }
 }

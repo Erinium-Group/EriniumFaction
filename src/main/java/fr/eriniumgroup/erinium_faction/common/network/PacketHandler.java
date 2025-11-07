@@ -94,6 +94,9 @@ public class PacketHandler {
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapTogglePacket::handleData);
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.MinimapSettingsPacket::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound)");
+        // Paquet synchronisation données de nameplate (faction + niveau)
+        registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerNameplateDataPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.SyncPlayerNameplateDataPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.NameplatePacketHandler::handleClientSide);
+
+        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound), PlayerNameplateData (clientbound)");
     }
 }
