@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12" height="42" viewBox="0 0 12 42" xmlns="http://www.w3.org/2000/svg">
+  <!-- Energy Bar Fill (12x42) - Full height, crop from bottom in code -->
+  <defs>
+    <linearGradient id="energyGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1"/>
+      <stop offset="50%" style="stop-color:#5b21b6;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#9d4edd;stop-opacity:1"/>
+    </linearGradient>
+
+    <filter id="glow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Full height energy fill (crop from bottom when rendering) -->
+  <rect x="0" y="0" width="12" height="42" fill="url(#energyGradient)" opacity="0.9" rx="1" filter="url(#glow)"/>
+</svg>

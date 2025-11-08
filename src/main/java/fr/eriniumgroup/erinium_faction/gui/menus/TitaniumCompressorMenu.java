@@ -15,7 +15,7 @@ public class TitaniumCompressorMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public TitaniumCompressorMenu(int id, Inventory inv, FriendlyByteBuf buf) {
-        this(id, inv, (TitaniumCompressorBlockEntity) inv.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(1));
+        this(id, inv, (TitaniumCompressorBlockEntity) inv.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(3));
     }
 
     public TitaniumCompressorMenu(int id, Inventory inv, TitaniumCompressorBlockEntity be, ContainerData data) {
@@ -51,6 +51,16 @@ public class TitaniumCompressorMenu extends AbstractContainerMenu {
 
     public TitaniumCompressorBlockEntity getBlockEntity() {
         return this.blockEntity;
+    }
+
+    public int getProgress() {
+        return this.data.get(0);
+    }
+
+    public int getEnergyStored() {
+        int lower = this.data.get(1) & 0xFFFF;
+        int upper = this.data.get(2) & 0xFFFF;
+        return (upper << 16) | lower;
     }
 
     @Override

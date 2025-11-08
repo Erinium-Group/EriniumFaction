@@ -9,19 +9,32 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Écran de configuration des faces - Style Mekanism
+ * Écran de configuration des faces - Style Cyber Astral avec textures PNG
  */
 public class FaceConfigScreen extends Screen {
     private final Screen parentScreen;
     private final BlockPos machinePos;
     private final FaceConfiguration config;
 
-    private static final int GRID_SIZE = 60;
-    private static final int SPACING = 15;
+    // Textures
+    private static final ResourceLocation BG_STARFIELD = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/bg_starfield.png");
+    private static final ResourceLocation BG_GRADIENT = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/bg_gradient_dark.png");
+    private static final ResourceLocation GLOW_LINE_CYAN = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/glow_line_cyan.png");
+    private static final ResourceLocation LED_ON = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/led_on.png");
+    private static final ResourceLocation LED_OFF = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/led_off.png");
+    private static final ResourceLocation CORNER_ACCENT = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/corner_accent.png");
+    private static final ResourceLocation BUTTON_LARGE = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/button_large.png");
+    private static final ResourceLocation BUTTON_SMALL = ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/button_small.png");
+
+    // Dimensions cube
+    private static final int FACE_LARGE = 60;
+    private static final int FACE_MEDIUM = 40;
+    private static final int FACE_SMALL = 30;
 
     private Button autoInputButton;
     private Button autoOutputButton;
@@ -36,188 +49,204 @@ public class FaceConfigScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        // Pas de boutons vanilla - on les rend avec des textures custom
+    }
 
-        int screenCenterX = this.width / 2;
-        int screenCenterY = this.height / 2;
+    private Component getAutoInputText() {
+        return Component.literal("AUTO INPUT: " + (config.isAutoInput() ? "ON" : "OFF"));
+    }
 
-        // Bouton Auto Input
-        autoInputButton = Button.builder(
-            Component.translatable("gui.erinium_faction.face_config.auto_input")
-                .append(": ")
-                .append(Component.translatable(config.isAutoInput() ? "gui.erinium_faction.face_config.on" : "gui.erinium_faction.face_config.off")),
-            btn -> {
-                config.setAutoInput(!config.isAutoInput());
-                updateAutoInputButton();
-                sendConfigUpdate(FaceConfigPacket.ConfigAction.TOGGLE_AUTO_INPUT, Direction.NORTH, FaceMode.NONE);
-            }
-        ).bounds(screenCenterX - 150, screenCenterY + 120, 140, 20).build();
-
-        // Bouton Auto Output
-        autoOutputButton = Button.builder(
-            Component.translatable("gui.erinium_faction.face_config.auto_output")
-                .append(": ")
-                .append(Component.translatable(config.isAutoOutput() ? "gui.erinium_faction.face_config.on" : "gui.erinium_faction.face_config.off")),
-            btn -> {
-                config.setAutoOutput(!config.isAutoOutput());
-                updateAutoOutputButton();
-                sendConfigUpdate(FaceConfigPacket.ConfigAction.TOGGLE_AUTO_OUTPUT, Direction.NORTH, FaceMode.NONE);
-            }
-        ).bounds(screenCenterX + 10, screenCenterY + 120, 140, 20).build();
-
-        // Bouton Fermer
-        Button closeButton = Button.builder(Component.translatable("gui.done"), btn -> onClose())
-            .bounds(screenCenterX - 50, screenCenterY + 150, 100, 20).build();
-
-        this.addRenderableWidget(autoInputButton);
-        this.addRenderableWidget(autoOutputButton);
-        this.addRenderableWidget(closeButton);
+    private Component getAutoOutputText() {
+        return Component.literal("AUTO OUTPUT: " + (config.isAutoOutput() ? "ON" : "OFF"));
     }
 
     private void updateAutoInputButton() {
         if (autoInputButton != null) {
-            autoInputButton.setMessage(Component.translatable("gui.erinium_faction.face_config.auto_input")
-                .append(": ")
-                .append(Component.translatable(config.isAutoInput() ? "gui.erinium_faction.face_config.on" : "gui.erinium_faction.face_config.off")));
+            autoInputButton.setMessage(getAutoInputText());
         }
     }
 
     private void updateAutoOutputButton() {
         if (autoOutputButton != null) {
-            autoOutputButton.setMessage(Component.translatable("gui.erinium_faction.face_config.auto_output")
-                .append(": ")
-                .append(Component.translatable(config.isAutoOutput() ? "gui.erinium_faction.face_config.on" : "gui.erinium_faction.face_config.off")));
+            autoOutputButton.setMessage(getAutoOutputText());
         }
     }
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        int centerX = this.width / 2;
+        int centerY = this.height / 2;
 
-        int screenCenterX = this.width / 2;
-        int screenCenterY = this.height / 2;
+        // Background panel centré - MAX 400x270
+        int panelWidth = 400;
+        int panelHeight = 270;
+        int panelX = centerX - panelWidth / 2;
+        int panelY = centerY - panelHeight / 2;
+
+        // Fond sombre semi-transparent
+        graphics.fill(panelX, panelY, panelX + panelWidth, panelY + panelHeight, 0xDD0a0e27);
+
+        // Border cyan
+        graphics.fill(panelX, panelY, panelX + panelWidth, panelY + 2, 0xFF00FFFF);
+        graphics.fill(panelX, panelY + panelHeight - 2, panelX + panelWidth, panelY + panelHeight, 0xFF00FFFF);
+        graphics.fill(panelX, panelY, panelX + 2, panelY + panelHeight, 0xFF00FFFF);
+        graphics.fill(panelX + panelWidth - 2, panelY, panelX + panelWidth, panelY + panelHeight, 0xFF00FFFF);
 
         // Titre
-        graphics.drawCenteredString(this.font, this.title, screenCenterX, screenCenterY - 110, 0x00DD00);
+        graphics.drawCenteredString(this.font, this.title, centerX, panelY + 10, 0x00FFFF);
 
-        // Affichage du cube 3D aplati
-        renderMekanismStyle3D(graphics, screenCenterX, screenCenterY, mouseX, mouseY);
+        // Ligne cyan sous titre
+        int lineWidth = 150;
+        graphics.blit(GLOW_LINE_CYAN, centerX - lineWidth/2, panelY + 22, 0, 0, lineWidth, 4, 200, 4);
+
+        // Cube 3D - centré
+        int cubeX = panelX + 115;
+        int cubeY = panelY + 95;
+        renderCube3D(graphics, cubeX, cubeY, mouseX, mouseY);
+
+        // Légende TOUT à droite
+        int legendX = panelX + panelWidth - 145;
+        int legendY = panelY + 35;
+        renderLegend(graphics, legendX, legendY);
+
+        // Render custom buttons
+        renderCustomButtons(graphics, panelX, panelY, panelWidth, panelHeight);
 
         super.render(graphics, mouseX, mouseY, partialTick);
     }
 
-    private void renderMekanismStyle3D(GuiGraphics graphics, int centerX, int centerY, int mouseX, int mouseY) {
-        // Vue isométrique : on affiche 3 faces visibles du cube
+    private void renderCustomButtons(GuiGraphics graphics, int panelX, int panelY, int panelWidth, int panelHeight) {
+        int buttonY = panelY + panelHeight - 30;
 
-        // FACE AVANT (NORTH) - Grande face
-        int frontX = centerX - GRID_SIZE;
-        int frontY = centerY - GRID_SIZE / 2;
-        renderFace(graphics, frontX, frontY, Direction.NORTH, mouseX, mouseY);
+        // Auto Input button - button_large.png (120x20)
+        int btn1X = panelX + 10;
+        graphics.blit(BUTTON_LARGE, btn1X, buttonY, 0, 0, 120, 20, 120, 20);
+        // LED indicator
+        ResourceLocation led1 = config.isAutoInput() ? LED_ON : LED_OFF;
+        graphics.blit(led1, btn1X + 5, buttonY + 6, 0, 0, 8, 8, 8, 8);
+        // Text
+        graphics.drawString(this.font, "AUTO INPUT", btn1X + 18, buttonY + 6, 0xFFFFFF, false);
 
-        // FACE DROITE (EAST) - Petite face en perspective
-        int rightX = centerX + GRID_SIZE + SPACING;
-        int rightY = centerY - GRID_SIZE / 2;
-        renderFaceSmall(graphics, rightX, rightY, Direction.EAST, mouseX, mouseY);
+        // Auto Output button - button_large.png (120x20)
+        int btn2X = panelX + 140;
+        graphics.blit(BUTTON_LARGE, btn2X, buttonY, 0, 0, 120, 20, 120, 20);
+        // LED indicator
+        ResourceLocation led2 = config.isAutoOutput() ? LED_ON : LED_OFF;
+        graphics.blit(led2, btn2X + 5, buttonY + 6, 0, 0, 8, 8, 8, 8);
+        // Text
+        graphics.drawString(this.font, "AUTO OUTPUT", btn2X + 18, buttonY + 6, 0xFFFFFF, false);
 
-        // FACE HAUT (UP) - Petite face en haut
-        int topX = centerX - GRID_SIZE + GRID_SIZE / 2;
-        int topY = centerY - GRID_SIZE - SPACING;
-        renderFaceSmall(graphics, topX, topY, Direction.UP, mouseX, mouseY);
-
-        // Les autres faces en petit (DOWN, SOUTH, WEST)
-        int smallSize = GRID_SIZE / 3;
-
-        // DOWN (bas)
-        renderFaceVerySmall(graphics, centerX - GRID_SIZE - smallSize - 5, centerY + GRID_SIZE, Direction.DOWN, mouseX, mouseY);
-
-        // SOUTH (arrière)
-        renderFaceVerySmall(graphics, centerX, centerY + GRID_SIZE + SPACING, Direction.SOUTH, mouseX, mouseY);
-
-        // WEST (gauche)
-        renderFaceVerySmall(graphics, centerX - GRID_SIZE * 2 - SPACING - 5, centerY - GRID_SIZE / 2, Direction.WEST, mouseX, mouseY);
+        // Done button - button_small.png (60x20)
+        int btn3X = panelX + 270;
+        graphics.blit(BUTTON_SMALL, btn3X, buttonY, 0, 0, 60, 20, 60, 20);
+        // Text
+        graphics.drawString(this.font, "DONE", btn3X + 15, buttonY + 6, 0xFFFFFF, false);
     }
 
-    private void renderFace(GuiGraphics graphics, int x, int y, Direction face, int mouseX, int mouseY) {
-        FaceMode mode = config.getFaceMode(face);
-        int color = mode.getColor();
+    private void renderLegend(GuiGraphics graphics, int x, int y) {
+        graphics.drawString(this.font, "MODES:", x, y, 0x00FFFF, false);
+        y += 12;
 
-        boolean hovered = mouseX >= x && mouseX < x + GRID_SIZE && mouseY >= y && mouseY < y + GRID_SIZE;
+        // Dessiner chaque mode avec son icône
+        FaceMode[] modes = FaceMode.values();
+        for (int i = 0; i < modes.length; i++) {
+            FaceMode mode = modes[i];
+            ResourceLocation texture = getFaceTexture(mode);
 
-        // Fond dégradé
-        graphics.fill(x, y, x + GRID_SIZE, y + GRID_SIZE, 0xFF000000 | color);
+            // Icône 14x14 - texture 60x60 scaled
+            int iconSize = 14;
+            float iconScale = iconSize / 60.0f;
 
-        // Bordure brillante si hover
-        int borderColor = hovered ? 0xFFFFFF00 : 0xFF808080;
-        graphics.fill(x, y, x + GRID_SIZE, y + 1, borderColor);
-        graphics.fill(x, y + GRID_SIZE - 1, x + GRID_SIZE, y + GRID_SIZE, borderColor);
-        graphics.fill(x, y, x + 1, y + GRID_SIZE, borderColor);
-        graphics.fill(x + GRID_SIZE - 1, y, x + GRID_SIZE, y + GRID_SIZE, borderColor);
+            graphics.pose().pushPose();
+            graphics.pose().translate(x, y, 0);
+            graphics.pose().scale(iconScale, iconScale, 1.0f);
+            graphics.blit(texture, 0, 0, 0, 0, 60, 60, 60, 60);
+            graphics.pose().popPose();
 
-        // Texte : Nom direction + Mode
-        String dirName = face.getName().toUpperCase().substring(0, 1);
-        graphics.drawCenteredString(this.font, dirName, x + GRID_SIZE / 2, y + 15, 0xFFFFFF);
+            // Nom du mode avec sa couleur
+            int color = mode.getColor();
+            graphics.drawString(this.font, mode.getDisplayName(), x + 17, y + 3, color, false);
 
-        String modeName = mode.getSerializedName().substring(0, Math.min(4, mode.getSerializedName().length())).toUpperCase();
-        graphics.drawCenteredString(this.font, modeName, x + GRID_SIZE / 2, y + GRID_SIZE / 2 + 5, 0xCCCCCC);
-
-        // Tooltip
-        if (hovered) {
-            Component tooltip = Component.literal(face.getName().toUpperCase())
-                .append(" → ")
-                .append(Component.translatable("gui.erinium_faction.face_mode." + mode.getSerializedName()))
-                .append("\n§7Click to cycle");
-            graphics.renderTooltip(this.font, this.font.split(tooltip, 150), mouseX, mouseY);
+            y += 17;
         }
     }
 
-    private void renderFaceSmall(GuiGraphics graphics, int x, int y, Direction face, int mouseX, int mouseY) {
-        int size = GRID_SIZE * 2 / 3;
+    private void renderCorner(GuiGraphics graphics, int x, int y, boolean flipX, boolean flipY) {
+        // TODO: Utiliser CORNER_ACCENT texture avec flip si besoin
+        // Pour l'instant juste dessiner des lignes
+        int color = 0x5500FFFF;
+        if (flipX && flipY) {
+            graphics.fill(x, y, x + 20, y + 1, color);
+            graphics.fill(x, y, x + 1, y + 20, color);
+        } else if (flipX) {
+            graphics.fill(x, y, x + 20, y + 1, color);
+            graphics.fill(x, y, x + 1, y + 20, color);
+        } else if (flipY) {
+            graphics.fill(x, y, x + 20, y + 1, color);
+            graphics.fill(x, y, x + 1, y + 20, color);
+        } else {
+            graphics.fill(x, y, x + 20, y + 1, color);
+            graphics.fill(x, y, x + 1, y + 20, color);
+        }
+    }
+
+    private void renderCube3D(GuiGraphics graphics, int cubeX, int cubeY, int mouseX, int mouseY) {
+        // Disposition en cube 3D isométrique - CENTRÉ
+        // NORTH (40x40) - face principale au centre
+        renderFace(graphics, cubeX - 20, cubeY, 40, Direction.NORTH, mouseX, mouseY);
+
+        // UP (32x32) - au-dessus, centré
+        renderFace(graphics, cubeX - 16, cubeY - 36, 32, Direction.UP, mouseX, mouseY);
+
+        // EAST (32x32) - à droite, centré
+        renderFace(graphics, cubeX + 24, cubeY + 4, 32, Direction.EAST, mouseX, mouseY);
+
+        // WEST (32x32) - à gauche, centré
+        renderFace(graphics, cubeX - 56, cubeY + 4, 32, Direction.WEST, mouseX, mouseY);
+
+        // DOWN (24x24) - en bas à gauche, espacé
+        renderFace(graphics, cubeX - 50, cubeY + 42, 24, Direction.DOWN, mouseX, mouseY);
+
+        // SOUTH (24x24) - en bas au centre
+        renderFace(graphics, cubeX - 12, cubeY + 48, 24, Direction.SOUTH, mouseX, mouseY);
+    }
+
+    private void renderFace(GuiGraphics graphics, int x, int y, int size, Direction face, int mouseX, int mouseY) {
         FaceMode mode = config.getFaceMode(face);
-        int color = mode.getColor();
+        ResourceLocation texture = getFaceTexture(mode);
 
         boolean hovered = mouseX >= x && mouseX < x + size && mouseY >= y && mouseY < y + size;
 
-        graphics.fill(x, y, x + size, y + size, 0xFF000000 | color);
+        // Texture de la face - 60x60 scaled au size voulu
+        float faceScale = size / 60.0f;
+        graphics.pose().pushPose();
+        graphics.pose().translate(x, y, 0);
+        graphics.pose().scale(faceScale, faceScale, 1.0f);
+        graphics.blit(texture, 0, 0, 0, 0, 60, 60, 60, 60);
+        graphics.pose().popPose();
 
-        int borderColor = hovered ? 0xFFFFFF00 : 0xFF808080;
-        graphics.fill(x, y, x + size, y + 1, borderColor);
-        graphics.fill(x, y + size - 1, x + size, y + size, borderColor);
-        graphics.fill(x, y, x + 1, y + size, borderColor);
-        graphics.fill(x + size - 1, y, x + size, y + size, borderColor);
-
-        String dirName = face.getName().toUpperCase().substring(0, 1);
-        graphics.drawCenteredString(this.font, dirName, x + size / 2, y + size / 2 - 3, 0xFFFFFF);
-
+        // Border jaune si hover
         if (hovered) {
-            Component tooltip = Component.literal(face.getName().toUpperCase())
-                .append(" → ")
-                .append(Component.translatable("gui.erinium_faction.face_mode." + mode.getSerializedName()))
-                .append("\n§7Click to cycle");
-            graphics.renderTooltip(this.font, this.font.split(tooltip, 150), mouseX, mouseY);
+            graphics.fill(x, y, x + size, y + 1, 0xFFFFFF00);
+            graphics.fill(x, y + size - 1, x + size, y + size, 0xFFFFFF00);
+            graphics.fill(x, y, x + 1, y + size, 0xFFFFFF00);
+            graphics.fill(x + size - 1, y, x + size, y + size, 0xFFFFFF00);
+
+            // Tooltip
+            Component tooltip = Component.literal(face.getName().toUpperCase() + " → " + mode.getSerializedName().toUpperCase());
+            graphics.renderTooltip(this.font, tooltip, mouseX, mouseY);
         }
     }
 
-    private void renderFaceVerySmall(GuiGraphics graphics, int x, int y, Direction face, int mouseX, int mouseY) {
-        int size = GRID_SIZE / 2;
-        FaceMode mode = config.getFaceMode(face);
-        int color = mode.getColor();
-
-        boolean hovered = mouseX >= x && mouseX < x + size && mouseY >= y && mouseY < y + size;
-
-        graphics.fill(x, y, x + size, y + size, 0xFF000000 | color);
-
-        int borderColor = hovered ? 0xFFFFFF00 : 0xFF606060;
-        graphics.fill(x, y, x + size, y + 1, borderColor);
-        graphics.fill(x, y + size - 1, x + size, y + size, borderColor);
-        graphics.fill(x, y, x + 1, y + size, borderColor);
-        graphics.fill(x + size - 1, y, x + size, y + size, borderColor);
-
-        if (hovered) {
-            Component tooltip = Component.literal(face.getName().toUpperCase())
-                .append(" → ")
-                .append(Component.translatable("gui.erinium_faction.face_mode." + mode.getSerializedName()))
-                .append("\n§7Click to cycle");
-            graphics.renderTooltip(this.font, this.font.split(tooltip, 150), mouseX, mouseY);
-        }
+    private ResourceLocation getFaceTexture(FaceMode mode) {
+        return switch (mode) {
+            case NONE -> ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/face_none.png");
+            case INPUT -> ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/face_input.png");
+            case OUTPUT -> ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/face_output.png");
+            case INPUT_OUTPUT -> ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/face_input_output.png");
+            case ENERGY -> ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/face_energy.png");
+            case FUEL -> ResourceLocation.fromNamespaceAndPath("erinium_faction", "textures/gui/face_fuel.png");
+        };
     }
 
     @Override
@@ -225,37 +254,46 @@ public class FaceConfigScreen extends Screen {
         if (button == 0) {
             int centerX = this.width / 2;
             int centerY = this.height / 2;
+            int panelX = centerX - 200;
+            int panelY = centerY - 135;
 
-            // FRONT (grande face)
-            if (checkFaceClick(centerX - GRID_SIZE, centerY - GRID_SIZE / 2, GRID_SIZE, Direction.NORTH, mouseX, mouseY)) {
-                return true;
-            }
+            int cubeX = panelX + 115;
+            int cubeY = panelY + 95;
 
-            // RIGHT (face droite)
-            if (checkFaceClick(centerX + GRID_SIZE + SPACING, centerY - GRID_SIZE / 2, GRID_SIZE * 2 / 3, Direction.EAST, mouseX, mouseY)) {
-                return true;
-            }
+            // Check face clicks
+            if (checkFaceClick(cubeX - 20, cubeY, 40, Direction.NORTH, mouseX, mouseY)) return true;
+            if (checkFaceClick(cubeX - 16, cubeY - 36, 32, Direction.UP, mouseX, mouseY)) return true;
+            if (checkFaceClick(cubeX + 24, cubeY + 4, 32, Direction.EAST, mouseX, mouseY)) return true;
+            if (checkFaceClick(cubeX - 56, cubeY + 4, 32, Direction.WEST, mouseX, mouseY)) return true;
+            if (checkFaceClick(cubeX - 50, cubeY + 42, 24, Direction.DOWN, mouseX, mouseY)) return true;
+            if (checkFaceClick(cubeX - 12, cubeY + 48, 24, Direction.SOUTH, mouseX, mouseY)) return true;
 
-            // TOP (face haut)
-            if (checkFaceClick(centerX - GRID_SIZE + GRID_SIZE / 2, centerY - GRID_SIZE - SPACING, GRID_SIZE * 2 / 3, Direction.UP, mouseX, mouseY)) {
-                return true;
-            }
+            // Check button clicks
+            int buttonY = panelY + panelHeight - 30;
+            int btn1X = panelX + 10;
+            int btn2X = panelX + 140;
+            int btn3X = panelX + 270;
 
-            // DOWN, SOUTH, WEST
-            int smallSize = GRID_SIZE / 2;
-            if (checkFaceClick(centerX - GRID_SIZE - smallSize - 5, centerY + GRID_SIZE, smallSize, Direction.DOWN, mouseX, mouseY)) {
+            if (mouseX >= btn1X && mouseX <= btn1X + 120 && mouseY >= buttonY && mouseY <= buttonY + 20) {
+                config.setAutoInput(!config.isAutoInput());
+                sendConfigUpdate(FaceConfigPacket.ConfigAction.TOGGLE_AUTO_INPUT, Direction.NORTH, FaceMode.NONE);
                 return true;
             }
-            if (checkFaceClick(centerX, centerY + GRID_SIZE + SPACING, smallSize, Direction.SOUTH, mouseX, mouseY)) {
+            if (mouseX >= btn2X && mouseX <= btn2X + 120 && mouseY >= buttonY && mouseY <= buttonY + 20) {
+                config.setAutoOutput(!config.isAutoOutput());
+                sendConfigUpdate(FaceConfigPacket.ConfigAction.TOGGLE_AUTO_OUTPUT, Direction.NORTH, FaceMode.NONE);
                 return true;
             }
-            if (checkFaceClick(centerX - GRID_SIZE * 2 - SPACING - 5, centerY - GRID_SIZE / 2, smallSize, Direction.WEST, mouseX, mouseY)) {
+            if (mouseX >= btn3X && mouseX <= btn3X + 60 && mouseY >= buttonY && mouseY <= buttonY + 20) {
+                onClose();
                 return true;
             }
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
     }
+
+    private int panelHeight = 270;
 
     private boolean checkFaceClick(int x, int y, int size, Direction face, double mouseX, double mouseY) {
         if (mouseX >= x && mouseX < x + size && mouseY >= y && mouseY < y + size) {
@@ -283,5 +321,9 @@ public class FaceConfigScreen extends Screen {
     public boolean isPauseScreen() {
         return false;
     }
-}
 
+    @Override
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        // Ne rien faire - pas de background flou
+    }
+}

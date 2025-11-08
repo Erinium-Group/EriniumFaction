@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500" height="400" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Cyber Astral Background -->
+    <radialGradient id="bgRadial" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#1a1535;stop-opacity:0.7"/>
+      <stop offset="100%" style="stop-color:#0a0e27;stop-opacity:0.95"/>
+    </radialGradient>
+
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#00ffff;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#00ffff;stop-opacity:0"/>
+    </linearGradient>
+
+    <!-- Face Mode Gradients (couleurs réelles du code) -->
+    <linearGradient id="noneGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#909090;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#707070;stop-opacity:1"/>
+    </linearGradient>
+
+    <linearGradient id="inputGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5179F1;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#3159D1;stop-opacity:1"/>
+    </linearGradient>
+
+    <linearGradient id="outputGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5510;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#DF3500;stop-opacity:1"/>
+    </linearGradient>
+
+    <linearGradient id="inputOutputGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A380EB;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#8360CB;stop-opacity:1"/>
+    </linearGradient>
+
+    <linearGradient id="energyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE710;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#FFC700;stop-opacity:1"/>
+    </linearGradient>
+
+    <linearGradient id="fuelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9C10;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#DF7C00;stop-opacity:1"/>
+    </linearGradient>
+
+    <!-- Button Gradient -->
+    <linearGradient id="buttonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1535;stop-opacity:0.95"/>
+      <stop offset="100%" style="stop-color:#0f1123;stop-opacity:0.95"/>
+    </linearGradient>
+
+    <!-- Glow Filters -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Stars Pattern -->
+    <pattern id="stars" x="0" y="0" width="150" height="150" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="25" r="0.6" fill="#ffffff" opacity="0.8"/>
+      <circle cx="60" cy="45" r="0.4" fill="#00ffff" opacity="0.7"/>
+      <circle cx="110" cy="30" r="0.5" fill="#9d4edd" opacity="0.8"/>
+      <circle cx="45" cy="90" r="0.4" fill="#ffffff" opacity="0.6"/>
+      <circle cx="130" cy="105" r="0.6" fill="#00ffff" opacity="0.9"/>
+      <circle cx="30" cy="130" r="0.4" fill="#9d4edd" opacity="0.7"/>
+      <circle cx="90" cy="70" r="0.5" fill="#ffffff" opacity="0.8"/>
+      <circle cx="140" cy="15" r="0.4" fill="#00ffff" opacity="0.6"/>
+      <circle cx="75" cy="115" r="0.5" fill="#9d4edd" opacity="0.7"/>
+      <circle cx="15" cy="60" r="0.3" fill="#ffffff" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="500" height="400" fill="url(#bgRadial)"/>
+  <rect width="500" height="400" fill="url(#stars)" opacity="0.5"/>
+  <rect width="500" height="400" fill="url(#bgRadial)" opacity="0.3"/>
+
+  <!-- Title -->
+  <g id="title">
+    <text x="250" y="40" font-family="Arial, sans-serif" font-size="16" fill="url(#titleGradient)" text-anchor="middle" font-weight="bold" filter="url(#glow)">
+      FACE CONFIGURATION
+    </text>
+    <line x1="150" y1="45" x2="350" y2="45" stroke="url(#titleGradient)" stroke-width="1" opacity="0.4"/>
+  </g>
+
+  <!-- 3D Cube Layout - Isometric View -->
+  <g id="cube-view" transform="translate(250, 200)">
+
+    <!-- Center Large Face (NORTH) - 60x60 -->
+    <g id="face-north" transform="translate(-30, -30)">
+      <rect width="60" height="60" fill="url(#inputGradient)" rx="3"/>
+      <rect width="60" height="60" fill="none" stroke="#4169E1" stroke-width="2" rx="3" opacity="0.8" filter="url(#glow)"/>
+      <rect x="3" y="3" width="54" height="54" fill="none" stroke="#ffffff" stroke-width="0.5" rx="2" opacity="0.3"/>
+
+      <!-- Face Label -->
+      <text x="30" y="25" font-family="Arial, sans-serif" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="bold">NORTH</text>
+      <text x="30" y="40" font-family="Arial, sans-serif" font-size="8" fill="#ffffff" text-anchor="middle" opacity="0.9">INPUT</text>
+
+      <!-- Corner accents -->
+      <path d="M 3 3 L 10 3 M 3 3 L 3 10" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+      <path d="M 57 3 L 50 3 M 57 3 L 57 10" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+      <path d="M 3 57 L 10 57 M 3 57 L 3 50" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+      <path d="M 57 57 L 50 57 M 57 57 L 57 50" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+    </g>
+
+    <!-- Top Face (UP) - 40x40 -->
+    <g id="face-up" transform="translate(-20, -80)">
+      <rect width="40" height="40" fill="url(#outputGradient)" rx="2"/>
+      <rect width="40" height="40" fill="none" stroke="#FF4500" stroke-width="1.5" rx="2" opacity="0.7" filter="url(#glow)"/>
+      <rect x="2" y="2" width="36" height="36" fill="none" stroke="#ffffff" stroke-width="0.5" rx="1" opacity="0.3"/>
+
+      <text x="20" y="22" font-family="Arial, sans-serif" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">UP</text>
+      <text x="20" y="31" font-family="Arial, sans-serif" font-size="7" fill="#ffffff" text-anchor="middle" opacity="0.8">OUTPUT</text>
+    </g>
+
+    <!-- Right Face (EAST) - 40x40 -->
+    <g id="face-east" transform="translate(40, -30)">
+      <rect width="40" height="40" fill="url(#inputOutputGradient)" rx="2"/>
+      <rect width="40" height="40" fill="none" stroke="#9370DB" stroke-width="1.5" rx="2" opacity="0.7" filter="url(#glow)"/>
+      <rect x="2" y="2" width="36" height="36" fill="none" stroke="#ffffff" stroke-width="0.5" rx="1" opacity="0.3"/>
+
+      <text x="20" y="22" font-family="Arial, sans-serif" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">EAST</text>
+      <text x="20" y="31" font-family="Arial, sans-serif" font-size="7" fill="#ffffff" text-anchor="middle" opacity="0.8">I/O</text>
+    </g>
+
+    <!-- Bottom Left Face (DOWN) - 30x30 -->
+    <g id="face-down" transform="translate(-80, 20)">
+      <rect width="30" height="30" fill="url(#energyGradient)" rx="2"/>
+      <rect width="30" height="30" fill="none" stroke="#FFD700" stroke-width="1" rx="2" opacity="0.6" filter="url(#glow)"/>
+
+      <text x="15" y="15" font-family="Arial, sans-serif" font-size="7" fill="#000000" text-anchor="middle" font-weight="bold">DOWN</text>
+      <text x="15" y="22" font-family="Arial, sans-serif" font-size="6" fill="#000000" text-anchor="middle" opacity="0.8">ENERGY</text>
+    </g>
+
+    <!-- Bottom Center Face (SOUTH) - 30x30 -->
+    <g id="face-south" transform="translate(-15, 40)">
+      <rect width="30" height="30" fill="url(#fuelGradient)" rx="2"/>
+      <rect width="30" height="30" fill="none" stroke="#FF8C00" stroke-width="1" rx="2" opacity="0.6" filter="url(#glow)"/>
+
+      <text x="15" y="15" font-family="Arial, sans-serif" font-size="7" fill="#ffffff" text-anchor="middle" font-weight="bold">SOUTH</text>
+      <text x="15" y="22" font-family="Arial, sans-serif" font-size="6" fill="#ffffff" text-anchor="middle" opacity="0.8">FUEL</text>
+    </g>
+
+    <!-- Left Face (WEST) - 30x30 -->
+    <g id="face-west" transform="translate(-100, -20)">
+      <rect width="30" height="30" fill="url(#noneGradient)" rx="2"/>
+      <rect width="30" height="30" fill="none" stroke="#808080" stroke-width="1" rx="2" opacity="0.5"/>
+
+      <text x="15" y="15" font-family="Arial, sans-serif" font-size="7" fill="#cccccc" text-anchor="middle" font-weight="bold">WEST</text>
+      <text x="15" y="22" font-family="Arial, sans-serif" font-size="6" fill="#cccccc" text-anchor="middle" opacity="0.8">NONE</text>
+    </g>
+
+    <!-- Connection Lines (Holographic) -->
+    <line x1="-10" y1="-30" x2="-10" y2="-60" stroke="#4169E1" stroke-width="0.5" opacity="0.3" stroke-dasharray="2,2"/>
+    <line x1="30" y1="-10" x2="40" y2="-10" stroke="#9370DB" stroke-width="0.5" opacity="0.3" stroke-dasharray="2,2"/>
+    <line x1="-30" y1="10" x2="-65" y2="35" stroke="#FFD700" stroke-width="0.5" opacity="0.3" stroke-dasharray="2,2"/>
+  </g>
+
+  <!-- Control Panel - Reorganisé de manière logique -->
+  <g id="control-panel" transform="translate(250, 320)">
+
+    <!-- Auto Input Button (Gauche) -->
+    <g id="auto-input-btn" transform="translate(-140, -10)">
+      <rect width="120" height="24" rx="4" fill="url(#buttonGradient)"/>
+      <rect width="120" height="24" rx="4" fill="none" stroke="#4169E1" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+
+      <!-- LED Indicator -->
+      <circle cx="12" cy="12" r="3" fill="#00ff00" opacity="0.8" filter="url(#strongGlow)"/>
+      <circle cx="12" cy="12" r="1.5" fill="#ffffff"/>
+
+      <text x="60" y="16" font-family="Arial, sans-serif" font-size="9" fill="#4169E1" text-anchor="middle" font-weight="bold">AUTO INPUT</text>
+    </g>
+
+    <!-- Auto Output Button (Droite) -->
+    <g id="auto-output-btn" transform="translate(20, -10)">
+      <rect width="120" height="24" rx="4" fill="url(#buttonGradient)"/>
+      <rect width="120" height="24" rx="4" fill="none" stroke="#FF4500" stroke-width="1" opacity="0.6" filter="url(#glow)"/>
+
+      <!-- LED Indicator -->
+      <circle cx="12" cy="12" r="3" fill="#666677" opacity="0.6"/>
+      <circle cx="12" cy="12" r="1.5" fill="#444455"/>
+
+      <text x="60" y="16" font-family="Arial, sans-serif" font-size="9" fill="#FF4500" text-anchor="middle" font-weight="bold">AUTO OUTPUT</text>
+    </g>
+
+    <!-- Done Button (Centre, en bas) -->
+    <g id="done-btn" transform="translate(-50, 25)">
+      <rect width="100" height="24" rx="4" fill="url(#buttonGradient)"/>
+      <rect width="100" height="24" rx="4" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.7" filter="url(#glow)"/>
+
+      <text x="50" y="16" font-family="Arial, sans-serif" font-size="10" fill="#00ffff" text-anchor="middle" font-weight="bold">DONE</text>
+
+      <!-- Button corner accents -->
+      <path d="M 2 2 L 8 2 M 2 2 L 2 8" stroke="#00ffff" stroke-width="0.5" opacity="0.5"/>
+      <path d="M 98 2 L 92 2 M 98 2 L 98 8" stroke="#00ffff" stroke-width="0.5" opacity="0.5"/>
+    </g>
+  </g>
+
+  <!-- Instructions (en bas à gauche) -->
+  <g id="instructions" transform="translate(20, 350)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="8" fill="#aaaacc" opacity="0.7">Click faces to cycle modes</text>
+    <text x="0" y="12" font-family="Arial, sans-serif" font-size="8" fill="#aaaacc" opacity="0.7">Modes: None → Input → Output → I/O → Energy → Fuel</text>
+  </g>
+
+  <!-- Decorative Corners -->
+  <g id="decorative-corners">
+    <!-- Top Left -->
+    <path d="M 10 10 L 30 10 M 10 10 L 10 30" stroke="#00ffff" stroke-width="1" opacity="0.3"/>
+    <!-- Top Right -->
+    <path d="M 490 10 L 470 10 M 490 10 L 490 30" stroke="#00ffff" stroke-width="1" opacity="0.3"/>
+    <!-- Bottom Left -->
+    <path d="M 10 390 L 30 390 M 10 390 L 10 370" stroke="#4169E1" stroke-width="1" opacity="0.3"/>
+    <!-- Bottom Right -->
+    <path d="M 490 390 L 470 390 M 490 390 L 490 370" stroke="#4169E1" stroke-width="1" opacity="0.3"/>
+  </g>
+
+  <!-- Scan Lines Effect -->
+  <rect width="500" height="1" y="100" fill="#00ffff" opacity="0.1"/>
+  <rect width="500" height="1" y="200" fill="#4169E1" opacity="0.1"/>
+  <rect width="500" height="1" y="280" fill="#00ffff" opacity="0.1"/>
+</svg>

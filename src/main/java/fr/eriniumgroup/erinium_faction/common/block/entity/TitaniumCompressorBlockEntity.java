@@ -36,7 +36,27 @@ public class TitaniumCompressorBlockEntity extends BlockEntity implements MenuPr
     private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY); // 0=input, 1=fuel (futur), 2=output
     private int animTicks = 0;
     private boolean isWorking = false;
-    private final ContainerData data = new SimpleContainerData(1);
+    private final ContainerData data = new ContainerData() {
+        @Override
+        public int get(int index) {
+            return switch (index) {
+                case 0 -> TitaniumCompressorBlockEntity.this.getProgress();
+                case 1 -> energy.getEnergyStored() & 0xFFFF; // Lower 16 bits
+                case 2 -> (energy.getEnergyStored() >> 16) & 0xFFFF; // Upper 16 bits
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+            // Client reçoit les données mais ne les modifie pas
+        }
+
+        @Override
+        public int getCount() {
+            return 3; // progress + energy (2 slots)
+        }
+    };
     private final FaceConfiguration faceConfig = new FaceConfiguration();
 
     public TitaniumCompressorBlockEntity(BlockPos pos, BlockState state) {
