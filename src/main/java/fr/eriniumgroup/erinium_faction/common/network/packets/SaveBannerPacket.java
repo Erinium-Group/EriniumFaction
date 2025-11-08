@@ -48,31 +48,31 @@ public record SaveBannerPacket(
             // Vérifier que le joueur est dans une faction
             String factionId = FactionManager.getPlayerFaction(player.getUUID());
             if (factionId == null) {
-                player.sendSystemMessage(Component.literal("§cVous devez être dans une faction pour éditer une bannière!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.no_faction"));
                 return;
             }
 
             Faction faction = FactionManager.getFaction(factionId);
             if (faction == null) {
-                player.sendSystemMessage(Component.literal("§cFaction introuvable!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.faction_not_found"));
                 return;
             }
 
             // Vérifier les permissions
             if (!faction.hasPermission(player.getUUID(), "faction.banner.edit")) {
-                player.sendSystemMessage(Component.literal("§cVous n'avez pas la permission d'éditer la bannière!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.no_permission_edit"));
                 return;
             }
 
             // Vérifier que la faction a acheté la fonctionnalité
             if (!faction.hasCustomBanner()) {
-                player.sendSystemMessage(Component.literal("§cVotre faction doit d'abord acheter la fonctionnalité de bannière custom!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.not_purchased"));
                 return;
             }
 
             // Valider les données
             if (packet.pixels == null || packet.pixels.length != 2048) {
-                player.sendSystemMessage(Component.literal("§cDonnées de bannière invalides!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.invalid_data"));
                 return;
             }
 
@@ -82,10 +82,19 @@ public record SaveBannerPacket(
 
             // Sauvegarder
             if (BannerManager.saveBanner(faction.getId(), image)) {
-                player.sendSystemMessage(Component.literal("§aBannière sauvegardée avec succès!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.saved"));
                 FactionSavedData.get(player.server).setDirty();
+
+                // SYNCHRONISATION INTELLIGENTE: Envoyer la nouvelle texture à tous les joueurs en ligne
+                // Cela permet de mettre à jour les capes, items et bannières en temps réel
+                SyncBannerTexturePacket syncPacket = new SyncBannerTexturePacket(faction.getId(), packet.pixels);
+
+                // Envoyer à tous les joueurs du serveur
+                for (var serverPlayer : player.server.getPlayerList().getPlayers()) {
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer, syncPacket);
+                }
             } else {
-                player.sendSystemMessage(Component.literal("§cErreur lors de la sauvegarde de la bannière!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.banner.save_error"));
             }
         });
     }

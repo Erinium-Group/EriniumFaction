@@ -37,7 +37,11 @@ public enum Permission {
     // Permissions de coffre et shop
     MANAGE_SHOP("faction.manage.shop", "manage_shop", "erinium_faction.gui.permissions.manage_shop"),
     ACCESS_CHEST("faction.access.chest", "access_chest", "erinium_faction.gui.permissions.access_chest"),
-    MANAGE_CHEST("faction.manage.chest", "manage_chest", "erinium_faction.gui.permissions.manage_chest");
+    MANAGE_CHEST("faction.manage.chest", "manage_chest", "erinium_faction.gui.permissions.manage_chest"),
+
+    // Permissions de bannière et cape
+    BANNER_EDIT("faction.banner.edit", "banner_edit", "erinium_faction.gui.permissions.banner_edit"),
+    BANNER_GET("faction.banner.get", "banner_get", "erinium_faction.gui.permissions.banner_get");
 
     private final String serverKey;      // Clé utilisée côté serveur (ex: "faction.invite")
     private final String guiKey;         // Clé courte pour la GUI (ex: "invite_members")

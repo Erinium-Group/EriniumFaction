@@ -39,10 +39,15 @@ public class ClientBannerPacketHandler {
 
     /**
      * Synchronise une texture de bannière côté client
+     * Force le refresh pour mettre à jour les capes et items en temps réel
      */
     public static void syncBannerTexture(String factionId, int[] pixels) {
         if (pixels != null && pixels.length == 2048) {
-            BannerTextureManager.registerBannerFromPixels(factionId, pixels);
+            // Forcer le refresh de la texture pour mise à jour en temps réel
+            BannerTextureManager.registerBannerFromPixels(factionId, pixels, true);
+
+            // Aussi mettre à jour le cache local si c'est la faction du joueur
+            BannerImageCache.setImage(pixels);
         }
     }
 

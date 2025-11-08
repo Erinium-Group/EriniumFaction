@@ -47,19 +47,19 @@ public record ShopPurchasePacket(
             // Vérifier que le joueur est dans une faction
             String factionId = FactionManager.getPlayerFaction(player.getUUID());
             if (factionId == null) {
-                player.sendSystemMessage(Component.literal("§cVous devez être dans une faction pour acheter dans le shop!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.shop.no_faction"));
                 return;
             }
 
             Faction faction = FactionManager.getFaction(factionId);
             if (faction == null) {
-                player.sendSystemMessage(Component.literal("§cFaction introuvable!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.shop.faction_not_found"));
                 return;
             }
 
             // Vérifier les permissions d'achat
-            if (!faction.hasPermission(player.getUUID(), "faction.shop.buy")) {
-                player.sendSystemMessage(Component.literal("§cVous n'avez pas la permission d'acheter dans le shop!"));
+            if (!faction.hasPermission(player.getUUID(), "faction.manage.shop")) {
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.shop.no_permission"));
                 return;
             }
 
@@ -68,7 +68,7 @@ public record ShopPurchasePacket(
                 case "custom_banner" -> purchaseCustomBanner(player, faction);
                 // Ajouter d'autres items ici
                 default -> {
-                    player.sendSystemMessage(Component.literal("§cItem inconnu: " + packet.itemId));
+                    player.sendSystemMessage(Component.translatable("erinium_faction.command.shop.unknown_item", packet.itemId));
                     EFC.log.warn("Unknown shop item purchase attempt: " + packet.itemId);
                 }
             }
@@ -83,13 +83,13 @@ public record ShopPurchasePacket(
 
         // Vérifier si déjà acheté
         if (faction.hasCustomBanner()) {
-            player.sendSystemMessage(Component.literal("§cVotre faction possède déjà la fonctionnalité de bannière custom!"));
+            player.sendSystemMessage(Component.translatable("erinium_faction.command.shop.banner.already_owned"));
             return;
         }
 
         // Vérifier le solde
         if (faction.getBankBalance() < BANNER_PRICE) {
-            player.sendSystemMessage(Component.literal("§cSolde insuffisant! Requis: §e" + BANNER_PRICE + "$ §c(Disponible: §e" + faction.getBankBalance() + "$§c)"));
+            player.sendSystemMessage(Component.translatable("erinium_faction.command.shop.insufficient_funds", BANNER_PRICE, faction.getBankBalance()));
             return;
         }
 
@@ -103,10 +103,31 @@ public record ShopPurchasePacket(
         FactionSavedData.get(player.server).setDirty();
 
         // Confirmer l'achat
-        player.sendSystemMessage(Component.literal("§a✓ Fonctionnalité Bannière Custom achetée avec succès!"));
-        player.sendSystemMessage(Component.literal("§7Utilisez §e/f banner edit §7pour créer votre bannière"));
+        player.sendSystemMessage(Component.translatable("erinium_faction.command.shop.banner.purchased"));
+        player.sendSystemMessage(Component.translatable("erinium_faction.command.shop.banner.hint"));
+
+        // SYNCHRONISATION: Créer une bannière blanche par défaut et la synchroniser
+        java.awt.image.BufferedImage defaultBanner = new java.awt.image.BufferedImage(32, 64, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        // Remplir avec du blanc
+        java.awt.Graphics2D g = defaultBanner.createGraphics();
+        g.setColor(java.awt.Color.WHITE);
+        g.fillRect(0, 0, 32, 64);
+        g.dispose();
+
+        // Sauvegarder la bannière par défaut
+        fr.eriniumgroup.erinium_faction.features.banner.BannerManager.saveBanner(faction.getId(), defaultBanner);
+
+        // Convertir en pixels pour la synchronisation
+        int[] pixels = new int[2048];
+        defaultBanner.getRGB(0, 0, 32, 64, pixels, 0, 32);
+
+        // Synchroniser immédiatement avec tous les joueurs en ligne
+        SyncBannerTexturePacket syncPacket = new SyncBannerTexturePacket(faction.getId(), pixels);
+        for (var serverPlayer : player.server.getPlayerList().getPlayers()) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer, syncPacket);
+        }
 
         // Log
-        EFC.log.info("Faction {} purchased custom banner feature for ${}", faction.getId(), BANNER_PRICE);
+        EFC.log.info("Faction {} purchased custom banner feature for ${} and received default banner", faction.getId(), BANNER_PRICE);
     }
 }

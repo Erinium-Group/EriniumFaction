@@ -62,29 +62,29 @@ public class CustomCapeRenderer {
         addVertex(vertexConsumer, pose, normal, x2, y2, z1, 1.0F, 1.0F, 0, 0, -1, combinedLight, combinedOverlay);
         addVertex(vertexConsumer, pose, normal, x2, y1, z1, 1.0F, 0.0F, 0, 0, -1, combinedLight, combinedOverlay);
 
-        // Face gauche (côté X-)
-        addVertex(vertexConsumer, pose, normal, x1, y1, z1, 0.0F, 0.0F, -1, 0, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x1, y1, z2, 0.0F, 0.0F, -1, 0, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x1, y2, z2, 0.0F, 1.0F, -1, 0, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x1, y2, z1, 0.0F, 1.0F, -1, 0, 0, combinedLight, combinedOverlay);
+        // Face gauche (côté X-) - Blanc uni
+        addVertexWhite(vertexConsumer, pose, normal, x1, y1, z1, -1, 0, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x1, y1, z2, -1, 0, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x1, y2, z2, -1, 0, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x1, y2, z1, -1, 0, 0, combinedLight, combinedOverlay);
 
-        // Face droite (côté X+)
-        addVertex(vertexConsumer, pose, normal, x2, y1, z2, 0.0F, 0.0F, 1, 0, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x2, y1, z1, 0.0F, 0.0F, 1, 0, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x2, y2, z1, 0.0F, 1.0F, 1, 0, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x2, y2, z2, 0.0F, 1.0F, 1, 0, 0, combinedLight, combinedOverlay);
+        // Face droite (côté X+) - Blanc uni
+        addVertexWhite(vertexConsumer, pose, normal, x2, y1, z2, 1, 0, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x2, y1, z1, 1, 0, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x2, y2, z1, 1, 0, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x2, y2, z2, 1, 0, 0, combinedLight, combinedOverlay);
 
-        // Face haut (côté Y+)
-        addVertex(vertexConsumer, pose, normal, x1, y2, z2, 0.0F, 0.0F, 0, 1, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x2, y2, z2, 1.0F, 0.0F, 0, 1, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x2, y2, z1, 1.0F, 1.0F, 0, 1, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x1, y2, z1, 0.0F, 1.0F, 0, 1, 0, combinedLight, combinedOverlay);
+        // Face haut (côté Y+) - Blanc uni
+        addVertexWhite(vertexConsumer, pose, normal, x1, y2, z2, 0, 1, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x2, y2, z2, 0, 1, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x2, y2, z1, 0, 1, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x1, y2, z1, 0, 1, 0, combinedLight, combinedOverlay);
 
-        // Face bas (côté Y-)
-        addVertex(vertexConsumer, pose, normal, x1, y1, z1, 0.0F, 0.0F, 0, -1, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x2, y1, z1, 1.0F, 0.0F, 0, -1, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x2, y1, z2, 1.0F, 1.0F, 0, -1, 0, combinedLight, combinedOverlay);
-        addVertex(vertexConsumer, pose, normal, x1, y1, z2, 0.0F, 1.0F, 0, -1, 0, combinedLight, combinedOverlay);
+        // Face bas (côté Y-) - Blanc uni
+        addVertexWhite(vertexConsumer, pose, normal, x1, y1, z1, 0, -1, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x2, y1, z1, 0, -1, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x2, y1, z2, 0, -1, 0, combinedLight, combinedOverlay);
+        addVertexWhite(vertexConsumer, pose, normal, x1, y1, z2, 0, -1, 0, combinedLight, combinedOverlay);
     }
 
     private static void addVertex(
@@ -100,6 +100,26 @@ public class CustomCapeRenderer {
         consumer.addVertex(pose, x, y, z)
             .setColor(255, 255, 255, 255)
             .setUv(u, v)
+            .setOverlay(overlay)
+            .setLight(light)
+            .setNormal((float)nx, (float)ny, (float)nz);
+    }
+
+    /**
+     * Ajoute un vertex blanc sans texture (pour les épaisseurs de la cape)
+     */
+    private static void addVertexWhite(
+        VertexConsumer consumer,
+        Matrix4f pose,
+        Matrix3f normal,
+        float x, float y, float z,
+        int nx, int ny, int nz,
+        int light,
+        int overlay
+    ) {
+        consumer.addVertex(pose, x, y, z)
+            .setColor(255, 255, 255, 255)
+            .setUv(0.0F, 0.0F)  // UV à 0,0 pour éviter d'étirer la texture
             .setOverlay(overlay)
             .setLight(light)
             .setNormal((float)nx, (float)ny, (float)nz);

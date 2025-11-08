@@ -28,7 +28,23 @@ public class BannerTextureManager {
      * @return ResourceLocation de la texture
      */
     public static ResourceLocation registerBannerTexture(String factionId, BufferedImage image) {
-        // Vérifier si déjà enregistrée
+        return registerBannerTexture(factionId, image, false);
+    }
+
+    /**
+     * Enregistre une texture de bannière depuis une image
+     * @param factionId ID de la faction
+     * @param image Image 32x64 de l'utilisateur
+     * @param forceRefresh Force le remplacement si la texture existe déjà
+     * @return ResourceLocation de la texture
+     */
+    public static ResourceLocation registerBannerTexture(String factionId, BufferedImage image, boolean forceRefresh) {
+        // Si la texture existe déjà et qu'on force le refresh, la supprimer d'abord
+        if (forceRefresh && bannerTextures.containsKey(factionId)) {
+            removeBannerTexture(factionId);
+        }
+
+        // Vérifier si déjà enregistrée (après potentielle suppression)
         if (bannerTextures.containsKey(factionId)) {
             return bannerTextures.get(factionId);
         }
@@ -77,6 +93,16 @@ public class BannerTextureManager {
      * Enregistre une bannière depuis les pixels reçus du serveur
      */
     public static ResourceLocation registerBannerFromPixels(String factionId, int[] pixels) {
+        return registerBannerFromPixels(factionId, pixels, false);
+    }
+
+    /**
+     * Enregistre une bannière depuis les pixels reçus du serveur
+     * @param factionId ID de la faction
+     * @param pixels Pixels de la bannière
+     * @param forceRefresh Force le remplacement si la texture existe déjà
+     */
+    public static ResourceLocation registerBannerFromPixels(String factionId, int[] pixels, boolean forceRefresh) {
         if (pixels == null || pixels.length != 2048) {
             return null;
         }
@@ -84,7 +110,7 @@ public class BannerTextureManager {
         BufferedImage image = new BufferedImage(32, 64, BufferedImage.TYPE_INT_ARGB);
         image.setRGB(0, 0, 32, 64, pixels, 0, 32);
 
-        return registerBannerTexture(factionId, image);
+        return registerBannerTexture(factionId, image, forceRefresh);
     }
 
     /**

@@ -98,6 +98,11 @@ public abstract class CapeLayerMixin extends RenderLayer<AbstractClientPlayer, P
 
         // Reproduire le code vanilla de CapeLayer mais avec notre texture
         poseStack.pushPose();
+
+        // Appliquer les transformations du corps du joueur pour que la cape suive
+        // Le corps se penche quand on sneak, la cape doit suivre
+        this.getParentModel().body.translateAndRotate(poseStack);
+
         // Décaler de 0.125F (vanilla) + 0.0625F (1 pixel) = 0.1875F pour coller au dos
         poseStack.translate(0.0F, 0.0F, 0.1875F);
 

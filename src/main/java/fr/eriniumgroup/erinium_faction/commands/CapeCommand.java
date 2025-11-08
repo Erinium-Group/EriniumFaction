@@ -37,19 +37,19 @@ public class CapeCommand {
             // Vérifier que le joueur est dans une faction
             String factionId = FactionManager.getPlayerFaction(player.getUUID());
             if (factionId == null) {
-                player.sendSystemMessage(Component.literal("§cVous devez être dans une faction!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.cape.no_faction"));
                 return 0;
             }
 
             Faction faction = FactionManager.getFaction(factionId);
             if (faction == null) {
-                player.sendSystemMessage(Component.literal("§cFaction introuvable!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.cape.faction_not_found"));
                 return 0;
             }
 
             // Vérifier que la faction a acheté la fonctionnalité bannière (requis pour la cape)
             if (!faction.hasCustomBanner()) {
-                player.sendSystemMessage(Component.literal("§cVotre faction doit d'abord acheter la fonctionnalité de bannière custom!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.cape.not_purchased"));
                 return 0;
             }
 
@@ -65,14 +65,14 @@ public class CapeCommand {
 
             // Message de confirmation
             if (newState) {
-                player.sendSystemMessage(Component.literal("§aCape de faction activée!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.cape.enabled"));
             } else {
-                player.sendSystemMessage(Component.literal("§eCape de faction désactivée!"));
+                player.sendSystemMessage(Component.translatable("erinium_faction.command.cape.disabled"));
             }
 
             return 1;
         } catch (Exception e) {
-            context.getSource().sendFailure(Component.literal("§cErreur: " + e.getMessage()));
+            context.getSource().sendFailure(Component.translatable("erinium_faction.command.error", e.getMessage()));
             return 0;
         }
     }

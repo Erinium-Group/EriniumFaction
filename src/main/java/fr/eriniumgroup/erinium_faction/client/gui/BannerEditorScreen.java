@@ -10,6 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Écran d'édition de bannière faction
@@ -59,6 +61,28 @@ public class BannerEditorScreen extends Screen {
     private static final int PALETTE_SIZE = 20;
 
     private boolean isDrawing = false;
+
+    // Système undo/redo
+    private final List<int[][]> undoStack = new ArrayList<>();
+    private final List<int[][]> redoStack = new ArrayList<>();
+    private static final int MAX_UNDO_STEPS = 50;
+
+    // Zoom
+    private double zoomLevel = 1.0;
+    private static final double MIN_ZOOM = 0.5;
+    private static final double MAX_ZOOM = 8.0;
+    private static final double ZOOM_STEP = 0.2;
+
+    // Pan (déplacement dans le canvas zoomé)
+    private double panOffsetX = 0.0;
+    private double panOffsetY = 0.0;
+    private boolean isPanning = false;
+    private double lastPanMouseX = 0.0;
+    private double lastPanMouseY = 0.0;
+
+    // Pour l'interpolation
+    private int lastDrawX = -1;
+    private int lastDrawY = -1;
 
     public BannerEditorScreen() {
         super(Component.translatable("erinium_faction.gui.banner_editor.title"));
@@ -174,17 +198,31 @@ public class BannerEditorScreen extends Screen {
         int scaledWidth = CANVAS_WIDTH * pixelSize;
         int scaledHeight = CANVAS_HEIGHT * pixelSize;
 
-        // Fond du canvas (bordure)
+        // Fond du canvas (bordure) - taille fixe
         graphics.fill(canvasX - 2, canvasY - 2, canvasX + scaledWidth + 2, canvasY + scaledHeight + 2, 0xFF000000);
 
-        // Pixels
+        // Activer le scissor pour clipper en dehors du canvas
+        graphics.enableScissor(canvasX, canvasY, canvasX + scaledWidth, canvasY + scaledHeight);
+
+        // Calculer la taille réelle d'un pixel avec zoom
+        int zoomedPixelSize = (int)(pixelSize * zoomLevel);
+
+        // Pixels avec zoom et pan
         for (int x = 0; x < CANVAS_WIDTH; x++) {
             for (int y = 0; y < CANVAS_HEIGHT; y++) {
-                int screenX = canvasX + x * pixelSize;
-                int screenY = canvasY + y * pixelSize;
-                graphics.fill(screenX, screenY, screenX + pixelSize, screenY + pixelSize, pixels[x][y]);
+                int screenX = (int)(canvasX + x * zoomedPixelSize + panOffsetX);
+                int screenY = (int)(canvasY + y * zoomedPixelSize + panOffsetY);
+
+                // Ne rendre que les pixels visibles
+                if (screenX + zoomedPixelSize >= canvasX && screenX <= canvasX + scaledWidth &&
+                    screenY + zoomedPixelSize >= canvasY && screenY <= canvasY + scaledHeight) {
+                    graphics.fill(screenX, screenY, screenX + zoomedPixelSize, screenY + zoomedPixelSize, pixels[x][y]);
+                }
             }
         }
+
+        // Désactiver le scissor
+        graphics.disableScissor();
     }
 
     private void renderPalette(GuiGraphics graphics, int mouseX, int mouseY) {
@@ -234,8 +272,17 @@ public class BannerEditorScreen extends Screen {
             }
         }
 
+        // Clic droit pour pan (déplacer la vue)
+        if (button == 1) { // Clic droit
+            isPanning = true;
+            lastPanMouseX = mouseX;
+            lastPanMouseY = mouseY;
+            return true;
+        }
+
         // Dessin sur le canvas
         if (button == 0) { // Clic gauche
+            saveStateForUndo(); // Sauvegarder l'état avant de dessiner
             drawPixel(mouseX, mouseY);
             isDrawing = true;
             return true;
@@ -246,10 +293,23 @@ public class BannerEditorScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        // Pan (déplacement de la vue avec clic droit)
+        if (isPanning && button == 1) {
+            double deltaX = mouseX - lastPanMouseX;
+            double deltaY = mouseY - lastPanMouseY;
+            panOffsetX += deltaX;
+            panOffsetY += deltaY;
+            lastPanMouseX = mouseX;
+            lastPanMouseY = mouseY;
+            return true;
+        }
+
+        // Dessin avec clic gauche
         if (isDrawing && button == 0) {
             drawPixel(mouseX, mouseY);
             return true;
         }
+
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
@@ -262,16 +322,184 @@ public class BannerEditorScreen extends Screen {
 
         if (button == 0) {
             isDrawing = false;
+            lastDrawX = -1; // Réinitialiser pour la prochaine ligne
+            lastDrawY = -1;
         }
+
+        if (button == 1) {
+            isPanning = false;
+        }
+
         return false;
     }
 
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        // Zoom avec la molette
+        if (scrollY != 0) {
+            int scaledWidth = CANVAS_WIDTH * pixelSize;
+            int scaledHeight = CANVAS_HEIGHT * pixelSize;
+
+            // Vérifier si la souris est sur le canvas
+            if (mouseX >= canvasX && mouseX <= canvasX + scaledWidth &&
+                mouseY >= canvasY && mouseY <= canvasY + scaledHeight) {
+
+                double oldZoom = zoomLevel;
+
+                // Ajuster le zoom
+                if (scrollY > 0) {
+                    zoomLevel = Math.min(zoomLevel + ZOOM_STEP, MAX_ZOOM);
+                } else {
+                    zoomLevel = Math.max(zoomLevel - ZOOM_STEP, MIN_ZOOM);
+                }
+
+                // Ajuster le pan pour zoomer vers la position de la souris
+                double zoomRatio = zoomLevel / oldZoom;
+                double canvasMouseX = mouseX - canvasX;
+                double canvasMouseY = mouseY - canvasY;
+
+                panOffsetX = (panOffsetX - canvasMouseX) * zoomRatio + canvasMouseX;
+                panOffsetY = (panOffsetY - canvasMouseY) * zoomRatio + canvasMouseY;
+
+                return true;
+            }
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // CTRL+Z pour undo
+        if (keyCode == 90 && (modifiers & 2) != 0) { // 2 = CTRL
+            undo();
+            return true;
+        }
+
+        // CTRL+Y pour redo
+        if (keyCode == 89 && (modifiers & 2) != 0) { // 2 = CTRL
+            redo();
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     private void drawPixel(double mouseX, double mouseY) {
-        int pixelX = ((int) mouseX - canvasX) / pixelSize;
-        int pixelY = ((int) mouseY - canvasY) / pixelSize;
+        int zoomedPixelSize = (int)(pixelSize * zoomLevel);
+
+        // Convertir les coordonnées de la souris en coordonnées canvas en tenant compte du pan
+        int pixelX = (int)((mouseX - canvasX - panOffsetX) / zoomedPixelSize);
+        int pixelY = (int)((mouseY - canvasY - panOffsetY) / zoomedPixelSize);
 
         if (pixelX >= 0 && pixelX < CANVAS_WIDTH && pixelY >= 0 && pixelY < CANVAS_HEIGHT) {
-            pixels[pixelX][pixelY] = currentColor;
+            // Interpolation pour éviter les trous
+            if (lastDrawX != -1 && lastDrawY != -1) {
+                interpolateLine(lastDrawX, lastDrawY, pixelX, pixelY);
+            } else {
+                pixels[pixelX][pixelY] = currentColor;
+            }
+            lastDrawX = pixelX;
+            lastDrawY = pixelY;
+        }
+    }
+
+    /**
+     * Interpolation linéaire entre deux points pour éviter les trous lors du dessin rapide
+     */
+    private void interpolateLine(int x0, int y0, int x1, int y1) {
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true) {
+            pixels[x0][y0] = currentColor;
+
+            if (x0 == x1 && y0 == y1) break;
+
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y0 += sy;
+            }
+        }
+    }
+
+    /**
+     * Sauvegarde l'état actuel pour undo
+     */
+    private void saveStateForUndo() {
+        // Copier l'état actuel
+        int[][] state = new int[CANVAS_WIDTH][CANVAS_HEIGHT];
+        for (int x = 0; x < CANVAS_WIDTH; x++) {
+            for (int y = 0; y < CANVAS_HEIGHT; y++) {
+                state[x][y] = pixels[x][y];
+            }
+        }
+
+        // Ajouter à la stack
+        undoStack.add(state);
+
+        // Limiter la taille
+        if (undoStack.size() > MAX_UNDO_STEPS) {
+            undoStack.remove(0);
+        }
+
+        // Vider la redo stack
+        redoStack.clear();
+    }
+
+    /**
+     * Undo - Annuler la dernière action
+     */
+    private void undo() {
+        if (undoStack.isEmpty()) return;
+
+        // Sauvegarder l'état actuel dans redo
+        int[][] currentState = new int[CANVAS_WIDTH][CANVAS_HEIGHT];
+        for (int x = 0; x < CANVAS_WIDTH; x++) {
+            for (int y = 0; y < CANVAS_HEIGHT; y++) {
+                currentState[x][y] = pixels[x][y];
+            }
+        }
+        redoStack.add(currentState);
+
+        // Restaurer l'état précédent
+        int[][] previousState = undoStack.remove(undoStack.size() - 1);
+        for (int x = 0; x < CANVAS_WIDTH; x++) {
+            for (int y = 0; y < CANVAS_HEIGHT; y++) {
+                pixels[x][y] = previousState[x][y];
+            }
+        }
+    }
+
+    /**
+     * Redo - Refaire la dernière action annulée
+     */
+    private void redo() {
+        if (redoStack.isEmpty()) return;
+
+        // Sauvegarder l'état actuel dans undo
+        int[][] currentState = new int[CANVAS_WIDTH][CANVAS_HEIGHT];
+        for (int x = 0; x < CANVAS_WIDTH; x++) {
+            for (int y = 0; y < CANVAS_HEIGHT; y++) {
+                currentState[x][y] = pixels[x][y];
+            }
+        }
+        undoStack.add(currentState);
+
+        // Restaurer l'état redo
+        int[][] redoState = redoStack.remove(redoStack.size() - 1);
+        for (int x = 0; x < CANVAS_WIDTH; x++) {
+            for (int y = 0; y < CANVAS_HEIGHT; y++) {
+                pixels[x][y] = redoState[x][y];
+            }
         }
     }
 
