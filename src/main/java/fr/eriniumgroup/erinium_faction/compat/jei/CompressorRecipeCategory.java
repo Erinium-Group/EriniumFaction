@@ -25,11 +25,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CompressorRecipeCategory implements IRecipeCategory<CompressorRecipe> {
 
-    public static final RecipeType<CompressorRecipe> RECIPE_TYPE =
-        RecipeType.create(EFC.MOD_ID, "compressing", CompressorRecipe.class);
+    public static final RecipeType<CompressorRecipe> RECIPE_TYPE = RecipeType.create(EFC.MOD_ID, "compressing", CompressorRecipe.class);
 
-    private static final ResourceLocation TEXTURE =
-        ResourceLocation.fromNamespaceAndPath(EFC.MOD_ID, "textures/gui/jei/compressor.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EFC.MOD_ID, "textures/gui/jei/compressor.png");
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -39,11 +37,8 @@ public class CompressorRecipeCategory implements IRecipeCategory<CompressorRecip
 
     public CompressorRecipeCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 140, 60);
-        this.icon = guiHelper.createDrawableItemStack(
-            new ItemStack(fr.eriniumgroup.erinium_faction.init.EFBlocks.TITANIUM_COMPRESSOR.get())
-        );
-        this.arrow = guiHelper.drawableBuilder(TEXTURE, 140, 0, 24, 17)
-            .buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
+        this.icon = guiHelper.createDrawableItemStack(new ItemStack(fr.eriniumgroup.erinium_faction.init.EFBlocks.TITANIUM_COMPRESSOR.get()));
+        this.arrow = guiHelper.drawableBuilder(TEXTURE, 140, 0, 24, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
         this.energyBar = guiHelper.createDrawable(TEXTURE, 164, 0, 14, 42);
         this.title = Component.translatable("gui.erinium_faction.jei.compressing");
     }
@@ -79,17 +74,14 @@ public class CompressorRecipeCategory implements IRecipeCategory<CompressorRecip
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull CompressorRecipe recipe, @NotNull IFocusGroup focuses) {
         // Slot d'entrée (input)
-        builder.addSlot(RecipeIngredientRole.INPUT, 10, 22)
-            .addIngredients(recipe.getInput());
+        builder.addSlot(RecipeIngredientRole.INPUT, 10, 22).addIngredients(recipe.getInput());
 
         // Slot de sortie (output)
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 110, 22)
-            .addItemStack(recipe.getOutput());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 110, 22).addItemStack(recipe.getOutput());
     }
 
     @Override
-    public void draw(@NotNull CompressorRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView,
-                     @NotNull GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(@NotNull CompressorRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics graphics, double mouseX, double mouseY) {
         // Dessiner le background
         background.draw(graphics, 0, 0);
 
@@ -111,8 +103,7 @@ public class CompressorRecipeCategory implements IRecipeCategory<CompressorRecip
     }
 
     @Override
-    public void getTooltip(@NotNull ITooltipBuilder tooltip, @NotNull CompressorRecipe recipe,
-                           @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+    public void getTooltip(@NotNull ITooltipBuilder tooltip, @NotNull CompressorRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         // Tooltip pour la barre d'énergie (x: 120-134, y: 8-50)
         if (mouseX >= 120 && mouseX <= 134 && mouseY >= 8 && mouseY <= 50) {
             tooltip.add(Component.translatable("gui.erinium_faction.jei.energy_required", recipe.getEnergyCost()));
@@ -120,8 +111,7 @@ public class CompressorRecipeCategory implements IRecipeCategory<CompressorRecip
 
         // Tooltip pour la flèche (x: 58-82, y: 22-39)
         if (mouseX >= 58 && mouseX <= 82 && mouseY >= 22 && mouseY <= 39) {
-            tooltip.add(Component.translatable("gui.erinium_faction.jei.processing_time",
-                String.format("%.1f", recipe.getProcessingTime() / 20.0)));
+            tooltip.add(Component.translatable("gui.erinium_faction.jei.processing_time", String.format("%.1f", recipe.getProcessingTime() / 20.0)));
         }
     }
 }

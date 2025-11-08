@@ -1,50 +1,43 @@
 package fr.eriniumgroup.erinium_faction;
 
 import fr.eriniumgroup.erinium_faction.commands.*;
+import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.config.JobsConfigManager;
+import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
 import fr.eriniumgroup.erinium_faction.common.network.PacketHandler;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;
 import fr.eriniumgroup.erinium_faction.core.logger.EFCC;
+import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
+import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
+import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
+import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
 import fr.eriniumgroup.erinium_faction.events.TopLuckEventHandler;
+import fr.eriniumgroup.erinium_faction.events.VanishEventHandler;
+import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
 import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
 import fr.eriniumgroup.erinium_faction.features.homes.HomeTeleportService;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
+import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelAttachments;
+import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelConfig;
 import fr.eriniumgroup.erinium_faction.features.topluck.TopLuckAttachments;
-import fr.eriniumgroup.erinium_faction.init.EFCreativeTabs;
+import fr.eriniumgroup.erinium_faction.init.*;
 import fr.eriniumgroup.erinium_faction.protection.ClaimProtection;
 import fr.eriniumgroup.erinium_faction.protection.PvpProtection;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import fr.eriniumgroup.erinium_faction.init.EFMenus;
-import fr.eriniumgroup.erinium_faction.init.EFItems;
-import fr.eriniumgroup.erinium_faction.common.network.EFVariables;
-import fr.eriniumgroup.erinium_faction.init.EFArgumentTypes;
-import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
-import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
-import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
-import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelAttachments;
-import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelConfig;
-import fr.eriniumgroup.erinium_faction.commands.PlayerLevelCommand;
-import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
-import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
-import fr.eriniumgroup.erinium_faction.init.EFBlocks;
-import fr.eriniumgroup.erinium_faction.init.EFBlockEntities;
-import fr.eriniumgroup.erinium_faction.init.EFCapabilities;
-import fr.eriniumgroup.erinium_faction.init.EFRecipes;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 @Mod(EriniumFaction.MODID)
 public class EriniumFaction {
@@ -111,7 +104,7 @@ public class EriniumFaction {
         // Enregistrer TopLuck handler
         NeoForge.EVENT_BUS.register(TopLuckEventHandler.class);
         // Enregistrer Vanish handler
-        NeoForge.EVENT_BUS.register(fr.eriniumgroup.erinium_faction.events.VanishEventHandler.class);
+        NeoForge.EVENT_BUS.register(VanishEventHandler.class);
 
         // Protection systems
         ClaimProtection.register();

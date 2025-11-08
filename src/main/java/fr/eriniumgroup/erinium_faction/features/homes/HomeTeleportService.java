@@ -1,14 +1,13 @@
 package fr.eriniumgroup.erinium_faction.features.homes;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,20 +15,32 @@ import java.util.UUID;
 
 /**
  * Gère le warmup et le cooldown pour /home.
+ * Tolérance: ignorer les changements de hauteur (Y) pour éviter les faux positifs
+ * dus à l'auto-jump, slabs, carpets, etc. Seul un déplacement horizontal (X/Z) ou
+ * un changement de dimension annule.
  */
-@EventBusSubscriber
 public class HomeTeleportService {
 
     private static final Map<UUID, Long> cooldowns = new HashMap<>();
     private static final Map<UUID, PendingTeleport> pendings = new HashMap<>();
-    private static final Map<UUID, Vec3> startPositions = new HashMap<>();
+    private static final Map<UUID, BlockPos> startBlockPositions = new HashMap<>();
     private static final Map<UUID, String> startDimensions = new HashMap<>();
+    private static boolean registered = false;
 
     public static void init() {
-        // rien: @EventBusSubscriber gère l'abonnement
+        // Enregistrement différé : on s'abonne lors du premier /home
+    }
+
+    private static void ensureRegistered() {
+        if (registered) return;
+        NeoForge.EVENT_BUS.addListener(HomeTeleportService::onServerTick);
+        NeoForge.EVENT_BUS.addListener(HomeTeleportService::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(HomeTeleportService::onHurt);
+        registered = true;
     }
 
     public static boolean tryStartTeleport(ServerPlayer player, String homeName) {
+        ensureRegistered();
         MinecraftServer server = player.getServer();
         if (server == null) return false;
         HomesConfig cfg = HomesConfig.get(server);
@@ -50,14 +61,14 @@ public class HomeTeleportService {
             return true;
         }
         long finishAt = now + warmup * 20L;
-        pendings.put(player.getUUID(), new PendingTeleport(homeName, finishAt));
-        startPositions.put(player.getUUID(), player.position());
-        startDimensions.put(player.getUUID(), player.level().dimension().location().toString());
+        UUID id = player.getUUID();
+        pendings.put(id, new PendingTeleport(homeName, finishAt));
+        startBlockPositions.put(id, player.blockPosition());
+        startDimensions.put(id, player.level().dimension().location().toString());
         player.displayClientMessage(Component.translatable("erinium_faction.tp.warmup", warmup), true);
         return true;
     }
 
-    @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post evt) {
         MinecraftServer server = evt.getServer();
         long now = server.getTickCount();
@@ -67,59 +78,53 @@ public class HomeTeleportService {
             PendingTeleport pt = entry.getValue();
             ServerPlayer player = server.getPlayerList().getPlayer(id);
             if (player == null) {
-                startPositions.remove(id);
-                startDimensions.remove(id);
+                cleanup(id);
                 return true; // drop
             }
             if (now >= pt.finishTick) {
                 HomesManager.performTeleport(player, pt.homeName);
                 long cdTicks = HomesConfig.get(server).getCooldownSeconds() * 20L;
                 cooldowns.put(id, now + cdTicks);
-                startPositions.remove(id);
-                startDimensions.remove(id);
+                cleanup(id);
                 return true; // done
             }
             return false;
         });
     }
 
-    @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post evt) {
         if (!(evt.getEntity() instanceof ServerPlayer sp)) return;
         UUID id = sp.getUUID();
         if (!pendings.containsKey(id)) return;
-        Vec3 start = startPositions.get(id);
+        BlockPos startBlock = startBlockPositions.get(id);
         String dim = startDimensions.get(id);
-        if (start == null || dim == null) return;
-        // Annuler si changement de dimension ou mouvement significatif (>0.1 bloc) ou changement de bloc
-        Vec3 current = sp.position();
-        double dx = current.x - start.x;
-        double dy = current.y - start.y;
-        double dz = current.z - start.z;
-        boolean moved = (dx * dx + dy * dy + dz * dz) > 0.01; // ~0.1 bloc
-        boolean blockChanged = sp.blockPosition().getX() != (int) start.x || sp.blockPosition().getY() != (int) start.y || sp.blockPosition().getZ() != (int) start.z;
+        if (startBlock == null || dim == null) return;
+        BlockPos current = sp.blockPosition();
+        boolean horizontalMoved = (current.getX() != startBlock.getX()) || (current.getZ() != startBlock.getZ());
         boolean dimChanged = !sp.level().dimension().location().toString().equals(dim);
-        if (moved || blockChanged || dimChanged) {
+        if (horizontalMoved || dimChanged) {
             cancelOnMove(sp);
         }
     }
 
-    @SubscribeEvent
     public static void onHurt(LivingDamageEvent.Pre evt) {
         if (!(evt.getEntity() instanceof ServerPlayer sp)) return;
         if (pendings.remove(sp.getUUID()) != null) {
-            startPositions.remove(sp.getUUID());
-            startDimensions.remove(sp.getUUID());
+            cleanup(sp.getUUID());
             sp.displayClientMessage(Component.translatable("erinium_faction.tp.canceled.damage"), true);
         }
     }
 
     public static void cancelOnMove(ServerPlayer player) {
         if (pendings.remove(player.getUUID()) != null) {
-            startPositions.remove(player.getUUID());
-            startDimensions.remove(player.getUUID());
+            cleanup(player.getUUID());
             player.displayClientMessage(Component.translatable("erinium_faction.tp.canceled.move"), true);
         }
+    }
+
+    private static void cleanup(UUID id) {
+        startBlockPositions.remove(id);
+        startDimensions.remove(id);
     }
 
     private record PendingTeleport(String homeName, long finishTick) {
