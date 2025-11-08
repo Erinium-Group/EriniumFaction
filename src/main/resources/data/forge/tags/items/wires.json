@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:copper_wire",
+    "#forge:silver_wire",
+    "#forge:titanium_wire"
+  ]
+}

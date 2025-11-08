@@ -571,5 +571,8 @@
   "erinium_faction.cmd.homes.config.crossdim.set": "§aCross-dimension teleport: %s",
   "erinium_faction.cmd.homes.config.crossdim.status": "§7Cross-dimension: %s",
   "erinium_faction.generic.enabled": "§aenabled",
-  "erinium_faction.generic.disabled": "§cdisabled"
+  "erinium_faction.generic.disabled": "§cdisabled",
+  "item.erinium_faction.copper_wire": "Copper Wire",
+  "item.erinium_faction.silver_wire": "Silver Wire",
+  "item.erinium_faction.titanium_wire": "Titanium Wire"
 }

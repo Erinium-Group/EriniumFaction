@@ -19,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TitaniumBatteryTier1BlockEntity extends BlockEntity implements MenuProvider, IConfigurableMachine {
-    private final EnergyImpl energy = new EnergyImpl(100000, 400, 400);
+    public static final int CAPACITY = 100000;
+    private final EnergyImpl energy = new EnergyImpl(CAPACITY, 400, 400);
     private int lastOutPerTick = 0;
     private int lastInPerTick = 0;
     private final FaceConfiguration faceConfig = new FaceConfiguration();

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "erinium_faction:silver_ore",
+    "erinium_faction:deepslate_silver_ore",
+    "erinium_faction:titanium_ore",
+    "erinium_faction:deepslate_titanium_ore"
+  ]
+}

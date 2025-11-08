@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.init;
 
+import fr.eriniumgroup.erinium_faction.common.block.entity.TitaniumBatteryTier1BlockEntity;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -39,7 +40,7 @@ public class EFCreativeTabs {
             // TitaniumBatteryTier1: pleine via BLOCK_ENTITY_DATA (CustomData)
             ItemStack fullBatt = new ItemStack(EFBlocks.TITANIUM_BATTERY_TIER1.get());
             var tag = new net.minecraft.nbt.CompoundTag();
-            tag.putInt("energy", 100000);
+            tag.putInt("energy", TitaniumBatteryTier1BlockEntity.CAPACITY); // Energie max pour cette batterie
             // Ajout de l'id de BlockEntity requis par le composant BLOCK_ENTITY_DATA
             tag.putString("id", EFBlockEntities.TITANIUM_BATTERY_TIER1.getId().toString());
             fullBatt.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
@@ -54,6 +55,10 @@ public class EFCreativeTabs {
             output.accept(EFItems.RAW_TITANIUM.get());
             output.accept(EFItems.TITANIUM_INGOT.get());
             output.accept(EFItems.TITANIUM_PLATE.get());
+            // Wires
+            output.accept(EFItems.COPPER_WIRE.get());
+            output.accept(EFItems.SILVER_WIRE.get());
+            output.accept(EFItems.TITANIUM_WIRE.get());
         })
         .build());
 }
