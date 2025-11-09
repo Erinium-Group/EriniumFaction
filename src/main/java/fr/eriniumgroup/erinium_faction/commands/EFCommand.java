@@ -14,6 +14,8 @@ import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import fr.eriniumgroup.erinium_faction.features.homes.HomesConfig;
 import fr.eriniumgroup.erinium_faction.features.homes.HomesManager;
 import fr.eriniumgroup.erinium_faction.features.homes.PlayerHomesData;
+import fr.eriniumgroup.erinium_faction.common.network.packets.OpenAuditViewerPacket;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -153,6 +155,19 @@ public class EFCommand {
 
         // /ef home <player> <homeName>
         root.then(Commands.literal("home").then(Commands.argument("player", StringArgumentType.word()).suggests(EFCommand::suggestOnlinePlayers).then(Commands.argument("homeName", StringArgumentType.word()).suggests(EFCommand::suggestPlayerHomes).executes(EFCommand::doTeleportPlayerHome))));
+
+        // Ajout: /ef audit gui
+        root.then(Commands.literal("audit").then(Commands.literal("gui").executes(ctx -> {
+            ServerPlayer sender;
+            try { sender = ctx.getSource().getPlayer(); } catch (Exception e) { sender = null; }
+            if (sender == null) {
+                ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.player_not_found"));
+                return 0;
+            }
+            PacketDistributor.sendToPlayer(sender, new OpenAuditViewerPacket());
+            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.audit.gui.open"), false);
+            return 1;
+        })));
 
         d.register(root);
     }

@@ -19,7 +19,7 @@ public class PacketHandler {
 
     // Optionnel: log manuel si vous appelez register() ailleurs
     public static void register() {
-        EFC.log.info("Initialisation du système réseau...");
+        EFC.log.info("§7§oInitialisation du système réseau...");
         // ...existing code...
     }
 
@@ -116,6 +116,11 @@ public class PacketHandler {
         // Paquet achat shop
         registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ShopPurchasePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ShopPurchasePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ShopPurchasePacket::handleData);
 
-        EFC.log.info("Paquets réseau enregistrés: FactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound), PlayerNameplateData (clientbound), VanishSync (clientbound), PlayerRankSync (clientbound), BannerSystem (save/open/data)");
+        // Audit packets
+        registrar.playToServer(AuditQueryRequestPacket.TYPE, AuditQueryRequestPacket.STREAM_CODEC, AuditQueryRequestPacket::handleData);
+        registrar.playToClient(AuditQueryResultPacket.TYPE, AuditQueryResultPacket.STREAM_CODEC, AuditQueryResultPacket::handleData);
+        registrar.playToClient(OpenAuditViewerPacket.TYPE, OpenAuditViewerPacket.STREAM_CODEC, OpenAuditViewerPacket::handleData);
+
+        EFC.log.info("§ePaquets réseau enregistrés: §7§oFactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound), PlayerNameplateData (clientbound), VanishSync (clientbound), PlayerRankSync (clientbound), BannerSystem (save/open/data), AuditQuery (request/result)");
     }
 }

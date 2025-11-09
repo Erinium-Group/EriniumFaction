@@ -5,6 +5,9 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 public final class EFConfig {
     public static final ModConfigSpec SPEC;
 
+    // Core
+    public static final ModConfigSpec.BooleanValue CORE_ENABLED;
+
     public static final ModConfigSpec.IntValue FACTION_NAME_MIN;
     public static final ModConfigSpec.IntValue FACTION_NAME_MAX;
     public static final ModConfigSpec.IntValue FACTION_DESC_MAX;
@@ -115,8 +118,38 @@ public final class EFConfig {
     public static final ModConfigSpec.ConfigValue<String> DISCORD_FOOTER_ICON_URL;
     public static final ModConfigSpec.ConfigValue<String> DISCORD_THUMBNAIL_URL;
 
+    // Audit
+    public static final ModConfigSpec.BooleanValue AUDIT_ENABLE_ALL;
+    public static final ModConfigSpec.IntValue AUDIT_CLICK_OPEN_WINDOW_MS;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_OPEN;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_CLOSE;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_PLACE;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_BREAK;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_LOGIN;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_LOGOUT;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_RESPAWN;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_DIM_CHANGE;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_PICKUP;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_DROP;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_CRAFT;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_SMELT;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_EXPLOSION;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_BLOCK_INTERACT;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_ANVIL;
+    public static final ModConfigSpec.BooleanValue AUDIT_LOG_CHAT;
+
+    // Logging
+    public static final ModConfigSpec.BooleanValue LOG_JSONL;
+    public static final ModConfigSpec.BooleanValue LOG_ROLL_DAILY;
+    public static final ModConfigSpec.LongValue LOG_MAX_BYTES; // rotation si >=
+    public static final ModConfigSpec.BooleanValue LOG_COMPRESS_ON_STOP;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
+
+        b.push("core");
+        CORE_ENABLED = b.define("enabled", true);
+        b.pop();
 
         b.push("factions");
         FACTION_NAME_MIN = b.comment("Longueur minimale du nom de faction").defineInRange("nameMin", 3, 2, 32);
@@ -153,9 +186,7 @@ public final class EFConfig {
         b.pop();
 
         b.push("discord");
-        b.comment("=== DISCORD WEBHOOK SYSTEM ===",
-                "Configuration complète pour envoyer des notifications Discord",
-                "Placeholders disponibles: {player}, {faction}, {rank}, {target}, {killer}, {victim}, {level}, {xp}, {x}, {y}, {z}, {dimension}, {old_rank}, {new_rank}");
+        b.comment("=== DISCORD WEBHOOK SYSTEM ===", "Configuration complète pour envoyer des notifications Discord", "Placeholders disponibles: {player}, {faction}, {rank}, {target}, {killer}, {victim}, {level}, {xp}, {x}, {y}, {z}, {dimension}, {old_rank}, {new_rank}");
 
         DISCORD_WEBHOOK_ENABLED = b.comment("Activer le système de webhook Discord").define("enabled", false);
         DISCORD_WEBHOOK_URL = b.comment("URL du webhook Discord (obtenue depuis les paramètres du canal Discord)").define("webhookUrl", "");
@@ -214,8 +245,7 @@ public final class EFConfig {
         b.pop();
 
         b.push("colors");
-        b.comment("Couleurs en format décimal (convertir depuis hex: https://www.spycolor.com/)",
-                "Exemples: Vert=#00FF00=65280, Rouge=#FF0000=16711680, Bleu=#0000FF=255");
+        b.comment("Couleurs en format décimal (convertir depuis hex: https://www.spycolor.com/)", "Exemples: Vert=#00FF00=65280, Rouge=#FF0000=16711680, Bleu=#0000FF=255");
         DISCORD_COLOR_FACTION_CREATE = b.defineInRange("factionCreate", 5763719, 0, 16777215); // #57F287 (vert Discord)
         DISCORD_COLOR_FACTION_DELETE = b.defineInRange("factionDelete", 15548997, 0, 16777215); // #ED4245 (rouge Discord)
         DISCORD_COLOR_FACTION_JOIN = b.defineInRange("factionJoin", 3447003, 0, 16777215); // #3498DB (bleu)
@@ -240,8 +270,37 @@ public final class EFConfig {
 
         b.pop(); // discord
 
+        b.push("audit");
+        AUDIT_ENABLE_ALL = b.comment("Active/désactive tout l’audit.").define("enable_all", true);
+        AUDIT_LOG_OPEN = b.define("log_open", true);
+        AUDIT_LOG_CLOSE = b.define("log_close", true);
+        AUDIT_LOG_PLACE = b.define("log_place", true);
+        AUDIT_LOG_BREAK = b.define("log_break", true);
+        AUDIT_CLICK_OPEN_WINDOW_MS = b.comment("Fenêtre clic→open (ms).").defineInRange("click_open_window_ms", 3000, 0, 60000);
+        AUDIT_LOG_LOGIN = b.define("log_login", true);
+        AUDIT_LOG_LOGOUT = b.define("log_logout", true);
+        AUDIT_LOG_RESPAWN = b.define("log_respawn", true);
+        AUDIT_LOG_DIM_CHANGE = b.define("log_dim_change", true);
+        AUDIT_LOG_PICKUP = b.define("log_pickup", true);
+        AUDIT_LOG_DROP = b.define("log_drop", true);
+        AUDIT_LOG_CRAFT = b.define("log_craft", true);
+        AUDIT_LOG_SMELT = b.define("log_smelt", true);
+        AUDIT_LOG_EXPLOSION = b.define("log_explosion", true);
+        AUDIT_LOG_BLOCK_INTERACT = b.define("log_block_interact", true);
+        AUDIT_LOG_ANVIL = b.define("log_anvil", true);
+        AUDIT_LOG_CHAT = b.define("log_chat", false);
+        b.pop();
+
+        b.push("logging");
+        LOG_JSONL = b.define("jsonl", true);
+        LOG_ROLL_DAILY = b.define("roll_daily", true);
+        LOG_MAX_BYTES = b.defineInRange("max_bytes", 10_000_000L, 100_000L, 2_000_000_000L);
+        LOG_COMPRESS_ON_STOP = b.define("compress_on_stop", true);
+        b.pop();
+
         SPEC = b.build();
     }
 
-    private EFConfig() {}
+    private EFConfig() {
+    }
 }

@@ -13,10 +13,9 @@ import fr.eriniumgroup.erinium_faction.core.logger.EFCC;
 import fr.eriniumgroup.erinium_faction.core.permissions.EFPerms;
 import fr.eriniumgroup.erinium_faction.core.power.PowerManager;
 import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
-import fr.eriniumgroup.erinium_faction.events.AntiXrayEventHandler;
-import fr.eriniumgroup.erinium_faction.events.TopLuckEventHandler;
-import fr.eriniumgroup.erinium_faction.events.VanishEventHandler;
+import fr.eriniumgroup.erinium_faction.events.*;
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
+import fr.eriniumgroup.erinium_faction.features.audit.AuditRotator;
 import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
 import fr.eriniumgroup.erinium_faction.features.homes.HomeTeleportService;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
@@ -105,6 +104,9 @@ public class EriniumFaction {
         NeoForge.EVENT_BUS.register(TopLuckEventHandler.class);
         // Enregistrer Vanish handler
         NeoForge.EVENT_BUS.register(VanishEventHandler.class);
+        // Audit
+        NeoForge.EVENT_BUS.register(new EFAuditEvents());
+        NeoForge.EVENT_BUS.register(new EFAuditEventsExtra());
 
         // Protection systems
         ClaimProtection.register();
@@ -136,6 +138,7 @@ public class EriniumFaction {
         EFC.log.info("§2Saving §dfaction §7data...");
         FactionManager.save(event.getServer());
         EFRManager.get().save();
+        AuditRotator.compressTodayIfConfigured(); // Audit logs compression
         // Sauvegarder et arrêter l'anti-xray
         AntiXrayManager.getInstance().shutdown();
     }

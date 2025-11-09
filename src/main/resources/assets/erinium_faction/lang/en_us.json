@@ -594,5 +594,17 @@
   "erinium_faction.command.shop.banner.already_owned": "§cYour faction already owns the custom banner feature!",
   "erinium_faction.command.shop.insufficient_funds": "§cInsufficient balance! Required: §e%s$ §c(Available: §e%s$§c)",
   "erinium_faction.command.shop.banner.purchased": "§a✓ Custom Banner Feature purchased successfully!",
-  "erinium_faction.command.shop.banner.hint": "§7Use §e/f banner edit §7to create your banner"
+  "erinium_faction.command.shop.banner.hint": "§7Use §e/f banner edit §7to create your banner",
+  "erinium_faction.gui.audit.title": "Audit Viewer",
+  "erinium_faction.gui.audit.player_uuid": "Player UUID",
+  "erinium_faction.gui.audit.block_id": "Block ID",
+  "erinium_faction.gui.audit.event": "Event",
+  "erinium_faction.gui.audit.from": "From (ISO8601)",
+  "erinium_faction.gui.audit.to": "To (ISO8601)",
+  "erinium_faction.gui.audit.limit": "Limit",
+  "erinium_faction.gui.audit.search": "Search",
+  "erinium_faction.gui.audit.clear": "Clear",
+  "erinium_faction.cmd.audit.gui.open": "§7Opening audit viewer...",
+  "erinium_faction.gui.audit.copied": "Entry copied to clipboard",
+  "erinium_faction.gui.audit.query": "Filter results..."
 }
