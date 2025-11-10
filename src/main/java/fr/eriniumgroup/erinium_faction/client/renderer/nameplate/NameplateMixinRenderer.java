@@ -46,7 +46,7 @@ public class NameplateMixinRenderer {
 
     @FunctionalInterface
     private interface ElementRenderer {
-        void render(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light);
+        void render(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light, boolean behindBlock);
     }
 
     /**
@@ -61,11 +61,30 @@ public class NameplateMixinRenderer {
         Minecraft mc = Minecraft.getInstance();
         Player clientPlayer = mc.player;
 
+        // Ne pas afficher notre propre nameplate
+        if (player == clientPlayer) {
+            return true;
+        }
+
+        // Cacher la nameplate si le joueur sneak
+        if (player.isCrouching()) {
+            return true; // Cancel vanilla aussi
+        }
+
+        // Cacher la nameplate si le joueur porte un BARRIER sur la tête
+        net.minecraft.world.item.ItemStack helmet = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD);
+        if (helmet.is(net.minecraft.world.item.Items.BARRIER)) {
+            return true; // Cancel vanilla aussi
+        }
+
         Font font = mc.font;
         int maxWidth = EFClientConfig.NAMEPLATE_MAX_WIDTH.get();
 
+        // Détecter si le joueur est derrière un block (occlusion)
+        boolean behindBlock = isPlayerBehindBlock(mc, player);
+
         // Configurer les éléments à afficher
-        List<NameplateElement> elements = setupComponents(player, font, maxWidth);
+        List<NameplateElement> elements = setupComponents(player, font, maxWidth, behindBlock);
 
         // Calculer hauteur totale
         int totalHeight = elements.stream()
@@ -95,22 +114,28 @@ public class NameplateMixinRenderer {
         int padding = 4;
         int startY = -totalHeight - padding;
 
-        // Dessiner le fond
+        // Dessiner le fond EN PREMIER (le plus en arrière)
+        poseStack.pushPose();
+        poseStack.translate(0, 0, 0.1F); // Le plus loin
         int bgColor = EFClientConfig.NAMEPLATE_BACKGROUND_COLOR.get();
         int bgX1 = -maxWidth / 2 - padding;
         int bgX2 = maxWidth / 2 + padding;
         int bgY1 = startY;
         int bgY2 = startY + totalHeight + padding;
-        drawBackground(poseStack, bufferSource, bgX1, bgY1, bgX2, bgY2, bgColor, packedLight);
+        drawBackground(poseStack, bufferSource, bgX1, bgY1, bgX2, bgY2, bgColor, packedLight, behindBlock);
+        poseStack.popPose();
 
-        // Rendre chaque élément
+        // Rendre chaque élément PAR-DESSUS le fond
+        poseStack.pushPose();
+        poseStack.translate(0, 0, 0.05F); // Devant le fond mais derrière les barres
         int currentY = startY + padding;
         for (NameplateElement element : elements) {
             if (element.enabled) {
-                element.renderer.render(poseStack, bufferSource, player, currentY, maxWidth, font, packedLight);
+                element.renderer.render(poseStack, bufferSource, player, currentY, maxWidth, font, packedLight, behindBlock);
                 currentY += element.height;
             }
         }
+        poseStack.popPose();
 
         poseStack.popPose();
         return true; // Annuler vanilla
@@ -119,15 +144,15 @@ public class NameplateMixinRenderer {
     /**
      * CONFIGURATION DES COMPOSANTS - Modifier l'ordre ici pour changer l'ordre d'affichage
      */
-    private static List<NameplateElement> setupComponents(Player player, Font font, int maxWidth) {
+    private static List<NameplateElement> setupComponents(Player player, Font font, int maxWidth, boolean behindBlock) {
         List<NameplateElement> elements = new ArrayList<>();
 
         String factionName = PlayerFactionCache.getFactionName(player.getUUID());
         int level = PlayerLevelCache.getLevel(player.getUUID());
 
         // ORDRE D'AFFICHAGE (de haut en bas) - Changer l'ordre des lignes ci-dessous pour réorganiser
-        boolean showLevel = EFClientConfig.NAMEPLATE_SHOW_LEVEL.get() && level > 0;
-        boolean showFaction = EFClientConfig.NAMEPLATE_SHOW_FACTION.get() && factionName != null && !factionName.isEmpty();
+        boolean showLevel = EFClientConfig.NAMEPLATE_SHOW_LEVEL.get() && level > 0 && !behindBlock;
+        boolean showFaction = EFClientConfig.NAMEPLATE_SHOW_FACTION.get() && factionName != null && !factionName.isEmpty() && !behindBlock;
 
         elements.add(new NameplateElement("level", 7,
             showLevel,
@@ -142,7 +167,7 @@ public class NameplateMixinRenderer {
             NameplateMixinRenderer::renderName));
 
         elements.add(new NameplateElement("health", 10,
-            true, // Toujours afficher la santé
+            !behindBlock, // Cacher la santé si le joueur est derrière un block
             NameplateMixinRenderer::renderHealthBar));
 
         return elements;
@@ -153,7 +178,7 @@ public class NameplateMixinRenderer {
     /**
      * COMPOSANT: Niveau du joueur (petit, en haut)
      */
-    private static void renderLevel(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light) {
+    private static void renderLevel(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light, boolean behindBlock) {
         int level = PlayerLevelCache.getLevel(player.getUUID());
         poseStack.pushPose();
         poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -168,7 +193,7 @@ public class NameplateMixinRenderer {
     /**
      * COMPOSANT: Nom de la faction (moyen)
      */
-    private static void renderFaction(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light) {
+    private static void renderFaction(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light, boolean behindBlock) {
         String factionName = PlayerFactionCache.getFactionName(player.getUUID());
         poseStack.pushPose();
         poseStack.scale(0.7f, 0.7f, 0.7f);
@@ -183,19 +208,21 @@ public class NameplateMixinRenderer {
     /**
      * COMPOSANT: Nom du joueur (normal)
      */
-    private static void renderName(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light) {
+    private static void renderName(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light, boolean behindBlock) {
         String playerName = player.getName().getString();
         String truncated = font.plainSubstrByWidth(playerName, maxWidth);
         int nameColor = EFClientConfig.NAMEPLATE_NAME_COLOR.get();
         int nameWidth = font.width(truncated);
+        // Si derrière un block, utiliser SEE_THROUGH, sinon NORMAL
+        Font.DisplayMode mode = behindBlock ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL;
         font.drawInBatch(truncated, -nameWidth / 2.0f, y, nameColor, false,
-            poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+            poseStack.last().pose(), bufferSource, mode, 0, light);
     }
 
     /**
      * COMPOSANT: Barre de vie avec texte
      */
-    private static void renderHealthBar(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light) {
+    private static void renderHealthBar(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int y, int maxWidth, Font font, int light, boolean behindBlock) {
         float health = player.getHealth();
         float maxHealth = player.getMaxHealth();
         float healthPercent = health / maxHealth;
@@ -216,18 +243,26 @@ public class NameplateMixinRenderer {
             barColor = 0xFFFFFF00; // Jaune
         }
 
-        // Fond de la barre
+        // Les barres doivent être rendues avec leurs propres z-offsets
+        // Fond de la barre (derrière la barre remplie)
+        poseStack.pushPose();
+        poseStack.translate(0, 0, -0.02F); // Derrière la barre remplie
         int bgBarColor = EFClientConfig.NAMEPLATE_HEALTH_BAR_BACKGROUND_COLOR.get();
-        drawBackground(poseStack, bufferSource, barX1, barY1, barX2, barY2, bgBarColor, light);
+        drawBackground(poseStack, bufferSource, barX1, barY1, barX2, barY2, bgBarColor, light, false);
+        poseStack.popPose();
 
-        // Barre remplie
+        // Barre remplie (devant le fond de barre)
+        poseStack.pushPose();
+        poseStack.translate(0, 0, -0.04F); // Encore plus devant
         int filledWidth = (int) (barWidth * healthPercent);
         if (filledWidth > 0) {
-            drawBackground(poseStack, bufferSource, barX1, barY1, barX1 + filledWidth, barY2, barColor, light);
+            drawBackground(poseStack, bufferSource, barX1, barY1, barX1 + filledWidth, barY2, barColor, light, false);
         }
+        poseStack.popPose();
 
-        // Texte de la barre
+        // Texte de la barre (TOUT DEVANT)
         poseStack.pushPose();
+        poseStack.translate(0, 0, -0.06F); // Le plus devant de tous
         poseStack.scale(0.6f, 0.6f, 0.6f);
         String healthText = String.format("%.1f / %.1f", health, maxHealth);
         int textColor = EFClientConfig.NAMEPLATE_HEALTH_TEXT_COLOR.get();
@@ -241,11 +276,42 @@ public class NameplateMixinRenderer {
     // ==================== UTILITAIRES ====================
 
     /**
+     * Vérifie si le joueur est derrière un block (occlusion)
+     */
+    private static boolean isPlayerBehindBlock(Minecraft mc, Player player) {
+        if (mc.player == null || mc.level == null) {
+            return false;
+        }
+
+        // Raycasting depuis la caméra vers le joueur
+        net.minecraft.world.phys.Vec3 cameraPos = mc.gameRenderer.getMainCamera().getPosition();
+        net.minecraft.world.phys.Vec3 playerPos = player.getEyePosition(mc.getTimer().getGameTimeDeltaPartialTick(false));
+
+        // Clip pour voir s'il y a un block entre nous et le joueur
+        net.minecraft.world.level.ClipContext context = new net.minecraft.world.level.ClipContext(
+            cameraPos,
+            playerPos,
+            net.minecraft.world.level.ClipContext.Block.COLLIDER,
+            net.minecraft.world.level.ClipContext.Fluid.NONE,
+            mc.player
+        );
+
+        net.minecraft.world.phys.BlockHitResult result = mc.level.clip(context);
+
+        // Si on hit un block avant d'atteindre le joueur, il est derrière
+        return result.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK;
+    }
+
+    /**
      * Dessine un rectangle de fond
      */
-    private static void drawBackground(PoseStack poseStack, MultiBufferSource bufferSource, float x1, float y1, float x2, float y2, int color, int light) {
+    private static void drawBackground(PoseStack poseStack, MultiBufferSource bufferSource, float x1, float y1, float x2, float y2, int color, int light, boolean seeThrough) {
         Matrix4f matrix = poseStack.last().pose();
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.textBackgroundSeeThrough());
+        // TOUJOURS utiliser gui() - ce RenderType n'a PAS de depth test
+        // Il sera TOUJOURS rendu par-dessus tout (bannières, blocks, etc)
+        // C'est ce qui garantit que la nameplate est toujours visible
+        RenderType renderType = RenderType.gui();
+        VertexConsumer consumer = bufferSource.getBuffer(renderType);
 
         int a = (color >> 24) & 0xFF;
         int r = (color >> 16) & 0xFF;

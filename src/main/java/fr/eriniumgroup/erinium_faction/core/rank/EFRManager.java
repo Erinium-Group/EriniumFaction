@@ -147,6 +147,7 @@ public class EFRManager {
             vip.permissions.add("server.command.*");
             vip.permissions.add("ef.faction.*");
             vip.permissions.add("efr.example.kit.vip");
+
             ranks.put(def.id, def);
             ranks.put(vip.id, vip);
             saveRanks();

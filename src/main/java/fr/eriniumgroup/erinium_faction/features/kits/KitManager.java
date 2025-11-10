@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.features.kits;
 
 import fr.eriniumgroup.erinium_faction.common.config.KitConfig;
 import fr.eriniumgroup.erinium_faction.core.EFC;
+import fr.eriniumgroup.erinium_faction.common.config.KitConfig;
 import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
