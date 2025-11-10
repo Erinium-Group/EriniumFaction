@@ -1,7 +1,9 @@
-package fr.eriniumgroup.erinium_faction.features.combatlog;
+package fr.eriniumgroup.erinium_faction.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogManager;
+import fr.eriniumgroup.erinium_faction.features.combatlog.CombatTagData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

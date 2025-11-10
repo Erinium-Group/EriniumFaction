@@ -1,5 +1,7 @@
-package fr.eriniumgroup.erinium_faction.features.combatlog;
+package fr.eriniumgroup.erinium_faction.events;
 
+import fr.eriniumgroup.erinium_faction.common.config.CombatLogConfig;
+import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

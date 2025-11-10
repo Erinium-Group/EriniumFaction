@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.features.combatlog;
 
+import fr.eriniumgroup.erinium_faction.common.config.CombatLogConfig;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.FactionManager;

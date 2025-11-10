@@ -1,4 +1,4 @@
-package fr.eriniumgroup.erinium_faction.features.combatlog;
+package fr.eriniumgroup.erinium_faction.common.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 

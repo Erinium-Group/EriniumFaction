@@ -113,14 +113,16 @@ Le système est automatiquement intégré dans `EriniumFaction.java` :
 
 ```java
 // Import
-import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogEventHandler;
-import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogCommand;
+
+import fr.eriniumgroup.erinium_faction.events.CombatLogEventHandler;
 
 // Enregistrement des events
-NeoForge.EVENT_BUS.register(CombatLogEventHandler.class);
+NeoForge.EVENT_BUS.register(CombatLogEventHandler .class);
 
 // Enregistrement de la commande
-CombatLogCommand.register(event.getDispatcher());
+CombatLogCommand.
+
+register(event.getDispatcher());
 ```
 
 ## Notes techniques

@@ -1,5 +1,7 @@
 package fr.eriniumgroup.erinium_faction.features.kits;
 
+import fr.eriniumgroup.erinium_faction.common.config.KitConfig;
+import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,7 +38,7 @@ public class KitManager {
             kits.put(kit.getId().toLowerCase(), kit);
         }
 
-        System.out.println("§a[KIT] " + kits.size() + " kit(s) chargé(s)");
+        EFC.log.debug("§9§nKit","§d" + kits.size() + " §7kit(s) §achargé(s)");
     }
 
     /**
@@ -44,7 +46,7 @@ public class KitManager {
      */
     public void registerKit(Kit kit) {
         kits.put(kit.getId().toLowerCase(), kit);
-        System.out.println("§a[KIT] Kit enregistré: " + kit.getId());
+        EFC.log.debug("§9§nKit","§7Kit §aenregistré: §b" + kit.getId());
     }
 
     /**
@@ -92,7 +94,7 @@ public class KitManager {
         EFRManager.Rank requiredRank = EFRManager.get().getRank(requiredRankName);
 
         if (requiredRank == null) {
-            System.err.println("§c[KIT] Rank inconnu pour kit '" + kit.getId() + "': " + kit.getRequiredRank());
+            EFC.log.error("§9§nKit","§eRank §cinconnu pour kit '§n" + kit.getId() + "§r§c': §4" + kit.getRequiredRank());
             return false;
         }
 
