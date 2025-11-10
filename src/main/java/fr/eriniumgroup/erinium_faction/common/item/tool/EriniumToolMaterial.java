@@ -1,9 +1,12 @@
 package fr.eriniumgroup.erinium_faction.common.item.tool;
 
+import fr.eriniumgroup.erinium_faction.common.item.EriniumIngotItem;
+import fr.eriniumgroup.erinium_faction.init.EFItems;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Matériau d'outils Erinium - Niveau Netherite
@@ -40,14 +43,13 @@ public class EriniumToolMaterial implements Tier {
     }
 
     @Override
-    public net.minecraft.tags.TagKey<net.minecraft.world.level.block.Block> getIncorrectBlocksForDrops() {
+    public net.minecraft.tags.@NotNull TagKey<net.minecraft.world.level.block.Block> getIncorrectBlocksForDrops() {
         // Peut miner les mêmes blocs que netherite (level netherite)
         return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
     }
 
     @Override
-    public Ingredient getRepairIngredient() {
-        // TODO: utiliser l'erinium_ingot pour réparer
-        return Ingredient.EMPTY;
+    public @NotNull Ingredient getRepairIngredient() {
+        return Ingredient.of(EFItems.ERINIUM_INGOT.get());
     }
 }
