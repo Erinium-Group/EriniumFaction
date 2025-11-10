@@ -32,7 +32,7 @@
   "erinium_faction.rank.perm.add.fail": "§6[§bErinium§6/§aRank§6] §cUnable to add permission (§7rank not found or permission invalid/already present§c).§r",
   "erinium_faction.rank.perm.remove.success": "§6[§bErinium§6/§aRank§6] §aPermission §b%s§a removed from §b%s§a.§r",
   "erinium_faction.rank.perm.remove.fail": "§6[§bErinium§6/§aRank§6] §cUnable to remove permission (§7rank not found or permission missing§c).§r",
-  "erinium_faction.common.player_not_found": "§6[§bErinium§6/§aRank§6] §cPlayer not found.§r",
+  "erinium_faction.common.player_not_found": "§6[§bErinium§6] §cPlayer not found.§r",
   "erinium_faction.rank.set.success": "§6[§bErinium§6/§aRank§6] §aPlayer §b%s§a rank = §b%s§r",
   "erinium_faction.rank.set.fail": "§6[§bErinium§6/§aRank§6] §cAssignment failed (§7rank not found§c).§r",
   "erinium_faction.rank.get.none": "§6[§bErinium§6/§aRank§6] §b%s §7has no rank.§r",
@@ -644,5 +644,12 @@
   "erinium_faction.gui.audit.sort.order": "Order: %s",
   "erinium_faction.gui.audit.sort.order.tooltip": "Toggle ascending/descending",
   "erinium_faction.gui.audit.sort.order.asc": "Ascending",
-  "erinium_faction.gui.audit.sort.order.desc": "Descending"
+  "erinium_faction.gui.audit.sort.order.desc": "Descending",
+  "erinium_faction.gui.audit.reload": "Reload",
+  "erinium_faction.gui.audit.reload.tooltip": "Run the last server query again",
+  "erinium_faction.gui.audit.export": "Export",
+  "erinium_faction.gui.audit.export.tooltip": "Copy filtered entries to clipboard",
+  "erinium_faction.gui.audit.export.toast": "Audit entries exported to clipboard",
+  "erinium_faction.gui.audit.count": "%s displayed / %s total",
+  "erinium_faction.gui.audit.empty": "No results"
 }

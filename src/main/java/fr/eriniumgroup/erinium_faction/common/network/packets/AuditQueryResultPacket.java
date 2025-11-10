@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public record AuditQueryResultPacket(List<String> jsonLines) implements CustomPa
     private static final Gson G = new Gson();
 
     @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    public @NotNull Type<? extends CustomPacketPayload> type() { return TYPE; }
 
     public static AuditQueryResultPacket fromJsonObjects(List<JsonObject> list) {
         List<String> lines = new ArrayList<>(list.size());

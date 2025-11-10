@@ -32,7 +32,7 @@
   "erinium_faction.rank.perm.add.fail": "§6[§bErinium§6/§aRank§6] §cImpossible d'ajouter la permission (§7rank introuvable ou permission invalide/déjà présente§c).§r",
   "erinium_faction.rank.perm.remove.success": "§6[§bErinium§6/§aRank§6] §aPermission §b%s§a retirée de §b%s§a.§r",
   "erinium_faction.rank.perm.remove.fail": "§6[§bErinium§6/§aRank§6] §cImpossible de retirer la permission (§7rank introuvable ou permission absente§c).§r",
-  "erinium_faction.common.player_not_found": "§6[§bErinium§6/§aRank§6] §cJoueur introuvable.§r",
+  "erinium_faction.common.player_not_found": "§6[§bErinium§6] §cJoueur introuvable.§r",
   "erinium_faction.rank.set.success": "§6[§bErinium§6/§aRank§6] §aRank du joueur §b%s§a = §b%s§r",
   "erinium_faction.rank.set.fail": "§6[§bErinium§6/§aRank§6] §cAssignation échouée (§7rank introuvable§c).§r",
   "erinium_faction.rank.get.none": "§6[§bErinium§6/§aRank§6] §b%s §7n'a aucun rank.§r",
@@ -644,5 +644,12 @@
   "erinium_faction.gui.audit.sort.order": "Ordre : %s",
   "erinium_faction.gui.audit.sort.order.tooltip": "Basculer croissant/décroissant",
   "erinium_faction.gui.audit.sort.order.asc": "Croissant",
-  "erinium_faction.gui.audit.sort.order.desc": "Décroissant"
+  "erinium_faction.gui.audit.sort.order.desc": "Décroissant",
+  "erinium_faction.gui.audit.reload": "Recharger",
+  "erinium_faction.gui.audit.reload.tooltip": "Relancer la dernière requête serveur",
+  "erinium_faction.gui.audit.export": "Exporter",
+  "erinium_faction.gui.audit.export.tooltip": "Copier les entrées filtrées dans le presse-papiers",
+  "erinium_faction.gui.audit.export.toast": "Entrées d'audit copiées dans le presse-papiers",
+  "erinium_faction.gui.audit.count": "%s affichées / %s totales",
+  "erinium_faction.gui.audit.empty": "Aucun résultat"
 }

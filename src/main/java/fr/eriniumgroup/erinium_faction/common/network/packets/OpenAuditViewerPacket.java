@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.common.network.packets;
 
+import fr.eriniumgroup.erinium_faction.client.gui.audit.AuditViewerScreen;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
@@ -24,17 +25,14 @@ public record OpenAuditViewerPacket() implements CustomPacketPayload {
     public static void handleData(final OpenAuditViewerPacket msg, final IPayloadContext ctx) {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            ctx.enqueueWork(() -> ClientHandler.openAuditScreen());
+            ctx.enqueueWork(ClientHandler::openAuditScreen);
         }
     }
 
     // Classe interne pour isoler le code client
     private static class ClientHandler {
         static void openAuditScreen() {
-            net.minecraft.client.Minecraft.getInstance().setScreen(
-                new fr.eriniumgroup.erinium_faction.client.gui.audit.AuditViewerScreen()
-            );
+            net.minecraft.client.Minecraft.getInstance().setScreen(new AuditViewerScreen());
         }
     }
 }
-

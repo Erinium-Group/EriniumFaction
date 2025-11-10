@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import fr.eriniumgroup.erinium_faction.common.network.packets.OpenAuditViewerPacket;
 import fr.eriniumgroup.erinium_faction.core.claim.ClaimKey;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction;
 import fr.eriniumgroup.erinium_faction.core.faction.Faction.Mode;
@@ -14,12 +15,11 @@ import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import fr.eriniumgroup.erinium_faction.features.homes.HomesConfig;
 import fr.eriniumgroup.erinium_faction.features.homes.HomesManager;
 import fr.eriniumgroup.erinium_faction.features.homes.PlayerHomesData;
-import fr.eriniumgroup.erinium_faction.common.network.packets.OpenAuditViewerPacket;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Map;
 import java.util.Set;
@@ -159,31 +159,21 @@ public class EFCommand {
         // Ajout: /ef audit gui
         root.then(Commands.literal("audit").then(Commands.literal("gui").executes(ctx -> {
             ServerPlayer sender;
-            try { sender = ctx.getSource().getPlayer(); } catch (Exception e) { sender = null; }
+            try {
+                sender = ctx.getSource().getPlayer();
+            } catch (Exception e) {
+                sender = null;
+            }
             if (sender == null) {
                 ctx.getSource().sendFailure(Component.translatable("erinium_faction.common.player_not_found"));
                 return 0;
             }
             PacketDistributor.sendToPlayer(sender, new OpenAuditViewerPacket());
-            ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.audit.gui.open"), false);
             return 1;
         })));
 
         // /ef kit ... (admin kit management)
-        root.then(Commands.literal("kit")
-                .then(Commands.literal("reset")
-                        .then(Commands.argument("player", net.minecraft.commands.arguments.EntityArgument.player())
-                                .executes(EFCommand::doKitResetPlayer)
-                                .then(Commands.argument("kitName", StringArgumentType.word())
-                                        .suggests(EFCommand::suggestKitNames)
-                                        .executes(EFCommand::doKitResetSpecific)
-                                )
-                        )
-                )
-                .then(Commands.literal("resetall")
-                        .executes(EFCommand::doKitResetAll)
-                )
-        );
+        root.then(Commands.literal("kit").then(Commands.literal("reset").then(Commands.argument("player", net.minecraft.commands.arguments.EntityArgument.player()).executes(EFCommand::doKitResetPlayer).then(Commands.argument("kitName", StringArgumentType.word()).suggests(EFCommand::suggestKitNames).executes(EFCommand::doKitResetSpecific)))).then(Commands.literal("resetall").executes(EFCommand::doKitResetAll)));
 
         d.register(root);
     }

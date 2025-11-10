@@ -4,8 +4,11 @@ import fr.eriniumgroup.erinium_faction.common.block.entity.TitaniumCompressorBlo
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -68,6 +71,20 @@ public class TitaniumCompressorBlock extends Block implements EntityBlock {
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        // Ouvre le GUI même si un item est en main (API 1.21+)
+        if (level.isClientSide) {
+            return ItemInteractionResult.SUCCESS;
+        }
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof TitaniumCompressorBlockEntity comp && player instanceof ServerPlayer sp) {
+            sp.openMenu(comp, buf -> buf.writeBlockPos(pos));
+            return ItemInteractionResult.CONSUME;
+        }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Nullable
