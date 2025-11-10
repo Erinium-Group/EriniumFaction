@@ -135,8 +135,10 @@ dependencies {
     // Jade API officielle pour les imports en dev
     compileOnly "curse.maven:jade-324717:6853386"
     compileOnly "curse.maven:jei-238222:7181665"
+    compileOnly "curse.maven:rechiseled-558998:5663514"
     runtimeOnly "curse.maven:jade-324717:6853386"
     runtimeOnly "curse.maven:jei-238222:7181665"
+    runtimeOnly "curse.maven:rechiseled-558998:5663514"
 }
 
 // This blsock of code expands all declared replace properties in the specified resource targets.
