@@ -21,6 +21,9 @@ import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogConfig;
 import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogEntities;
 import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogEventHandler;
 import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
+import fr.eriniumgroup.erinium_faction.features.kits.KitCommand;
+import fr.eriniumgroup.erinium_faction.features.kits.KitConfig;
+import fr.eriniumgroup.erinium_faction.features.kits.KitManager;
 import fr.eriniumgroup.erinium_faction.features.homes.HomeTeleportService;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
 import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelAttachments;
@@ -63,6 +66,7 @@ public class EriniumFaction {
         modContainer.registerConfig(ModConfig.Type.CLIENT, EFClientConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.SERVER, PlayerLevelConfig.SPEC, "erinium_faction-player_level.toml");
         modContainer.registerConfig(ModConfig.Type.SERVER, CombatLogConfig.SPEC, "erinium_faction-combatlog.toml");
+        modContainer.registerConfig(ModConfig.Type.SERVER, KitConfig.SPEC, "erinium_faction-kits.toml");
 
         // Register DeferredRegisters (must be before client screen registrations)
         EFMenus.REGISTER.register(modEventBus);
@@ -143,6 +147,8 @@ public class EriniumFaction {
         fr.eriniumgroup.erinium_faction.core.faction.RankDefaultsSavedData.bootstrapAndApply(event.getServer());
         // Charger les configurations des métiers
         JobsConfigManager.init();
+        // Charger les kits
+        KitManager.getInstance().loadKits();
     }
 
     private void onServerStopping(ServerStoppingEvent event) {
@@ -178,6 +184,8 @@ public class EriniumFaction {
         fr.eriniumgroup.erinium_faction.commands.CapeCommand.register(event.getDispatcher());
         // Commande combat log
         CombatLogCommand.register(event.getDispatcher());
+        // Commande kits
+        KitCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 

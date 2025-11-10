@@ -475,6 +475,7 @@ public class EFRManager {
         set.add("ef.topluck.admin");
         set.add("ef.topluck.config");
         set.add("ef.antixray.admin");
+        set.add("ef.kit.admin");
 
         // Permissions faction
         set.add("ef.faction.*");

@@ -169,6 +169,22 @@ public class EFCommand {
             return 1;
         })));
 
+        // /ef kit ... (admin kit management)
+        root.then(Commands.literal("kit")
+                .then(Commands.literal("reset")
+                        .then(Commands.argument("player", net.minecraft.commands.arguments.EntityArgument.player())
+                                .executes(EFCommand::doKitResetPlayer)
+                                .then(Commands.argument("kitName", StringArgumentType.word())
+                                        .suggests(EFCommand::suggestKitNames)
+                                        .executes(EFCommand::doKitResetSpecific)
+                                )
+                        )
+                )
+                .then(Commands.literal("resetall")
+                        .executes(EFCommand::doKitResetAll)
+                )
+        );
+
         d.register(root);
     }
 
@@ -495,6 +511,70 @@ public class EFCommand {
         ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.homes.config.max", config.getMaxHomesPerPlayer()), false);
         ctx.getSource().sendSuccess(() -> Component.translatable("erinium_faction.cmd.homes.config.crossdim.status", Component.translatable(config.isAllowCrossDimensionTeleport() ? "erinium_faction.generic.enabled" : "erinium_faction.generic.disabled")), false);
         return 1;
+    }
+
+    // Kit admin commands ---------------------------------------------------------------
+
+    private static int doKitResetPlayer(CommandContext<CommandSourceStack> ctx) {
+        try {
+            ServerPlayer target = net.minecraft.commands.arguments.EntityArgument.getPlayer(ctx, "player");
+            fr.eriniumgroup.erinium_faction.features.kits.KitManager.getInstance().resetAllCooldowns(target.getUUID());
+
+            ctx.getSource().sendSuccess(() -> Component.literal("§a✔ Tous les cooldowns de §e" + target.getName().getString() + " §aont été réinitialisés !"), true);
+            target.sendSystemMessage(Component.literal("§aVos cooldowns de kits ont été réinitialisés par un administrateur."));
+
+            return 1;
+        } catch (Exception e) {
+            ctx.getSource().sendFailure(Component.literal("§cErreur: " + e.getMessage()));
+            return 0;
+        }
+    }
+
+    private static int doKitResetSpecific(CommandContext<CommandSourceStack> ctx) {
+        try {
+            ServerPlayer target = net.minecraft.commands.arguments.EntityArgument.getPlayer(ctx, "player");
+            String kitId = StringArgumentType.getString(ctx, "kitName");
+
+            // Vérifier si le kit existe
+            var kitOpt = fr.eriniumgroup.erinium_faction.features.kits.KitManager.getInstance().getKit(kitId);
+            if (kitOpt.isEmpty()) {
+                ctx.getSource().sendFailure(Component.literal("§cKit inconnu: " + kitId));
+                return 0;
+            }
+
+            fr.eriniumgroup.erinium_faction.features.kits.Kit kit = kitOpt.get();
+            boolean success = fr.eriniumgroup.erinium_faction.features.kits.KitManager.getInstance().resetCooldown(target.getUUID(), kitId);
+
+            if (success) {
+                ctx.getSource().sendSuccess(() -> Component.literal("§a✔ Cooldown du kit §e" + kit.getDisplayName() + " §aréinitialisé pour §e" + target.getName().getString() + " §a!"), true);
+                target.sendSystemMessage(Component.literal("§aVotre cooldown pour le kit §e" + kit.getDisplayName() + " §aa été réinitialisé."));
+                return 1;
+            } else {
+                ctx.getSource().sendFailure(Component.literal("§cCe joueur n'a pas de cooldown actif pour ce kit."));
+                return 0;
+            }
+        } catch (Exception e) {
+            ctx.getSource().sendFailure(Component.literal("§cErreur: " + e.getMessage()));
+            return 0;
+        }
+    }
+
+    private static int doKitResetAll(CommandContext<CommandSourceStack> ctx) {
+        try {
+            fr.eriniumgroup.erinium_faction.features.kits.KitManager.getInstance().resetAllCooldownsGlobal();
+            ctx.getSource().sendSuccess(() -> Component.literal("§a✔ Tous les cooldowns de tous les joueurs ont été réinitialisés !"), true);
+            return 1;
+        } catch (Exception e) {
+            ctx.getSource().sendFailure(Component.literal("§cErreur: " + e.getMessage()));
+            return 0;
+        }
+    }
+
+    private static CompletableFuture<Suggestions> suggestKitNames(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        for (var kit : fr.eriniumgroup.erinium_faction.features.kits.KitManager.getInstance().getAllKits()) {
+            builder.suggest(kit.getId());
+        }
+        return builder.buildFuture();
     }
 }
 
