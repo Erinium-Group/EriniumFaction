@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction;
 
 import fr.eriniumgroup.erinium_faction.commands.*;
 import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
+import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogCommand;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.config.JobsConfigManager;
@@ -16,6 +17,9 @@ import fr.eriniumgroup.erinium_faction.core.rank.EFRManager;
 import fr.eriniumgroup.erinium_faction.events.*;
 import fr.eriniumgroup.erinium_faction.features.antixray.AntiXrayManager;
 import fr.eriniumgroup.erinium_faction.features.audit.AuditRotator;
+import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogConfig;
+import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogEntities;
+import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogEventHandler;
 import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
 import fr.eriniumgroup.erinium_faction.features.homes.HomeTeleportService;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
@@ -58,6 +62,7 @@ public class EriniumFaction {
         modContainer.registerConfig(ModConfig.Type.SERVER, EFConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.CLIENT, EFClientConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.SERVER, PlayerLevelConfig.SPEC, "erinium_faction-player_level.toml");
+        modContainer.registerConfig(ModConfig.Type.SERVER, CombatLogConfig.SPEC, "erinium_faction-combatlog.toml");
 
         // Register DeferredRegisters (must be before client screen registrations)
         EFMenus.REGISTER.register(modEventBus);
@@ -88,11 +93,15 @@ public class EriniumFaction {
         PlayerLevelAttachments.ATTACHMENTS.register(modEventBus);
         // Système de métiers des joueurs
         JobsDataAttachment.ATTACHMENTS.register(modEventBus);
+        // Combat Log entities
+        CombatLogEntities.ENTITIES.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);
         // Capabilities
         modEventBus.addListener(this::onRegisterCapabilities);
+        // Entity attributes
+        modEventBus.addListener(CombatLogEntities::registerAttributes);
 
         // Register event listeners
         NeoForge.EVENT_BUS.addListener(this::onServerStarting);
@@ -107,6 +116,8 @@ public class EriniumFaction {
         // Audit
         NeoForge.EVENT_BUS.register(new EFAuditEvents());
         NeoForge.EVENT_BUS.register(new EFAuditEventsExtra());
+        // Combat Logging
+        NeoForge.EVENT_BUS.register(CombatLogEventHandler.class);
 
         // Protection systems
         ClaimProtection.register();
@@ -165,6 +176,8 @@ public class EriniumFaction {
         fr.eriniumgroup.erinium_faction.commands.BannerCommand.register(event.getDispatcher());
         // Commandes de cape faction
         fr.eriniumgroup.erinium_faction.commands.CapeCommand.register(event.getDispatcher());
+        // Commande combat log
+        CombatLogCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 
