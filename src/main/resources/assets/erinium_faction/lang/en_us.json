@@ -651,7 +651,7 @@
   "erinium_faction.gui.audit.export.tooltip": "Copy filtered entries to clipboard",
   "erinium_faction.gui.audit.export.toast": "Audit entries exported to clipboard",
   "erinium_faction.gui.audit.count": "%s displayed / %s total",
-  "erinium_faction.gui.audit.empty": "No results"
+  "erinium_faction.gui.audit.empty": "No results",
   "erinium_faction.gui.audit.sort.order.desc": "Descending",
   "erinium_faction.gui.bounty.title": "Bounty System",
   "erinium_faction.gui.bounty.place": "Place Bounty",
