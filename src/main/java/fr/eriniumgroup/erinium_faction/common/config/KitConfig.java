@@ -1,6 +1,8 @@
-package fr.eriniumgroup.erinium_faction.features.kits;
+package fr.eriniumgroup.erinium_faction.common.config;
 
 import com.electronwill.nightconfig.core.Config;
+import fr.eriniumgroup.erinium_faction.features.kits.Kit;
+import fr.eriniumgroup.erinium_faction.features.kits.KitItem;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.*;

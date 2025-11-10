@@ -21,9 +21,11 @@ import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogConfig;
 import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogEntities;
 import fr.eriniumgroup.erinium_faction.features.combatlog.CombatLogEventHandler;
 import fr.eriniumgroup.erinium_faction.features.economy.EconomyIntegration;
-import fr.eriniumgroup.erinium_faction.features.kits.KitCommand;
-import fr.eriniumgroup.erinium_faction.features.kits.KitConfig;
+import fr.eriniumgroup.erinium_faction.commands.KitCommand;
+import fr.eriniumgroup.erinium_faction.common.config.KitConfig;
 import fr.eriniumgroup.erinium_faction.features.kits.KitManager;
+import fr.eriniumgroup.erinium_faction.features.bounty.BountyCommand;
+import fr.eriniumgroup.erinium_faction.features.bounty.BountyConfig;
 import fr.eriniumgroup.erinium_faction.features.homes.HomeTeleportService;
 import fr.eriniumgroup.erinium_faction.features.jobs.data.JobsDataAttachment;
 import fr.eriniumgroup.erinium_faction.features.level.PlayerLevelAttachments;
@@ -67,6 +69,7 @@ public class EriniumFaction {
         modContainer.registerConfig(ModConfig.Type.SERVER, PlayerLevelConfig.SPEC, "erinium_faction-player_level.toml");
         modContainer.registerConfig(ModConfig.Type.SERVER, CombatLogConfig.SPEC, "erinium_faction-combatlog.toml");
         modContainer.registerConfig(ModConfig.Type.SERVER, KitConfig.SPEC, "erinium_faction-kits.toml");
+        modContainer.registerConfig(ModConfig.Type.SERVER, BountyConfig.SPEC, "erinium_faction-bounty.toml");
 
         // Register DeferredRegisters (must be before client screen registrations)
         EFMenus.REGISTER.register(modEventBus);
@@ -122,6 +125,8 @@ public class EriniumFaction {
         NeoForge.EVENT_BUS.register(new EFAuditEventsExtra());
         // Combat Logging
         NeoForge.EVENT_BUS.register(CombatLogEventHandler.class);
+        // Bounty System
+        NeoForge.EVENT_BUS.register(fr.eriniumgroup.erinium_faction.features.bounty.BountyEventHandler.class);
 
         // Protection systems
         ClaimProtection.register();
@@ -186,6 +191,8 @@ public class EriniumFaction {
         CombatLogCommand.register(event.getDispatcher());
         // Commande kits
         KitCommand.register(event.getDispatcher());
+        // Commande bounty
+        BountyCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 

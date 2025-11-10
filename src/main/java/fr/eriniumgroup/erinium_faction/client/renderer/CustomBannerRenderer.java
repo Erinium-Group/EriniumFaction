@@ -42,7 +42,10 @@ public class CustomBannerRenderer {
         float z1 = -2.0F / 16.0F;   // -0.125
         float z2 = -1.0F / 16.0F;   // -0.0625
 
-        RenderType renderType = RenderType.entitySolid(texture);
+        // Utiliser entityTranslucentCull pour que la bannière soit rendue dans la phase translucent
+        // mais avec culling (pour voir à travers le verre/blocks transparents)
+        // Cette phase est rendue AVANT les nameplates mais APRÈS les solides
+        RenderType renderType = RenderType.entityTranslucentCull(texture);
         VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
 
         Matrix4f pose = poseStack.last().pose();

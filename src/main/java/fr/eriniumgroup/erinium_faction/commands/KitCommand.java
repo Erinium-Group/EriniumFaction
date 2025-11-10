@@ -1,9 +1,11 @@
-package fr.eriniumgroup.erinium_faction.features.kits;
+package fr.eriniumgroup.erinium_faction.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import fr.eriniumgroup.erinium_faction.features.kits.Kit;
+import fr.eriniumgroup.erinium_faction.features.kits.KitManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
