@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "# #",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "erinium_faction:erinium_ingot"
+    }
+  },
+  "result": {
+    "id": "erinium_faction:erinium_chestplate",
+    "count": 1
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "erinium_faction:block/erinium_block"
+    }
+  }
+}

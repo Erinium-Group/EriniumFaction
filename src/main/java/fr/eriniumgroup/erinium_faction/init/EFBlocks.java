@@ -29,6 +29,10 @@ public class EFBlocks {
     public static final DeferredHolder<Block, Block> DEEPSLATE_TITANIUM_ORE = REGISTER.register("deepslate_titanium_ore", DeepslateTitaniumOreBlock::new);
     public static final DeferredHolder<Block, Block> TITANIUM_BLOCK = REGISTER.register("titanium_block", TitaniumBlockBlock::new);
 
+    public static final DeferredHolder<Block, Block> ERINIUM_ORE = REGISTER.register("erinium_ore", EriniumOreBlock::new);
+    public static final DeferredHolder<Block, Block> DEEPSLATE_ERINIUM_ORE = REGISTER.register("deepslate_erinium_ore", DeepslateEriniumOreBlock::new);
+    public static final DeferredHolder<Block, Block> ERINIUM_BLOCK = REGISTER.register("erinium_block", EriniumBlockBlock::new);
+
     public static final DeferredHolder<Block, Block> ERINIUM_CHEST = REGISTER.register("erinium_chest", EriniumChestBlock::new);
 
     // Machine: TitaniumCompressor
@@ -54,6 +58,10 @@ public class EFBlocks {
         // Battery items
         itemRegister.register("titanium_battery_tier1", () -> new TitaniumBatteryItem(TITANIUM_BATTERY_TIER1.get(), new Item.Properties(), 100000, false));
         itemRegister.register("titanium_creative_battery", () -> new TitaniumBatteryItem(TITANIUM_CREATIVE_BATTERY.get(), new Item.Properties().rarity(Rarity.EPIC), Integer.MAX_VALUE, true));
+        // BlockItem pour les blocs Erinium
+        itemRegister.register("erinium_ore", () -> new BlockItem(ERINIUM_ORE.get(), new Item.Properties()));
+        itemRegister.register("deepslate_erinium_ore", () -> new BlockItem(DEEPSLATE_ERINIUM_ORE.get(), new Item.Properties()));
+        itemRegister.register("erinium_block", () -> new BlockItem(ERINIUM_BLOCK.get(), new Item.Properties().rarity(Rarity.RARE).fireResistant()));
         // BlockItem pour le coffre Erinium
         itemRegister.register("erinium_chest", () -> new BlockItem(ERINIUM_CHEST.get(), new Item.Properties()));
     }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "##",
+    "#S",
+    " S"
+  ],
+  "key": {
+    "#": {
+      "item": "erinium_faction:erinium_ingot"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "erinium_faction:erinium_axe",
+    "count": 1
+  }
+}

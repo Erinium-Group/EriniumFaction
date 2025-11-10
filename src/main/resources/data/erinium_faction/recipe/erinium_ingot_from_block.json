@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "erinium_faction:erinium_block"
+    }
+  ],
+  "result": {
+    "id": "erinium_faction:erinium_ingot",
+    "count": 9
+  }
+}

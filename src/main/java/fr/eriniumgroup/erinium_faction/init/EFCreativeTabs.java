@@ -30,6 +30,9 @@ public class EFCreativeTabs {
             output.accept(EFBlocks.TITANIUM_ORE.get());
             output.accept(EFBlocks.DEEPSLATE_TITANIUM_ORE.get());
             output.accept(EFBlocks.TITANIUM_BLOCK.get());
+            output.accept(EFBlocks.ERINIUM_ORE.get());
+            output.accept(EFBlocks.DEEPSLATE_ERINIUM_ORE.get());
+            output.accept(EFBlocks.ERINIUM_BLOCK.get());
             // Machines
             output.accept(EFBlocks.TITANIUM_COMPRESSOR.get());
             // Batteries
@@ -59,6 +62,19 @@ public class EFCreativeTabs {
             output.accept(EFItems.COPPER_WIRE.get());
             output.accept(EFItems.SILVER_WIRE.get());
             output.accept(EFItems.TITANIUM_WIRE.get());
+            // Items Erinium
+            output.accept(EFItems.ERINIUM_INGOT.get());
+            // Armure Erinium
+            output.accept(EFItems.ERINIUM_HELMET.get());
+            output.accept(EFItems.ERINIUM_CHESTPLATE.get());
+            output.accept(EFItems.ERINIUM_LEGGINGS.get());
+            output.accept(EFItems.ERINIUM_BOOTS.get());
+            // Outils Erinium
+            output.accept(EFItems.ERINIUM_SWORD.get());
+            output.accept(EFItems.ERINIUM_PICKAXE.get());
+            output.accept(EFItems.ERINIUM_AXE.get());
+            output.accept(EFItems.ERINIUM_SHOVEL.get());
+            output.accept(EFItems.ERINIUM_HOE.get());
         })
         .build());
 }

@@ -3,6 +3,7 @@ package fr.eriniumgroup.erinium_faction;
 import fr.eriniumgroup.erinium_faction.commands.*;
 import fr.eriniumgroup.erinium_faction.commands.arguments.FactionArgumentType;
 import fr.eriniumgroup.erinium_faction.commands.CombatLogCommand;
+import fr.eriniumgroup.erinium_faction.commands.RtpCommand;
 import fr.eriniumgroup.erinium_faction.common.config.EFClientConfig;
 import fr.eriniumgroup.erinium_faction.common.config.EFConfig;
 import fr.eriniumgroup.erinium_faction.common.config.JobsConfigManager;
@@ -127,6 +128,8 @@ public class EriniumFaction {
         NeoForge.EVENT_BUS.register(CombatLogEventHandler.class);
         // Bounty System
         NeoForge.EVENT_BUS.register(fr.eriniumgroup.erinium_faction.features.bounty.BountyEventHandler.class);
+        // RTP System
+        NeoForge.EVENT_BUS.register(RtpEventHandler.class);
 
         // Protection systems
         ClaimProtection.register();
@@ -193,6 +196,8 @@ public class EriniumFaction {
         KitCommand.register(event.getDispatcher());
         // Commande bounty
         BountyCommand.register(event.getDispatcher());
+        // Commande RTP
+        RtpCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "erinium_faction:item/erinium_hoe"
+  }
+}

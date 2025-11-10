@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "erinium_faction:deepslate_erinium_ore"
+  },
+  "result": {
+    "id": "erinium_faction:erinium_ingot"
+  }
+}
