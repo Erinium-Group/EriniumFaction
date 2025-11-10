@@ -136,9 +136,15 @@ dependencies {
     compileOnly "curse.maven:jade-324717:6853386"
     compileOnly "curse.maven:jei-238222:7181665"
     compileOnly "curse.maven:rechiseled-558998:5663514"
+    compileOnly "curse.maven:fusion-connected-textures-854949:7058347"
+    compileOnly "curse.maven:supermartijn642s-core-lib-454372:6076757"
+    compileOnly "curse.maven:supermartijn642s-config-lib-438332:5546996"
     runtimeOnly "curse.maven:jade-324717:6853386"
     runtimeOnly "curse.maven:jei-238222:7181665"
     runtimeOnly "curse.maven:rechiseled-558998:5663514"
+    runtimeOnly "curse.maven:fusion-connected-textures-854949:7058347"
+    runtimeOnly "curse.maven:supermartijn642s-core-lib-454372:6076757"
+    runtimeOnly "curse.maven:supermartijn642s-config-lib-438332:5546996"
 }
 
 // This blsock of code expands all declared replace properties in the specified resource targets.
