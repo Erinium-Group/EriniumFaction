@@ -43,6 +43,9 @@ public class EFItems {
     public static final DeferredHolder<Item, net.minecraft.world.item.ShovelItem> ERINIUM_SHOVEL = REGISTER.register("erinium_shovel", () -> new net.minecraft.world.item.ShovelItem(fr.eriniumgroup.erinium_faction.common.item.tool.EriniumToolMaterial.INSTANCE, new Item.Properties().attributes(net.minecraft.world.item.ShovelItem.createAttributes(fr.eriniumgroup.erinium_faction.common.item.tool.EriniumToolMaterial.INSTANCE, 1.5F, -3.0F)).rarity(Rarity.RARE).fireResistant()));
     public static final DeferredHolder<Item, net.minecraft.world.item.HoeItem> ERINIUM_HOE = REGISTER.register("erinium_hoe", () -> new net.minecraft.world.item.HoeItem(fr.eriniumgroup.erinium_faction.common.item.tool.EriniumToolMaterial.INSTANCE, new Item.Properties().attributes(net.minecraft.world.item.HoeItem.createAttributes(fr.eriniumgroup.erinium_faction.common.item.tool.EriniumToolMaterial.INSTANCE, -4.0F, 0.0F)).rarity(Rarity.RARE).fireResistant()));
 
+    // Death Scythe (custom high-damage slow weapon)
+    public static final DeferredHolder<Item, net.minecraft.world.item.SwordItem> DEATH_SCYTHE = REGISTER.register("death_scythe", () -> new net.minecraft.world.item.SwordItem(fr.eriniumgroup.erinium_faction.common.item.tool.EriniumToolMaterial.INSTANCE, new Item.Properties().attributes(net.minecraft.world.item.SwordItem.createAttributes(fr.eriniumgroup.erinium_faction.common.item.tool.EriniumToolMaterial.INSTANCE, 7.0F, -3.2F)).rarity(Rarity.EPIC).fireResistant()));
+
     private EFItems() {
     }
 }

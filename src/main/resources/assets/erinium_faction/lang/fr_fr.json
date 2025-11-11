@@ -694,5 +694,6 @@
   "item.erinium_faction.erinium_hoe": "Houe en Erinium",
   "block.erinium_faction.erinium_ore": "Minerai d'Erinium",
   "block.erinium_faction.deepslate_erinium_ore": "Minerai d'Erinium des abîmes",
-  "block.erinium_faction.erinium_block": "Bloc d'Erinium"
+  "block.erinium_faction.erinium_block": "Bloc d'Erinium",
+  "item.erinium_faction.death_scythe": "Faux de la Mort"
 }
