@@ -215,6 +215,12 @@ public class PlayerLevelManager {
 
         // Guérir le joueur pour qu'il ne meure pas si la santé max diminue
         player.setHealth(player.getMaxHealth());
+        // Ajuster la mana max suite aux changements d'intelligence
+        try {
+            var md = player.getData(fr.eriniumgroup.erinium_faction.features.mana.ManaAttachments.PLAYER_MANA);
+            double newMax = md.computeMaxMana(player);
+            md.setMana(Math.min(md.getMana(), newMax), newMax);
+        } catch (Throwable ignored) {}
     }
 
     /**
@@ -267,4 +273,3 @@ public class PlayerLevelManager {
         }
     }
 }
-

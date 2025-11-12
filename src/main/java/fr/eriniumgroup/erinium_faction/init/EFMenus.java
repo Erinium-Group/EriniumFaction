@@ -23,8 +23,6 @@ public class EFMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<FactionMenu>> FACTION_MENU = REGISTER.register("faction_menu", () -> IMenuTypeExtension.create(FactionMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<PlayerStatsMenu>> PLAYER_STATS_MENU = REGISTER.register("player_stats_menu", () -> IMenuTypeExtension.create(PlayerStatsMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<TitaniumCompressorMenu>> TITANIUM_COMPRESSOR_MENU = REGISTER.register("titanium_compressor_menu", () -> IMenuTypeExtension.create(TitaniumCompressorMenu::new));
-    public static final DeferredHolder<MenuType<?>, MenuType<fr.eriniumgroup.erinium_faction.gui.menus.BatteryMenu>> BATTERY_MENU = REGISTER.register("battery_menu", () -> IMenuTypeExtension.create(fr.eriniumgroup.erinium_faction.gui.menus.BatteryMenu::new));
-    public static final DeferredHolder<MenuType<?>, MenuType<fr.eriniumgroup.erinium_faction.gui.menus.CreativeBatteryMenu>> CREATIVE_BATTERY_MENU = REGISTER.register("creative_battery_menu", () -> IMenuTypeExtension.create(fr.eriniumgroup.erinium_faction.gui.menus.CreativeBatteryMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<EriniumChestMenu>> ERINIUM_CHEST = REGISTER.register("erinium_chest", () -> IMenuTypeExtension.create(EriniumChestMenu::new));
 
     public interface MenuAccessor {

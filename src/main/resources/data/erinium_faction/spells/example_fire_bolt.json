@@ -1,0 +1,9 @@
+{
+  "type": "fire",
+  "tier": 1,
+  "manaCost": 8.0,
+  "cooldownTicks": 40,
+  "display": "spell.erinium_faction.fire_bolt",
+  "desc": "spell.erinium_faction.fire_bolt.desc"
+}
+

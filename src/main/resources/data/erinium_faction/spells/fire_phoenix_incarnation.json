@@ -1,0 +1,9 @@
+{
+  "type": "fire",
+  "type": "fire",
+  "tier": "ultimate",
+  "manaCost": 500,
+  "cooldownTicks": 12000,
+  "display": "spell.erinium_faction.fire.phoenix_incarnation",
+  "desc": "spell.erinium_faction.fire.phoenix_incarnation.desc"
+

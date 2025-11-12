@@ -1,0 +1,10 @@
+{
+  "id": "fire/meteor",
+  "type": "fire",
+  "tier": 3,
+  "manaCost": 80,
+  "cooldownTicks": 500,
+  "display": "spell.erinium_faction.fire.meteor",
+  "desc": "spell.erinium_faction.fire.meteor.desc"
+}
+

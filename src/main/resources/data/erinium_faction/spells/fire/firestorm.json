@@ -1,0 +1,9 @@
+{
+  "type": "fire",
+  "tier": 4,
+  "manaCost": 150.0,
+  "cooldownTicks": 900,
+  "display": "spell.erinium_faction.fire.firestorm",
+  "desc": "spell.erinium_faction.fire.firestorm.desc"
+}
+

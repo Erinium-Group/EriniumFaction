@@ -1,0 +1,9 @@
+{
+  "type": "fire",
+  "tier": 5,
+  "manaCost": 400.0,
+  "cooldownTicks": 3600,
+  "display": "spell.erinium_faction.fire.solar_apocalypse",
+  "desc": "spell.erinium_faction.fire.solar_apocalypse.desc"
+}
+

@@ -1,8 +1,6 @@
 package fr.eriniumgroup.erinium_faction.compat.jade;
 
-import fr.eriniumgroup.erinium_faction.common.block.entity.TitaniumBatteryTier1BlockEntity;
 import fr.eriniumgroup.erinium_faction.common.block.entity.TitaniumCompressorBlockEntity;
-import fr.eriniumgroup.erinium_faction.common.block.entity.TitaniumCreativeBatteryBlockEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
@@ -39,27 +37,7 @@ public class EnergyAndMachineProvider implements IBlockComponentProvider, IServe
         var be = accessor.getBlockEntity();
         var helper = IElementHelper.get();
 
-        if (be instanceof TitaniumBatteryTier1BlockEntity batt) {
-            var storage = batt.getEnergy(null);
-            int cur = storage.getEnergyStored();
-            int max = storage.getMaxEnergyStored();
-            float pct = max > 0 ? (float) cur / (float) max : 0f;
-
-            tooltip.add(Component.literal("⚡ ").append(Component.translatable("tooltip.erinium_faction.energy")).append(": ").append(Component.literal(fmtFE(cur) + "/" + fmtFE(max))));
-            tooltip.add(helper.progress(pct));
-            if (batt.getLastOutPerTick() > 0) {
-                tooltip.add(Component.translatable("tooltip.erinium_faction.energy_out").append(": ").append(Component.literal(fmtRate(batt.getLastOutPerTick()))));
-            }
-            if (batt.getLastInPerTick() > 0) {
-                tooltip.add(Component.translatable("tooltip.erinium_faction.energy_in").append(": ").append(Component.literal(fmtRate(batt.getLastInPerTick()))));
-            }
-        } else if (be instanceof TitaniumCreativeBatteryBlockEntity battC) {
-            tooltip.add(Component.literal("♻️ ").append(Component.translatable("tooltip.erinium_faction.energy")).append(": ").append(Component.literal("∞ FE")));
-            tooltip.add(helper.progress(1.0f));
-            if (battC.getLastOutPerTick() > 0) {
-                tooltip.add(Component.translatable("tooltip.erinium_faction.energy_out").append(": ").append(Component.literal(fmtRate(battC.getLastOutPerTick()))));
-            }
-        } else if (be instanceof TitaniumCompressorBlockEntity comp) {
+        if (be instanceof TitaniumCompressorBlockEntity comp) {
             var storage = comp.getEnergyCapability(null);
             int cur = storage.getEnergyStored();
             int max = storage.getMaxEnergyStored();
@@ -87,6 +65,6 @@ public class EnergyAndMachineProvider implements IBlockComponentProvider, IServe
 
     @Override
     public void appendServerData(net.minecraft.nbt.CompoundTag data, BlockAccessor accessor) {
-        // Pas de data custom nécessaire ici car on lit directement sur le BE côté client
+        // Pas de data custom nécessaire
     }
 }

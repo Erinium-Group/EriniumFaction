@@ -71,6 +71,8 @@ public class EriniumFaction {
         modContainer.registerConfig(ModConfig.Type.SERVER, CombatLogConfig.SPEC, "erinium_faction-combatlog.toml");
         modContainer.registerConfig(ModConfig.Type.SERVER, KitConfig.SPEC, "erinium_faction-kits.toml");
         modContainer.registerConfig(ModConfig.Type.SERVER, BountyConfig.SPEC, "erinium_faction-bounty.toml");
+        // Mana config
+        modContainer.registerConfig(ModConfig.Type.SERVER, fr.eriniumgroup.erinium_faction.features.mana.ManaConfig.SPEC, "erinium_faction-mana.toml");
 
         // Register DeferredRegisters (must be before client screen registrations)
         EFMenus.REGISTER.register(modEventBus);
@@ -101,6 +103,8 @@ public class EriniumFaction {
         PlayerLevelAttachments.ATTACHMENTS.register(modEventBus);
         // Système de métiers des joueurs
         JobsDataAttachment.ATTACHMENTS.register(modEventBus);
+        // Mana attachments
+        fr.eriniumgroup.erinium_faction.features.mana.ManaAttachments.ATTACHMENTS.register(modEventBus);
         // Combat Log entities
         CombatLogEntities.ENTITIES.register(modEventBus);
 
@@ -130,6 +134,8 @@ public class EriniumFaction {
         NeoForge.EVENT_BUS.register(fr.eriniumgroup.erinium_faction.features.bounty.BountyEventHandler.class);
         // RTP System
         NeoForge.EVENT_BUS.register(RtpEventHandler.class);
+        // Mana events
+        NeoForge.EVENT_BUS.register(fr.eriniumgroup.erinium_faction.features.mana.ManaManager.class);
 
         // Protection systems
         ClaimProtection.register();
@@ -198,6 +204,8 @@ public class EriniumFaction {
         BountyCommand.register(event.getDispatcher());
         // Commande RTP
         RtpCommand.register(event.getDispatcher());
+        // Commande Mana (admin)
+        fr.eriniumgroup.erinium_faction.commands.ManaCommand.register(event.getDispatcher());
         // Appliquer la garde globale des permissions sur toutes les commandes
         EFPerms.guardDispatcher(event.getDispatcher());
 

@@ -1,14 +1,6 @@
 package fr.eriniumgroup.erinium_faction.init;
 
 import fr.eriniumgroup.erinium_faction.common.block.*;
-import fr.eriniumgroup.erinium_faction.common.item.TitaniumBatteryItem;
-import fr.eriniumgroup.erinium_faction.common.block.DeepslateSilverOreBlock;
-import fr.eriniumgroup.erinium_faction.common.block.SilverBlockBlock;
-import fr.eriniumgroup.erinium_faction.common.block.DeepslateTitaniumOreBlock;
-import fr.eriniumgroup.erinium_faction.common.block.SilverOreBlock;
-import fr.eriniumgroup.erinium_faction.common.block.TitaniumOreBlock;
-import fr.eriniumgroup.erinium_faction.common.block.TitaniumBlockBlock;
-import fr.eriniumgroup.erinium_faction.common.block.EriniumChestBlock;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
@@ -38,10 +30,6 @@ public class EFBlocks {
     // Machine: TitaniumCompressor
     public static final DeferredHolder<Block, Block> TITANIUM_COMPRESSOR = REGISTER.register("titanium_compressor", TitaniumCompressorBlock::new);
 
-    // Batteries
-    public static final DeferredHolder<Block, Block> TITANIUM_BATTERY_TIER1 = REGISTER.register("titanium_battery_tier1", TitaniumBatteryTier1Block::new);
-    public static final DeferredHolder<Block, Block> TITANIUM_CREATIVE_BATTERY = REGISTER.register("titanium_creative_battery", TitaniumCreativeBatteryBlock::new);
-
     public static void registerBlockItems(DeferredRegister<Item> itemRegister) {
         itemRegister.register("silver_ore", () -> new BlockItem(SILVER_ORE.get(), new Item.Properties()));
         itemRegister.register("deepslate_silver_ore", () -> new BlockItem(DEEPSLATE_SILVER_ORE.get(), new Item.Properties()));
@@ -55,9 +43,6 @@ public class EFBlocks {
         // BlockItem pour la machine
         itemRegister.register("titanium_compressor", () -> new BlockItem(TITANIUM_COMPRESSOR.get(), new Item.Properties()));
 
-        // Battery items
-        itemRegister.register("titanium_battery_tier1", () -> new TitaniumBatteryItem(TITANIUM_BATTERY_TIER1.get(), new Item.Properties(), 100000, false));
-        itemRegister.register("titanium_creative_battery", () -> new TitaniumBatteryItem(TITANIUM_CREATIVE_BATTERY.get(), new Item.Properties().rarity(Rarity.EPIC), Integer.MAX_VALUE, true));
         // BlockItem pour les blocs Erinium
         itemRegister.register("erinium_ore", () -> new BlockItem(ERINIUM_ORE.get(), new Item.Properties()));
         itemRegister.register("deepslate_erinium_ore", () -> new BlockItem(DEEPSLATE_ERINIUM_ORE.get(), new Item.Properties()));

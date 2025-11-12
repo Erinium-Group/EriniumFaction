@@ -1,0 +1,12 @@
+{
+  "type": "fire",
+  "id": "fire/fireball",
+  "tier": 1,
+  "manaCost": 15,
+  "cooldownTicks": 40,
+  "display": "spell.erinium_faction.fire.fireball",
+  "desc": "spell.erinium_faction.fire.fireball.desc",
+  "baseDamage": 20,
+  "burnDurationTicks": 60,
+  "burnDamagePerSecond": 5
+}
