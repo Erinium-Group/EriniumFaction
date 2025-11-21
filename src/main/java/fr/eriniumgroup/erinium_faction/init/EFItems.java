@@ -46,6 +46,22 @@ public class EFItems {
     // Death Scythe (custom high-damage slow weapon)
     public static final DeferredHolder<Item, net.minecraft.world.item.SwordItem> DEATH_SCYTHE = REGISTER.register("death_scythe", () -> new net.minecraft.world.item.SwordItem(fr.eriniumgroup.erinium_faction.common.item.tool.EriniumToolMaterial.INSTANCE, new Item.Properties().attributes(net.minecraft.world.item.SwordItem.createAttributes(fr.eriniumgroup.erinium_faction.common.item.tool.EriniumToolMaterial.INSTANCE, 7.0F, -3.2F)).rarity(Rarity.EPIC).fireResistant()));
 
+    // Spacecraft components
+    public static final DeferredHolder<Item, CrewModuleItem> CREW_MODULE = REGISTER.register("crew_module", () -> new CrewModuleItem(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, DockingPortItem> DOCKING_PORT = REGISTER.register("docking_port", () -> new DockingPortItem(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, EriniumCoreItem> ERINIUM_CORE = REGISTER.register("erinium_core", () -> new EriniumCoreItem(new Item.Properties().stacksTo(16).rarity(Rarity.RARE).fireResistant()));
+    public static final DeferredHolder<Item, FlightComputerItem> FLIGHT_COMPUTER = REGISTER.register("flight_computer", () -> new FlightComputerItem(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, FuelTankItem> FUEL_TANK = REGISTER.register("fuel_tank", () -> new FuelTankItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
+    public static final DeferredHolder<Item, GridFinItem> GRID_FIN = REGISTER.register("grid_fin", () -> new GridFinItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
+    public static final DeferredHolder<Item, HeatShieldTilesItem> HEAT_SHIELD_TILES = REGISTER.register("heat_shield_tiles", () -> new HeatShieldTilesItem(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, LandingLegItem> LANDING_LEG = REGISTER.register("landing_leg", () -> new LandingLegItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
+    public static final DeferredHolder<Item, RaptorEngineItem> RAPTOR_ENGINE = REGISTER.register("raptor_engine", () -> new RaptorEngineItem(new Item.Properties().stacksTo(16).rarity(Rarity.RARE)));
+    public static final DeferredHolder<Item, RcsThrusterItem> RCS_THRUSTER = REGISTER.register("rcs_thruster", () -> new RcsThrusterItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
+    public static final DeferredHolder<Item, SteelHullPanelItem> STEEL_HULL_PANEL = REGISTER.register("steel_hull_panel", () -> new SteelHullPanelItem(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
+
+    // Rocket spawn item
+    public static final DeferredHolder<Item, RocketSpawnItem> ROCKET_SPAWN_EGG = REGISTER.register("rocket_spawn_egg", () -> new RocketSpawnItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+
     private EFItems() {
     }
 }

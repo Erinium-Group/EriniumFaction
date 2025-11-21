@@ -107,6 +107,8 @@ public class EriniumFaction {
         fr.eriniumgroup.erinium_faction.features.mana.ManaAttachments.ATTACHMENTS.register(modEventBus);
         // Combat Log entities
         CombatLogEntities.ENTITIES.register(modEventBus);
+        // Custom entities (Rocket, etc.)
+        EFEntities.REGISTER.register(modEventBus);
 
         // Setup phase
         modEventBus.addListener(this::commonSetup);

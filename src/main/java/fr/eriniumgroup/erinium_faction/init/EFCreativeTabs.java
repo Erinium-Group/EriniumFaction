@@ -61,6 +61,20 @@ public class EFCreativeTabs {
             output.accept(EFItems.ERINIUM_HOE.get());
             // Death Scythe
             output.accept(EFItems.DEATH_SCYTHE.get());
+            // Spacecraft components
+            output.accept(EFItems.CREW_MODULE.get());
+            output.accept(EFItems.DOCKING_PORT.get());
+            output.accept(EFItems.ERINIUM_CORE.get());
+            output.accept(EFItems.FLIGHT_COMPUTER.get());
+            output.accept(EFItems.FUEL_TANK.get());
+            output.accept(EFItems.GRID_FIN.get());
+            output.accept(EFItems.HEAT_SHIELD_TILES.get());
+            output.accept(EFItems.LANDING_LEG.get());
+            output.accept(EFItems.RAPTOR_ENGINE.get());
+            output.accept(EFItems.RCS_THRUSTER.get());
+            output.accept(EFItems.STEEL_HULL_PANEL.get());
+            // Rocket spawn egg
+            output.accept(EFItems.ROCKET_SPAWN_EGG.get());
         })
         .build());
 }
