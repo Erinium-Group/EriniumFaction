@@ -94,3 +94,5 @@ Thumbs.db
 /build/**
 *.log
 .claude/settings.local.json
+nul
+.claude/settings.json
