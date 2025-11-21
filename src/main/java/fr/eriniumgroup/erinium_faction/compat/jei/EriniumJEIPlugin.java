@@ -1,6 +1,7 @@
 package fr.eriniumgroup.erinium_faction.compat.jei;
 
 import fr.eriniumgroup.erinium_faction.common.recipe.CompressorRecipe;
+import fr.eriniumgroup.erinium_faction.common.recipe.RocketMakerRecipe;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.init.EFBlocks;
 import fr.eriniumgroup.erinium_faction.init.EFRecipes;
@@ -32,7 +33,10 @@ public class EriniumJEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new CompressorRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(
+                new CompressorRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+                new RocketMakerRecipeCategory(registration.getJeiHelpers().getGuiHelper())
+        );
     }
 
     @Override
@@ -49,6 +53,14 @@ public class EriniumJEIPlugin implements IModPlugin {
             .toList();
 
         registration.addRecipes(CompressorRecipeCategory.RECIPE_TYPE, compressorRecipes);
+
+        // Récupérer toutes les recettes de rocket maker
+        List<RocketMakerRecipe> rocketMakerRecipes = recipeManager.getAllRecipesFor(EFRecipes.ROCKET_MAKING.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+
+        registration.addRecipes(RocketMakerRecipeCategory.RECIPE_TYPE, rocketMakerRecipes);
     }
 
     @Override
@@ -57,6 +69,12 @@ public class EriniumJEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 new ItemStack(EFBlocks.TITANIUM_COMPRESSOR.get()),
                 CompressorRecipeCategory.RECIPE_TYPE
+        );
+
+        // Enregistrer le Rocket Maker comme catalyseur pour les recettes
+        registration.addRecipeCatalyst(
+                new ItemStack(EFBlocks.ROCKET_MAKER.get()),
+                RocketMakerRecipeCategory.RECIPE_TYPE
         );
     }
 }

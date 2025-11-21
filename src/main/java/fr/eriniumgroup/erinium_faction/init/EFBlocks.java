@@ -30,6 +30,9 @@ public class EFBlocks {
     // Machine: TitaniumCompressor
     public static final DeferredHolder<Block, Block> TITANIUM_COMPRESSOR = REGISTER.register("titanium_compressor", TitaniumCompressorBlock::new);
 
+    // Machine: RocketMaker
+    public static final DeferredHolder<Block, Block> ROCKET_MAKER = REGISTER.register("rocket_maker", () -> new RocketMakerBlock());
+
     public static void registerBlockItems(DeferredRegister<Item> itemRegister) {
         itemRegister.register("silver_ore", () -> new BlockItem(SILVER_ORE.get(), new Item.Properties()));
         itemRegister.register("deepslate_silver_ore", () -> new BlockItem(DEEPSLATE_SILVER_ORE.get(), new Item.Properties()));
@@ -42,6 +45,8 @@ public class EFBlocks {
         itemRegister.register("titanium_block", () -> new BlockItem(TITANIUM_BLOCK.get(), new Item.Properties()));
         // BlockItem pour la machine
         itemRegister.register("titanium_compressor", () -> new BlockItem(TITANIUM_COMPRESSOR.get(), new Item.Properties()));
+        // BlockItem pour le Rocket Maker
+        itemRegister.register("rocket_maker", () -> new BlockItem(ROCKET_MAKER.get(), new Item.Properties()));
 
         // BlockItem pour les blocs Erinium
         itemRegister.register("erinium_ore", () -> new BlockItem(ERINIUM_ORE.get(), new Item.Properties()));

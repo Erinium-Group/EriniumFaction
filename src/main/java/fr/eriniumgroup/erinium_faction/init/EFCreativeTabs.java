@@ -31,6 +31,7 @@ public class EFCreativeTabs {
             output.accept(EFBlocks.ERINIUM_BLOCK.get());
             // Machines
             output.accept(EFBlocks.TITANIUM_COMPRESSOR.get());
+            output.accept(EFBlocks.ROCKET_MAKER.get());
             // Batteries (retirées)
             // Coffre Erinium
             output.accept(EFBlocks.ERINIUM_CHEST.get());

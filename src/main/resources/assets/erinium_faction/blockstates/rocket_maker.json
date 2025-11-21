@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "erinium_faction:block/rocket_maker",
+      "y": 0
+    },
+    "facing=south": {
+      "model": "erinium_faction:block/rocket_maker",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "erinium_faction:block/rocket_maker",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "erinium_faction:block/rocket_maker",
+      "y": 90
+    }
+  }
+}

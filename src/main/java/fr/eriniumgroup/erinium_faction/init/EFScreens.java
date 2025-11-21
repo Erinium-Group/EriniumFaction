@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.init;
 
+import fr.eriniumgroup.erinium_faction.client.screen.RocketMakerScreen;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.screens.FactionMenuScreen;
 import fr.eriniumgroup.erinium_faction.gui.screens.TitaniumCompressorScreen;
@@ -16,6 +17,7 @@ public class EFScreens {
         event.register(EFMenus.FACTION_MENU.get(), FactionMenuScreen::new);
         event.register(EFMenus.TITANIUM_COMPRESSOR_MENU.get(), TitaniumCompressorScreen::new);
         event.register(EFMenus.ERINIUM_CHEST.get(), EriniumChestScreen::new);
+        event.register(EFMenus.ROCKET_MAKER.get(), RocketMakerScreen::new);
     }
 
     public interface ScreenAccessor {

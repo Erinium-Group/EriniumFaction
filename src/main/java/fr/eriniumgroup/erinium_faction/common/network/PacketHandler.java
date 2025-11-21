@@ -126,6 +126,9 @@ public class PacketHandler {
         registrar.playToClient(fr.eriniumgroup.erinium_faction.common.network.packets.BountyDataPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.BountyDataPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.BountyDataPacket::handleData);
         registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.PlaceBountyPacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.PlaceBountyPacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.PlaceBountyPacket::handleData);
 
+        // Recipe export packet
+        registrar.playToServer(fr.eriniumgroup.erinium_faction.common.network.packets.ExportRecipePacket.TYPE, fr.eriniumgroup.erinium_faction.common.network.packets.ExportRecipePacket.STREAM_CODEC, fr.eriniumgroup.erinium_faction.common.network.packets.ExportRecipePacket::handleData);
+
         EFC.log.info("§ePaquets réseau enregistrés: §7§oFactionGuiNetwork, FactionMenuSettingsButtonMessage (serverbound), BlockHpSyncMessage (clientbound), MenuStateUpdateMessage (bi), PlayerVariables (bi), ClaimsMap (request/data), FactionSettingsStateMessage (clientbound), FactionTitlePacket (clientbound), FactionDataPacket (clientbound), PlayerLevel (open/distribute/reset/sync/token), Bank (deposit/withdraw/sync_history), FactionChestSync (clientbound), TopLuckSync (clientbound), ChunkClaim (serverbound), MinimapToggle/Settings (clientbound), PlayerNameplateData (clientbound), VanishSync (clientbound), PlayerRankSync (clientbound), BannerSystem (save/open/data), AuditQuery (request/result), Bounty (open/data/place)");
     }
 }

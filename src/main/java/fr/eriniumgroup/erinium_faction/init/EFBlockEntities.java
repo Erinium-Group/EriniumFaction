@@ -2,6 +2,7 @@ package fr.eriniumgroup.erinium_faction.init;
 
 import fr.eriniumgroup.erinium_faction.common.block.entity.EriniumChestBlockEntity;
 import fr.eriniumgroup.erinium_faction.common.block.entity.TitaniumCompressorBlockEntity;
+import fr.eriniumgroup.erinium_faction.common.blockentity.RocketMakerBlockEntity;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -15,6 +16,7 @@ public class EFBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EriniumChestBlockEntity>> ERINIUM_CHEST = REGISTER.register("erinium_chest", () -> BlockEntityType.Builder.of(EriniumChestBlockEntity::new, EFBlocks.ERINIUM_CHEST.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RocketMakerBlockEntity>> ROCKET_MAKER = REGISTER.register("rocket_maker", () -> BlockEntityType.Builder.of(RocketMakerBlockEntity::new, EFBlocks.ROCKET_MAKER.get()).build(null));
 
     private EFBlockEntities() {
     }

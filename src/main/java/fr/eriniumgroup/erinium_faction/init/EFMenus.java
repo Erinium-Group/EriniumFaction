@@ -1,5 +1,6 @@
 package fr.eriniumgroup.erinium_faction.init;
 
+import fr.eriniumgroup.erinium_faction.common.menu.RocketMakerMenu;
 import fr.eriniumgroup.erinium_faction.common.network.packets.MenuStateUpdateMessage;
 import fr.eriniumgroup.erinium_faction.core.EFC;
 import fr.eriniumgroup.erinium_faction.gui.menus.FactionMenu;
@@ -24,6 +25,7 @@ public class EFMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<PlayerStatsMenu>> PLAYER_STATS_MENU = REGISTER.register("player_stats_menu", () -> IMenuTypeExtension.create(PlayerStatsMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<TitaniumCompressorMenu>> TITANIUM_COMPRESSOR_MENU = REGISTER.register("titanium_compressor_menu", () -> IMenuTypeExtension.create(TitaniumCompressorMenu::new));
     public static final DeferredHolder<MenuType<?>, MenuType<EriniumChestMenu>> ERINIUM_CHEST = REGISTER.register("erinium_chest", () -> IMenuTypeExtension.create(EriniumChestMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<RocketMakerMenu>> ROCKET_MAKER = REGISTER.register("rocket_maker", () -> IMenuTypeExtension.create(RocketMakerMenu::new));
 
     public interface MenuAccessor {
         Map<String, Object> getMenuState();

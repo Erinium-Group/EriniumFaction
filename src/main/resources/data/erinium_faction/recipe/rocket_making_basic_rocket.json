@@ -1,0 +1,198 @@
+{
+  "type": "erinium_faction:rocket_making",
+  "pattern": {
+    "0": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "1": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "2": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "3": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "4": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "5": {
+      "item": "erinium_faction:rcs_thruster"
+    },
+    "6": {
+      "item": "erinium_faction:grid_fin"
+    },
+    "7": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "8": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "9": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "10": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "11": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "12": {
+      "item": "erinium_faction:grid_fin"
+    },
+    "13": {
+      "item": "erinium_faction:grid_fin"
+    },
+    "14": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "15": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "16": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "17": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "18": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "19": {
+      "item": "erinium_faction:grid_fin"
+    },
+    "20": {
+      "item": "erinium_faction:docking_port"
+    },
+    "21": {
+      "item": "erinium_faction:rcs_thruster"
+    },
+    "22": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "23": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "24": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "25": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "26": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "27": {
+      "item": "erinium_faction:rcs_thruster"
+    },
+    "28": {
+      "item": "erinium_faction:rcs_thruster"
+    },
+    "29": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "30": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "31": {
+      "item": "erinium_faction:flight_computer"
+    },
+    "32": {
+      "item": "erinium_faction:crew_module"
+    },
+    "33": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "34": {
+      "item": "erinium_faction:rcs_thruster"
+    },
+    "35": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "36": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "37": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "38": {
+      "item": "erinium_faction:fuel_tank"
+    },
+    "39": {
+      "item": "erinium_faction:fuel_tank"
+    },
+    "40": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "41": {
+      "item": "erinium_faction:rcs_thruster"
+    },
+    "42": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "43": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "44": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "45": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "46": {
+      "item": "erinium_faction:fuel_tank"
+    },
+    "47": {
+      "item": "erinium_faction:fuel_tank"
+    },
+    "48": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "49": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "50": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "51": {
+      "item": "erinium_faction:landing_leg"
+    },
+    "52": {
+      "item": "erinium_faction:heat_shield_tiles"
+    },
+    "53": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "54": {
+      "item": "erinium_faction:raptor_engine"
+    },
+    "55": {
+      "item": "erinium_faction:raptor_engine"
+    },
+    "56": {
+      "item": "erinium_faction:raptor_engine"
+    },
+    "57": {
+      "item": "erinium_faction:raptor_engine"
+    },
+    "58": {
+      "item": "erinium_faction:raptor_engine"
+    },
+    "59": {
+      "item": "erinium_faction:raptor_engine"
+    },
+    "60": {
+      "item": "erinium_faction:steel_hull_panel"
+    },
+    "61": {
+      "item": "erinium_faction:landing_leg"
+    },
+    "62": {
+      "item": "erinium_faction:landing_leg"
+    }
+  },
+  "result": {
+    "id": "erinium_faction:rocket_spawn_egg",
+    "count": 1
+  }
+}
